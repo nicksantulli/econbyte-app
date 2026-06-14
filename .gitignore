@@ -1,0 +1,20 @@
+# Secrets — NEVER commit
+.env
+.env.*
+*.mobileprovision
+*.p12
+*.cer
+*.certSigningRequest
+
+# Xcode / build
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+.DS_Store
+
+# The committed EconByte.xcodeproj uses a synchronized folder group, so new
+# files are auto-included — we DO commit the project so the app builds without
+# requiring xcodegen on the build machine. Keep only user-state out of git.
+EconByte.xcodeproj/xcuserdata/

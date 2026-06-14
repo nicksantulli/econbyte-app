@@ -1,0 +1,792 @@
+[
+  {
+    "id": "inflation",
+    "name": "Inflation",
+    "icon": "chart.line.uptrend.xyaxis",
+    "cards": [
+      {
+        "id": "inf-001",
+        "topicId": "inflation",
+        "concept": "What is Inflation?",
+        "conceptBody": "Inflation is the rate at which prices across the economy rise over time, reducing how much you can buy with the same amount of money. The government measures it by tracking the cost of a standard 'basket' of goods each month.",
+        "exampleBody": "In June 2022, US inflation hit 9.1% — the highest in 40 years. A grocery run that cost $100 in 2019 cost roughly $117 by mid-2022.",
+        "source": "Bureau of Labor Statistics",
+        "difficulty": "intro"
+      },
+      {
+        "id": "inf-002",
+        "topicId": "inflation",
+        "concept": "The Consumer Price Index (CPI)",
+        "conceptBody": "The CPI is the most common way to measure inflation. It tracks the average price change for a fixed basket of everyday goods and services — things like groceries, rent, gas, and medical care.",
+        "exampleBody": "In 2023, shelter (rent and housing costs) alone accounted for about 40% of total CPI inflation, even as gas prices fell sharply from 2022 highs.",
+        "source": "Bureau of Labor Statistics",
+        "difficulty": "intro"
+      },
+      {
+        "id": "inf-003",
+        "topicId": "inflation",
+        "concept": "Core vs. Headline Inflation",
+        "conceptBody": "Headline inflation includes everything — food and energy prices too. Core inflation strips those out because food and energy swing wildly with weather and global events. The Fed watches core inflation more closely to see the underlying trend.",
+        "exampleBody": "In early 2022, Russia's invasion of Ukraine sent energy prices soaring, pushing headline inflation well above core. By late 2023 the two measures had largely converged again near 4%.",
+        "source": "Federal Reserve",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "inf-004",
+        "topicId": "inflation",
+        "concept": "Demand-Pull Inflation",
+        "conceptBody": "When everyone wants more stuff than the economy can produce, sellers raise prices. This 'too much money chasing too few goods' situation is called demand-pull inflation and often follows big government spending surges.",
+        "exampleBody": "The $1.9 trillion American Rescue Plan in 2021 pumped stimulus checks directly to households. Consumer spending jumped 11% in Q2 2021, contributing to the demand-pull inflation that followed.",
+        "source": "Bureau of Economic Analysis",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "inf-005",
+        "topicId": "inflation",
+        "concept": "Cost-Push Inflation",
+        "conceptBody": "When it becomes more expensive to make goods — because wages, raw materials, or energy costs rise — companies pass those costs on to customers. That's cost-push inflation: higher input costs push prices up.",
+        "exampleBody": "After COVID disrupted chip factories in 2021, the average new car price rose from about $38,000 to over $47,000 by 2022 as manufacturers couldn't get semiconductors to fill demand.",
+        "source": "Kelley Blue Book / BLS",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "inf-006",
+        "topicId": "inflation",
+        "concept": "Hyperinflation",
+        "conceptBody": "Hyperinflation is extreme, out-of-control inflation — usually above 50% per month. It happens when governments print money at a catastrophic rate, destroying the currency's value and people's savings.",
+        "exampleBody": "In Zimbabwe (2008), inflation hit 89.7 sextillion percent per month. A loaf of bread that cost 1 Zimbabwean dollar in 2007 cost 10 billion dollars by late 2008.",
+        "source": "International Monetary Fund",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "inf-007",
+        "topicId": "inflation",
+        "concept": "Deflation: The Opposite Problem",
+        "conceptBody": "Deflation is when prices fall across the economy. It sounds great, but it's actually dangerous — if people expect prices to keep dropping, they delay buying, businesses earn less, cut jobs, and the economy spirals downward.",
+        "exampleBody": "Japan experienced deflation for most of the 1990s and 2000s ('the Lost Decade'). GDP growth averaged under 1% for 20 years as consumers and businesses stopped spending.",
+        "source": "Bank of Japan",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "inf-008",
+        "topicId": "inflation",
+        "concept": "The Fed's 2% Inflation Target",
+        "conceptBody": "The Federal Reserve aims for 2% annual inflation. This number is high enough to give room to cut rates during a downturn, but low enough that prices don't feel unstable. It's a deliberately chosen sweet spot, not a law of nature.",
+        "exampleBody": "From 2013 to 2019, the Fed hit its 2% target only occasionally — inflation averaged 1.6% those years. By 2022 it had overshot to 9.1%, triggering the fastest rate-hike cycle since the 1980s.",
+        "source": "Federal Reserve",
+        "difficulty": "intro"
+      }
+    ]
+  },
+  {
+    "id": "interest-rates",
+    "name": "Interest Rates",
+    "icon": "percent",
+    "cards": [
+      {
+        "id": "ir-001",
+        "topicId": "interest-rates",
+        "concept": "What is an Interest Rate?",
+        "conceptBody": "An interest rate is the cost of borrowing money, expressed as a percentage per year. When you borrow, you pay interest to the lender. When you save, the bank pays you interest on your deposits.",
+        "exampleBody": "A 30-year fixed mortgage at 3% in 2021 meant paying about $422/month per $100,000 borrowed. At 7% in 2023, that same loan cost $665/month — 57% more.",
+        "source": "Freddie Mac",
+        "difficulty": "intro"
+      },
+      {
+        "id": "ir-002",
+        "topicId": "interest-rates",
+        "concept": "The Federal Funds Rate",
+        "conceptBody": "The federal funds rate is the interest rate banks charge each other for overnight loans. The Fed sets a target for this rate, and it ripples through the entire economy — affecting mortgages, car loans, credit cards, and savings accounts.",
+        "exampleBody": "The Fed raised the federal funds rate from near 0% in March 2022 to 5.25–5.50% by July 2023 — the fastest pace of hikes since the 1980s — to fight 40-year-high inflation.",
+        "source": "Federal Reserve",
+        "difficulty": "intro"
+      },
+      {
+        "id": "ir-003",
+        "topicId": "interest-rates",
+        "concept": "Real vs. Nominal Interest Rates",
+        "conceptBody": "The nominal rate is the number you see advertised. The real rate adjusts for inflation — it tells you how much your purchasing power actually grows. If your savings account pays 4% but inflation is 5%, your real return is -1%.",
+        "exampleBody": "In 2021, high-yield savings accounts paid about 0.5% while inflation ran at 7%. Real rates were deeply negative at -6.5%, meaning savers were losing ground fast.",
+        "source": "FDIC / BLS",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "ir-004",
+        "topicId": "interest-rates",
+        "concept": "How Rates Cool Inflation",
+        "conceptBody": "Higher interest rates make borrowing more expensive, so people and businesses spend less. Less demand means businesses can't raise prices as fast. This is how the Fed 'cools' an overheating economy — it makes money cost more.",
+        "exampleBody": "After the Fed's 2022-2023 rate hikes, US mortgage applications fell to their lowest level since 1995, home sales dropped 40% from peak, and core inflation fell from 6.6% in 2022 to 3.4% by late 2023.",
+        "source": "Mortgage Bankers Association / BLS",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "ir-005",
+        "topicId": "interest-rates",
+        "concept": "The Yield Curve",
+        "conceptBody": "The yield curve plots interest rates on US government bonds from short-term (3 months) to long-term (30 years). Normally, long-term bonds pay more because you're locking up money longer. An 'inverted' curve — where short rates exceed long rates — often predicts a recession.",
+        "exampleBody": "The yield curve inverted in mid-2022 and stayed inverted through 2023. It has preceded every US recession since 1955, with a typical lag of 12–18 months.",
+        "source": "Federal Reserve Bank of Cleveland",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "ir-006",
+        "topicId": "interest-rates",
+        "concept": "Zero Interest Rate Policy (ZIRP)",
+        "conceptBody": "When the economy is in crisis, central banks sometimes cut rates to near zero to encourage borrowing and spending. This Zero Interest Rate Policy (ZIRP) was used after both the 2008 financial crisis and the COVID-19 pandemic.",
+        "exampleBody": "The Fed held rates near 0% from December 2008 to December 2015 — a full 7 years. Then again from March 2020 to March 2022, during and after COVID.",
+        "source": "Federal Reserve",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "ir-007",
+        "topicId": "interest-rates",
+        "concept": "Credit Card Rates vs. The Fed",
+        "conceptBody": "Credit card interest rates are tied to the prime rate, which moves with the federal funds rate. But credit cards add a hefty spread on top. When the Fed raises rates, credit card rates go up almost immediately — but savings account rates often lag.",
+        "exampleBody": "When the Fed funds rate rose from 0.25% to 5.5% in 2022-2023, the average credit card APR jumped from 16.3% to 21.5%. Savings rates rose too, but only to about 4-5%.",
+        "source": "Federal Reserve / CFPB",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "ir-008",
+        "topicId": "interest-rates",
+        "concept": "Negative Interest Rates",
+        "conceptBody": "Some central banks have set rates below zero, meaning banks are charged to hold excess reserves. The goal is to push banks to lend rather than sit on cash. But it's controversial and has had mixed results.",
+        "exampleBody": "The European Central Bank held its deposit rate at -0.5% from 2019 to 2022. Japan's central bank has maintained negative rates since 2016. Neither saw the lending surge they hoped for.",
+        "source": "European Central Bank / Bank of Japan",
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "id": "gdp",
+    "name": "GDP",
+    "icon": "building.columns",
+    "cards": [
+      {
+        "id": "gdp-001",
+        "topicId": "gdp",
+        "concept": "What is GDP?",
+        "conceptBody": "Gross Domestic Product (GDP) is the total value of all goods and services produced in a country in a year. Think of it as the scoreboard for an economy — a rising GDP generally means more jobs, income, and production.",
+        "exampleBody": "The US GDP in 2023 was about $27.4 trillion — the largest in the world. China was second at roughly $17.7 trillion. California alone, if it were a country, would rank 5th globally.",
+        "source": "World Bank / Bureau of Economic Analysis",
+        "difficulty": "intro"
+      },
+      {
+        "id": "gdp-002",
+        "topicId": "gdp",
+        "concept": "The Four Components of GDP",
+        "conceptBody": "GDP = Consumption + Investment + Government Spending + Net Exports (C+I+G+NX). Consumer spending is the biggest piece — about 70% of US GDP. Net exports can be negative if a country imports more than it exports.",
+        "exampleBody": "In 2022, US consumer spending was $17.5 trillion, government spending was $4.4 trillion, investment was $4.7 trillion, and net exports were -$1 trillion (the US imports more than it exports).",
+        "source": "Bureau of Economic Analysis",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "gdp-003",
+        "topicId": "gdp",
+        "concept": "Real vs. Nominal GDP",
+        "conceptBody": "Nominal GDP counts everything at today's prices — including inflation. Real GDP strips out price changes so you can see if the economy actually produced more. Real GDP is the number to watch.",
+        "exampleBody": "In 2021, US nominal GDP grew 10.7% — impressive. But real GDP only grew 5.9% once inflation was subtracted. The rest was just higher prices, not more actual output.",
+        "source": "Bureau of Economic Analysis",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "gdp-004",
+        "topicId": "gdp",
+        "concept": "GDP Per Capita",
+        "conceptBody": "GDP per capita divides a country's total output by its population. It's a rough proxy for living standards — richer countries tend to have higher per-capita GDP. But it hides inequality; some people can be very rich while most are poor.",
+        "exampleBody": "The US GDP per capita in 2023 was about $80,000. Norway's was $110,000. India's was $2,500. These differences reflect massive gaps in wages, productivity, and infrastructure.",
+        "source": "IMF World Economic Outlook",
+        "difficulty": "intro"
+      },
+      {
+        "id": "gdp-005",
+        "topicId": "gdp",
+        "concept": "Recession: Two Quarters of Negative GDP",
+        "conceptBody": "A common rule of thumb is that a recession is two consecutive quarters of negative GDP growth. But in the US, the official declaration comes from the National Bureau of Economic Research (NBER), which looks at more factors.",
+        "exampleBody": "In Q1 and Q2 of 2022, US GDP was negative (-1.6% and -0.9%), but the NBER didn't call it a recession because unemployment was low and jobs were still growing. The informal definition didn't match the official one.",
+        "source": "NBER / Bureau of Economic Analysis",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "gdp-006",
+        "topicId": "gdp",
+        "concept": "GDP Growth Rate",
+        "conceptBody": "The GDP growth rate measures how much the economy expanded (or shrank) compared to the previous quarter or year, annualized. Healthy economies typically grow 2-3% per year. Growth above 4% is hot; negative growth is a recession.",
+        "exampleBody": "US GDP grew 5.8% in 2021 — the fastest pace since 1984 — as the economy rebounded from COVID. That was followed by a slowdown to 2.1% in 2022 as the Fed hiked rates.",
+        "source": "Bureau of Economic Analysis",
+        "difficulty": "intro"
+      },
+      {
+        "id": "gdp-007",
+        "topicId": "gdp",
+        "concept": "GDP vs. GNP",
+        "conceptBody": "GDP counts production inside a country's borders regardless of who owns it. GNP (Gross National Product) counts production by a country's citizens anywhere in the world. For most countries they're similar, but differ for nations with lots of workers abroad.",
+        "exampleBody": "The Philippines has a GDP/GNP gap of about $30 billion, because millions of Filipinos work overseas and send remittances home. Their GNP is higher than their GDP.",
+        "source": "World Bank",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "gdp-008",
+        "topicId": "gdp",
+        "concept": "What GDP Misses",
+        "conceptBody": "GDP doesn't measure happiness, health, inequality, or environmental damage. Cleaning up an oil spill adds to GDP (economic activity!) but doesn't make society better off. Some economists push for 'wellbeing' alternatives.",
+        "exampleBody": "New Zealand adopted a 'Wellbeing Budget' in 2019, tracking mental health, housing, and child poverty alongside GDP. The idea is spreading — the OECD now tracks 'Better Life Index' for member countries.",
+        "source": "OECD / New Zealand Treasury",
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "id": "supply-demand",
+    "name": "Supply & Demand",
+    "icon": "arrow.left.arrow.right",
+    "cards": [
+      {
+        "id": "sd-001",
+        "topicId": "supply-demand",
+        "concept": "The Law of Demand",
+        "conceptBody": "When a price goes up, people buy less of it. When it goes down, they buy more. This inverse relationship between price and quantity demanded is so consistent that economists call it a 'law.'",
+        "exampleBody": "When gas prices rose above $5/gallon in mid-2022, US gasoline demand fell about 8% year-over-year as people drove less and switched to alternatives.",
+        "source": "U.S. Energy Information Administration",
+        "difficulty": "intro"
+      },
+      {
+        "id": "sd-002",
+        "topicId": "supply-demand",
+        "concept": "The Law of Supply",
+        "conceptBody": "When prices rise, producers want to make and sell more because it's more profitable. When prices fall, they produce less. This positive relationship between price and quantity supplied is the law of supply.",
+        "exampleBody": "When crude oil hit $120/barrel in 2022, US oil producers ramped up drilling. The rig count rose 60% in a year as companies rushed to profit from high prices.",
+        "source": "Baker Hughes / EIA",
+        "difficulty": "intro"
+      },
+      {
+        "id": "sd-003",
+        "topicId": "supply-demand",
+        "concept": "Equilibrium Price",
+        "conceptBody": "The equilibrium price is where supply and demand balance — the quantity buyers want equals the quantity sellers offer. Markets naturally drift toward equilibrium, though they're often disrupted by shocks before they get there.",
+        "exampleBody": "Used car prices were massively above equilibrium in 2021–2022 due to chip shortages cutting new car supply. By 2023, as supply chains eased, prices fell 20–30% back toward equilibrium.",
+        "source": "Manheim Used Vehicle Value Index",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "sd-004",
+        "topicId": "supply-demand",
+        "concept": "Price Elasticity",
+        "conceptBody": "Elasticity measures how sensitive demand is to price changes. If a 10% price rise causes a 20% drop in purchases, demand is 'elastic' (sensitive). If it barely changes purchases, it's 'inelastic.' Necessities tend to be inelastic.",
+        "exampleBody": "Insulin demand is highly inelastic — diabetics need it regardless of price. When one insulin brand cost $350/vial in the US vs. $30 in Canada, US patients still bought it. Congress capped costs at $35/month for Medicare in 2022.",
+        "source": "JAMA / Congress.gov",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "sd-005",
+        "topicId": "supply-demand",
+        "concept": "Supply Shocks",
+        "conceptBody": "A supply shock is a sudden unexpected event that reduces the available supply of something. Supply shocks push prices up quickly because demand doesn't drop right away. Wars, natural disasters, and pandemics are common causes.",
+        "exampleBody": "Russia's 2022 invasion of Ukraine — a major wheat and sunflower oil exporter — caused global food prices to spike 23% in one year. Countries that depended on those exports faced food crises.",
+        "source": "FAO Food Price Index",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "sd-006",
+        "topicId": "supply-demand",
+        "concept": "Price Ceilings",
+        "conceptBody": "A price ceiling is a government-set maximum price for a good or service. The goal is usually to make necessities affordable. But if set below equilibrium, it creates shortages — sellers won't supply as much at the capped price.",
+        "exampleBody": "New York City has had rent control since the 1940s. It keeps some rents low, but has contributed to a shortage of available apartments — landlords remove units from the rental market when they can't charge market rates.",
+        "source": "NYC Rent Guidelines Board",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "sd-007",
+        "topicId": "supply-demand",
+        "concept": "Price Floors",
+        "conceptBody": "A price floor is a minimum price, set above equilibrium. The most common example is the minimum wage. Price floors help low-wage workers or struggling farmers, but can also reduce the quantity demanded — potentially causing unemployment or surplus.",
+        "exampleBody": "California raised its minimum wage to $20/hour for fast food workers in April 2024. Some chains responded by cutting hours or raising menu prices. McDonald's said it would use kiosks to reduce labor needs.",
+        "source": "California Labor Commissioner",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "sd-008",
+        "topicId": "supply-demand",
+        "concept": "Substitutes and Complements",
+        "conceptBody": "Substitutes are goods you can swap for one another — Coke and Pepsi. If the price of one rises, demand for the other increases. Complements are goods used together — cars and gas. If car sales fall, gas demand falls too.",
+        "exampleBody": "When Netflix raised prices from $8.99 to $15.49 per month between 2014 and 2022, competitor streaming services like Hulu and Disney+ saw subscriber growth accelerate as users looked for substitutes.",
+        "source": "Antenna / company earnings",
+        "difficulty": "intro"
+      }
+    ]
+  },
+  {
+    "id": "labor-markets",
+    "name": "Labor Markets",
+    "icon": "person.3.fill",
+    "cards": [
+      {
+        "id": "lm-001",
+        "topicId": "labor-markets",
+        "concept": "The Unemployment Rate",
+        "conceptBody": "The unemployment rate counts the percentage of people in the labor force who are actively looking for work but can't find it. It only counts people who are looking — those who've given up aren't included.",
+        "exampleBody": "US unemployment peaked at 14.7% in April 2020 as COVID shut down businesses. By January 2023, it had fallen to 3.4% — the lowest level since 1969.",
+        "source": "Bureau of Labor Statistics",
+        "difficulty": "intro"
+      },
+      {
+        "id": "lm-002",
+        "topicId": "labor-markets",
+        "concept": "The Labor Force Participation Rate",
+        "conceptBody": "This measures the share of the working-age population that's either employed or actively job-hunting. It's a broader health indicator than unemployment — a falling participation rate can hide discouraged workers who stopped looking.",
+        "exampleBody": "US labor force participation was 63.4% in February 2020. By April 2020 it had fallen to 60.2% — millions had dropped out. By 2023 it recovered to about 62.5%, still below pre-pandemic levels.",
+        "source": "Bureau of Labor Statistics",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "lm-003",
+        "topicId": "labor-markets",
+        "concept": "Frictional Unemployment",
+        "conceptBody": "Some unemployment is always normal — people quit one job before finding another, or new graduates search for their first job. This 'between jobs' unemployment is called frictional and exists even in a healthy economy.",
+        "exampleBody": "In a tight labor market like 2022, frictional unemployment was low because jobs were plentiful. The average job search lasted only about 2.5 months vs. 5+ months during slower periods.",
+        "source": "Bureau of Labor Statistics",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "lm-004",
+        "topicId": "labor-markets",
+        "concept": "Structural Unemployment",
+        "conceptBody": "When technology or industry shifts make certain skills obsolete, workers can be left behind even when other jobs are available. This structural mismatch — between the skills workers have and the jobs available — is called structural unemployment.",
+        "exampleBody": "Amazon's expansion of warehouse automation has reduced its need for human pickers. McKinsey estimates 12 million US workers may need to switch occupations by 2030 due to automation.",
+        "source": "McKinsey Global Institute",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "lm-005",
+        "topicId": "labor-markets",
+        "concept": "The Phillips Curve",
+        "conceptBody": "Historically, low unemployment and high inflation tend to go together — when jobs are plentiful, workers demand higher wages, businesses raise prices. The tradeoff between unemployment and inflation is called the Phillips Curve.",
+        "exampleBody": "In 2022, US unemployment was 3.5% (very low) while inflation hit 9.1% (very high) — a textbook Phillips Curve moment. The Fed raised rates to cool inflation even knowing it might push up unemployment.",
+        "source": "Federal Reserve / BLS",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "lm-006",
+        "topicId": "labor-markets",
+        "concept": "The Gig Economy",
+        "conceptBody": "The gig economy refers to short-term, contract, or freelance work rather than traditional full-time employment. Platforms like Uber, DoorDash, and Upwork have expanded it. Workers get flexibility; employers avoid benefits and employment taxes.",
+        "exampleBody": "About 59 million Americans did freelance work in 2023 — 36% of the US workforce. They contributed $1.27 trillion to the economy. But only 16% had employer-sponsored health insurance.",
+        "source": "Upwork / Freelancers Union",
+        "difficulty": "intro"
+      },
+      {
+        "id": "lm-007",
+        "topicId": "labor-markets",
+        "concept": "Wage Growth and Inflation",
+        "conceptBody": "When wages rise faster than productivity, businesses often pass the higher labor costs on to consumers as price hikes. This 'wage-price spiral' is one way inflation can become self-reinforcing and harder to control.",
+        "exampleBody": "In 2021-2022, average US hourly wages rose 5-6% year-over-year as employers competed for workers. While good for employees, the Fed watched this closely as a risk of entrenching inflation.",
+        "source": "Bureau of Labor Statistics",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "lm-008",
+        "topicId": "labor-markets",
+        "concept": "The Jobs Report",
+        "conceptBody": "The US Bureau of Labor Statistics releases the monthly 'jobs report' on the first Friday of each month. It shows how many jobs were added (or lost), the unemployment rate, and average wage growth. Markets often move significantly on this single report.",
+        "exampleBody": "On February 3, 2023, the jobs report showed 517,000 jobs added — nearly triple expectations. The S&P 500 fell 1% that day because strong jobs data meant the Fed would keep raising rates.",
+        "source": "Bureau of Labor Statistics",
+        "difficulty": "intro"
+      }
+    ]
+  },
+  {
+    "id": "trade-tariffs",
+    "name": "Trade & Tariffs",
+    "icon": "shippingbox",
+    "cards": [
+      {
+        "id": "tt-001",
+        "topicId": "trade-tariffs",
+        "concept": "Why Countries Trade",
+        "conceptBody": "Countries trade because it allows each to specialize in what it produces most efficiently. Even if one country is better at making everything, trade still benefits both sides by letting each focus on its relative strengths — a principle called comparative advantage.",
+        "exampleBody": "The US exports software, aircraft, and soybeans because it's comparatively efficient at those. It imports electronics, clothing, and oil because other countries produce those more cheaply. Both sides benefit from the exchange.",
+        "source": "World Trade Organization",
+        "difficulty": "intro"
+      },
+      {
+        "id": "tt-002",
+        "topicId": "trade-tariffs",
+        "concept": "What is a Tariff?",
+        "conceptBody": "A tariff is a tax on imported goods, collected by the importing country's government. Tariffs make foreign goods more expensive, encouraging consumers to buy domestic alternatives. But they also raise prices for consumers and can invite retaliation.",
+        "exampleBody": "In 2018, the US imposed 25% tariffs on $34 billion of Chinese goods. China responded with tariffs on US agricultural products. American soybean exports to China fell 74% in 2018, costing US farmers billions.",
+        "source": "Peterson Institute for International Economics",
+        "difficulty": "intro"
+      },
+      {
+        "id": "tt-003",
+        "topicId": "trade-tariffs",
+        "concept": "Trade Deficits",
+        "conceptBody": "A trade deficit occurs when a country imports more than it exports. The US has run a trade deficit for decades. This isn't automatically bad — it can reflect strong consumer demand and a strong dollar that makes imports cheap.",
+        "exampleBody": "The US goods trade deficit hit a record $1.19 trillion in 2022. The biggest gaps were with China ($383 billion), the EU ($197 billion), and Mexico ($130 billion).",
+        "source": "Bureau of Economic Analysis",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "tt-004",
+        "topicId": "trade-tariffs",
+        "concept": "Free Trade Agreements",
+        "conceptBody": "A free trade agreement (FTA) is a deal between countries to reduce or eliminate tariffs and other trade barriers. They can expand markets for exporters and lower prices for consumers, but critics say they cost domestic manufacturing jobs.",
+        "exampleBody": "The US-Mexico-Canada Agreement (USMCA), which replaced NAFTA in 2020, governs $1.7 trillion in annual trade. About 30% of all US trade is with its two neighbors.",
+        "source": "Office of the US Trade Representative",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "tt-005",
+        "topicId": "trade-tariffs",
+        "concept": "The WTO",
+        "conceptBody": "The World Trade Organization (WTO) sets global trade rules and mediates disputes between countries. When one country thinks another is breaking trade rules, it files a complaint with the WTO, which acts like a referee.",
+        "exampleBody": "In 2019, the WTO authorized the US to impose $7.5 billion in tariffs on EU goods after ruling that Europe had illegally subsidized Airbus. The EU later won a similar ruling against US Boeing subsidies.",
+        "source": "World Trade Organization",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "tt-006",
+        "topicId": "trade-tariffs",
+        "concept": "Protectionism",
+        "conceptBody": "Protectionism is the use of tariffs, quotas, or regulations to shield domestic industries from foreign competition. Advocates say it saves jobs and strategic industries. Economists generally agree it raises prices for consumers and reduces overall efficiency.",
+        "exampleBody": "The US steel industry has been protected by tariffs since 2002. The Cato Institute estimated these tariffs cost US consumers and manufacturers about $900,000 per steel job saved — far more than the wages of those jobs.",
+        "source": "Cato Institute / Peterson Institute",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "tt-007",
+        "topicId": "trade-tariffs",
+        "concept": "Currency and Trade",
+        "conceptBody": "A strong currency makes a country's exports more expensive for foreigners and imports cheaper for its own citizens — which can widen a trade deficit. A weaker currency does the opposite, boosting export competitiveness.",
+        "exampleBody": "When the US dollar strengthened 20% in 2022, US exporters struggled — their goods cost more in overseas markets. Companies like Apple and Microsoft reported billions in lost revenue due to unfavorable exchange rates.",
+        "source": "Federal Reserve / company earnings",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "tt-008",
+        "topicId": "trade-tariffs",
+        "concept": "Supply Chain Reshoring",
+        "conceptBody": "After COVID exposed vulnerabilities in global supply chains, many companies and governments began moving production closer to home — called reshoring or nearshoring. It trades efficiency for resilience.",
+        "exampleBody": "The CHIPS Act (2022) allocated $52 billion to boost US semiconductor manufacturing. TSMC, Intel, and Samsung all announced new US fabs. By 2023, US chip manufacturing investment hit a record $200 billion.",
+        "source": "Semiconductor Industry Association",
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "id": "housing-market",
+    "name": "Housing Market",
+    "icon": "house.fill",
+    "cards": [
+      {
+        "id": "hm-001",
+        "topicId": "housing-market",
+        "concept": "Why Housing is Different",
+        "conceptBody": "Housing is unique as an economic asset — it's simultaneously a place to live (consumption) and an investment. It's locally fixed, expensive, takes years to build, and is often financed with debt. These traits make housing markets slow to adjust and prone to booms and busts.",
+        "exampleBody": "US home prices rose 43% from early 2020 to mid-2022 — the fastest run-up since records began. Then mortgage rates doubled, and prices fell 10-15% from the peak before stabilizing.",
+        "source": "S&P CoreLogic Case-Shiller Index",
+        "difficulty": "intro"
+      },
+      {
+        "id": "hm-002",
+        "topicId": "housing-market",
+        "concept": "Mortgage Rates and Affordability",
+        "conceptBody": "Monthly mortgage payments depend on both the home price and the interest rate. When rates double, a buyer can afford roughly half the home price for the same monthly payment. This is why rising rates hit housing hard, even if prices don't drop much.",
+        "exampleBody": "At 3% in 2021, a $400,000 home had a monthly payment of about $1,686. At 7% in 2023, the same home cost $2,661/month — $975 more, or 58% higher for the same house.",
+        "source": "Freddie Mac",
+        "difficulty": "intro"
+      },
+      {
+        "id": "hm-003",
+        "topicId": "housing-market",
+        "concept": "Housing Supply Shortage",
+        "conceptBody": "The US has underbuilt housing for over a decade since the 2008 crash. Zoning restrictions, high construction costs, and local opposition to new developments have kept supply constrained even as demand grew with millennials entering peak home-buying age.",
+        "exampleBody": "The US was short roughly 3.8 million homes as of 2021, according to Freddie Mac. This shortage pushed prices up even before COVID demand surges. Cities like Austin and Minneapolis tried rezoning to allow more density.",
+        "source": "Freddie Mac / Harvard Joint Center for Housing Studies",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "hm-004",
+        "topicId": "housing-market",
+        "concept": "The 2008 Housing Crash",
+        "conceptBody": "Between 2002 and 2006, lax lending standards allowed millions to buy homes they couldn't afford. When prices fell and adjustable-rate mortgages reset higher, millions defaulted. The resulting financial crisis was the worst since the Great Depression.",
+        "exampleBody": "US home prices fell 33% nationally from 2006 to 2012. About 10 million homeowners went through foreclosure. The crisis wiped out $11 trillion in household wealth and triggered a global recession.",
+        "source": "Federal Reserve / S&P Case-Shiller",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "hm-005",
+        "topicId": "housing-market",
+        "concept": "The Lock-In Effect",
+        "conceptBody": "Homeowners with low fixed-rate mortgages are reluctant to sell because buying a new home means taking out a loan at today's higher rates. This 'lock-in effect' reduces the supply of homes for sale, keeping prices elevated even as demand cools.",
+        "exampleBody": "By 2023, about 90% of US mortgage holders had rates below 6%. With rates above 7%, millions of would-be sellers stayed put. Existing home sales fell to their lowest level in nearly 30 years.",
+        "source": "Redfin / National Association of Realtors",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "hm-006",
+        "topicId": "housing-market",
+        "concept": "Rent vs. Own",
+        "conceptBody": "Whether it's better to rent or buy depends on local prices, mortgage rates, how long you'll stay, and opportunity cost of the down payment. A common rule of thumb: if the price-to-rent ratio is above 20, renting is often more economical.",
+        "exampleBody": "In San Francisco in 2023, the median home price was about $1.3 million. A 20% down payment is $260,000. The price-to-rent ratio was 35 — far above the break-even threshold, suggesting renting was often cheaper.",
+        "source": "Zillow / National Association of Realtors",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "hm-007",
+        "topicId": "housing-market",
+        "concept": "Institutional Investors in Housing",
+        "conceptBody": "Large investment firms have been buying single-family homes to rent out, converting what were traditionally owner-occupied homes into rentals. This raises prices and can reduce homeownership opportunities for individuals.",
+        "exampleBody": "Invitation Homes, the largest single-family rental company, owned about 82,000 homes in 2023. However, institutional investors own under 5% of single-family homes nationally — significant but not the primary driver of affordability issues.",
+        "source": "Urban Institute / Invitation Homes",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "hm-008",
+        "topicId": "housing-market",
+        "concept": "Housing Starts",
+        "conceptBody": "Housing starts is the number of new residential construction projects that began in a given month. It's a key leading indicator — rising starts signal economic confidence; falling starts warn of a slowdown. It usually drops sharply before recessions.",
+        "exampleBody": "US housing starts fell 71% from their peak in 2006 to the trough in 2009. They fell again 30% from late 2022 to mid-2023 as higher rates made new development less profitable for builders.",
+        "source": "US Census Bureau",
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "id": "central-banks",
+    "name": "Central Banks",
+    "icon": "banknote",
+    "cards": [
+      {
+        "id": "cb-001",
+        "topicId": "central-banks",
+        "concept": "What Does a Central Bank Do?",
+        "conceptBody": "A central bank manages a country's money supply and interest rates, acts as a lender of last resort to banks in crisis, and often supervises the financial system. Its overarching goal is economic stability — low inflation and steady growth.",
+        "exampleBody": "The US Federal Reserve, founded in 1913, has three main jobs: maximum employment, stable prices, and moderate long-term interest rates. These 'dual mandate' goals often pull in opposite directions.",
+        "source": "Federal Reserve",
+        "difficulty": "intro"
+      },
+      {
+        "id": "cb-002",
+        "topicId": "central-banks",
+        "concept": "Monetary Policy",
+        "conceptBody": "Monetary policy is the central bank's toolkit for influencing the economy — primarily by changing interest rates and the money supply. Cutting rates stimulates growth; raising rates cools inflation. It works indirectly through lending and spending behavior.",
+        "exampleBody": "From 2020 to 2022, the Fed's easy monetary policy (0% rates + $4.5 trillion in bond purchases) helped the economy recover from COVID. Then it pivoted to the tightest policy since the Volcker era to fight inflation.",
+        "source": "Federal Reserve",
+        "difficulty": "intro"
+      },
+      {
+        "id": "cb-003",
+        "topicId": "central-banks",
+        "concept": "Quantitative Easing (QE)",
+        "conceptBody": "When interest rates hit zero and the economy still needs a boost, central banks can buy government bonds and other assets to inject money into the financial system. This unconventional tool is called quantitative easing (QE).",
+        "exampleBody": "The Fed launched four rounds of QE after 2008 and 2020. By 2022 its balance sheet had swelled to nearly $9 trillion — up from $900 billion in 2008 — before it began shrinking it again (quantitative tightening).",
+        "source": "Federal Reserve",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "cb-004",
+        "topicId": "central-banks",
+        "concept": "Central Bank Independence",
+        "conceptBody": "Most modern central banks operate independently from government — politicians can't order rate cuts before an election. This independence helps fight inflation by keeping monetary policy focused on long-term stability over short-term politics.",
+        "exampleBody": "In 2021-2022, US politicians pressured the Fed to keep rates low, but it eventually raised them sharply anyway. Turkey's president fired central bank chiefs who raised rates, and the Turkish lira lost 80% of its value by 2022.",
+        "source": "IMF / Bank for International Settlements",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "cb-005",
+        "topicId": "central-banks",
+        "concept": "The Lender of Last Resort",
+        "conceptBody": "When banks face a run and can't pay their depositors, they can borrow from the central bank as a 'lender of last resort.' This backstop prevents panic from spiraling into a full financial collapse.",
+        "exampleBody": "During Silicon Valley Bank's collapse in March 2023, the Fed and FDIC guaranteed all deposits and created the Bank Term Funding Program to lend to banks at risk. Bank runs were contained within days.",
+        "source": "Federal Reserve / FDIC",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "cb-006",
+        "topicId": "central-banks",
+        "concept": "The ECB and the Eurozone",
+        "conceptBody": "The European Central Bank (ECB) sets monetary policy for 20 countries that share the euro. It can't tailor rates to any single country's needs — Germany and Greece get the same interest rate even if their economies are in opposite conditions.",
+        "exampleBody": "During the 2010 Greek debt crisis, Greece needed lower rates and more money supply, but the ECB was keeping rates high to fight German inflation. This 'one-size-fits-all' dilemma nearly broke the eurozone apart.",
+        "source": "European Central Bank",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "cb-007",
+        "topicId": "central-banks",
+        "concept": "Forward Guidance",
+        "conceptBody": "Central banks don't just set today's rate — they signal where rates are headed. This 'forward guidance' influences borrowing, investment, and hiring decisions today based on expected future rates. Words move markets.",
+        "exampleBody": "In August 2020, the Fed announced it would keep rates at zero until inflation averaged above 2% for some time. That single statement kept long-term rates anchored low for over a year without any action needed.",
+        "source": "Federal Reserve",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "cb-008",
+        "topicId": "central-banks",
+        "concept": "Digital Currencies (CBDCs)",
+        "conceptBody": "Central Bank Digital Currencies (CBDCs) are digital versions of a country's money, issued directly by the central bank. Unlike crypto, they're government-backed and stable. They could reshape payments, banking, and monetary policy implementation.",
+        "exampleBody": "China launched its digital yuan (e-CNY) in 2020 and had distributed $250 million in free e-CNY to citizens by 2022. The US Federal Reserve has been researching a digital dollar but hadn't launched one as of 2024.",
+        "source": "Bank for International Settlements",
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "id": "recessions",
+    "name": "Recessions",
+    "icon": "arrow.down.circle",
+    "cards": [
+      {
+        "id": "rec-001",
+        "topicId": "recessions",
+        "concept": "What is a Recession?",
+        "conceptBody": "A recession is a significant decline in economic activity spread across the economy lasting more than a few months. In the US, the official call is made by the NBER, which looks at employment, income, production, and consumer spending — not just GDP.",
+        "exampleBody": "The US has had 12 recessions since 1945. The COVID recession (Feb–April 2020) was the sharpest but shortest on record — just 2 months. The Great Recession (2007–2009) was the longest at 18 months.",
+        "source": "National Bureau of Economic Research",
+        "difficulty": "intro"
+      },
+      {
+        "id": "rec-002",
+        "topicId": "recessions",
+        "concept": "Leading Indicators",
+        "conceptBody": "Leading indicators are data points that tend to move before the economy shifts — they're used to predict recessions. Common ones include the yield curve, building permits, stock prices, consumer confidence, and weekly jobless claims.",
+        "exampleBody": "The Conference Board's Leading Economic Index declined for 24 consecutive months heading into mid-2023 — the longest streak since the 2007 financial crisis — yet the widely predicted recession hadn't materialized by late 2024.",
+        "source": "Conference Board",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "rec-003",
+        "topicId": "recessions",
+        "concept": "The Business Cycle",
+        "conceptBody": "Economies don't grow in a straight line — they go through cycles of expansion (growth), peak (high point), contraction (recession), and trough (low point), then expansion again. This is the business cycle, and it's been a feature of market economies for centuries.",
+        "exampleBody": "The longest US economic expansion ran from June 2009 to February 2020 — 128 months (10.7 years). It ended abruptly when COVID hit, followed by one of the fastest recoveries on record.",
+        "source": "NBER",
+        "difficulty": "intro"
+      },
+      {
+        "id": "rec-004",
+        "topicId": "recessions",
+        "concept": "Fiscal Stimulus During Recessions",
+        "conceptBody": "When the economy contracts, governments often step in with spending increases or tax cuts to boost demand — called fiscal stimulus. The idea is that government spending can offset the decline in private spending.",
+        "exampleBody": "The US government spent about $5 trillion on COVID relief (2020–2021) — more than the entire GDP of Germany. This included $1,200–$1,400 stimulus checks, expanded unemployment benefits, and PPP loans for businesses.",
+        "source": "Committee for a Responsible Federal Budget",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "rec-005",
+        "topicId": "recessions",
+        "concept": "Automatic Stabilizers",
+        "conceptBody": "Some government programs automatically increase spending when the economy weakens without any new legislation — called automatic stabilizers. Unemployment insurance is the classic example: more people qualify when jobs are lost.",
+        "exampleBody": "During the 2008 recession, US unemployment insurance payments automatically increased from $33 billion in 2007 to $120 billion in 2010 — providing a cushion that reduced the economic contraction without Congress needing to act.",
+        "source": "Congressional Budget Office",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "rec-006",
+        "topicId": "recessions",
+        "concept": "Recessions and Jobs",
+        "conceptBody": "Unemployment typically lags the broader recession — companies hold onto workers hoping conditions improve, then lay off in waves once the downturn is clear. Job recovery after a recession is often slow, especially for certain sectors.",
+        "exampleBody": "In the 2008 recession, unemployment peaked at 10% in October 2009 — 16 months after the recession officially started. It took until 2015 to fully recover the jobs lost.",
+        "source": "Bureau of Labor Statistics",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "rec-007",
+        "topicId": "recessions",
+        "concept": "Soft Landing vs. Hard Landing",
+        "conceptBody": "A 'soft landing' is when a central bank raises rates enough to cool inflation without causing a recession. A 'hard landing' means tightening too much, tipping the economy into recession. Threading this needle is extremely difficult.",
+        "exampleBody": "After the Fed's 2022–2023 rate hike cycle, many economists predicted a hard landing. By 2024 inflation had fallen to near 3% while unemployment stayed below 4% — a remarkably rare soft landing outcome.",
+        "source": "Federal Reserve / BLS",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "rec-008",
+        "topicId": "recessions",
+        "concept": "K-Shaped Recoveries",
+        "conceptBody": "Not all recessions hit equally. A 'K-shaped' recovery means higher-income workers (who can work from home and own assets) bounce back quickly, while lower-income service workers take much longer. The K shape shows the paths diverge.",
+        "exampleBody": "During COVID, white-collar knowledge workers recovered their income within months. But restaurant, retail, and hospitality workers faced unemployment for years. The S&P 500 hit new highs in August 2020 while 25 million were still unemployed.",
+        "source": "Federal Reserve / McKinsey",
+        "difficulty": "intermediate"
+      }
+    ]
+  },
+  {
+    "id": "debt-deficits",
+    "name": "Debt & Deficits",
+    "icon": "creditcard.fill",
+    "cards": [
+      {
+        "id": "dd-001",
+        "topicId": "debt-deficits",
+        "concept": "Deficit vs. Debt",
+        "conceptBody": "The deficit is how much more the government spends than it collects in taxes in a single year. The debt is the total accumulated pile of past deficits. Think of the deficit as the annual shortfall and the debt as the running total on a credit card.",
+        "exampleBody": "The US ran a $1.7 trillion deficit in fiscal year 2023. The national debt crossed $33 trillion the same year. Interest alone on that debt cost over $650 billion — more than the defense budget.",
+        "source": "Congressional Budget Office / US Treasury",
+        "difficulty": "intro"
+      },
+      {
+        "id": "dd-002",
+        "topicId": "debt-deficits",
+        "concept": "Debt-to-GDP Ratio",
+        "conceptBody": "Raw debt numbers are hard to interpret. Economists look at debt relative to the size of the economy (GDP). A country with $10 trillion in debt and $25 trillion GDP is in better shape than one with $10 trillion debt and $5 trillion GDP.",
+        "exampleBody": "The US debt-to-GDP ratio was about 100% in 2023. Japan's was 255% — the highest in the developed world. Yet Japan still borrows cheaply because most of its debt is held domestically.",
+        "source": "IMF / US Treasury",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "dd-003",
+        "topicId": "debt-deficits",
+        "concept": "Who Holds US Debt?",
+        "conceptBody": "Not all US debt is held by foreign governments. About 77% is held domestically — by the Fed, Social Security trust funds, US banks, pension funds, and individual investors. Foreign holdings are a minority.",
+        "exampleBody": "Japan and China each hold about $1 trillion of US Treasury debt — often cited as a geopolitical concern. But together they're less than 10% of the total $33 trillion outstanding.",
+        "source": "US Treasury Department",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "dd-004",
+        "topicId": "debt-deficits",
+        "concept": "The Debt Ceiling",
+        "conceptBody": "The US debt ceiling is a legal limit on how much the federal government can borrow. Congress must vote to raise it whenever debt approaches the cap. If not raised, the government could default on its obligations — a potentially catastrophic outcome.",
+        "exampleBody": "The US came close to defaulting in June 2023. Markets were rattled, Treasury bills maturing around the 'X date' spiked in yield, and the US credit rating was downgraded by Fitch from AAA. A deal was struck days before the deadline.",
+        "source": "US Treasury / Fitch Ratings",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "dd-005",
+        "topicId": "debt-deficits",
+        "concept": "Can Government Debt Be Bad?",
+        "conceptBody": "High government debt can crowd out private investment if it pushes up interest rates. It also leaves less room to respond to future crises. But during a recession, deficit spending can boost a struggling economy — the debate is about timing and amount.",
+        "exampleBody": "The IMF found that countries with debt above 90% of GDP grow significantly more slowly. But the US, Japan, and UK have all run very high debt levels without immediately collapsing, suggesting the relationship is complex.",
+        "source": "IMF Working Papers",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "dd-006",
+        "topicId": "debt-deficits",
+        "concept": "Modern Monetary Theory (MMT)",
+        "conceptBody": "MMT argues that countries that issue their own currency (like the US) can never 'run out of money' and should use deficits to ensure full employment. Inflation, not insolvency, is the real constraint. Critics argue MMT downplays inflation risks.",
+        "exampleBody": "MMT ideas influenced some COVID-era spending debates. But the inflation surge of 2021-2022 led many economists to argue MMT underestimated the inflation risk of large deficits when the economy is near full capacity.",
+        "source": "Journal of Economic Perspectives",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "dd-007",
+        "topicId": "debt-deficits",
+        "concept": "Entitlements and Long-Term Debt",
+        "conceptBody": "Social Security and Medicare are the biggest drivers of long-term US debt projections. As the population ages, fewer workers support more retirees, straining these programs. The CBO projects debt reaching 180% of GDP by 2053 without reforms.",
+        "exampleBody": "Social Security's trust fund is projected to be depleted by 2033, at which point the program could only pay about 80% of promised benefits from current tax revenues. Medicare's hospital trust fund faces similar pressures by the 2030s.",
+        "source": "Congressional Budget Office / Social Security Administration",
+        "difficulty": "intermediate"
+      },
+      {
+        "id": "dd-008",
+        "topicId": "debt-deficits",
+        "concept": "Interest on the National Debt",
+        "conceptBody": "As debt grows and interest rates rise, the amount the government spends just paying interest on old borrowing increases. This 'interest expense' crowds out spending on other priorities and can become self-reinforcing.",
+        "exampleBody": "US net interest payments on the national debt crossed $650 billion in 2023 — more than the entire defense budget and on track to be the single largest line item by the early 2030s, surpassing Social Security and Medicare.",
+        "source": "Office of Management and Budget / CBO",
+        "difficulty": "intermediate"
+      }
+    ]
+  }
+]

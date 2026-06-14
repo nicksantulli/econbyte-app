@@ -1,0 +1,46 @@
+# XcodeGen spec — the source of truth for the Xcode project.
+# The committed EconByte.xcodeproj uses an Xcode 16 synchronized folder
+# group (PBXFileSystemSynchronizedRootGroup), so new .swift files added under
+# EconByte/ are picked up automatically without re-running xcodegen.
+name: EconByte
+options:
+  bundleIdPrefix: com.nsantulli
+  deploymentTarget:
+    iOS: "16.6"
+  createIntermediateGroups: true
+packages:
+  # AdMob interstitials (see EconByte/Services/AdManager.swift). DEBUG uses
+  # Google's TEST unit; RELEASE uses the Owner-provided unit.
+  GoogleMobileAds:
+    url: https://github.com/googleads/swift-package-manager-google-mobile-ads
+    majorVersion: 12.0.0
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
+    SWIFT_VERSION: "5.0"
+    GENERATE_INFOPLIST_FILE: NO
+targets:
+  EconByte:
+    type: application
+    platform: iOS
+    sources:
+      - path: EconByte
+    dependencies:
+      - package: GoogleMobileAds
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nsantulli.econbyte
+        INFOPLIST_FILE: EconByte/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1" # iPhone only
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        ENABLE_USER_SCRIPT_SANDBOXING: YES
+
+schemes:
+  EconByte:
+    build:
+      targets:
+        EconByte: all
