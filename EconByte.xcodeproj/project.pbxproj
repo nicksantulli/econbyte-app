@@ -8,11 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		AD0000000000000000000004 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = AD0000000000000000000006 /* GoogleMobileAds */; };
+		A2C3D4E5F6A7B8C9D0E1F2A3 /* EconByteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4B5 /* EconByteUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		000000000000000000000005 /* EconByte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EconByte.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3C4D5E6F7A8B9C0D1E2F3A4 /* EconByteUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = EconByteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4D5E6F7A8B9C0D1E2F3A4B5 /* EconByteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EconByteUITests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXContainerItemProxy section */
+		D5E6F7A8B9C0D1E2F3A4B5C6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 000000000000000000000006;
+			remoteInfo = EconByte;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		000000000000000000000010 /* Exceptions for "EconByte" folder in "EconByte" target */ = {
@@ -51,6 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000003 /* EconByte */,
+				E6F7A8B9C0D1E2F3A4B5C6D7 /* EconByteUITests */,
 				000000000000000000000004 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,8 +73,17 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000005 /* EconByte.app */,
+				B3C4D5E6F7A8B9C0D1E2F3A4 /* EconByteUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E6F7A8B9C0D1E2F3A4B5C6D7 /* EconByteUITests */ = {
+			isa = PBXGroup;
+			children = (
+				C4D5E6F7A8B9C0D1E2F3A4B5 /* EconByteUITests.swift */,
+			);
+			path = EconByteUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -89,6 +112,24 @@
 			productReference = 000000000000000000000005 /* EconByte.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F7A8B9C0D1E2F3A4B5C6D7E8 /* EconByteUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E2F3A4B5C6D7E8F9A0B1C2D3 /* Build configuration list for PBXNativeTarget "EconByteUITests" */;
+			buildPhases = (
+				A8B9C0D1E2F3A4B5C6D7E8F9 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B9C0D1E2F3A4B5C6D7E8F9A0 /* PBXTargetDependency */,
+			);
+			name = EconByteUITests;
+			packageProductDependencies = (
+			);
+			productName = EconByteUITests;
+			productReference = B3C4D5E6F7A8B9C0D1E2F3A4 /* EconByteUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -100,6 +141,10 @@
 				TargetAttributes = {
 					000000000000000000000006 = {
 						DevelopmentTeam = "";
+					};
+					F7A8B9C0D1E2F3A4B5C6D7E8 = {
+						DevelopmentTeam = "";
+						TestTargetID = 000000000000000000000006;
 					};
 				};
 			};
@@ -121,6 +166,7 @@
 			projectRoot = "";
 			targets = (
 				000000000000000000000006 /* EconByte */,
+				F7A8B9C0D1E2F3A4B5C6D7E8 /* EconByteUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -143,7 +189,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A8B9C0D1E2F3A4B5C6D7E8F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2C3D4E5F6A7B8C9D0E1F2A3 /* EconByteUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B9C0D1E2F3A4B5C6D7E8F9A0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 000000000000000000000006 /* EconByte */;
+			targetProxy = D5E6F7A8B9C0D1E2F3A4B5C6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		000000000000000000000009 /* Debug */ = {
@@ -251,6 +313,40 @@
 			};
 			name = Release;
 		};
+		C0D1E2F3A4B5C6D7E8F9A0B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.nsantulli.econbyte.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = EconByte;
+			};
+			name = Debug;
+		};
+		D1E2F3A4B5C6D7E8F9A0B1C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.nsantulli.econbyte.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = EconByte;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -268,6 +364,15 @@
 			buildConfigurations = (
 				00000000000000000000000B /* Debug */,
 				00000000000000000000000C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E2F3A4B5C6D7E8F9A0B1C2D3 /* Build configuration list for PBXNativeTarget "EconByteUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C0D1E2F3A4B5C6D7E8F9A0B1 /* Debug */,
+				D1E2F3A4B5C6D7E8F9A0B1C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

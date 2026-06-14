@@ -39,8 +39,26 @@ targets:
         SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
         ENABLE_USER_SCRIPT_SANDBOXING: YES
 
+  EconByteUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: EconByteUITests
+    dependencies:
+      - target: EconByte
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nsantulli.econbyte.uitests
+        GENERATE_INFOPLIST_FILE: YES   # override the project-wide NO for the test bundle
+        TARGETED_DEVICE_FAMILY: "1"
+        TEST_TARGET_NAME: EconByte
+
 schemes:
   EconByte:
     build:
       targets:
         EconByte: all
+        EconByteUITests: [test]
+    test:
+      targets:
+        - EconByteUITests
