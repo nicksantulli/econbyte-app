@@ -215,7 +215,14 @@ struct StudioIntroView: View {
     private func progress(_ now: Date) -> Double {
         guard started else { return 0 }
         let elapsed = now.timeIntervalSince(startDate)
-        return min(1, max(0, elapsed / runtime))
+        // Dwell on the smoke beat (brown mark + risen smoke) before the cream
+        // transition: hold the clock at dwellT for `dwell` seconds.
+        let dwellT: Double = 0.60
+        let dwell: Double = 0.5
+        let dwellStart = dwellT * runtime
+        if elapsed <= dwellStart { return elapsed / runtime }
+        if elapsed <= dwellStart + dwell { return dwellT }
+        return min(1, max(0, (elapsed - dwell) / runtime))
     }
 
     /// Reduce-Motion progress: just a calm fade-in of cream + mark + wordmark.
@@ -232,7 +239,7 @@ struct StudioIntroView: View {
 
         // Schedule the single hold→fade→dismiss tail off the same clock origin.
         // (One timer for the tail; the visuals themselves are all continuous.)
-        let holdEnd: Double = reduceMotion ? 2.75 : 3.1
+        let holdEnd: Double = reduceMotion ? 2.75 : 3.6
         let fadeOut: Double = 0.30
         DispatchQueue.main.asyncAfter(deadline: .now() + holdEnd) {
             guard !finished else { return }
