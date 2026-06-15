@@ -13,6 +13,11 @@ final class StreakManager: ObservableObject {
     private let todayDateKey = "cardsTodayDate"
     let dailyGoal = 3
 
+    /// True once the user has met today's card goal — the same signal that
+    /// drives the "Today's goal reached ✓" copy. The home "TODAY'S CARDS" CTA
+    /// reads this so it reflects completion instead of always saying "Start".
+    var didReachDailyGoalToday: Bool { cardsTodayCount >= dailyGoal }
+
     private init() { load() }
 
     private func load() {

@@ -1,0 +1,47 @@
+{
+  "identifier" : "E2B17A40-IAP-CONFIG-ECONBYTE",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "EB000000000001",
+      "localizations" : [
+        {
+          "description" : "Unlock every EconByte topic — GDP, Labor Markets, Trade & Tariffs, Recessions and more. One-time purchase, restores across devices.",
+          "displayName" : "Unlock All Topics",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.nsantulli.econbyte.unlockall",
+      "referenceName" : "Unlock All Topics",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "EB000000000002",
+      "localizations" : [
+        {
+          "description" : "Remove all interstitial ads from EconByte. One-time purchase, restores across devices.",
+          "displayName" : "Remove Ads",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.nsantulli.econbyte.removeads",
+      "referenceName" : "Remove Ads",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : []
+  },
+  "subscriptionGroups" : [],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

@@ -1,9 +1,14 @@
 import SwiftUI
+import StoreKit
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @AppStorage("notificationsEnabled") private var notificationsEnabled = false
     @EnvironmentObject private var streak: StreakManager
+    @EnvironmentObject private var store: PurchaseManager
+    @State private var working = false
+
+    private var removeAdsProduct: Product? { store.product(for: .removeAds) }
 
     var body: some View {
         NavigationStack {
@@ -20,6 +25,56 @@ struct SettingsView: View {
                         Text("Notifications")
                     }
                     Section {
+                        if store.isRemoveAdsPurchased {
+                            HStack {
+                                Text("Remove Ads")
+                                Spacer()
+                                Text("Purchased ✓").foregroundColor(Econ.sky)
+                            }
+                        } else {
+                            Button {
+                                working = true
+                                Task {
+                                    _ = await store.purchase(.removeAds)
+                                    working = false
+                                }
+                            } label: {
+                                HStack {
+                                    Text("Remove Ads")
+                                    Spacer()
+                                    if working {
+                                        ProgressView()
+                                    } else {
+                                        Text(removeAdsProduct?.displayPrice ?? "$0.99")
+                                            .foregroundColor(Econ.amber)
+                                    }
+                                }
+                            }
+                            .disabled(working)
+                        }
+                        if !store.isUnlockAllPurchased {
+                            HStack {
+                                Text("Unlock All Topics")
+                                Spacer()
+                                Text(store.product(for: .unlockAll)?.displayPrice ?? "$0.99")
+                                    .foregroundColor(Econ.subtext)
+                            }
+                            .foregroundColor(Econ.subtext)
+                        }
+                        Button("Restore Purchases") {
+                            working = true
+                            Task {
+                                await store.restorePurchases()
+                                working = false
+                            }
+                        }
+                        .disabled(working)
+                    } header: {
+                        Text("EconByte Pro")
+                    } footer: {
+                        Text("One-time purchases. Restore re-syncs anything you've bought with your Apple ID across devices.")
+                    }
+                    Section {
                         Link("Rate EconByte", destination: URL(string: "https://apps.apple.com/app/id000000000")!)
                         Link("Privacy Policy", destination: URL(string: "https://dudleyapps.com/privacy")!)
                         DudleyAboutRow()
@@ -30,6 +85,7 @@ struct SettingsView: View {
                 .scrollContentBackground(.hidden)
                 .foregroundColor(Econ.white)
             }
+            .task { await store.loadProducts() }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -8,6 +8,22 @@ final class ContentStore: ObservableObject {
     let allCards: [EconCard]
     private let stateKey = "com.nsantulli.econbyte.cardStates"
 
+    /// Topics that are always free (the first two — Inflation + Interest Rates,
+    /// per DUD-186 free-tier model). The rest are gated behind the
+    /// `com.nsantulli.econbyte.unlockall` IAP. Matched by topic id, falling back
+    /// to ordinal position so it stays correct if ids ever change.
+    static let freeTopicIds: Set<String> = ["inflation", "interest-rates"]
+    private static let freeTopicCount = 2
+
+    /// Whether a topic is free regardless of purchase state.
+    func isTopicFree(_ topicId: String) -> Bool {
+        if Self.freeTopicIds.contains(topicId) { return true }
+        if let idx = topics.firstIndex(where: { $0.id == topicId }) {
+            return idx < Self.freeTopicCount
+        }
+        return false
+    }
+
     @Published private(set) var cardStates: [String: CardState] = [:]
 
     private init() {
