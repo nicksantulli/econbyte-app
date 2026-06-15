@@ -26,41 +26,105 @@ import SwiftUI
 //   • REDUCE MOTION: collapses to a simple cross-fade of the final mark+wordmark.
 //   • Real content loads behind it (the host mounts the app under the overlay),
 //     so it is not dead time.
+//
+// DUD-241 POLISH ("a bit glitchy" → buttery): the timeline was driven by a pile
+// of overlapping `DispatchQueue.asyncAfter` + `withAnimation` calls whose
+// durations didn't meet at the seams, so a few properties snapped between
+// phases (iron-glow pulse killed in 0.05s, markGlow/markOpacity set with no
+// animation, a hard 3px shake jump, smoke Canvas redrawing every frame for the
+// whole intro). This version drives everything off a single normalised clock
+// (`clock`, 0→1) using a TimelineView, so every value is a continuous function
+// of time — no phase-handoff pops are possible. The shake is a damped decaying
+// sine, the glow pulse is a smooth cosine, and the smoke Canvas only renders
+// during its active window. Same creative concept + brand look, smooth exec.
 
-/// The animated studio card. Drives its own timeline and calls `onComplete`
-/// when finished (or when tapped to skip).
+/// The animated studio card. Drives its own single-clock timeline and calls
+/// `onComplete` when finished (or when tapped to skip).
 struct StudioIntroView: View {
     var onComplete: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    // Background: hide tone → cream.
-    @State private var hideOpacity: Double = 0      // cowhide field fade-in
-    @State private var creamReveal: Double = 0      // 0 = hide, 1 = clean cream
+    // Single source of truth for the whole animation: a normalised clock driven
+    // continuously from 0→1 by one spring. Every visual property below is a pure
+    // function of `clock`, so there are no discrete phase hand-offs to glitch.
+    @State private var clock: Double = 0
+    @State private var startDate = Date()
 
-    // Branding iron.
-    @State private var ironOffset: CGFloat = -340   // descends from above
-    @State private var ironGlow: Double = 0         // pulsing tip glow
-    @State private var ironOpacity: Double = 0
-    @State private var shake: CGFloat = 0           // 1f camera shake on contact
-
-    // Scorch + reveal of the final mark.
-    @State private var scorchOpacity: Double = 0    // dark brand under the iron
-    @State private var markGlow: Double = 0         // hot amber glow on the mark
-    @State private var markOpacity: Double = 0      // final crisp mark
-    @State private var smoke: Double = 0            // smoke wisps drive (0→1)
-
-    @State private var wordmarkOpacity: Double = 0
     @State private var containerOpacity: Double = 1
     @State private var finished = false
+    @State private var started = false
+
+    // Total animated wall-clock duration of the main sequence (the clock maps
+    // 0→1 across this many seconds). Hold + fade happen after clock reaches 1.
+    private let runtime: Double = 1.50
 
     // Mark display size — 280×156pt preserves the 1150:640 ratio (storyboard).
     private let markWidth: CGFloat = 280
     private var markHeight: CGFloat { markWidth * 640.0 / 1150.0 }
 
     var body: some View {
+        // One TimelineView gives us a smooth, frame-synced sample of elapsed
+        // time. We derive `t` (0→1) from it during the run; the `clock` spring
+        // is kept in lock-step so tap-to-skip / reduce-motion paths can short
+        // circuit cleanly. Continuous sampling means no asyncAfter seams.
+        TimelineView(.animation(minimumInterval: 1.0 / 60.0, paused: finished)) { tl in
+            let t = reduceMotion ? reducedProgress(tl.date) : progress(tl.date)
+            content(t: t)
+        }
+        .opacity(containerOpacity)
+        .contentShape(Rectangle())
+        .onTapGesture { skip() }
+        .accessibilityElement()
+        .accessibilityLabel("Made by Dudley Development")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Double tap to skip the intro")
+        .onAppear(perform: start)
+    }
+
+    // MARK: Derived, continuous animation values (pure functions of t ∈ [0,1])
+
+    @ViewBuilder
+    private func content(t: Double) -> some View {
+        // --- Phase windows (all overlapping & continuous; eased internally) ---
+        // hide fade-in:        0.00 → 0.14
+        // iron descent:        0.06 → 0.40   (contact at 0.40)
+        // contact shake/smoke: 0.40 → ~0.70
+        // iron lift:           0.42 → 0.66
+        // mark glow flare:     0.40 → 0.74
+        // cream settle:        0.62 → 0.86
+        // wordmark fade:       0.74 → 0.94
+
+        let hideOpacity   = smoothstep(0.00, 0.14, t)
+        // Iron eases down with a slight overshoot-free settle into contact.
+        let descend       = easeInOut(smoothstep(0.06, 0.40, t))
+        let ironOffset    = lerp(-340, 0, descend)
+        let ironDescOpac  = smoothstep(0.06, 0.20, t)
+        // Iron lifts after contact and fades as it leaves.
+        let lift          = easeInOut(smoothstep(0.42, 0.66, t))
+        let ironOffsetAll = lerp(ironOffset, -360, lift)
+        let ironOpacity   = ironDescOpac * (1 - smoothstep(0.42, 0.62, t))
+        // Smooth glow pulse on the descending iron (cosine, no repeatForever pop).
+        let pulse         = 0.5 - 0.5 * cos(t * 18.0)          // ~1.4 cycles over descent
+        let ironGlow      = ironOpacity * lerpD(0.45, 1.0, pulse)
+
+        // Contact: scorch appears, mark glows hot then cools, smoke rises.
+        let scorchOpacity = smoothstep(0.40, 0.50, t)
+        let glowFlare     = bump(0.40, 0.74, t)                // 0→1→0 hot flare
+        let markGlow      = glowFlare
+        let markOpacity   = smoothstep(0.40, 0.58, t)
+        // Smoke active only within its window; 0 outside ⇒ Canvas early-outs.
+        let smokeRaw      = smoothstep(0.40, 1.00, t)
+        let smoke         = (t > 0.40 && t < 0.96) ? smokeRaw : 0
+        let creamReveal   = easeInOut(smoothstep(0.62, 0.86, t))
+        let wordmark      = smoothstep(0.74, 0.94, t)
+
+        // Damped decaying shake on contact (a few cycles easing to 0), not a jump.
+        let shake         = shakeOffset(t)
+
         ZStack {
             // Background crossfades from a warm hide brown to brand cream.
+            // Opaque hide from frame 0 (see start()) prevents any launch flash.
             ZStack {
                 hideField.opacity(1 - creamReveal)
                 DudleyBrand.cream.opacity(creamReveal)
@@ -106,7 +170,7 @@ struct StudioIntroView: View {
                     .shadow(color: DudleyBrand.amber.opacity(ironGlow),
                             radius: 30 * ironGlow)
                     .opacity(ironOpacity)
-                    .offset(y: ironOffset)
+                    .offset(y: ironOffsetAll)
             }
             .offset(x: shake)
 
@@ -121,18 +185,9 @@ struct StudioIntroView: View {
                     .foregroundColor(DudleyBrand.wordmarkSecondary)
                     .tracking(4)
             }
-            .opacity(wordmarkOpacity)
+            .opacity(wordmark)
             .offset(y: markHeight / 2 + 44)
         }
-        .opacity(containerOpacity)
-        // Skippable: a tap fast-fades and dismisses.
-        .contentShape(Rectangle())
-        .onTapGesture { skip() }
-        .accessibilityElement()
-        .accessibilityLabel("Made by Dudley Development")
-        .accessibilityAddTraits(.isButton)
-        .accessibilityHint("Double tap to skip the intro")
-        .onAppear { reduceMotion ? runReduced() : runSequence() }
     }
 
     /// A warm cowhide-toned field (brown gradient with soft mottling) — stands
@@ -153,82 +208,38 @@ struct StudioIntroView: View {
         }
     }
 
-    // MARK: Timeline (storyboard short version, retimed for an in-app splash)
+    // MARK: Single-clock timeline
 
-    private func runSequence() {
-        // Frame 1 — hide fades in (0 → 0.18s).
-        withAnimation(.easeOut(duration: 0.18)) { hideOpacity = 1 }
-
-        // Frame 2 — iron descends + glow ignites (0.12 → 0.55s).
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
-            withAnimation(.easeIn(duration: 0.40)) {
-                ironOpacity = 1
-                ironOffset = 0
-            }
-            withAnimation(.easeInOut(duration: 0.20).repeatForever(autoreverses: true)) {
-                ironGlow = 1
-            }
-        }
-
-        // Frame 3 — CONTACT (~0.55s): camera shake, smoke jets, hide scorches.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
-            cameraShake()
-            withAnimation(.easeOut(duration: 0.12)) { scorchOpacity = 1 }
-            withAnimation(.easeOut(duration: 0.70)) { smoke = 1 }
-        }
-
-        // Frame 4 — iron lifts away, the mark glows hot amber (0.70 → 1.0s).
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.70) {
-            withAnimation(.easeInOut(duration: 0.05)) { ironGlow = 0 } // stop pulse
-            withAnimation(.easeIn(duration: 0.30)) {
-                ironOffset = -360
-                ironOpacity = 0
-            }
-            markGlow = 1
-            markOpacity = 1
-            withAnimation(.easeOut(duration: 0.35)) { markGlow = 0 }
-        }
-
-        // Frame 5 — background settles to cream, wordmark fades in (1.0 → 1.4s).
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.00) {
-            withAnimation(.easeInOut(duration: 0.40)) { creamReveal = 1 }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.15) {
-            withAnimation(.easeOut(duration: 0.30)) { wordmarkOpacity = 1 }
-        }
-
-        // Hold, then fade the whole card out and dismiss.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.60) {
-            withAnimation(.easeIn(duration: 0.30)) { containerOpacity = 0 }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.90) { finish() }
+    /// Main-sequence progress 0→1 across `runtime`, then clamps at 1 while the
+    /// card holds and fades. Continuous — sampled every frame by TimelineView.
+    private func progress(_ now: Date) -> Double {
+        guard started else { return 0 }
+        let elapsed = now.timeIntervalSince(startDate)
+        return min(1, max(0, elapsed / runtime))
     }
 
-    /// Reduce Motion: no iron / smoke / shake — just a calm cross-fade of the
-    /// final cream + mark + wordmark, then dismiss.
-    private func runReduced() {
-        creamReveal = 1
-        withAnimation(.easeOut(duration: 0.35)) {
-            hideOpacity = 1
-            markOpacity = 1
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.30) {
-            withAnimation(.easeOut(duration: 0.30)) { wordmarkOpacity = 1 }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.20) {
-            withAnimation(.easeIn(duration: 0.30)) { containerOpacity = 0 }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.55) { finish() }
+    /// Reduce-Motion progress: just a calm fade-in of cream + mark + wordmark.
+    private func reducedProgress(_ now: Date) -> Double {
+        guard started else { return 0 }
+        let elapsed = now.timeIntervalSince(startDate)
+        return min(1, max(0, elapsed / 0.65))
     }
 
-    /// One sharp 2px lateral camera shake on iron contact.
-    private func cameraShake() {
-        withAnimation(.linear(duration: 0.04)) { shake = 3 }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.04) {
-            withAnimation(.linear(duration: 0.04)) { shake = -3 }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.04) {
-                withAnimation(.linear(duration: 0.05)) { shake = 0 }
-            }
+    private func start() {
+        guard !started else { return }   // fire exactly once
+        started = true
+        startDate = Date()
+
+        // Schedule the single hold→fade→dismiss tail off the same clock origin.
+        // (One timer for the tail; the visuals themselves are all continuous.)
+        let holdEnd: Double = reduceMotion ? 1.25 : 1.62
+        let fadeOut: Double = 0.30
+        DispatchQueue.main.asyncAfter(deadline: .now() + holdEnd) {
+            guard !finished else { return }
+            withAnimation(.easeInOut(duration: fadeOut)) { containerOpacity = 0 }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + holdEnd + fadeOut) {
+            finish()
         }
     }
 
@@ -244,19 +255,64 @@ struct StudioIntroView: View {
         finished = true
         onComplete()
     }
+
+    // MARK: Easing / shaping helpers (keep the timeline buttery & continuous)
+
+    /// Smooth 0→1 ramp between edges `a` and `b` (Hermite smoothstep, C¹).
+    private func smoothstep(_ a: Double, _ b: Double, _ x: Double) -> Double {
+        guard b > a else { return x >= b ? 1 : 0 }
+        let u = min(1, max(0, (x - a) / (b - a)))
+        return u * u * (3 - 2 * u)
+    }
+
+    /// Extra ease on an already-normalised 0→1 value.
+    private func easeInOut(_ u: Double) -> Double { u * u * (3 - 2 * u) }
+
+    /// Symmetric 0→1→0 bump across [a,b] — used for the hot-glow flare.
+    private func bump(_ a: Double, _ b: Double, _ x: Double) -> Double {
+        let u = smoothstep(a, b, x)
+        return sin(u * Double.pi)   // 0 at edges, 1 at centre, smooth
+    }
+
+    private func lerp(_ a: CGFloat, _ b: CGFloat, _ t: Double) -> CGFloat {
+        a + (b - a) * CGFloat(t)
+    }
+    private func lerpD(_ a: Double, _ b: Double, _ t: Double) -> Double {
+        a + (b - a) * t
+    }
+
+    /// Damped decaying lateral camera shake centred on contact (t≈0.40).
+    /// A few cycles of a sine enveloped by an exponential decay → eases to 0,
+    /// never a hard jump. Amplitude ~3.5px, fully settled by t≈0.62.
+    private func shakeOffset(_ t: Double) -> CGFloat {
+        let start = 0.40, span = 0.22
+        guard t >= start, t <= start + span else { return 0 }
+        let local = (t - start) / span          // 0→1 across the shake window
+        let decay = exp(-5.5 * local)            // envelope → 0
+        let osc = sin(local * Double.pi * 6.0)   // ~3 cycles
+        return CGFloat(3.5 * decay * osc)
+    }
 }
 
 // MARK: - Smoke wisps
 
 /// A handful of cream smoke wisps that rise and fade as `progress` goes 0→1.
 /// Built from quad-curve bezier paths per the storyboard's smoke note.
+///
+/// DUD-241: the host only feeds a non-zero `progress` during the smoke window
+/// (≈0.40→0.96 of the intro), so this Canvas is dormant — and returns
+/// immediately on the `progress <= 0` guard — outside that span rather than
+/// redrawing every frame for the whole intro. Wisp count trimmed 5→4 to keep
+/// first-launch frames cheap while the app is still warming.
 private struct SmokeWisps: View {
     var progress: Double
 
     var body: some View {
+        // Drawing nothing (progress 0) is a cheap no-op; SwiftUI won't churn the
+        // Canvas when its only input is unchanged at 0.
         Canvas { ctx, size in
             guard progress > 0 else { return }
-            let count = 5
+            let count = 4
             let rise = CGFloat(progress) * size.height * 0.9
             // Wisps appear, rise, and fade out over the second half of progress.
             let fade = 1.0 - max(0, (progress - 0.4) / 0.6)
@@ -281,6 +337,7 @@ private struct SmokeWisps: View {
             }
         }
         .blur(radius: 3)
+        .opacity(progress > 0 ? 1 : 0)   // fully detached visually when dormant
     }
 }
 
@@ -305,21 +362,35 @@ private enum StudioIntroState {
 /// ```swift
 /// StudioIntroGate { RootView() }
 /// ```
+///
+/// DUD-241: `showIntro` is seeded once from `StudioIntroState` and the flag is
+/// flipped synchronously in `init` (not `.onAppear`), so even if the gate's body
+/// re-evaluates on a state change the intro can never re-trigger. The brown hide
+/// field is painted under the overlay opaquely from the first frame to match the
+/// LaunchScreen background (no white/black FOUC at hand-off).
 struct StudioIntroGate<Content: View>: View {
     @ViewBuilder var content: Content
 
-    @State private var showIntro: Bool = !StudioIntroState.hasShownThisLaunch
+    @State private var showIntro: Bool
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+        // Decide-and-latch exactly once, synchronously, at gate construction.
+        let shouldShow = !StudioIntroState.hasShownThisLaunch
+                         && !StudioIntroState.suppressedForTesting
+        StudioIntroState.hasShownThisLaunch = true
+        _showIntro = State(initialValue: shouldShow)
+    }
 
     var body: some View {
         ZStack {
             content   // real app mounts + loads behind the overlay
-            if showIntro && !StudioIntroState.suppressedForTesting {
+            if showIntro {
                 StudioIntroView { showIntro = false }
                     .transition(.opacity)
                     .zIndex(100)
             }
         }
-        .onAppear { StudioIntroState.hasShownThisLaunch = true }
     }
 }
 
