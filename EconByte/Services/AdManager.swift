@@ -7,6 +7,40 @@ enum AdConfig {
     static let minimumIntervalSeconds: TimeInterval = 60
 }
 
+// MARK: - AdRegion (DUD-224 — EEA/UK ad geo-restriction)
+//
+// Owner decision (Jun 14): do NOT serve ads to EEA/UK users. Suppressing ad
+// requests in those regions sidesteps GDPR / Google UMP consent entirely — no
+// consent form, no UMP SDK call. ATT is kept for US / rest-of-world. The check
+// uses the device's *region setting* (privacy-friendly, no location permission)
+// and fails CLOSED: an unknown region is treated as restricted (no ads).
+enum AdRegion {
+    /// EEA member states + the United Kingdom.
+    static let restrictedRegionCodes: Set<String> = [
+        // EU 27
+        "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
+        "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
+        "SI", "ES", "SE",
+        // EEA (non-EU)
+        "IS", "LI", "NO",
+        // United Kingdom
+        "GB",
+    ]
+
+    /// True when ads must be suppressed: the device region is in the EEA/UK, or
+    /// it can't be determined (fail closed).
+    static var isAdRestricted: Bool {
+        let code: String?
+        if #available(iOS 16, *) {
+            code = Locale.current.region?.identifier
+        } else {
+            code = Locale.current.regionCode
+        }
+        guard let code, !code.isEmpty else { return true }
+        return restrictedRegionCodes.contains(code.uppercased())
+    }
+}
+
 #if canImport(GoogleMobileAds)
 import GoogleMobileAds
 
@@ -32,6 +66,12 @@ final class AdManager: NSObject, ObservableObject {
     static let testDeviceIdentifiers = ["ef5558e3631904432fb53d8a5955da9d"]
 
     func start() {
+        // DUD-224: never serve ads in the EEA/UK (Owner decision) — bail before
+        // the SDK starts or any ad is requested, which sidesteps GDPR/UMP.
+        guard !AdRegion.isAdRestricted else {
+            NSLog("[AdManager] EEA/UK region — ads disabled")
+            return
+        }
         MobileAds.shared.requestConfiguration.testDeviceIdentifiers = Self.testDeviceIdentifiers
         MobileAds.shared.start { _ in
             Task { @MainActor in AdManager.shared.loadAd() }
@@ -69,6 +109,8 @@ final class AdManager: NSObject, ObservableObject {
     }
 
     private func presentInterstitial() async {
+        // DUD-224: no ads in the EEA/UK — also skip the ATT prompt there.
+        guard !AdRegion.isAdRestricted else { return }
         if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
             _ = await ATTrackingManager.requestTrackingAuthorization()
         }
