@@ -18,7 +18,7 @@ final class AdManager: NSObject, ObservableObject {
         #if DEBUG
         "ca-app-pub-3940256099942544/4411468910"
         #else
-        "ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY"   // ← Owner provides real unit
+        "ca-app-pub-9950526548980224/9740067293"   // ← Owner provides real unit
         #endif
     }
 
