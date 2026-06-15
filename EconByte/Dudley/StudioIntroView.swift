@@ -217,7 +217,7 @@ struct StudioIntroView: View {
         let elapsed = now.timeIntervalSince(startDate)
         // Slow (never freeze) the smoke-rise window so it lingers smoothly —
         // time is stretched continuously across [tA,tB]; the clock keeps moving.
-        let tA = 0.40, tB = 0.64, extra = 0.8
+        let tA = 0.40, tB = 0.64, extra = 1.1
         let rtA = tA * runtime
         let segStretched = (tB - tA) * runtime + extra
         if elapsed <= rtA { return elapsed / runtime }
@@ -242,7 +242,7 @@ struct StudioIntroView: View {
 
         // Schedule the single hold→fade→dismiss tail off the same clock origin.
         // (One timer for the tail; the visuals themselves are all continuous.)
-        let holdEnd: Double = reduceMotion ? 2.75 : 3.9
+        let holdEnd: Double = reduceMotion ? 2.75 : 4.2
         let fadeOut: Double = 0.30
         DispatchQueue.main.asyncAfter(deadline: .now() + holdEnd) {
             guard !finished else { return }
