@@ -215,14 +215,17 @@ struct StudioIntroView: View {
     private func progress(_ now: Date) -> Double {
         guard started else { return 0 }
         let elapsed = now.timeIntervalSince(startDate)
-        // Dwell on the smoke beat (brown mark + risen smoke) before the cream
-        // transition: hold the clock at dwellT for `dwell` seconds.
-        let dwellT: Double = 0.60
-        let dwell: Double = 0.5
-        let dwellStart = dwellT * runtime
-        if elapsed <= dwellStart { return elapsed / runtime }
-        if elapsed <= dwellStart + dwell { return dwellT }
-        return min(1, max(0, (elapsed - dwell) / runtime))
+        // Slow (never freeze) the smoke-rise window so it lingers smoothly —
+        // time is stretched continuously across [tA,tB]; the clock keeps moving.
+        let tA = 0.40, tB = 0.64, extra = 0.5
+        let rtA = tA * runtime
+        let segStretched = (tB - tA) * runtime + extra
+        if elapsed <= rtA { return elapsed / runtime }
+        if elapsed <= rtA + segStretched {
+            let frac = (elapsed - rtA) / segStretched
+            return tA + frac * (tB - tA)
+        }
+        return min(1, max(0, (elapsed - extra) / runtime))
     }
 
     /// Reduce-Motion progress: just a calm fade-in of cream + mark + wordmark.
