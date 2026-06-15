@@ -131,3 +131,19 @@ final class PurchaseManager: ObservableObject {
 
     enum StoreError: Error { case failedVerification }
 }
+
+#if DEBUG
+extension PurchaseManager {
+    /// DEBUG-only: flip entitlements without a real StoreKit purchase, so the
+    /// gated/unlocked experience is testable in the plain Simulator (where the
+    /// local .storekit config doesn't attach outside an Xcode scheme run).
+    func debugSetUnlockAll(_ value: Bool) {
+        isUnlockAllPurchased = value
+        UserDefaults.standard.set(value, forKey: unlockAllKey)
+    }
+    func debugSetRemoveAds(_ value: Bool) {
+        isRemoveAdsPurchased = value
+        UserDefaults.standard.set(value, forKey: removeAdsKey)
+    }
+}
+#endif

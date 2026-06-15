@@ -74,6 +74,22 @@ struct SettingsView: View {
                     } footer: {
                         Text("One-time purchases. Restore re-syncs anything you've bought with your Apple ID across devices.")
                     }
+                    #if DEBUG
+                    Section {
+                        Toggle("🧪 Unlock All Topics", isOn: Binding(
+                            get: { store.isUnlockAllPurchased },
+                            set: { store.debugSetUnlockAll($0) }))
+                            .tint(Econ.amber)
+                        Toggle("🧪 Remove Ads", isOn: Binding(
+                            get: { store.isRemoveAdsPurchased },
+                            set: { store.debugSetRemoveAds($0) }))
+                            .tint(Econ.amber)
+                    } header: {
+                        Text("Debug — test only")
+                    } footer: {
+                        Text("DEBUG builds only. Flips entitlements without a real purchase so you can test locked vs unlocked in the Simulator. Stripped from release builds.")
+                    }
+                    #endif
                     Section {
                         Link("Rate EconByte", destination: URL(string: "https://apps.apple.com/app/id000000000")!)
                         Link("Privacy Policy", destination: URL(string: "https://dudleyapps.com/privacy")!)
