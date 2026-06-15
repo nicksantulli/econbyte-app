@@ -19,7 +19,7 @@ import SwiftUI
 //
 // App-Review / best-practice guardrails (DUD-147):
 //   • IN-APP, transitions to the home screen — never the LaunchScreen storyboard.
-//   • SHORT: ~1.6s total, ≤1.9s hard cap, auto-dismisses.
+//   • SHORT: ~3.4s total — the final reveal lingers ~1.5s longer; skippable, auto-dismisses.
 //   • SKIPPABLE on tap.
 //   • COLD-LAUNCH ONLY — never on resume/foreground (see StudioIntroGate), so it
 //     never nags returning users or dents retention.
@@ -232,7 +232,7 @@ struct StudioIntroView: View {
 
         // Schedule the single hold→fade→dismiss tail off the same clock origin.
         // (One timer for the tail; the visuals themselves are all continuous.)
-        let holdEnd: Double = reduceMotion ? 1.25 : 1.62
+        let holdEnd: Double = reduceMotion ? 2.75 : 3.1
         let fadeOut: Double = 0.30
         DispatchQueue.main.asyncAfter(deadline: .now() + holdEnd) {
             guard !finished else { return }
