@@ -126,8 +126,8 @@ struct StudioIntroView: View {
             // Background crossfades from a warm hide brown to brand cream.
             // Opaque hide from frame 0 (see start()) prevents any launch flash.
             ZStack {
-                hideField.opacity(1 - creamReveal)
-                DudleyBrand.cream.opacity(creamReveal)
+                DudleyBrand.cream                       // opaque base — app can NEVER show through the crossfade
+                hideField.opacity(1 - creamReveal)      // brown hide fades out over the cream base
             }
             .opacity(hideOpacity)
             .ignoresSafeArea()
