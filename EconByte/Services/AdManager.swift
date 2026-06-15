@@ -52,7 +52,7 @@ final class AdManager: NSObject, ObservableObject {
         #if DEBUG
         "ca-app-pub-3940256099942544/4411468910"
         #else
-        "ca-app-pub-XXXXXXXXXXXXXXXX/YYYYYYYYYY"   // ← Owner provides real unit
+        "ca-app-pub-9950526548980224/9740067293"   // ← Owner provides real unit
         #endif
     }
 
@@ -62,6 +62,12 @@ final class AdManager: NSObject, ObservableObject {
     private var sessionCardCount = 0
     private var sessionAdCount = 0
     private var lastShownAt: Date?
+
+    /// When true (Remove Ads IAP owned), no interstitials are requested or shown.
+    /// Synced from `PurchaseManager` via `setAdsDisabled(_:)`.
+    @Published private(set) var adsDisabled = false
+
+    func setAdsDisabled(_ disabled: Bool) { adsDisabled = disabled }
 
     static let testDeviceIdentifiers = ["ef5558e3631904432fb53d8a5955da9d"]
 
@@ -103,6 +109,7 @@ final class AdManager: NSObject, ObservableObject {
     }
 
     func noteCardSwipe() async {
+        guard !adsDisabled else { return }
         sessionCardCount += 1
         guard sessionCardCount % AdConfig.cardsPerAd == 0, canShow else { return }
         await presentInterstitial()
@@ -132,6 +139,9 @@ final class AdManager: NSObject, ObservableObject {
     private var sessionAdCount = 0
     private var lastShownAt: Date?
 
+    @Published private(set) var adsDisabled = false
+    func setAdsDisabled(_ disabled: Bool) { adsDisabled = disabled }
+
     private var canShow: Bool {
         guard sessionAdCount < AdConfig.maxAdsPerSession else { return false }
         if let last = lastShownAt { return Date().timeIntervalSince(last) >= AdConfig.minimumIntervalSeconds }
@@ -141,6 +151,7 @@ final class AdManager: NSObject, ObservableObject {
     func start() { NSLog("[AdManager:MOCK] start()") }
 
     func noteCardSwipe() async {
+        guard !adsDisabled else { return }
         sessionCardCount += 1
         guard sessionCardCount % AdConfig.cardsPerAd == 0, canShow else { return }
         if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {

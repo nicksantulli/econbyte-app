@@ -53,12 +53,18 @@ targets:
         TARGETED_DEVICE_FAMILY: "1"
         TEST_TARGET_NAME: EconByte
 
+fileGroups:
+  - EconByte.storekit   # local StoreKit config (dev/test only, not bundled into the app)
+
 schemes:
   EconByte:
     build:
       targets:
         EconByte: all
         EconByteUITests: [test]
+    run:
+      # Lets the Owner buy/restore IAPs in the simulator without App Store Connect.
+      storeKitConfiguration: EconByte.storekit
     test:
       targets:
         - EconByteUITests
