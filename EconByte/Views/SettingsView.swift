@@ -91,7 +91,7 @@ struct SettingsView: View {
                     }
                     #endif
                     Section {
-                        Link("Rate EconByte", destination: URL(string: "https://apps.apple.com/app/id000000000")!)
+                        Link("Rate EconByte", destination: URL(string: "https://dudleyapps.com")!)
                         Link("Privacy Policy", destination: URL(string: "https://dudleyapps.com/privacy")!)
                         DudleyAboutRow()
                     } header: {
