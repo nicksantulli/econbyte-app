@@ -95,7 +95,7 @@ struct StudioIntroView: View {
         // cream settle:        0.62 → 0.86
         // wordmark fade:       0.74 → 0.94
 
-        let hideOpacity   = smoothstep(0.00, 0.14, t)
+        let hideOpacity   = 1.0   // opaque from frame 0 — the app behind must NEVER flash through
         // Iron eases down with a slight overshoot-free settle into contact.
         let descend       = easeInOut(smoothstep(0.06, 0.40, t))
         let ironOffset    = lerp(-340, 0, descend)
