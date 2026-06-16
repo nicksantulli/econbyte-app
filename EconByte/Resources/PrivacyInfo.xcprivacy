@@ -4,8 +4,13 @@
 <dict>
 	<key>NSPrivacyTracking</key>
 	<true/>
+	<!-- AdMob tracking domain. Apple requires >=1 domain when NSPrivacyTracking
+	     is true; an empty array here triggers the ITMS-91064 Invalid Binary
+	     rejection. ATT-declined users have this domain blocked by iOS. -->
 	<key>NSPrivacyTrackingDomains</key>
-	<array/>
+	<array>
+		<string>googleads.g.doubleclick.net</string>
+	</array>
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array>
 		<dict>
