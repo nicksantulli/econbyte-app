@@ -4,15 +4,27 @@ struct HomeView: View {
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var streak: StreakManager
     @EnvironmentObject private var store: PurchaseManager
-    @State private var showingCardMode = false
-    @State private var cardModeCards: [EconCard] = []
-    @State private var cardModeTitle = ""
+    // Card mode is driven by an identifiable payload (not isPresented + separate
+    // @State). Passing the deck through separate @State raced the cover's
+    // presentation — the cover could build with an empty `cardModeCards` before
+    // the assignment propagated, showing "No cards available." on first tap.
+    // `.fullScreenCover(item:)` hands the deck to the cover atomically, so it's
+    // always populated. (DUD-251)
+    @State private var cardModeSession: CardModeSession?
     @State private var showSettings = false
     @State private var showBookmarks = false
     @State private var showPaywall = false
     @AppStorage("seenOnboarding") private var seenOnboarding = false
 
     private let dailyGoal = 3
+
+    /// Atomic payload for the card-mode cover — carries the deck + title together
+    /// so the cover can never present before its data exists.
+    private struct CardModeSession: Identifiable {
+        let id = UUID()
+        let cards: [EconCard]
+        let title: String
+    }
 
     var body: some View {
         NavigationStack {
@@ -46,8 +58,8 @@ struct HomeView: View {
                     .environmentObject(streak)
                     .environmentObject(store)
             }
-            .fullScreenCover(isPresented: $showingCardMode) {
-                CardModeView(cards: cardModeCards, title: cardModeTitle)
+            .fullScreenCover(item: $cardModeSession) { session in
+                CardModeView(cards: session.cards, title: session.title)
                     .environmentObject(content)
                     .environmentObject(streak)
                     .environmentObject(store)
@@ -75,9 +87,7 @@ struct HomeView: View {
     }
 
     private func startTodaysSet(_ daily: [EconCard]) {
-        cardModeCards = daily
-        cardModeTitle = "Today's Set"
-        showingCardMode = true
+        cardModeSession = CardModeSession(cards: daily, title: "Today's Set")
     }
 
     private var todaysSetCard: some View {
@@ -151,9 +161,8 @@ struct HomeView: View {
                             if locked {
                                 showPaywall = true
                             } else {
-                                cardModeCards = content.cards(for: topic.id)
-                                cardModeTitle = topic.name
-                                showingCardMode = true
+                                cardModeSession = CardModeSession(
+                                    cards: content.cards(for: topic.id), title: topic.name)
                             }
                         }
                 }
