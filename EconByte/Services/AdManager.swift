@@ -1,5 +1,4 @@
 import Foundation
-import AppTrackingTransparency
 
 enum AdConfig {
     static let cardsPerAd = 5
@@ -116,11 +115,8 @@ final class AdManager: NSObject, ObservableObject {
     }
 
     private func presentInterstitial() async {
-        // DUD-224: no ads in the EEA/UK — also skip the ATT prompt there.
+        // DUD-224: no ads in the EEA/UK.
         guard !AdRegion.isAdRestricted else { return }
-        if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
-            _ = await ATTrackingManager.requestTrackingAuthorization()
-        }
         guard let ad = interstitial else { return }
         sessionAdCount += 1
         lastShownAt = Date()
@@ -154,9 +150,6 @@ final class AdManager: NSObject, ObservableObject {
         guard !adsDisabled else { return }
         sessionCardCount += 1
         guard sessionCardCount % AdConfig.cardsPerAd == 0, canShow else { return }
-        if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
-            _ = await ATTrackingManager.requestTrackingAuthorization()
-        }
         sessionAdCount += 1
         lastShownAt = Date()
         NSLog("[AdManager:MOCK] interstitial #\(sessionAdCount) at card \(sessionCardCount)")

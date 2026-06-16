@@ -3,14 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>NSPrivacyTracking</key>
-	<true/>
-	<!-- AdMob tracking domain. Apple requires >=1 domain when NSPrivacyTracking
-	     is true; an empty array here triggers the ITMS-91064 Invalid Binary
-	     rejection. ATT-declined users have this domain blocked by iOS. -->
+	<false/>
+	<!-- Non-personalized ads only: no ATT prompt, no tracking. With
+	     NSPrivacyTracking false the tracking-domains array must be empty. -->
 	<key>NSPrivacyTrackingDomains</key>
-	<array>
-		<string>googleads.g.doubleclick.net</string>
-	</array>
+	<array/>
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array>
 		<dict>
@@ -19,7 +16,7 @@
 			<key>NSPrivacyCollectedDataTypeLinked</key>
 			<false/>
 			<key>NSPrivacyCollectedDataTypeTracking</key>
-			<true/>
+			<false/>
 			<key>NSPrivacyCollectedDataTypePurposes</key>
 			<array>
 				<string>NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising</string>
