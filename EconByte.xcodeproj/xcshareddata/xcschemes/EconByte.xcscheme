@@ -53,6 +53,9 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
+      <StoreKitConfigurationFileReference
+         identifier = "../EconByte.storekit">
+      </StoreKitConfigurationFileReference>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

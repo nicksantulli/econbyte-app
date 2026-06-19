@@ -35,6 +35,7 @@ struct CardModeView: View {
                         Button("✕") { dismiss() }
                             .foregroundColor(Econ.subtext)
                             .font(.title2)
+                            .accessibilityIdentifier("cardModeCloseButton")
                         Spacer()
                         Text("\(min(currentIndex + 1, cards.count)) / \(cards.count)")
                             .font(.system(size: 15, weight: .medium, design: .rounded))

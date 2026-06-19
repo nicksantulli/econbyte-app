@@ -14,6 +14,7 @@ struct HomeView: View {
     @State private var showSettings = false
     @State private var showBookmarks = false
     @State private var showPaywall = false
+    @State private var pendingPaywallAfterSettings = false
     @AppStorage("seenOnboarding") private var seenOnboarding = false
 
     private let dailyGoal = 3
@@ -51,12 +52,18 @@ struct HomeView: View {
                         Image(systemName: "gearshape")
                             .foregroundColor(Econ.sky)
                     }
+                    .accessibilityIdentifier("settingsGearButton")
                 }
             }
             .sheet(isPresented: $showSettings) {
-                SettingsView()
+                SettingsView(onRequestPaywall: { pendingPaywallAfterSettings = true })
                     .environmentObject(streak)
                     .environmentObject(store)
+            }
+            .onChange(of: showSettings) { showing in
+                guard !showing, pendingPaywallAfterSettings else { return }
+                pendingPaywallAfterSettings = false
+                showPaywall = true
             }
             .fullScreenCover(item: $cardModeSession) { session in
                 CardModeView(cards: session.cards, title: session.title)
@@ -71,7 +78,7 @@ struct HomeView: View {
                     .environmentObject(streak)
                     .environmentObject(AdManager.shared)
             }
-            .sheet(isPresented: $showPaywall) {
+            .fullScreenCover(isPresented: $showPaywall) {
                 PaywallView().environmentObject(store)
             }
         }
@@ -91,7 +98,7 @@ struct HomeView: View {
     }
 
     private var todaysSetCard: some View {
-        let daily = content.dailySet(count: 8)
+        let daily = content.dailySet(count: 8, unlockedAll: store.isUnlockAllPurchased)
         let seen = daily.filter { content.cardStates[$0.id]?.lastSeen != nil }.count
         // Completed = the user has met today's goal (same signal as the streak
         // row's "Today's goal reached ✓"). Reflect it in the CTA.
@@ -156,15 +163,19 @@ struct HomeView: View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 ForEach(content.topics) { topic in
                     let locked = !content.isTopicFree(topic.id) && !store.isUnlockAllPurchased
-                    TopicTile(topic: topic, locked: locked)
-                        .onTapGesture {
-                            if locked {
-                                showPaywall = true
-                            } else {
-                                cardModeSession = CardModeSession(
-                                    cards: content.cards(for: topic.id), title: topic.name)
-                            }
+                    Button {
+                        if locked {
+                            showPaywall = true
+                        } else {
+                            cardModeSession = CardModeSession(
+                                cards: content.cards(for: topic.id, unlockedAll: store.isUnlockAllPurchased),
+                                title: topic.name)
                         }
+                    } label: {
+                        TopicTile(topic: topic, locked: locked)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("topic-\(topic.id)")
                 }
             }
         }

@@ -94,9 +94,13 @@ final class ContentStore: ObservableObject {
         allCards.filter { isBookmarked($0.id) }
     }
 
-    func dailySet(count: Int = 8) -> [EconCard] {
+    func dailySet(count: Int = 8, unlockedAll: Bool = false) -> [EconCard] {
+        // Only serve cards from free topics unless the user owns Unlock All.
+        let pool = unlockedAll
+            ? allCards
+            : allCards.filter { isTopicFree($0.topicId) }
         // Unseen cards first, then least recently seen
-        let sorted = allCards.sorted { a, b in
+        let sorted = pool.sorted { a, b in
             let sa = cardStates[a.id]?.lastSeen
             let sb = cardStates[b.id]?.lastSeen
             switch (sa, sb) {
@@ -109,7 +113,12 @@ final class ContentStore: ObservableObject {
         return Array(sorted.prefix(count))
     }
 
-    func cards(for topicId: String) -> [EconCard] {
-        allCards.filter { $0.topicId == topicId }.shuffled()
+    func cards(for topicId: String, unlockedAll: Bool = false) -> [EconCard] {
+        guard unlockedAll || isTopicFree(topicId) else { return [] }
+        return allCards.filter { $0.topicId == topicId }.shuffled()
+    }
+
+    func topicName(for topicId: String) -> String {
+        topics.first(where: { $0.id == topicId })?.name ?? topicId
     }
 }

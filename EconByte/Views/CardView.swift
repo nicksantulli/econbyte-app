@@ -31,7 +31,7 @@ struct CardView: View {
         VStack(spacing: 0) {
             // Topic chip
             HStack {
-                Text(card.topicId.capitalized)
+                Text(content.topicName(for: card.topicId))
                     .modifier(TopicChip())
                 Spacer()
                 bookmarkButton

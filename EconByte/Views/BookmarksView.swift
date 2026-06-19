@@ -37,7 +37,7 @@ struct BookmarksView: View {
 
                             List(content.bookmarkedCards) { card in
                                 VStack(alignment: .leading, spacing: 6) {
-                                    Text(card.topicId.capitalized)
+                                    Text(content.topicName(for: card.topicId))
                                         .modifier(TopicChip())
                                     Text(card.concept)
                                         .font(.system(size: 15, weight: .semibold, design: .rounded))

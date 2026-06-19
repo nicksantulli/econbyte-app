@@ -21,14 +21,26 @@ final class PurchaseManager: ObservableObject {
         case removeAds  = "com.nsantulli.econbyte.removeads"
     }
 
+    enum PurchaseResult: Equatable {
+        case success
+        case cancelled
+        case pending
+        case productUnavailable
+        case failed(String)
+    }
+
     @Published private(set) var isUnlockAllPurchased = false
     @Published private(set) var isRemoveAdsPurchased = false
     @Published private(set) var products: [Product] = []
+    @Published private(set) var isLoadingProducts = false
+    @Published private(set) var productsLoadError: String?
 
     private let unlockAllKey = "iap.unlockAll.purchased"
     private let removeAdsKey  = "iap.removeAds.purchased"
 
     private var updates: Task<Void, Never>?
+
+    var productsReady: Bool { !products.isEmpty }
 
     private init() {
         // Synchronous seed from cache so the first render gates correctly.
@@ -50,9 +62,22 @@ final class PurchaseManager: ObservableObject {
     // MARK: - Load
 
     func loadProducts() async {
+        isLoadingProducts = true
+        productsLoadError = nil
+        defer { isLoadingProducts = false }
+
         do {
-            products = try await Product.products(for: ProductID.allCases.map(\.rawValue))
+            let loaded = try await Product.products(for: ProductID.allCases.map(\.rawValue))
+            products = loaded
+            if loaded.isEmpty {
+                productsLoadError = "Store products are not available right now. Check your connection and try again."
+                NSLog("[PurchaseManager] product load returned empty set")
+            } else {
+                NSLog("[PurchaseManager] loaded \(loaded.count) product(s): \(loaded.map(\.id).joined(separator: ", "))")
+            }
         } catch {
+            products = []
+            productsLoadError = error.localizedDescription
             NSLog("[PurchaseManager] product load failed: \(error)")
         }
     }
@@ -60,11 +85,11 @@ final class PurchaseManager: ObservableObject {
     // MARK: - Purchase
 
     @discardableResult
-    func purchase(_ id: ProductID) async -> Bool {
+    func purchase(_ id: ProductID) async -> PurchaseResult {
         if products.isEmpty { await loadProducts() }
         guard let product = product(for: id) else {
             NSLog("[PurchaseManager] no product for \(id.rawValue)")
-            return false
+            return .productUnavailable
         }
         do {
             let result = try await product.purchase()
@@ -73,23 +98,34 @@ final class PurchaseManager: ObservableObject {
                 let transaction = try checkVerified(verification)
                 await updatePurchasedProducts()
                 await transaction.finish()
-                return true
-            case .userCancelled, .pending:
-                return false
+                return .success
+            case .userCancelled:
+                return .cancelled
+            case .pending:
+                return .pending
             @unknown default:
-                return false
+                return .failed("Purchase could not be completed.")
             }
         } catch {
             NSLog("[PurchaseManager] purchase failed: \(error)")
-            return false
+            return .failed(error.localizedDescription)
         }
     }
 
     // MARK: - Restore
 
-    func restorePurchases() async {
-        try? await AppStore.sync()
-        await updatePurchasedProducts()
+    func restorePurchases() async -> PurchaseResult {
+        do {
+            try await AppStore.sync()
+            await updatePurchasedProducts()
+            if isUnlockAllPurchased || isRemoveAdsPurchased {
+                return .success
+            }
+            return .failed("No previous purchases were found for this Apple ID.")
+        } catch {
+            NSLog("[PurchaseManager] restore failed: \(error)")
+            return .failed(error.localizedDescription)
+        }
     }
 
     // MARK: - Entitlements

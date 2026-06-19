@@ -8,12 +8,19 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: PurchaseManager
     @State private var working = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    @State private var showAlert = false
 
     private var product: Product? { store.product(for: .unlockAll) }
 
     private var lockedTopicCount: Int {
         let topics = ContentStore.shared.topics
         return topics.filter { !ContentStore.shared.isTopicFree($0.id) }.count
+    }
+
+    private var canBuy: Bool {
+        store.productsReady && !working
     }
 
     var body: some View {
@@ -50,6 +57,27 @@ struct PaywallView: View {
                                 .foregroundColor(Econ.sky)
                                 .padding(.top, 8)
                         } else {
+                            if store.isLoadingProducts {
+                                ProgressView("Loading purchase options…")
+                                    .tint(Econ.sky)
+                                    .foregroundColor(Econ.white.opacity(0.8))
+                                    .padding(.top, 8)
+                            } else if !store.productsReady {
+                                VStack(spacing: 12) {
+                                    Text(store.productsLoadError ?? "Purchases are temporarily unavailable.")
+                                        .font(.system(size: 14, design: .rounded))
+                                        .foregroundColor(Econ.white.opacity(0.7))
+                                        .multilineTextAlignment(.center)
+                                        .padding(.horizontal, 28)
+                                    Button("Try Again") {
+                                        Task { await store.loadProducts() }
+                                    }
+                                    .buttonStyle(SecondaryButton())
+                                    .padding(.horizontal, 28)
+                                }
+                                .padding(.top, 8)
+                            }
+
                             Button {
                                 buy()
                             } label: {
@@ -60,14 +88,17 @@ struct PaywallView: View {
                                 }
                             }
                             .buttonStyle(PrimaryButton())
-                            .disabled(working)
+                            .disabled(!canBuy)
+                            .opacity(canBuy ? 1 : 0.55)
                             .padding(.horizontal, 28)
                             .padding(.top, 8)
+                            .accessibilityIdentifier("paywallUnlockButton")
 
                             Button("Restore Purchases") { restore() }
                                 .buttonStyle(SecondaryButton())
                                 .disabled(working)
                                 .padding(.horizontal, 28)
+                                .accessibilityIdentifier("paywallRestoreButton")
                         }
                     }
                     .padding(.bottom, 40)
@@ -82,6 +113,11 @@ struct PaywallView: View {
             }
             .onChange(of: store.isUnlockAllPurchased) { unlocked in
                 if unlocked { dismiss() }
+            }
+            .alert(alertTitle, isPresented: $showAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(alertMessage)
             }
         }
         .tint(Econ.sky)
@@ -103,16 +139,45 @@ struct PaywallView: View {
     private func buy() {
         working = true
         Task {
-            _ = await store.purchase(.unlockAll)
+            let result = await store.purchase(.unlockAll)
             working = false
+            handlePurchaseResult(result, successTitle: "Unlocked")
         }
     }
 
     private func restore() {
         working = true
         Task {
-            await store.restorePurchases()
+            let result = await store.restorePurchases()
             working = false
+            handlePurchaseResult(result, successTitle: "Restored")
         }
+    }
+
+    private func handlePurchaseResult(_ result: PurchaseManager.PurchaseResult, successTitle: String) {
+        switch result {
+        case .success:
+            if !store.isUnlockAllPurchased {
+                presentAlert(title: successTitle, message: "Your purchase is processing. If topics stay locked, tap Restore Purchases.")
+            }
+        case .cancelled:
+            break
+        case .pending:
+            presentAlert(title: "Purchase Pending", message: "Your purchase needs approval. You'll get access once it's approved.")
+        case .productUnavailable:
+            presentAlert(
+                title: "Purchase Unavailable",
+                message: store.productsLoadError ?? "We couldn't reach the App Store. Check your connection and try again."
+            )
+            Task { await store.loadProducts() }
+        case .failed(let message):
+            presentAlert(title: "Something Went Wrong", message: message)
+        }
+    }
+
+    private func presentAlert(title: String, message: String) {
+        alertTitle = title
+        alertMessage = message
+        showAlert = true
     }
 }

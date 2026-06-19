@@ -1,5 +1,6 @@
 import Foundation
 import AppTrackingTransparency
+import UIKit
 
 enum AdConfig {
     static let cardsPerAd = 5
@@ -122,11 +123,28 @@ final class AdManager: NSObject, ObservableObject {
             _ = await ATTrackingManager.requestTrackingAuthorization()
         }
         guard let ad = interstitial else { return }
+        guard let presenter = Self.topViewController() else {
+            NSLog("[AdManager] no root view controller — skipping interstitial")
+            return
+        }
         sessionAdCount += 1
         lastShownAt = Date()
         interstitial = nil
-        ad.present(from: nil)
+        ad.present(from: presenter)
         loadAd()
+    }
+
+    /// Walks the key window's root VC chain so interstitials present correctly
+    /// on iPhone and iPad (compatibility mode). `present(from: nil)` is unreliable.
+    private static func topViewController() -> UIViewController? {
+        let root = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)?
+            .rootViewController
+        var top = root
+        while let presented = top?.presentedViewController { top = presented }
+        return top
     }
 }
 
