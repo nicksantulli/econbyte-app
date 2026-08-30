@@ -1,0 +1,2981 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "1.1",
+  "verifiedOn": "2026-08-30",
+  "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+  "editorialPolicy": "Every factual claim is traceable to a named institutional source with a canonical URL, a publication or observation date, and a verification date. Claims that could not be verified against a primary source were removed rather than estimated. Content is educational and contains no financial, investment, or tax advice.",
+  "topics": [
+    {
+      "topicID": "inflation",
+      "name": "Inflation",
+      "icon": "chart.line.uptrend.xyaxis",
+      "order": 1,
+      "access": "free",
+      "summary": "How prices across an economy are measured, why they rise, and what central banks aim for.",
+      "cards": [
+        {
+          "cardID": "inf-001",
+          "topicID": "inflation",
+          "title": "What Inflation Measures",
+          "definition": "Inflation is a broad, sustained rise in the prices of goods and services across an economy. Because each unit of currency then buys less than it did before, inflation is best understood as a loss of purchasing power rather than as any single price going up.",
+          "example": "The European Central Bank's plain-language explainer makes the same distinction: inflation is a broad increase in prices, not a change in the price of one item, and the prices of things households spend more on carry more weight in the average.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "European Central Bank",
+            "documentTitle": "What is inflation?",
+            "url": "https://www.ecb.europa.eu/ecb-and-you/explainers/tell-me-more/html/what_is_inflation.en.html",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:inf-001"
+        },
+        {
+          "cardID": "inf-002",
+          "topicID": "inflation",
+          "title": "The Consumer Price Index",
+          "definition": "The Consumer Price Index measures the average change over time in the prices paid by urban consumers for a market basket of goods and services. The U.S. Bureau of Labor Statistics publishes it monthly, and the basket's weights come from a survey of what households actually buy.",
+          "example": "The CPI basket is grouped into eight major categories: food and beverages; housing; apparel; transportation; medical care; recreation; education and communication; and other goods and services.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Consumer Price Index Frequently Asked Questions",
+            "url": "https://www.bls.gov/cpi/questions-and-answers.htm",
+            "publicationDate": "2025-09-25",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "count of major expenditure categories",
+            "geography": "United States",
+            "observationPeriod": "CPI classification structure as documented by BLS",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:inf-002"
+        },
+        {
+          "cardID": "inf-003",
+          "topicID": "inflation",
+          "title": "Core and Headline Inflation",
+          "definition": "Headline inflation covers every category, food and energy included. Core inflation excludes food and energy, whose prices swing sharply with weather, harvests, and global energy markets. Core is used as a guide to the underlying trend, not as a better measure of what households actually pay.",
+          "example": "The Federal Open Market Committee states its 2 percent longer-run goal in terms of the annual change in the price index for personal consumption expenditures, and the core version of that index is tracked alongside it as a read on the trend.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Statement on Longer-Run Goals and Monetary Policy Strategy",
+            "url": "https://www.federalreserve.gov/monetarypolicy/files/FOMC_LongerRunGoals.pdf",
+            "publicationDate": "2026-01-28",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent per year",
+            "geography": "United States",
+            "observationPeriod": "FOMC longer-run goal as stated in the Committee's Statement on Longer-Run Goals",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:inf-003"
+        },
+        {
+          "cardID": "inf-004",
+          "topicID": "inflation",
+          "title": "Demand-Pull Inflation",
+          "definition": "Demand-pull inflation happens when spending grows faster than an economy's capacity to produce. With more buyers than available goods, sellers can raise prices without losing sales, and the pressure shows up across many categories at once.",
+          "example": "The Federal Reserve's own account of the Great Inflation (1965-1982) describes how policy that pushed the economy beyond its productive capacity, combined with other pressures, allowed inflation to build for well over a decade.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve History",
+            "documentTitle": "The Great Inflation",
+            "url": "https://www.federalreservehistory.org/essays/great-inflation",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:inf-004"
+        },
+        {
+          "cardID": "inf-005",
+          "topicID": "inflation",
+          "title": "Cost-Push Inflation",
+          "definition": "Cost-push inflation happens when producing goods and services becomes more expensive - because energy, raw materials, or wages cost more - and firms pass some of that increase into their prices. Output tends to fall at the same time, which is what makes it hard for policy to offset.",
+          "example": "The 1973-74 oil embargo roughly quadrupled the price of crude oil within about a year. Energy is an input to almost everything, so the shock pushed U.S. consumer prices sharply higher and became the standard illustration of a supply-side price shock.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve History",
+            "documentTitle": "The Great Inflation",
+            "url": "https://www.federalreservehistory.org/essays/great-inflation",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "ratio of crude oil price levels",
+            "geography": "United States and global oil market",
+            "observationPeriod": "1973-1974 oil embargo",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:inf-005"
+        },
+        {
+          "cardID": "inf-006",
+          "topicID": "inflation",
+          "title": "Hyperinflation",
+          "definition": "Hyperinflation is inflation so rapid that money stops working as a store of value and, eventually, as a means of payment. Economists conventionally use a threshold of more than 50 percent per month to mark it off from ordinary high inflation.",
+          "example": "During Germany's 1923 hyperinflation the currency lost value so fast that in many places wages were paid daily and people rushed to spend cash the same day. The government replaced the Mark with the Rentenmark in November 1923.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Deutsche Bundesbank",
+            "documentTitle": "Inflation - Lessons Learnt from History",
+            "url": "https://www.bundesbank.de/en/tasks/topics/inflation-lessons-learnt-from-history-666006",
+            "publicationDate": "2012-10-15",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent per month (definitional threshold)",
+            "geography": "Germany (historical episode)",
+            "observationPeriod": "1923 German hyperinflation and the November 1923 currency reform",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:inf-006"
+        },
+        {
+          "cardID": "inf-007",
+          "topicID": "inflation",
+          "title": "Deflation",
+          "definition": "Deflation is a sustained fall in the general price level. It can be damaging rather than welcome: if households and firms expect prices to keep falling they postpone purchases, and the real burden of debts already taken on rises.",
+          "example": "After a long stretch of very low and at times negative inflation, the Bank of Japan introduced an explicit price stability target of 2 percent in January 2013 and has pursued it since.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Bank of Japan",
+            "documentTitle": "Outline of Monetary Policy",
+            "url": "https://www.boj.or.jp/en/mopo/outline/index.htm",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent per year",
+            "geography": "Japan",
+            "observationPeriod": "price stability target introduced January 2013",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:inf-007"
+        },
+        {
+          "cardID": "inf-008",
+          "topicID": "inflation",
+          "title": "The 2 Percent Goal",
+          "definition": "Many central banks aim for a low but positive inflation rate rather than zero. A small buffer leaves room to cut interest rates in a downturn before they hit their lower bound, and it reduces the chance of tipping into deflation.",
+          "example": "The Federal Open Market Committee first published an explicit 2 percent longer-run inflation goal in January 2012 and reaffirms its framework statement each year. The Committee's 2025 framework review did not change the 2 percent goal.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Review of Monetary Policy Strategy, Tools, and Communications",
+            "url": "https://www.federalreserve.gov/monetarypolicy/guide-to-changes-in-statement-on-longer-run-goals-monetary-policy-strategy.htm",
+            "publicationDate": "2026-02-26",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent per year",
+            "geography": "United States",
+            "observationPeriod": "goal published January 2012; framework review completed 2025",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:inf-008"
+        }
+      ]
+    },
+    {
+      "topicID": "interest-rates",
+      "name": "Interest Rates",
+      "icon": "percent",
+      "order": 2,
+      "access": "free",
+      "summary": "What interest rates are, who sets the benchmark, and how a rate change travels through the economy.",
+      "cards": [
+        {
+          "cardID": "ir-001",
+          "topicID": "interest-rates",
+          "title": "What an Interest Rate Is",
+          "definition": "An interest rate is the price of borrowing money, quoted as a percentage per year. Borrowers pay it and lenders receive it. It compensates the lender for giving up the use of the money and for the risk that it is not repaid in full.",
+          "example": "The Federal Reserve's H.15 Selected Interest Rates release publishes a daily cross-section of U.S. rates, from overnight bank funding through long-maturity Treasury yields, so that very different instruments can be compared on the same basis.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "H.15 Selected Interest Rates",
+            "url": "https://www.federalreserve.gov/releases/h15/",
+            "publicationDate": "2026-08-28",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:ir-001"
+        },
+        {
+          "cardID": "ir-002",
+          "topicID": "interest-rates",
+          "title": "The Federal Funds Rate",
+          "definition": "The federal funds rate is the rate at which banks lend reserve balances to one another overnight. The Federal Open Market Committee sets a target range for it, and that range anchors a wide set of other borrowing and saving rates.",
+          "example": "The Committee cut the target range to 0 to 0.25 percent in March 2020, then raised it through a rapid sequence of increases to 5.25 to 5.50 percent by July 2023, where it was held for about a year.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Federal Funds Target Range - Upper Limit (DFEDTARU)",
+            "url": "https://fred.stlouisfed.org/series/DFEDTARU",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (target range)",
+            "geography": "United States",
+            "observationPeriod": "FOMC target range decisions, March 2020 through July 2023",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:ir-002"
+        },
+        {
+          "cardID": "ir-003",
+          "topicID": "interest-rates",
+          "title": "Real and Nominal Rates",
+          "definition": "The nominal rate is the rate quoted on a loan or a deposit. The real rate subtracts inflation from it. When the nominal rate sits below the inflation rate the real rate is negative: the balance grows in currency terms while buying less than it did.",
+          "example": "The U.S. Treasury issues inflation-protected securities whose principal is adjusted with the Consumer Price Index. The gap between the yield on an ordinary Treasury and an inflation-protected one of the same maturity is a market-based read on expected inflation.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, TreasuryDirect",
+            "documentTitle": "Interest Rates and Prices",
+            "url": "https://www.treasurydirect.gov/government/interest-rates-and-prices/",
+            "publicationDate": "2026-06-27",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:ir-003"
+        },
+        {
+          "cardID": "ir-004",
+          "topicID": "interest-rates",
+          "title": "How Higher Rates Slow Inflation",
+          "definition": "Raising the policy rate raises borrowing costs across the economy. Households and firms borrow and spend less, demand cools, and firms find price increases harder to make stick. The effect works with a lag usually measured in quarters rather than weeks.",
+          "example": "The Federal Reserve's explainer walks through this chain step by step, from the policy rate to broader financial conditions and then to spending, employment, and prices.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Monetary Policy: What Are Its Goals? How Does It Work?",
+            "url": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+            "publicationDate": "2026-02-26",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:ir-004"
+        },
+        {
+          "cardID": "ir-005",
+          "topicID": "interest-rates",
+          "title": "The Yield Curve",
+          "definition": "The yield curve plots government bond yields against their maturities. Longer maturities normally yield more. When short-term yields exceed long-term ones the curve is inverted, a pattern that has often, though not always, preceded U.S. recessions.",
+          "example": "The 10-year minus 2-year Treasury spread, published as FRED series T10Y2Y, turned negative in July 2022 and stayed below zero for roughly two years.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "10-Year Treasury Constant Maturity Minus 2-Year Treasury Constant Maturity (T10Y2Y)",
+            "url": "https://fred.stlouisfed.org/series/T10Y2Y",
+            "publicationDate": "2026-08-28",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percentage points (yield spread)",
+            "geography": "United States",
+            "observationPeriod": "daily series, July 2022 through 2024",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:ir-005"
+        },
+        {
+          "cardID": "ir-006",
+          "topicID": "interest-rates",
+          "title": "The Lower Bound",
+          "definition": "Policy rates cannot fall far below zero, because holding physical cash always pays zero. Once a central bank reaches this lower bound and still wants to ease, it turns to other tools such as asset purchases and explicit communication about future rates.",
+          "example": "The Federal Reserve held its target range near zero from December 2008 to December 2015, and again from March 2020 to March 2022.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Federal Funds Target Range - Upper Limit (DFEDTARU)",
+            "url": "https://fred.stlouisfed.org/series/DFEDTARU",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (target range)",
+            "geography": "United States",
+            "observationPeriod": "December 2008 to December 2015; March 2020 to March 2022",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:ir-006"
+        },
+        {
+          "cardID": "ir-007",
+          "topicID": "interest-rates",
+          "title": "Consumer Borrowing Costs",
+          "definition": "Policy rate changes do not reach all consumer credit equally or at the same speed. Rates on revolving credit tend to reprice quickly, while a fixed-rate loan already taken out does not change at all - only new borrowing does.",
+          "example": "The Federal Reserve's G.19 Consumer Credit release separates revolving credit, mainly credit cards, from nonrevolving credit such as auto and student loans, and publishes average rates for each.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "G.19 Consumer Credit",
+            "url": "https://www.federalreserve.gov/releases/g19/",
+            "publicationDate": "2026-08-07",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:ir-007"
+        },
+        {
+          "cardID": "ir-008",
+          "topicID": "interest-rates",
+          "title": "Negative Policy Rates",
+          "definition": "A few central banks have set a policy rate below zero, charging banks to hold excess reserves rather than paying them. The aim is to push banks toward lending. The approach is contested and its effects are still debated.",
+          "example": "The European Central Bank's deposit facility rate was below zero from June 2014 until September 2022, when the Governing Council raised it back to zero.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "European Central Bank",
+            "documentTitle": "Key ECB Interest Rates",
+            "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (policy rate)",
+            "geography": "Euro area",
+            "observationPeriod": "June 2014 to September 2022",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:ir-008"
+        }
+      ]
+    },
+    {
+      "topicID": "gdp",
+      "name": "GDP",
+      "icon": "building.columns",
+      "order": 3,
+      "access": "paid",
+      "summary": "What gross domestic product counts, how it is built up, and what it deliberately leaves out.",
+      "cards": [
+        {
+          "cardID": "gdp-001",
+          "topicID": "gdp",
+          "title": "What GDP Measures",
+          "definition": "Gross domestic product is the market value of the final goods and services produced within a country during a period. It is a measure of production. It is not a measure of wealth, of wellbeing, or of how output is shared.",
+          "example": "The Bureau of Economic Analysis publishes U.S. GDP quarterly in three successive estimates - advance, second, and third - as more complete source data arrive.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "What to Know About GDP",
+            "url": "https://www.bea.gov/resources/learning-center/what-to-know-gdp",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:gdp-001"
+        },
+        {
+          "cardID": "gdp-002",
+          "topicID": "gdp",
+          "title": "The Four Components",
+          "definition": "GDP is commonly written as consumption plus investment plus government spending plus net exports. Net exports are negative when a country imports more than it exports, which subtracts from the total without meaning the economy shrank.",
+          "example": "In the United States personal consumption expenditures are by far the largest component, close to 70 percent of GDP, and BEA publishes the full breakdown with every GDP release.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "Gross Domestic Product",
+            "url": "https://www.bea.gov/data/gdp/gross-domestic-product",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of GDP",
+            "geography": "United States",
+            "observationPeriod": "annual national accounts as published by BEA at the verification date",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:gdp-002"
+        },
+        {
+          "cardID": "gdp-003",
+          "topicID": "gdp",
+          "title": "Real and Nominal GDP",
+          "definition": "Nominal GDP values output at the prices of the period, so it rises when prices rise. Real GDP holds prices fixed at a base year so that changes reflect actual production. Real GDP is the series used to judge growth.",
+          "example": "FRED publishes U.S. real GDP as series GDPC1, denominated in chained 2017 dollars - the chained-dollar label is what marks the series as inflation-adjusted.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Real Gross Domestic Product (GDPC1)",
+            "url": "https://fred.stlouisfed.org/series/GDPC1",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:gdp-003"
+        },
+        {
+          "cardID": "gdp-004",
+          "topicID": "gdp",
+          "title": "GDP Per Capita",
+          "definition": "GDP per capita divides output by population. It is a rough comparison of average economic output per person, and it says nothing about how that output is distributed within a country.",
+          "example": "The World Bank publishes GDP in current U.S. dollars for nearly every economy in the World Development Indicators, which is where most cross-country comparisons begin.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "World Bank",
+            "documentTitle": "GDP (current US$), World Development Indicators",
+            "url": "https://data.worldbank.org/indicator/NY.GDP.MKTP.CD",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:gdp-004"
+        },
+        {
+          "cardID": "gdp-005",
+          "topicID": "gdp",
+          "title": "Two Quarters Is a Rule of Thumb",
+          "definition": "The idea that two consecutive quarters of falling GDP constitute a recession is a shorthand, not the official U.S. standard. It is convenient because it uses one series, and unreliable for the same reason.",
+          "example": "The NBER Business Cycle Dating Committee looks for a significant decline in activity spread across the economy and lasting more than a few months, weighing depth, diffusion, and duration across several monthly indicators rather than GDP alone.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "National Bureau of Economic Research",
+            "documentTitle": "Business Cycle Dating",
+            "url": "https://www.nber.org/research/business-cycle-dating",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:gdp-005"
+        },
+        {
+          "cardID": "gdp-006",
+          "topicID": "gdp",
+          "title": "Annualized Growth",
+          "definition": "U.S. quarterly GDP growth is usually reported at an annual rate: the quarter's change compounded as though it continued for a full year. A quarterly change of about half a percent is reported as roughly 2 percent.",
+          "example": "BEA states this annualization convention in each release, which is why a U.S. quarterly figure cannot be compared directly with a quarter-on-quarter figure published elsewhere without converting one of them.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "Gross Domestic Product",
+            "url": "https://www.bea.gov/data/gdp/gross-domestic-product",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent per year (annualized rate)",
+            "geography": "United States",
+            "observationPeriod": "BEA quarterly GDP reporting convention",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:gdp-006"
+        },
+        {
+          "cardID": "gdp-007",
+          "topicID": "gdp",
+          "title": "GDP and GNP",
+          "definition": "GDP counts production inside a country's borders whoever owns the factors of production. Gross national product counts production by a country's residents wherever it occurs. The two diverge most for economies with large cross-border income flows.",
+          "example": "BEA publishes both concepts in the national accounts, together with the net receipts of income from the rest of the world that reconcile one to the other.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "Gross Domestic Product",
+            "url": "https://www.bea.gov/data/gdp/gross-domestic-product",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:gdp-007"
+        },
+        {
+          "cardID": "gdp-008",
+          "topicID": "gdp",
+          "title": "What GDP Leaves Out",
+          "definition": "GDP counts market transactions. Unpaid household and care work, volunteering, and the depletion of natural resources sit largely outside it, and spending to repair damage adds to GDP without leaving anyone better off.",
+          "example": "This is a consequence of the definition rather than a defect in the data. BEA's own primer sets out precisely what the measure does and does not count, which is why supplementary measures exist alongside it.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "What to Know About GDP",
+            "url": "https://www.bea.gov/resources/learning-center/what-to-know-gdp",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:gdp-008"
+        }
+      ]
+    },
+    {
+      "topicID": "supply-demand",
+      "name": "Supply & Demand",
+      "icon": "arrow.left.arrow.right",
+      "order": 4,
+      "access": "paid",
+      "summary": "How prices emerge from buyers and sellers, and what happens when shocks or policy push them around.",
+      "cards": [
+        {
+          "cardID": "sd-001",
+          "topicID": "supply-demand",
+          "title": "The Law of Demand",
+          "definition": "Holding other things equal, a higher price leads buyers to purchase less of a good and a lower price leads them to purchase more. Drawn on a chart, that relationship is the downward-sloping demand curve.",
+          "example": "Statistical agencies rely on this responsiveness. The Consumer Expenditure Surveys re-measure what households actually buy, so price indexes pick up substitution as relative prices change instead of assuming buying patterns are fixed.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Consumer Expenditure Surveys",
+            "url": "https://www.bls.gov/cex/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:sd-001"
+        },
+        {
+          "cardID": "sd-002",
+          "topicID": "supply-demand",
+          "title": "The Law of Supply",
+          "definition": "Holding other things equal, a higher price leads producers to offer more of a good, because more units become profitable to produce. Drawn on a chart, that relationship is the upward-sloping supply curve.",
+          "example": "The Federal Reserve's G.17 release measures industrial production alongside capacity utilization - how much of the economy's productive capability is actually in use - which is one way to watch supply respond.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "G.17 Industrial Production and Capacity Utilization",
+            "url": "https://www.federalreserve.gov/releases/g17/",
+            "publicationDate": "2026-08-18",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:sd-002"
+        },
+        {
+          "cardID": "sd-003",
+          "topicID": "supply-demand",
+          "title": "Equilibrium",
+          "definition": "Equilibrium is the price at which the quantity buyers want equals the quantity sellers offer. Markets tend toward it, but shocks and slow-moving supply mean observed prices spend much of their time away from it.",
+          "example": "Housing shows the lag clearly: Census Bureau data record permits, starts, and completions as separate monthly steps, so new supply answers a price signal only over quarters and years.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "New Residential Construction",
+            "url": "https://www.census.gov/construction/nrc/index.html",
+            "publicationDate": "2026-08-25",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:sd-003"
+        },
+        {
+          "cardID": "sd-004",
+          "topicID": "supply-demand",
+          "title": "Price Elasticity",
+          "definition": "Elasticity measures how much quantity responds to a price change. Demand is elastic when a small price change causes a large change in quantity, and inelastic when it barely moves. Necessities without close substitutes tend to be inelastic.",
+          "example": "Elasticity is why index weights matter. The CPI gives more weight to the categories households spend more on, so a price move in a heavily weighted and hard-to-avoid category such as shelter shifts the index far more than the same percentage move in a small category.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Consumer Price Index Frequently Asked Questions",
+            "url": "https://www.bls.gov/cpi/questions-and-answers.htm",
+            "publicationDate": "2025-09-25",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:sd-004"
+        },
+        {
+          "cardID": "sd-005",
+          "topicID": "supply-demand",
+          "title": "Supply Shocks",
+          "definition": "A supply shock is a sudden change in the availability or cost of an input. An adverse shock raises prices and reduces output at the same time, which is why it is harder for policy to offset than a shift in demand.",
+          "example": "The 1973-74 oil embargo is the reference case: energy costs jumped, prices rose and output fell together, and the episode gave the word stagflation its currency.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve History",
+            "documentTitle": "The Great Inflation",
+            "url": "https://www.federalreservehistory.org/essays/great-inflation",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "qualitative (price and output direction)",
+            "geography": "United States",
+            "observationPeriod": "1973-1974 oil embargo",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:sd-005"
+        },
+        {
+          "cardID": "sd-006",
+          "topicID": "supply-demand",
+          "title": "Price Ceilings",
+          "definition": "A price ceiling is a legal maximum price. Set below the market-clearing level it holds prices down for whoever can buy at the cap while reducing the quantity supplied, which surfaces as shortages, queues, or a fall in quality.",
+          "example": "The United States imposed economy-wide wage and price controls beginning in August 1971. The Federal Reserve's history of that decision records that the controls held measured inflation down temporarily and that prices resumed rising once they were relaxed.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve History",
+            "documentTitle": "Nixon Ends Convertibility of U.S. Dollars to Gold",
+            "url": "https://www.federalreservehistory.org/essays/nixon-ends-bretton-woods-international-monetary-system",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "qualitative (measured price level)",
+            "geography": "United States",
+            "observationPeriod": "wage and price controls announced August 1971",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:sd-006"
+        },
+        {
+          "cardID": "sd-007",
+          "topicID": "supply-demand",
+          "title": "Price Floors",
+          "definition": "A price floor is a legal minimum price. The minimum wage is the most familiar example. Set above the market-clearing level, a floor raises pay for those who keep their jobs, while the size and direction of any employment effect remains actively debated among economists.",
+          "example": "Whether a floor binds at all depends on where it sits relative to pay that is already being offered, which is why BLS publishes average hourly earnings each month alongside the employment counts.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "The Employment Situation (news release)",
+            "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+            "publicationDate": "2026-08-07",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:sd-007"
+        },
+        {
+          "cardID": "sd-008",
+          "topicID": "supply-demand",
+          "title": "Substitutes and Complements",
+          "definition": "Two goods are substitutes when a price rise for one increases demand for the other, and complements when they are used together, so that a price rise for one reduces demand for the other.",
+          "example": "Substitution is built into how inflation is measured: BLS re-weights the CPI basket using the Consumer Expenditure Surveys, so shifts in what households buy when relative prices change are observed rather than assumed away.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Consumer Expenditure Surveys",
+            "url": "https://www.bls.gov/cex/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:sd-008"
+        }
+      ]
+    },
+    {
+      "topicID": "labor-markets",
+      "name": "Labor Markets",
+      "icon": "person.3.fill",
+      "order": 5,
+      "access": "paid",
+      "summary": "How employment and unemployment are counted, and what the monthly jobs data can and cannot tell you.",
+      "cards": [
+        {
+          "cardID": "lm-001",
+          "topicID": "labor-markets",
+          "title": "The Unemployment Rate",
+          "definition": "The unemployment rate is the number of unemployed people divided by the labor force. To be counted as unemployed a person must be without a job, available for work, and have actively looked for work in the prior four weeks.",
+          "example": "Because only active searchers count, someone who stops looking leaves the labor force and stops being counted as unemployed, which can pull the rate down without the job market having improved.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "How the Government Measures Unemployment",
+            "url": "https://www.bls.gov/cps/cps_htgm.htm",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:lm-001"
+        },
+        {
+          "cardID": "lm-002",
+          "topicID": "labor-markets",
+          "title": "Labor Force Participation",
+          "definition": "The labor force participation rate is the share of the civilian noninstitutional population aged 16 and over that is either working or actively looking for work. It captures people the unemployment rate does not.",
+          "example": "FRED publishes the series as CIVPART, which is why it is normally read side by side with the unemployment rate rather than on its own.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Labor Force Participation Rate (CIVPART)",
+            "url": "https://fred.stlouisfed.org/series/CIVPART",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:lm-002"
+        },
+        {
+          "cardID": "lm-003",
+          "topicID": "labor-markets",
+          "title": "Frictional Unemployment",
+          "definition": "Some unemployment is the ordinary churn of a working labor market: people leaving one job before starting another, and new entrants searching for a first job. This is frictional unemployment, and it does not fall to zero in a healthy economy.",
+          "example": "BLS measures it directly through the duration of unemployment in the Current Population Survey, published each month alongside the headline employment figures.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "The Employment Situation (news release)",
+            "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+            "publicationDate": "2026-08-07",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:lm-003"
+        },
+        {
+          "cardID": "lm-004",
+          "topicID": "labor-markets",
+          "title": "Structural Unemployment",
+          "definition": "Structural unemployment arises when the skills, locations, or industries of job seekers do not match the jobs on offer. Unlike frictional unemployment it can persist for years, and it is resolved by retraining or relocation rather than by faster searching.",
+          "example": "The distinction matters for policy. Interest rates work on overall demand, so monetary policy can address a shortfall in spending but not a mismatch of skills - a limit the Federal Reserve's own explainer of its tools makes plain.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Monetary Policy: What Are Its Goals? How Does It Work?",
+            "url": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+            "publicationDate": "2026-02-26",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:lm-004"
+        },
+        {
+          "cardID": "lm-005",
+          "topicID": "labor-markets",
+          "title": "The Phillips Curve",
+          "definition": "The Phillips curve describes an observed short-run relationship between labor market slack and inflation: when unemployment is very low, wage and price pressure tends to build. The relationship has proved unstable over time and is not a dependable rule.",
+          "example": "The Federal Reserve's account of the Great Inflation describes how confidence in a stable and exploitable trade-off between unemployment and inflation contributed to the policy errors of that period.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve History",
+            "documentTitle": "The Great Inflation",
+            "url": "https://www.federalreservehistory.org/essays/great-inflation",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:lm-005"
+        },
+        {
+          "cardID": "lm-006",
+          "topicID": "labor-markets",
+          "title": "Contract and Self-Employed Work",
+          "definition": "Not all work is a traditional employer-employee job. Independent contractors, freelancers, and on-call workers are classified differently across statistical programs, which is why estimates of how many people work this way vary widely by definition and by source.",
+          "example": "BLS measures these arrangements through the Current Population Survey and its supplements on contingent and alternative employment. Official definitions and private platform estimates are not interchangeable, so a single headline count should be traced back to its definition before it is used.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "How the Government Measures Unemployment",
+            "url": "https://www.bls.gov/cps/cps_htgm.htm",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:lm-006"
+        },
+        {
+          "cardID": "lm-007",
+          "topicID": "labor-markets",
+          "title": "Wages, Prices, and Productivity",
+          "definition": "Wage growth is not automatically inflationary. If pay rises roughly in line with productivity, the labor cost of each unit of output is stable and firms need not raise prices. Sustained wage growth well above productivity growth is what puts pressure on prices.",
+          "example": "BLS publishes average hourly earnings each month with the Employment Situation, which is the series most often used to follow pay growth as it happens.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "The Employment Situation (news release)",
+            "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+            "publicationDate": "2026-08-07",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:lm-007"
+        },
+        {
+          "cardID": "lm-008",
+          "topicID": "labor-markets",
+          "title": "The Monthly Jobs Report",
+          "definition": "The Employment Situation report combines two separate surveys: a survey of households, which produces the unemployment rate, and a survey of employers, which produces payroll job counts. The two can point in different directions in any single month.",
+          "example": "BLS releases the report monthly and revises the payroll figures in each of the following two releases, so a first estimate is a provisional number rather than a settled one.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "The Employment Situation (news release)",
+            "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+            "publicationDate": "2026-08-07",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:lm-008"
+        }
+      ]
+    },
+    {
+      "topicID": "trade-tariffs",
+      "name": "Trade & Tariffs",
+      "icon": "shippingbox",
+      "order": 6,
+      "access": "paid",
+      "summary": "Why countries trade, what tariffs actually do, and how trade balances are measured.",
+      "cards": [
+        {
+          "cardID": "tt-001",
+          "topicID": "trade-tariffs",
+          "title": "Comparative Advantage",
+          "definition": "Countries gain from trade by specializing where their opportunity cost is lowest, not where they are absolutely best. Even a country that produces everything more efficiently gains by concentrating on what it gives up least in order to make.",
+          "example": "The WTO's description of the trading system rests on this logic: lowering barriers lets each economy specialize, and the rules exist to keep that exchange predictable rather than to referee who is best at what.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "World Trade Organization",
+            "documentTitle": "What is the WTO? Principles of the Trading System",
+            "url": "https://www.wto.org/english/thewto_e/whatis_e/tif_e/fact1_e.htm",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:tt-001"
+        },
+        {
+          "cardID": "tt-002",
+          "topicID": "trade-tariffs",
+          "title": "What a Tariff Is",
+          "definition": "A tariff is a tax on imported goods, paid to the importing country's government by the importer of record. It raises the landed cost of a foreign good. How much of that increase reaches the final price depends on who absorbs it along the chain.",
+          "example": "The WTO's principles page describes tariff bindings - the ceiling rates members commit not to exceed - which is the mechanism that makes published tariff schedules enforceable between members.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "World Trade Organization",
+            "documentTitle": "What is the WTO? Principles of the Trading System",
+            "url": "https://www.wto.org/english/thewto_e/whatis_e/tif_e/fact1_e.htm",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:tt-002"
+        },
+        {
+          "cardID": "tt-003",
+          "topicID": "trade-tariffs",
+          "title": "Trade Deficits",
+          "definition": "A trade deficit means a country imported more goods and services than it exported over a period. In the balance of payments it is matched by an offsetting flow on the financial account, so on its own it is an accounting fact rather than a verdict on economic health.",
+          "example": "BEA publishes the U.S. trade balance monthly. The United States has recorded an annual deficit in goods and services trade in every year since 1976.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "U.S. International Trade in Goods and Services",
+            "url": "https://www.bea.gov/data/intl-trade-investment/international-trade-goods-and-services",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (annual balance)",
+            "geography": "United States",
+            "observationPeriod": "annual balance of payments, 1976 onward",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:tt-003"
+        },
+        {
+          "cardID": "tt-004",
+          "topicID": "trade-tariffs",
+          "title": "Trade Agreements",
+          "definition": "A free trade agreement lowers or removes tariffs and other barriers among its members and typically sets rules on origin, standards, and dispute settlement. Coverage is negotiated sector by sector, so no agreement removes every barrier.",
+          "example": "The United States-Mexico-Canada Agreement entered into force on 1 July 2020, replacing the North American Free Trade Agreement.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Office of the United States Trade Representative",
+            "documentTitle": "United States-Mexico-Canada Agreement",
+            "url": "https://ustr.gov/trade-agreements/free-trade-agreements/united-states-mexico-canada-agreement",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "date (entry into force)",
+            "geography": "United States, Mexico, and Canada",
+            "observationPeriod": "entered into force 1 July 2020",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:tt-004"
+        },
+        {
+          "cardID": "tt-005",
+          "topicID": "trade-tariffs",
+          "title": "The WTO",
+          "definition": "The World Trade Organization administers multilateral trade rules and provides a forum in which members negotiate and settle disputes. It does not set tariffs; members do, within the ceilings they have agreed.",
+          "example": "The WTO was established on 1 January 1995, succeeding the General Agreement on Tariffs and Trade that had governed multilateral trade rules since 1948.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "World Trade Organization",
+            "documentTitle": "What is the WTO? Principles of the Trading System",
+            "url": "https://www.wto.org/english/thewto_e/whatis_e/tif_e/fact1_e.htm",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "date (establishment)",
+            "geography": "Global",
+            "observationPeriod": "established 1 January 1995",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:tt-005"
+        },
+        {
+          "cardID": "tt-006",
+          "topicID": "trade-tariffs",
+          "title": "Protection and Its Costs",
+          "definition": "Protection shields a domestic industry from foreign competition using tariffs, quotas, or regulation. The benefits are concentrated in the protected industry, while the costs are spread thinly across buyers, downstream industries, and exporters who face retaliation.",
+          "example": "Because the benefits are concentrated and the costs diffuse, measuring the net effect requires economy-wide data rather than industry testimony - the framing the World Bank uses in its overview of trade.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "World Bank",
+            "documentTitle": "Trade: Overview",
+            "url": "https://www.worldbank.org/en/topic/trade/overview",
+            "publicationDate": "2026-08-19",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:tt-006"
+        },
+        {
+          "cardID": "tt-007",
+          "topicID": "trade-tariffs",
+          "title": "Exchange Rates and Trade",
+          "definition": "A stronger domestic currency makes exports more expensive abroad and imports cheaper at home; a weaker one does the reverse. Currency movements therefore shift trade flows independently of tariffs or productivity.",
+          "example": "The Federal Reserve publishes a nominal broad dollar index, FRED series DTWEXBGS, which weights the dollar against a basket of trading-partner currencies rather than against any single one.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Nominal Broad U.S. Dollar Index (DTWEXBGS)",
+            "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
+            "publicationDate": "2026-08-24",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:tt-007"
+        },
+        {
+          "cardID": "tt-008",
+          "topicID": "trade-tariffs",
+          "title": "Supply Chains and Resilience",
+          "definition": "Concentrating production wherever it is cheapest lowers cost and raises exposure to a single disruption. Diversifying or relocating production buys resilience by giving up some of that efficiency. It is a deliberate trade, not a free improvement.",
+          "example": "The World Bank's trade work frames the choice in exactly those terms, as a trade-off between efficiency and resilience rather than as a one-sided gain for either approach.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "World Bank",
+            "documentTitle": "Trade: Overview",
+            "url": "https://www.worldbank.org/en/topic/trade/overview",
+            "publicationDate": "2026-08-19",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:tt-008"
+        }
+      ]
+    },
+    {
+      "topicID": "housing-market",
+      "name": "Housing Market",
+      "icon": "house.fill",
+      "order": 7,
+      "access": "paid",
+      "summary": "Why housing behaves unlike other markets, and how prices, rates, and construction interact.",
+      "cards": [
+        {
+          "cardID": "hm-001",
+          "topicID": "housing-market",
+          "title": "Why Housing Is Different",
+          "definition": "Housing is both a consumption good and a long-lived asset, it cannot be moved, it takes years to build, and it is usually bought with borrowed money. Those four features together make housing markets slow to adjust and prone to long swings.",
+          "example": "The S&P Cotality Case-Shiller U.S. National Home Price Index is set to 100 in January 2000, so the index level reads directly as a multiple of year-2000 prices.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "S&P Cotality Case-Shiller U.S. National Home Price Index (CSUSHPINSA)",
+            "url": "https://fred.stlouisfed.org/series/CSUSHPINSA",
+            "publicationDate": "2026-08-27",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "index (January 2000 = 100)",
+            "geography": "United States",
+            "observationPeriod": "index base period January 2000",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:hm-001"
+        },
+        {
+          "cardID": "hm-002",
+          "topicID": "housing-market",
+          "title": "Rates and Affordability",
+          "definition": "A mortgage payment depends on the loan amount and the interest rate together. When rates rise, the payment on a given price rises with them, so the price a buyer can carry at a fixed monthly payment falls even if listed prices have not moved at all.",
+          "example": "Freddie Mac has published its Primary Mortgage Market Survey weekly since 1971. The 30-year fixed average reached a survey low of 2.65 percent in the week ending 7 January 2021.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Freddie Mac",
+            "documentTitle": "Primary Mortgage Market Survey",
+            "url": "https://www.freddiemac.com/pmms",
+            "publicationDate": "2026-08-28",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (30-year fixed mortgage rate)",
+            "geography": "United States",
+            "observationPeriod": "week ending 7 January 2021",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:hm-002"
+        },
+        {
+          "cardID": "hm-003",
+          "topicID": "housing-market",
+          "title": "Supply Responds Slowly",
+          "definition": "New housing arrives through permitting, starting, and completing construction, a pipeline measured in quarters and years. Demand can change in weeks. That mismatch is why price pressure appears long before any new unit does.",
+          "example": "The Census Bureau publishes permits, starts, and completions as separate monthly series in New Residential Construction, which is what makes the lag legible in the data rather than a matter of assertion.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "New Residential Construction",
+            "url": "https://www.census.gov/construction/nrc/index.html",
+            "publicationDate": "2026-08-25",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:hm-003"
+        },
+        {
+          "cardID": "hm-004",
+          "topicID": "housing-market",
+          "title": "The 2007-09 Housing Bust",
+          "definition": "A long rise in house prices financed by loosening credit standards reversed once prices stopped rising. Falling prices left borrowers owing more than their homes were worth, defaults climbed, and the losses spread through the financial system.",
+          "example": "U.S. housing starts fell from an annual rate of about 2.27 million units in January 2006 to about 0.48 million in April 2009.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "New Privately-Owned Housing Units Started: Total Units (HOUST)",
+            "url": "https://fred.stlouisfed.org/series/HOUST",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "thousands of units, seasonally adjusted annual rate",
+            "geography": "United States",
+            "observationPeriod": "January 2006 and April 2009",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:hm-004"
+        },
+        {
+          "cardID": "hm-005",
+          "topicID": "housing-market",
+          "title": "The Rate Lock-In Effect",
+          "definition": "A homeowner holding a low fixed-rate mortgage gives it up by selling. When market rates are much higher, moving means a materially larger payment on a comparable home, so fewer owners list. Fewer listings tighten supply even while demand is falling.",
+          "example": "The mechanism is visible in a single series: comparing the Freddie Mac 30-year survey rate at the time existing loans were written with the rate prevailing later shows the size of the gap owners would be trading away.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Freddie Mac",
+            "documentTitle": "Primary Mortgage Market Survey",
+            "url": "https://www.freddiemac.com/pmms",
+            "publicationDate": "2026-08-28",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:hm-005"
+        },
+        {
+          "cardID": "hm-006",
+          "topicID": "housing-market",
+          "title": "Renting and Owning",
+          "definition": "Renting and owning differ in cost structure, not merely in price. Owning carries maintenance, property taxes, insurance, transaction costs, and the opportunity cost of the down payment; renting carries none of those and builds no equity. Which costs less depends on local prices, rates, and how long a household stays.",
+          "example": "Shelter is measured in the CPI for renters and owners alike, the latter through owners' equivalent rent, and BLS documents that concept explicitly because the two are not measured the same way.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Consumer Price Index Frequently Asked Questions",
+            "url": "https://www.bls.gov/cpi/questions-and-answers.htm",
+            "publicationDate": "2025-09-25",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:hm-006"
+        },
+        {
+          "cardID": "hm-007",
+          "topicID": "housing-market",
+          "title": "Who Owns Rental Housing",
+          "definition": "Single-family rental homes are owned by a mix of individual landlords and larger firms. The share held by large institutional owners is small nationally while being far more concentrated in particular metropolitan areas, so a national figure and a local one answer different questions.",
+          "example": "Because concentration varies so much between markets, the defensible statement is a sourced range rather than one national number. The Census Bureau's Housing Vacancies and Homeownership series is the starting point for measuring tenure.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "Housing Vacancies and Homeownership (CPS/HVS)",
+            "url": "https://www.census.gov/housing/hvs/index.html",
+            "publicationDate": "2026-07-28",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:hm-007"
+        },
+        {
+          "cardID": "hm-008",
+          "topicID": "housing-market",
+          "title": "Housing Starts as an Indicator",
+          "definition": "Housing starts count new residential units on which construction began. Because building responds to expected demand and to credit conditions, starts tend to turn before overall activity, which is why they are watched as a leading indicator.",
+          "example": "Census publishes starts monthly at a seasonally adjusted annual rate, and the series is volatile from month to month, which is why analysts read a moving average rather than a single print.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "New Residential Construction",
+            "url": "https://www.census.gov/construction/nrc/index.html",
+            "publicationDate": "2026-08-25",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:hm-008"
+        }
+      ]
+    },
+    {
+      "topicID": "central-banks",
+      "name": "Central Banks",
+      "icon": "banknote",
+      "order": 8,
+      "access": "paid",
+      "summary": "What central banks are for, the tools they use, and why independence is built into their design.",
+      "cards": [
+        {
+          "cardID": "cb-001",
+          "topicID": "central-banks",
+          "title": "What a Central Bank Does",
+          "definition": "A central bank manages the supply of money and short-term interest rates, acts as lender of last resort to the banking system, and in many countries supervises banks. Its statutory goals are set by law rather than chosen by the bank itself.",
+          "example": "Congress has assigned the Federal Reserve the goals of maximum employment and stable prices, commonly referred to together as the dual mandate.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Monetary Policy: What Are Its Goals? How Does It Work?",
+            "url": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+            "publicationDate": "2026-02-26",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:cb-001"
+        },
+        {
+          "cardID": "cb-002",
+          "topicID": "central-banks",
+          "title": "Monetary Policy",
+          "definition": "Monetary policy is the set of actions a central bank takes to influence money and credit conditions in pursuit of its mandate. It works indirectly - through interest rates and financial conditions - on the spending and hiring decisions of everyone else.",
+          "example": "The Federal Reserve's explainer traces that chain in order, from the policy rate through financial conditions to employment and prices, which is also the order in which the effects arrive.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Monetary Policy: What Are Its Goals? How Does It Work?",
+            "url": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+            "publicationDate": "2026-02-26",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:cb-002"
+        },
+        {
+          "cardID": "cb-003",
+          "topicID": "central-banks",
+          "title": "Asset Purchases",
+          "definition": "When the policy rate is already near its lower bound, a central bank can buy longer-term securities to push down longer-term yields. The purchases expand its balance sheet; letting holdings mature without replacement shrinks it again.",
+          "example": "The Federal Reserve publishes its balance sheet weekly. Total assets, FRED series WALCL, rose above $8 trillion during 2021 following the large-scale purchases begun in 2020.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Assets: Total Assets (Less Eliminations from Consolidation): Wednesday Level (WALCL)",
+            "url": "https://fred.stlouisfed.org/series/WALCL",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (total assets)",
+            "geography": "United States",
+            "observationPeriod": "weekly balance sheet, 2020 through 2021",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:cb-003"
+        },
+        {
+          "cardID": "cb-004",
+          "topicID": "central-banks",
+          "title": "Independence",
+          "definition": "Operational independence means a central bank chooses how to pursue goals set by law without needing political sign-off on each decision. The design exists because short-term political incentives and long-run price stability frequently pull in opposite directions.",
+          "example": "The Federal Reserve's structure is built around that separation: a Board of Governors serving long, staggered terms, together with twelve regional Reserve Banks.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Structure of the Federal Reserve System",
+            "url": "https://www.federalreserve.gov/aboutthefed/structure-federal-reserve-system.htm",
+            "publicationDate": "2026-05-28",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:cb-004"
+        },
+        {
+          "cardID": "cb-005",
+          "topicID": "central-banks",
+          "title": "Lender of Last Resort",
+          "definition": "A solvent bank can still fail if depositors withdraw faster than it can sell assets at a fair price. A central bank lending against good collateral during a panic stops that liquidity problem from turning into an insolvency.",
+          "example": "Deposit insurance works alongside that backstop. The FDIC insures deposits up to $250,000 per depositor, per insured bank, for each account ownership category.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Deposit Insurance Corporation",
+            "documentTitle": "Deposit Insurance",
+            "url": "https://www.fdic.gov/resources/deposit-insurance/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (insurance limit)",
+            "geography": "United States",
+            "observationPeriod": "standard maximum deposit insurance amount as published by the FDIC",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:cb-005"
+        },
+        {
+          "cardID": "cb-006",
+          "topicID": "central-banks",
+          "title": "One Policy, Many Economies",
+          "definition": "A currency union sets a single policy rate for members whose economies may sit at different points in the cycle. One rate cannot be right for all of them at once, and members have also given up the exchange rate as a way to adjust.",
+          "example": "The ECB's Governing Council sets 3 key rates for the whole euro area and, since March 2024, steers the policy stance through the deposit facility rate.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "European Central Bank",
+            "documentTitle": "Key ECB Interest Rates",
+            "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/key_ecb_interest_rates/html/index.en.html",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "count of policy rates",
+            "geography": "Euro area",
+            "observationPeriod": "operational framework in effect since March 2024",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:cb-006"
+        },
+        {
+          "cardID": "cb-007",
+          "topicID": "central-banks",
+          "title": "Forward Guidance",
+          "definition": "Forward guidance is communication about the likely future path of policy. Because long-term rates reflect expected short-term rates, credible statements about the future can move borrowing costs immediately without any change in the policy rate itself.",
+          "example": "The FOMC publishes a statement after each meeting, minutes three weeks later, and a quarterly Summary of Economic Projections - the formal channels through which that guidance travels.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Federal Open Market Committee",
+            "url": "https://www.federalreserve.gov/monetarypolicy/fomc.htm",
+            "publicationDate": "2026-08-19",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:cb-007"
+        },
+        {
+          "cardID": "cb-008",
+          "topicID": "central-banks",
+          "title": "Central Bank Money and Payments",
+          "definition": "Central bank money is what banks use to settle payments with one another. Several central banks have researched issuing a digital form of it to the public, and design questions about privacy, bank funding, and access remain unresolved.",
+          "example": "The New York Fed's account of monetary policy implementation shows how reserve balances held at the central bank act as the settlement asset underneath the interbank payment system.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of New York",
+            "documentTitle": "Monetary Policy Implementation",
+            "url": "https://www.newyorkfed.org/markets/domestic-market-operations/monetary-policy-implementation",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:cb-008"
+        }
+      ]
+    },
+    {
+      "topicID": "recessions",
+      "name": "Recessions",
+      "icon": "arrow.down.circle",
+      "order": 9,
+      "access": "paid",
+      "summary": "How recessions are dated, what tends to precede them, and how policy responds.",
+      "cards": [
+        {
+          "cardID": "rec-001",
+          "topicID": "recessions",
+          "title": "What a Recession Is",
+          "definition": "In the United States a recession is dated by the NBER Business Cycle Dating Committee as a significant decline in economic activity spread across the economy and lasting more than a few months. The committee weighs depth, diffusion, and duration together.",
+          "example": "The committee dates peaks and troughs after the fact, using data that are themselves revised, so a recession is typically confirmed many months after it began.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "National Bureau of Economic Research",
+            "documentTitle": "Business Cycle Dating",
+            "url": "https://www.nber.org/research/business-cycle-dating",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:rec-001"
+        },
+        {
+          "cardID": "rec-002",
+          "topicID": "recessions",
+          "title": "The Shortest and the Longest",
+          "definition": "Business cycles vary enormously in length. Comparing them at all requires an official chronology rather than informal recollection of how a period felt.",
+          "example": "NBER dates the COVID-19 recession from a February 2020 peak to an April 2020 trough - 2 months, the shortest in its records - and the expansion that preceded it from June 2009 to February 2020, 128 months, the longest.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "National Bureau of Economic Research",
+            "documentTitle": "US Business Cycle Expansions and Contractions",
+            "url": "https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "months (cycle duration)",
+            "geography": "United States",
+            "observationPeriod": "NBER chronology of peaks and troughs through 2020",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:rec-002"
+        },
+        {
+          "cardID": "rec-003",
+          "topicID": "recessions",
+          "title": "The Business Cycle",
+          "definition": "Economies move through expansion, peak, contraction, and trough, then expand again. The pattern recurs in market economies, but the cycles are irregular in length and in cause. They are not periodic.",
+          "example": "NBER's chronology of U.S. expansions and contractions reaches back to 1854 and puts that irregularity on display directly.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "National Bureau of Economic Research",
+            "documentTitle": "US Business Cycle Expansions and Contractions",
+            "url": "https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "years (chronology coverage)",
+            "geography": "United States",
+            "observationPeriod": "NBER chronology beginning 1854",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:rec-003"
+        },
+        {
+          "cardID": "rec-004",
+          "topicID": "recessions",
+          "title": "Leading Indicators",
+          "definition": "Leading indicators are series that tend to turn before overall activity: new orders, building permits, jobless claims, credit conditions, and the yield curve among them. They give warning, not certainty, and have signalled downturns that never arrived.",
+          "example": "The Conference Board's US Leading Economic Index combines 10 such components into a single monthly composite rather than relying on any one of them.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "The Conference Board",
+            "documentTitle": "US Leading Economic Index",
+            "url": "https://www.conference-board.org/topics/us-leading-indicators",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "count of index components",
+            "geography": "United States",
+            "observationPeriod": "composition of the US Leading Economic Index as published by The Conference Board",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:rec-004"
+        },
+        {
+          "cardID": "rec-005",
+          "topicID": "recessions",
+          "title": "Fiscal Response",
+          "definition": "Governments often answer a downturn with discretionary spending increases or tax cuts meant to offset falling private demand. Each response is legislated case by case, so its timing is bounded by how long lawmaking takes.",
+          "example": "Treasury's Fiscal Data service publishes federal spending by category and fiscal year, which is how the scale of any given response is checked against the budget rather than against the announcement.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Federal Spending",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/federal-spending/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:rec-005"
+        },
+        {
+          "cardID": "rec-006",
+          "topicID": "recessions",
+          "title": "Automatic Stabilizers",
+          "definition": "Parts of the budget respond to a downturn without any new legislation. Unemployment insurance payments rise as more people qualify and income tax receipts fall as incomes fall. Both cushion demand automatically, and both reverse as the economy recovers.",
+          "example": "Because they operate through law already on the books, their effect appears in Treasury's monthly revenue and spending data without a separate act of Congress behind it.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Government Revenue",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/government-revenue/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:rec-006"
+        },
+        {
+          "cardID": "rec-007",
+          "topicID": "recessions",
+          "title": "Employment Lags",
+          "definition": "Unemployment usually keeps rising after a recession's trough. Firms delay layoffs while hoping conditions improve, then delay hiring while waiting for demand to be confirmed. Employment is a lagging indicator of the cycle.",
+          "example": "Setting the NBER trough dates against the FRED unemployment rate series shows that lag directly for each postwar cycle.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Unemployment Rate (UNRATE)",
+            "url": "https://fred.stlouisfed.org/series/UNRATE",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:rec-007"
+        },
+        {
+          "cardID": "rec-008",
+          "topicID": "recessions",
+          "title": "Soft Landings Are Rare",
+          "definition": "A soft landing means bringing inflation down without a recession. It requires tightening enough to cool demand but not so much that activity contracts, working from data that arrive late with policy that acts slowly. It has been achieved infrequently.",
+          "example": "The Federal Reserve's history of the anti-inflation measures of October 1979 documents the alternative: repeated attempts to tighten followed by early easing, until the disinflation of the early 1980s arrived alongside a severe recession.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve History",
+            "documentTitle": "Anti-Inflation Measures of October 1979",
+            "url": "https://www.federalreservehistory.org/essays/volcker-disinflation",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:rec-008"
+        }
+      ]
+    },
+    {
+      "topicID": "debt-deficits",
+      "name": "Debt & Deficits",
+      "icon": "creditcard.fill",
+      "order": 10,
+      "access": "paid",
+      "summary": "The difference between a deficit and a debt, who holds government borrowing, and what interest costs mean.",
+      "cards": [
+        {
+          "cardID": "dd-001",
+          "topicID": "debt-deficits",
+          "title": "Deficit and Debt",
+          "definition": "The deficit is the gap between what a government spends and what it collects in a single fiscal year. The debt is the accumulated total of past deficits net of any surpluses. A shrinking deficit still adds to the debt.",
+          "example": "Treasury publishes the two separately in America's Finance Guide: the national deficit by fiscal year, and the national debt as a running total.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: National Deficit",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/national-deficit/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:dd-001"
+        },
+        {
+          "cardID": "dd-002",
+          "topicID": "debt-deficits",
+          "title": "Debt Relative to the Economy",
+          "definition": "A debt figure means little without a denominator. Comparing debt to gross domestic product scales borrowing to the size of the economy that services it, which is what makes comparisons across countries and across decades meaningful at all.",
+          "example": "FRED publishes U.S. federal debt as a percent of GDP quarterly, series GFDEGDQ188S, so the ratio can be read straight off rather than assembled by hand.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Federal Debt: Total Public Debt as Percent of Gross Domestic Product (GFDEGDQ188S)",
+            "url": "https://fred.stlouisfed.org/series/GFDEGDQ188S",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:dd-002"
+        },
+        {
+          "cardID": "dd-003",
+          "topicID": "debt-deficits",
+          "title": "Who Holds the Debt",
+          "definition": "Government debt is held partly by the public - domestic and foreign investors, banks, pension funds, and the central bank - and partly by government accounts themselves, such as trust funds. The two categories are reported separately for good reason.",
+          "example": "Treasury's national debt page distinguishes debt held by the public from intragovernmental holdings, and only the first represents borrowing from outside the federal government.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: National Debt",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/national-debt/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:dd-003"
+        },
+        {
+          "cardID": "dd-004",
+          "topicID": "debt-deficits",
+          "title": "The Debt Limit",
+          "definition": "The U.S. debt limit is a statutory cap on total federal borrowing. It does not authorize new spending. It constrains the Treasury's ability to pay for spending Congress has already enacted.",
+          "example": "Treasury's debt limit page explains that a statutory limit on federal borrowing has existed since 1917 and that raising or suspending it creates no new spending commitment by itself.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury",
+            "documentTitle": "Debt Limit",
+            "url": "https://home.treasury.gov/policy-issues/financial-markets-financial-institutions-and-fiscal-service/debt-limit",
+            "publicationDate": "2026-08-26",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "year (statutory origin)",
+            "geography": "United States",
+            "observationPeriod": "statutory debt limit dating from 1917",
+            "retrievalDate": "2026-08-30"
+          },
+          "supersedes": "econbyte-1.0:dd-004"
+        },
+        {
+          "cardID": "dd-005",
+          "topicID": "debt-deficits",
+          "title": "Debt and Growth",
+          "definition": "Higher government debt can raise borrowing costs and leave less room to respond to a future crisis. There is no established threshold at which debt mechanically reduces growth - claims of a single critical ratio have not held up - and the effect depends on the currency of issue, the maturity profile, who holds the debt, and what the borrowing financed.",
+          "example": "That is why serious analysis works from the published series - debt held by the public, its maturity profile, and net interest cost - instead of from a rule of thumb about a critical percentage.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: National Debt",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/national-debt/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:dd-005"
+        },
+        {
+          "cardID": "dd-006",
+          "topicID": "debt-deficits",
+          "title": "Borrowing in Your Own Currency",
+          "definition": "A government that borrows in a currency it issues cannot be forced into default by an inability to obtain that currency. That removes one failure mode and leaves the others in place, since creating money to cover obligations shows up as inflation and as a falling exchange rate.",
+          "example": "The Federal Reserve's account of the Great Inflation is the standard cautionary case: the constraint that eventually bound was the price level, not solvency.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve History",
+            "documentTitle": "The Great Inflation",
+            "url": "https://www.federalreservehistory.org/essays/great-inflation",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:dd-006"
+        },
+        {
+          "cardID": "dd-007",
+          "topicID": "debt-deficits",
+          "title": "Long-Run Budget Pressures",
+          "definition": "Programs whose costs depend on demographics - retirement and health benefits - grow as a population ages, because fewer workers support more beneficiaries. Long-run budget projections are driven mainly by those programs and by interest costs.",
+          "example": "Treasury's federal spending breakdown lists the categories by size, which is how the composition of spending is checked rather than assumed from the way programs are discussed.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Federal Spending",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/federal-spending/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:dd-007"
+        },
+        {
+          "cardID": "dd-008",
+          "topicID": "debt-deficits",
+          "title": "Net Interest",
+          "definition": "Net interest is what a government pays to service debt it has already issued. It rises when the debt grows, when rates rise, and as older low-rate securities mature and are refinanced at prevailing rates. Unlike most spending it is not discretionary.",
+          "example": "Treasury publishes federal spending by category, net interest included, and the rates on outstanding marketable securities are published separately through TreasuryDirect.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Federal Spending",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/federal-spending/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "supersedes": "econbyte-1.0:dd-008"
+        }
+      ]
+    },
+    {
+      "topicID": "exchange-rates",
+      "name": "Exchange Rates",
+      "icon": "arrow.triangle.2.circlepath",
+      "order": 11,
+      "access": "paid",
+      "summary": "What sets the price of one currency in another, and how exchange rates move through an economy.",
+      "cards": [
+        {
+          "cardID": "fx-001",
+          "topicID": "exchange-rates",
+          "title": "What an Exchange Rate Is",
+          "definition": "An exchange rate is the price of one currency in terms of another. Quoting conventions differ, so the same rate can be written two ways - dollars per euro or euros per dollar - and reading it in the wrong direction inverts its meaning entirely.",
+          "example": "FRED publishes the euro rate as DEXUSEU, defined as U.S. dollars to one euro. The series name states the direction, which is exactly why these labels carry it.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "U.S. Dollars to Euro Spot Exchange Rate (DEXUSEU)",
+            "url": "https://fred.stlouisfed.org/series/DEXUSEU",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fx-002",
+          "topicID": "exchange-rates",
+          "title": "Floating and Fixed",
+          "definition": "Under a floating rate the market sets the price and it moves continuously. Under a fixed or pegged rate the authorities commit to a level and defend it by buying and selling currency or by adjusting policy. A peg imports the anchor currency's monetary conditions along with its stability.",
+          "example": "The major currencies moved to floating rates after the United States ended the convertibility of dollars into gold in August 1971, which unwound the Bretton Woods system of fixed parities.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve History",
+            "documentTitle": "Nixon Ends Convertibility of U.S. Dollars to Gold",
+            "url": "https://www.federalreservehistory.org/essays/nixon-ends-bretton-woods-international-monetary-system",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "date (regime change)",
+            "geography": "Global",
+            "observationPeriod": "convertibility ended August 1971",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "fx-003",
+          "topicID": "exchange-rates",
+          "title": "Reference Rates",
+          "definition": "Because currency trades happen continuously across many venues, official bodies publish reference rates: a single daily or weekly fixing used for accounting, contracts, and statistics rather than for trading.",
+          "example": "The ECB publishes euro foreign exchange reference rates each working day, and the Federal Reserve publishes its H.10 release of foreign exchange rates on a weekly schedule.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "European Central Bank",
+            "documentTitle": "Euro Foreign Exchange Reference Rates",
+            "url": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fx-004",
+          "topicID": "exchange-rates",
+          "title": "The Size of the Market",
+          "definition": "Foreign exchange is the largest financial market by turnover and it is decentralized - there is no single exchange. Turnover is therefore measured through a coordinated survey of dealers rather than read off one venue's records.",
+          "example": "The BIS Triennial Central Bank Survey put global foreign exchange turnover at about $7.5 trillion per day in April 2022.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Bank for International Settlements",
+            "documentTitle": "Triennial Central Bank Survey of Foreign Exchange and OTC Derivatives Markets",
+            "url": "https://www.bis.org/statistics/rpfx22.htm",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars per day (turnover)",
+            "geography": "Global",
+            "observationPeriod": "BIS Triennial Survey, April 2022",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "fx-005",
+          "topicID": "exchange-rates",
+          "title": "The Dollar's Role",
+          "definition": "A currency can be used far beyond its home economy - to invoice trade, to borrow in, and as a reserve asset held by other central banks. That role makes its exchange rate matter for countries that do not use it at all.",
+          "example": "The BIS Triennial Survey found the U.S. dollar on one side of roughly 88 percent of all foreign exchange trades in April 2022, measured against a total of 200 percent because every trade has two currencies.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Bank for International Settlements",
+            "documentTitle": "Triennial Central Bank Survey of Foreign Exchange and OTC Derivatives Markets",
+            "url": "https://www.bis.org/statistics/rpfx22.htm",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of trades (of 200 percent total)",
+            "geography": "Global",
+            "observationPeriod": "BIS Triennial Survey, April 2022",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "fx-006",
+          "topicID": "exchange-rates",
+          "title": "Purchasing Power Parity",
+          "definition": "Purchasing power parity compares currencies by what they actually buy rather than by the market exchange rate. PPP conversion factors are used for cross-country comparisons of income and output, because market rates can sit away from relative price levels for years at a time.",
+          "example": "The World Bank publishes PPP conversion factors for GDP within the World Development Indicators, produced through the International Comparison Program.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "World Bank",
+            "documentTitle": "PPP Conversion Factor, GDP, World Development Indicators",
+            "url": "https://data.worldbank.org/indicator/PA.NUS.PPP",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fx-007",
+          "topicID": "exchange-rates",
+          "title": "Trade-Weighted Indexes",
+          "definition": "A currency can strengthen against one partner while weakening against another, so a single bilateral rate can mislead. A trade-weighted index aggregates bilateral rates using trade shares to give one measure of a currency's broad value.",
+          "example": "The Federal Reserve's nominal broad dollar index, FRED series DTWEXBGS, is set to 100 in January 2006 and weights partners by their share of U.S. trade.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Nominal Broad U.S. Dollar Index (DTWEXBGS)",
+            "url": "https://fred.stlouisfed.org/series/DTWEXBGS",
+            "publicationDate": "2026-08-24",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "index (January 2006 = 100)",
+            "geography": "United States",
+            "observationPeriod": "index base period January 2006",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "fx-008",
+          "topicID": "exchange-rates",
+          "title": "Pass-Through to Prices",
+          "definition": "A weaker currency raises the domestic price of imports, and some of that increase reaches consumer prices. The share that passes through is partial and varies by country, by product, and with how long the move persists. It is never one for one.",
+          "example": "Because pass-through is partial and lagged, it is estimated by comparing an exchange rate index with import and consumer price indexes over time rather than inferred from a single month's move.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "H.10 Foreign Exchange Rates",
+            "url": "https://www.federalreserve.gov/releases/h10/",
+            "publicationDate": "2026-08-24",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        }
+      ]
+    },
+    {
+      "topicID": "consumer-spending",
+      "name": "Consumer Spending",
+      "icon": "cart.fill",
+      "order": 12,
+      "access": "paid",
+      "summary": "How household spending is measured, what funds it, and why it dominates the U.S. economy.",
+      "cards": [
+        {
+          "cardID": "cs-001",
+          "topicID": "consumer-spending",
+          "title": "Consumption Drives the Economy",
+          "definition": "Personal consumption expenditures - what households spend on goods and services - are the largest single component of U.S. gross domestic product, close to 70 percent of it. A change in household spending therefore moves the whole aggregate.",
+          "example": "BEA publishes personal consumption expenditures monthly in Personal Income and Outlays and again quarterly with GDP, where the series has run close to 70 percent of U.S. output in BEA's annual estimates.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "Personal Income and Outlays",
+            "url": "https://www.bea.gov/data/income-saving/personal-income",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of GDP",
+            "geography": "United States",
+            "observationPeriod": "annual national accounts as published by BEA at the verification date",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "cs-002",
+          "topicID": "consumer-spending",
+          "title": "Income, Outlays, and Saving",
+          "definition": "Household saving is what remains of disposable personal income after outlays. The personal saving rate expresses that remainder as a percentage of disposable income. It is an aggregate residual, not a survey of what households intend to put aside.",
+          "example": "BEA publishes the rate monthly. It rose above 30 percent in April 2020, by a wide margin the highest reading in a series that begins in 1959.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Personal Saving Rate (PSAVERT)",
+            "url": "https://fred.stlouisfed.org/series/PSAVERT",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of disposable personal income",
+            "geography": "United States",
+            "observationPeriod": "monthly series; April 2020 observation",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "cs-003",
+          "topicID": "consumer-spending",
+          "title": "Retail Sales",
+          "definition": "Retail sales measure receipts at retail and food service businesses. They cover goods and restaurant meals but not most services, which makes them an early and partial read on consumption rather than a complete one.",
+          "example": "The Census Bureau publishes an advance estimate each month, roughly two weeks after the month ends, and revises it in the fuller releases that follow.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "Monthly Retail Trade",
+            "url": "https://www.census.gov/retail/index.html",
+            "publicationDate": "2026-08-20",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "cs-004",
+          "topicID": "consumer-spending",
+          "title": "Durables and Nondurables",
+          "definition": "Spending on durable goods - cars, appliances, furniture - is postponable and usually financed, which makes it far more cyclical than spending on nondurables and services. Downturns show up in durables first and most sharply.",
+          "example": "BEA reports consumption split into durable goods, nondurable goods, and services, which is what makes that difference visible instead of a matter of intuition.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "Personal Income and Outlays",
+            "url": "https://www.bea.gov/data/income-saving/personal-income",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "cs-005",
+          "topicID": "consumer-spending",
+          "title": "Consumer Credit",
+          "definition": "Households smooth spending using credit. Revolving credit, mainly credit cards, can be drawn and repaid repeatedly; nonrevolving credit such as auto and student loans is drawn once and amortized. The two behave very differently over a cycle.",
+          "example": "The Federal Reserve's G.19 release publishes both categories monthly, along with average interest rates on selected consumer loans.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "G.19 Consumer Credit",
+            "url": "https://www.federalreserve.gov/releases/g19/",
+            "publicationDate": "2026-08-07",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "cs-006",
+          "topicID": "consumer-spending",
+          "title": "Household Balance Sheets",
+          "definition": "Spending capacity depends on balance sheets as well as on income: total debt outstanding, its composition, and how much of it is falling behind. Rising balances mean something different when incomes are rising than when they are flat.",
+          "example": "The New York Fed publishes a quarterly Household Debt and Credit Report covering mortgage, auto, student, and credit card balances together with transitions into delinquency.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of New York",
+            "documentTitle": "Household Debt and Credit Report",
+            "url": "https://www.newyorkfed.org/microeconomics/hhdc",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "cs-007",
+          "topicID": "consumer-spending",
+          "title": "What Households Actually Buy",
+          "definition": "Aggregate consumption totals say nothing about composition. Expenditure surveys ask households directly what they spend on, which is how spending patterns by income, age, and household size are established rather than inferred.",
+          "example": "BLS runs the Consumer Expenditure Surveys as an interview survey for large and recurring purchases and a diary survey for small, frequent ones. Their results also set the weights in the CPI basket.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Consumer Expenditure Surveys",
+            "url": "https://www.bls.gov/cex/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "cs-008",
+          "topicID": "consumer-spending",
+          "title": "Sentiment and Spending",
+          "definition": "Surveys of consumer confidence record how households say they feel about their finances and the economy. Sentiment and actual outlays can diverge for long stretches, so a confidence reading is a supplementary indicator rather than a forecast of spending.",
+          "example": "The Conference Board includes consumer expectations as one component among ten in its Leading Economic Index rather than treating any single sentiment reading on its own.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "The Conference Board",
+            "documentTitle": "US Leading Economic Index",
+            "url": "https://www.conference-board.org/topics/us-leading-indicators",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        }
+      ]
+    },
+    {
+      "topicID": "taxes",
+      "name": "Taxes",
+      "icon": "doc.text.fill",
+      "order": 13,
+      "access": "paid",
+      "summary": "How tax systems are structured, what the U.S. federal government taxes, and what the terms mean.",
+      "cards": [
+        {
+          "cardID": "tax-001",
+          "topicID": "taxes",
+          "title": "Marginal and Effective Rates",
+          "definition": "A marginal rate applies to the next dollar of income. An effective rate is total tax divided by total income. In a bracketed system the effective rate is always lower than the top marginal rate, because earlier dollars are taxed in lower brackets. Crossing into a higher bracket does not reprice income already earned.",
+          "example": "The IRS publishes the federal income tax rates and brackets, which set out that bracketed structure directly rather than as a single headline rate.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Internal Revenue Service",
+            "documentTitle": "Federal Income Tax Rates and Brackets",
+            "url": "https://www.irs.gov/filing/federal-income-tax-rates-and-brackets",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "tax-002",
+          "topicID": "taxes",
+          "title": "Progressive, Proportional, Regressive",
+          "definition": "A progressive tax takes a larger share of income as income rises, a proportional tax takes the same share at every level, and a regressive tax takes a smaller share as income rises. The labels describe the pattern of the burden. They are not judgments about fairness.",
+          "example": "The OECD's tax policy work compares national systems along exactly these structural dimensions, which is what allows systems with very different rates to be compared at all.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Organisation for Economic Co-operation and Development",
+            "documentTitle": "Tax Policy",
+            "url": "https://www.oecd.org/en/topics/policy-issues/tax-policy.html",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "tax-003",
+          "topicID": "taxes",
+          "title": "Payroll Taxes",
+          "definition": "Payroll taxes fund specific social insurance programs and are levied on earnings rather than on total income. They are typically split between employee and employer, and the employee's share is withheld from each paycheck.",
+          "example": "In the United States the Social Security (OASDI) rate is 6.2 percent each for employee and employer and the Medicare hospital insurance rate is 1.45 percent each, giving 7.65 percent per side.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Social Security Administration, Office of the Chief Actuary",
+            "documentTitle": "FICA & SECA Tax Rates",
+            "url": "https://www.ssa.gov/oact/progdata/taxRates.html",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of taxable earnings",
+            "geography": "United States",
+            "observationPeriod": "statutory rates in effect at the verification date, as published by SSA",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "tax-004",
+          "topicID": "taxes",
+          "title": "The Taxable Maximum",
+          "definition": "Some payroll taxes apply only up to an annual earnings cap. Above the cap no further tax is owed for that program, which makes the tax proportional below the cap and regressive when viewed across the whole income range.",
+          "example": "Social Security's taxable maximum is adjusted each year, while Medicare hospital insurance has no such cap, so the two halves of the payroll tax behave differently at high earnings.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Social Security Administration, Office of the Chief Actuary",
+            "documentTitle": "FICA & SECA Tax Rates",
+            "url": "https://www.ssa.gov/oact/progdata/taxRates.html",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "tax-005",
+          "topicID": "taxes",
+          "title": "Where Federal Revenue Comes From",
+          "definition": "Federal revenue is not one stream. Individual income taxes and payroll taxes together supply most of it, with corporate income taxes, excise taxes, customs duties, and miscellaneous receipts making up the remainder.",
+          "example": "Treasury's Fiscal Data service publishes government revenue by source and fiscal year, which is where the composition can be read for each year rather than generalized from one of them.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Government Revenue",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/government-revenue/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "tax-006",
+          "topicID": "taxes",
+          "title": "Deductions and Credits",
+          "definition": "A deduction reduces the income that is taxed, so its value depends on the taxpayer's marginal rate. A credit reduces the tax owed dollar for dollar, so its value does not. A refundable credit can produce a payment when it exceeds the tax owed.",
+          "example": "The IRS documents which provisions are deductions and which are credits, and whether a given credit is refundable - a distinction that changes the size of the benefit substantially.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Internal Revenue Service",
+            "documentTitle": "Federal Income Tax Rates and Brackets",
+            "url": "https://www.irs.gov/filing/federal-income-tax-rates-and-brackets",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "tax-007",
+          "topicID": "taxes",
+          "title": "Who Actually Pays",
+          "definition": "Legal incidence is who remits a tax. Economic incidence is whose income falls because of it. The two often differ, because the party remitting can shift part of the burden into prices or wages depending on how responsive buyers and sellers are.",
+          "example": "Tariffs are analysed the same way: the importer remits the duty, but how much of it reaches the final price depends on demand and supply conditions along the chain.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Organisation for Economic Co-operation and Development",
+            "documentTitle": "Tax Policy",
+            "url": "https://www.oecd.org/en/topics/policy-issues/tax-policy.html",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "tax-008",
+          "topicID": "taxes",
+          "title": "Tax Expenditures",
+          "definition": "Exclusions, deductions, credits, and preferential rates reduce revenue in much the way direct spending uses it. Budget analysts call these tax expenditures and account for them separately precisely because they never appear as outlays.",
+          "example": "Because they reduce receipts instead of raising outlays, their effect shows up in Treasury's revenue data rather than anywhere in the spending categories.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Government Revenue",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/government-revenue/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        }
+      ]
+    },
+    {
+      "topicID": "fiscal-policy",
+      "name": "Fiscal Policy",
+      "icon": "building.2.fill",
+      "order": 14,
+      "access": "paid",
+      "summary": "How government taxing and spending decisions affect the economy, and what constrains them.",
+      "cards": [
+        {
+          "cardID": "fp-001",
+          "topicID": "fiscal-policy",
+          "title": "What Fiscal Policy Is",
+          "definition": "Fiscal policy is the use of government spending and taxation to influence economic activity. It is decided through legislation, which makes it slower to enact than monetary policy but able to target particular groups, sectors, or regions.",
+          "example": "Treasury's Fiscal Data service publishes federal spending, revenue, the deficit, and the debt together, which is how the overall stance is read from official figures rather than from any single announcement.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Federal Spending",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/federal-spending/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-002",
+          "topicID": "fiscal-policy",
+          "title": "Discretionary and Mandatory Spending",
+          "definition": "Mandatory spending is set by ongoing law and continues without annual action. Discretionary spending is appropriated each year. Most U.S. federal spending is mandatory, which limits how much the annual budget process actually controls.",
+          "example": "Treasury's federal spending page breaks outlays into categories, showing how much of the total falls outside the annual appropriations process altogether.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Federal Spending",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/federal-spending/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-003",
+          "topicID": "fiscal-policy",
+          "title": "Expansionary and Contractionary",
+          "definition": "Expansionary fiscal policy raises spending or cuts taxes to increase demand; contractionary policy does the reverse. The labels describe the direction of the change relative to what would otherwise happen, not the level of the budget.",
+          "example": "Because the impulse is a change rather than a level, it is measured by comparing deficits across fiscal years - the series Treasury publishes as the national deficit.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: National Deficit",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/national-deficit/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-004",
+          "topicID": "fiscal-policy",
+          "title": "The Multiplier",
+          "definition": "A fiscal multiplier is how much output changes per dollar of spending or tax change. Estimates vary widely with the state of the economy, the type of measure, and how monetary policy responds. There is no single agreed value.",
+          "example": "Disagreement of this kind is itself observable: the Philadelphia Fed's Survey of Professional Forecasters publishes the spread of independent macroeconomic forecasts each quarter rather than one consensus number.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of Philadelphia",
+            "documentTitle": "Survey of Professional Forecasters",
+            "url": "https://www.philadelphiafed.org/surveys-and-data/real-time-data-research/spf",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-005",
+          "topicID": "fiscal-policy",
+          "title": "Crowding Out",
+          "definition": "Government borrowing competes with private borrowing for available savings. When the economy is at capacity, that competition can raise interest rates and displace private investment. When resources sit idle, the effect is smaller or absent.",
+          "example": "Whether it is happening is assessed against interest rates and capacity use, both of them published - Treasury yields in the Federal Reserve's H.15 release and capacity utilization in the G.17 release.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "H.15 Selected Interest Rates",
+            "url": "https://www.federalreserve.gov/releases/h15/",
+            "publicationDate": "2026-08-28",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-006",
+          "topicID": "fiscal-policy",
+          "title": "Timing Lags",
+          "definition": "Fiscal policy faces three lags: recognizing that the economy has turned, legislating a response, and the response actually reaching the economy. Together they can run longer than the downturn being addressed.",
+          "example": "This is one reason NBER's practice of dating recessions only after the fact matters for policy: the turning point is confirmed well after the moment a response would have needed to begin.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "National Bureau of Economic Research",
+            "documentTitle": "Business Cycle Dating",
+            "url": "https://www.nber.org/research/business-cycle-dating",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-007",
+          "topicID": "fiscal-policy",
+          "title": "The Fiscal Year",
+          "definition": "Government budget figures are reported on a fiscal year, which need not match the calendar year. Comparing a fiscal-year figure with a calendar-year one without adjusting produces a misleading result.",
+          "example": "The U.S. federal fiscal year runs from 1 October to 30 September, and Treasury's Fiscal Data reports revenue, spending, and the deficit on that basis.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Government Revenue",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/government-revenue/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "dates (fiscal year definition)",
+            "geography": "United States",
+            "observationPeriod": "U.S. federal fiscal year, 1 October to 30 September",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "fp-008",
+          "topicID": "fiscal-policy",
+          "title": "Monetary and Fiscal Policy Together",
+          "definition": "The two arms of macroeconomic policy are set by different institutions, with different mandates and different speeds. Their effects combine: a fiscal expansion into a tightening monetary stance produces a different outcome than the same expansion on its own.",
+          "example": "In the United States the separation is institutional. Congress legislates taxes and spending, while the FOMC sets the policy rate independently in pursuit of goals Congress assigned it.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Monetary Policy: What Are Its Goals? How Does It Work?",
+            "url": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+            "publicationDate": "2026-02-26",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        }
+      ]
+    },
+    {
+      "topicID": "economic-indicators",
+      "name": "Economic Indicators",
+      "icon": "chart.bar.fill",
+      "order": 15,
+      "access": "paid",
+      "summary": "The main data releases, what each one actually measures, and how to read them without over-reading.",
+      "cards": [
+        {
+          "cardID": "ei-001",
+          "topicID": "economic-indicators",
+          "title": "Leading, Coincident, Lagging",
+          "definition": "Indicators are grouped by timing. Leading series tend to turn before overall activity, coincident series turn with it, and lagging series turn after. No single indicator is reliable on its own, which is why composites exist.",
+          "example": "The Conference Board's US Leading Economic Index combines 10 components into one monthly composite and publishes coincident and lagging indexes alongside it.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "The Conference Board",
+            "documentTitle": "US Leading Economic Index",
+            "url": "https://www.conference-board.org/topics/us-leading-indicators",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "count of index components",
+            "geography": "United States",
+            "observationPeriod": "composition of the US Leading Economic Index as published by The Conference Board",
+            "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "ei-002",
+          "topicID": "economic-indicators",
+          "title": "Seasonal Adjustment",
+          "definition": "Many series carry a regular within-year pattern - retail sales in December, construction in winter. Seasonal adjustment removes that expected pattern so consecutive months can be compared. Adjusted and unadjusted versions of the same series are not interchangeable.",
+          "example": "FRED labels every series with its adjustment status. The CPI is published both seasonally adjusted and not seasonally adjusted, and the headline 12-month change is taken from the unadjusted figures.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average (CPIAUCSL)",
+            "url": "https://fred.stlouisfed.org/series/CPIAUCSL",
+            "publicationDate": "2026-08-12",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ei-003",
+          "topicID": "economic-indicators",
+          "title": "Revisions",
+          "definition": "Most major statistics are estimates that get revised as more complete source data arrive. A first release is provisional. Treating a first estimate as final is among the most common mistakes in reading economic data.",
+          "example": "U.S. GDP is published in three successive estimates for each quarter, and payroll employment is revised in each of the two months after its first release.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "What to Know About GDP",
+            "url": "https://www.bea.gov/resources/learning-center/what-to-know-gdp",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ei-004",
+          "topicID": "economic-indicators",
+          "title": "Levels, Changes, and Rates",
+          "definition": "A level says how large something is, a change says how it moved, and a rate expresses the change relative to a base. Falling inflation means prices are still rising, only more slowly - the level of prices is not coming back down.",
+          "example": "The distinction is visible in the CPI itself, where the index level is published alongside the percentage change and the two tell different stories about the same month.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Consumer Price Index",
+            "url": "https://www.bls.gov/cpi/",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ei-005",
+          "topicID": "economic-indicators",
+          "title": "Annual Rates",
+          "definition": "U.S. quarterly and monthly series are often reported at a seasonally adjusted annual rate: the period's change scaled as though it continued for a year. The convention makes periods comparable and magnifies short-run noise at the same time.",
+          "example": "Housing starts are published at a seasonally adjusted annual rate, which is why a monthly figure appears in the millions even though far fewer units began construction that month.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "New Residential Construction",
+            "url": "https://www.census.gov/construction/nrc/index.html",
+            "publicationDate": "2026-08-25",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ei-006",
+          "topicID": "economic-indicators",
+          "title": "Surveys and Administrative Data",
+          "definition": "Some statistics come from surveys of a sample, carrying sampling error and response-rate problems. Others come from administrative records covering everyone in scope. Neither is uniformly better, but the source determines how much weight a small movement deserves.",
+          "example": "The monthly Employment Situation report draws on both at once: a household survey produces the unemployment rate, and an establishment survey produces the payroll counts.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "The Employment Situation (news release)",
+            "url": "https://www.bls.gov/news.release/empsit.nr0.htm",
+            "publicationDate": "2026-08-07",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ei-007",
+          "topicID": "economic-indicators",
+          "title": "Diffusion and Breadth",
+          "definition": "A headline aggregate can be driven by a handful of large components. Diffusion measures - the share of components moving the same way - show whether a change is broad-based or concentrated, which is what determines whether it is likely to persist.",
+          "example": "NBER's dating committee weighs exactly this, requiring that a decline be spread across the economy rather than confined to one sector, alongside its depth and duration.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "National Bureau of Economic Research",
+            "documentTitle": "Business Cycle Dating",
+            "url": "https://www.nber.org/research/business-cycle-dating",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ei-008",
+          "topicID": "economic-indicators",
+          "title": "Nowcasts and Forecasts",
+          "definition": "Because official data arrive with a lag, analysts estimate the current period from partial information. These nowcasts are estimates with error bands and they are revised as each new input lands. They are not measurements.",
+          "example": "The Philadelphia Fed has run its Survey of Professional Forecasters since 1968, publishing the range of independent forecasts each quarter instead of a single number.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of Philadelphia",
+            "documentTitle": "Survey of Professional Forecasters",
+            "url": "https://www.philadelphiafed.org/surveys-and-data/real-time-data-research/spf",
+            "publicationDate": "2026-08-30",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-08-30"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "year (survey start)",
+            "geography": "United States",
+            "observationPeriod": "Survey of Professional Forecasters, running since 1968",
+            "retrievalDate": "2026-08-30"
+          }
+        }
+      ]
+    }
+  ]
+}
