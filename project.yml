@@ -21,6 +21,11 @@ settings:
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO
+  configs:
+    Debug:
+      # EconByteTests uses `@testable import EconByte`, which needs this.
+      # Mirrors the committed pbxproj so the two never drift.
+      ENABLE_TESTABILITY: YES
 targets:
   EconByte:
     type: application

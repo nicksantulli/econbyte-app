@@ -35,10 +35,21 @@ public struct CurriculumSource: Codable, Hashable {
     public let verificationDate: String
 }
 
-/// Present only on cards whose example carries a quantitative claim.
+/// Whether a claim reports something measured or something illustrated.
+/// An `observation` is a dated reading a reader can reproduce from the cited
+/// source; an `illustration` is worked arithmetic that teaches the mechanism
+/// and is not a measurement of anything. Conflating the two is how a textbook
+/// example turns into a fake statistic.
+public enum CurriculumClaimKind: String, Codable, Hashable {
+    case observation
+    case illustration
+}
+
+/// Present only on cards whose prose carries a quantitative claim.
 public struct CurriculumClaim: Codable, Hashable {
     public let units: String
     public let geography: String
+    public let claimKind: CurriculumClaimKind
     public let observationPeriod: String
     public let retrievalDate: String
 }
@@ -61,6 +72,11 @@ public struct CurriculumCard: Codable, Hashable, Identifiable {
     public let claim: CurriculumClaim?
     /// Reference to the 1.0 card this entry re-sources and replaces, if any.
     public let supersedes: String?
+    /// Required only when a re-sourced card no longer teaches the same concept
+    /// its 1.0 identifier taught. Bookmarks and per-card state are keyed on
+    /// `cardID`, so a silent concept swap would send a saved bookmark to a
+    /// different lesson; this field forces any such change to be declared.
+    public let supersedesNote: String?
 
     public var id: String { cardID }
 }
