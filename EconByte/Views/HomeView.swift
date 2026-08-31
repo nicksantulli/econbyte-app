@@ -4,6 +4,7 @@ struct HomeView: View {
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var streak: StreakManager
     @EnvironmentObject private var store: PurchaseManager
+    @EnvironmentObject private var growth: EconGrowth
     // Card mode is driven by an identifiable payload (not isPresented + separate
     // @State). Passing the deck through separate @State raced the cover's
     // presentation — the cover could build with an empty `cardModeCards` before
@@ -15,7 +16,6 @@ struct HomeView: View {
     @State private var showBookmarks = false
     @State private var showPaywall = false
     @State private var pendingPaywallAfterSettings = false
-    @AppStorage("seenOnboarding") private var seenOnboarding = false
 
     private let dailyGoal = 3
 
@@ -59,6 +59,7 @@ struct HomeView: View {
                 SettingsView(onRequestPaywall: { pendingPaywallAfterSettings = true })
                     .environmentObject(streak)
                     .environmentObject(store)
+                    .environmentObject(growth)
             }
             .onChange(of: showSettings) { showing in
                 guard !showing, pendingPaywallAfterSettings else { return }
@@ -70,30 +71,31 @@ struct HomeView: View {
                     .environmentObject(content)
                     .environmentObject(streak)
                     .environmentObject(store)
-                    .environmentObject(AdManager.shared)
+                    .environmentObject(growth)
             }
             .sheet(isPresented: $showBookmarks) {
                 BookmarksView()
                     .environmentObject(content)
                     .environmentObject(streak)
-                    .environmentObject(AdManager.shared)
+                    .environmentObject(growth)
             }
             .fullScreenCover(isPresented: $showPaywall) {
-                PaywallView().environmentObject(store)
+                PaywallView()
+                    .environmentObject(store)
+                    .environmentObject(growth)
             }
         }
         .tint(Econ.sky)
-        .onAppear {
-            if !seenOnboarding {
-                seenOnboarding = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    streak.requestNotificationPermission()
-                }
-            }
-        }
+        // Version 1.0 requested notification authorization automatically one
+        // second after Home first appeared. Version 1.1 prompts only from an
+        // explicit opt-in (design section 11.1, CONTENT-DECISIONS.md D8).
     }
 
     private func startTodaysSet(_ daily: [EconCard]) {
+        growth.telemetry.capture(.dailySetStarted, properties: [
+            "set_id": .token(EconAdState.dayKey(for: Date())),
+            "eligible_card_count": .int(daily.count),
+        ])
         cardModeSession = CardModeSession(cards: daily, title: "Today's Set")
     }
 
@@ -165,8 +167,18 @@ struct HomeView: View {
                     let locked = !content.isTopicFree(topic.id) && !store.isUnlockAllPurchased
                     Button {
                         if locked {
+                            growth.telemetry.capture(.lockedTopicTapped, properties: [
+                                "topic_id": .token(topic.id),
+                                "entry_point": .token(EconEntryPoint.topicGrid.rawValue),
+                            ])
                             showPaywall = true
                         } else {
+                            growth.telemetry.capture(.topicOpened, properties: [
+                                "topic_id": .token(topic.id),
+                                "access_state": .token(content.accessState(
+                                    for: topic.id,
+                                    unlockedAll: store.isUnlockAllPurchased).rawValue),
+                            ])
                             cardModeSession = CardModeSession(
                                 cards: content.cards(for: topic.id, unlockedAll: store.isUnlockAllPurchased),
                                 title: topic.name)

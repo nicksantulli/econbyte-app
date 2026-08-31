@@ -7,6 +7,7 @@ import StoreKit
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: PurchaseManager
+    @EnvironmentObject private var growth: EconGrowth
     @State private var working = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
@@ -104,7 +105,9 @@ struct PaywallView: View {
                     .padding(.bottom, 40)
                 }
             }
-            .navigationTitle("EconByte Pro")
+            // Deliberately not "EconByte Pro": the two products are separate
+            // one-time purchases, not a bundle (design section 8).
+            .navigationTitle("Purchases")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -121,7 +124,16 @@ struct PaywallView: View {
             }
         }
         .tint(Econ.sky)
-        .task { await store.loadProducts() }
+        .task {
+            growth.monetization.setBlocker(.paywall, active: true)
+            growth.review.noteNegativeSessionEvent(.paywall)
+            await store.loadProducts()
+            growth.telemetry.capture(.paywallViewed, properties: [
+                "entry_point": .token(EconEntryPoint.topicGrid.rawValue),
+                "products_available": .bool(store.productsReady),
+            ])
+        }
+        .onDisappear { growth.monetization.setBlocker(.paywall, active: false) }
     }
 
     private func featureRow(_ icon: String, _ text: String) -> some View {
@@ -138,18 +150,52 @@ struct PaywallView: View {
 
     private func buy() {
         working = true
+        growth.monetization.setBlocker(.purchase, active: true)
+        growth.telemetry.capture(.purchaseStarted, properties: [
+            "product_id": .token(PurchaseManager.ProductID.unlockAll.rawValue),
+            "entry_point": .token(EconEntryPoint.paywall.rawValue),
+        ])
         Task {
             let result = await store.purchase(.unlockAll)
             working = false
+            growth.monetization.setBlocker(.purchase, active: false)
+            growth.syncEntitlements(from: store)
+            if case .success = result {
+                growth.telemetry.capture(.purchaseCompleted, properties: [
+                    "product_id": .token(PurchaseManager.ProductID.unlockAll.rawValue),
+                    "entry_point": .token(EconEntryPoint.paywall.rawValue),
+                ])
+            } else {
+                growth.review.noteNegativeSessionEvent(.purchaseFailure)
+                growth.telemetry.capture(.purchaseFailed, properties: [
+                    "product_id": .token(PurchaseManager.ProductID.unlockAll.rawValue),
+                    "result_class": .token(result.econResultClass.rawValue),
+                ])
+            }
             handlePurchaseResult(result, successTitle: "Unlocked")
         }
     }
 
     private func restore() {
         working = true
+        growth.monetization.setBlocker(.restore, active: true)
+        growth.telemetry.capture(.restoreStarted,
+                                 properties: ["entry_point": .token(EconEntryPoint.paywall.rawValue)])
         Task {
             let result = await store.restorePurchases()
             working = false
+            growth.monetization.setBlocker(.restore, active: false)
+            growth.syncEntitlements(from: store)
+            if case .failed = result {
+                growth.review.noteNegativeSessionEvent(.restoreFailure)
+                growth.diagnostics.capture(.restoreFailed)
+                growth.telemetry.capture(.restoreFailed,
+                                         properties: ["result_class": .token(EconResultClass.unavailable.rawValue)])
+            } else {
+                let restored = (store.isUnlockAllPurchased ? 1 : 0) + (store.isRemoveAdsPurchased ? 1 : 0)
+                growth.telemetry.capture(.restoreCompleted,
+                                         properties: ["restored_product_count": .int(restored)])
+            }
             handlePurchaseResult(result, successTitle: "Restored")
         }
     }

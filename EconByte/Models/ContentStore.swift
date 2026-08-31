@@ -1,17 +1,35 @@
 import Foundation
 
+/// Runtime content store for the learning flow.
+///
+/// Version 1.1 reads the validated 15-topic / 120-card catalog
+/// (`curriculum-v1.1.json`) through `CurriculumCatalog.loadValidated()`. Task 4
+/// shipped that catalog but deliberately left the runtime on the stale 10-topic
+/// `cards.json`; Task 5 completes the switch and `cards.json` is gone. See
+/// `CONTENT-DECISIONS.md` D7 for the state-preservation analysis.
 @MainActor
 final class ContentStore: ObservableObject {
     static let shared = ContentStore()
 
     let topics: [EconTopic]
     let allCards: [EconCard]
-    private let stateKey = "com.nsantulli.econbyte.cardStates"
 
-    /// Topics that are always free (the first two — Inflation + Interest Rates,
-    /// per DUD-186 free-tier model). The rest are gated behind the
-    /// `com.nsantulli.econbyte.unlockall` IAP. Matched by topic id, falling back
-    /// to ordinal position so it stays correct if ids ever change.
+    /// Non-nil when the bundled catalog failed to load or validate. The runtime
+    /// then serves nothing (fail closed) and the caller raises
+    /// `content_catalog_invalid`. The build-time catalog test fails first, so a
+    /// shipped build should never reach this state.
+    let loadError: Error?
+
+    /// Per-card state (last seen, bookmark, flip count) is persisted under this
+    /// key and dictionary-keyed on `cardID`. Changing either would silently
+    /// discard every saved bookmark on update, so both are pinned by test.
+    static let cardStatesDefaultsKey = "com.nsantulli.econbyte.cardStates"
+    private var stateKey: String { Self.cardStatesDefaultsKey }
+
+    /// Topics that are always free (Inflation + Interest Rates). The other 13 are
+    /// covered by the already-approved `com.nsantulli.econbyte.unlockall`
+    /// entitlement at no additional charge. Matched by topic id, falling back to
+    /// ordinal position.
     static let freeTopicIds: Set<String> = ["inflation", "interest-rates"]
     private static let freeTopicCount = 2
 
@@ -27,29 +45,37 @@ final class ContentStore: ObservableObject {
     @Published private(set) var cardStates: [String: CardState] = [:]
 
     private init() {
-        guard let url = Bundle.main.url(forResource: "cards", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let decoded = try? JSONDecoder().decode([EconTopic].self, from: data)
-        else {
-            topics = []
-            allCards = []
-            return
+        var loadedTopics: [EconTopic] = []
+        var failure: Error?
+        do {
+            let catalog = try CurriculumCatalog.loadValidated()
+            loadedTopics = catalog.topics.map(Self.viewModel(for:))
+        } catch {
+            failure = error
         }
-        // inject topicId into cards
-        var enriched: [EconTopic] = []
-        var flat: [EconCard] = []
-        for var topic in decoded {
-            topic.cards = topic.cards.map { card in
-                EconCard(id: card.id, topicId: topic.id, concept: card.concept,
-                         conceptBody: card.conceptBody, exampleBody: card.exampleBody,
-                         source: card.source, difficulty: card.difficulty)
-            }
-            enriched.append(topic)
-            flat.append(contentsOf: topic.cards)
-        }
-        topics = enriched
-        allCards = flat
+        topics = loadedTopics
+        allCards = loadedTopics.flatMap(\.cards)
+        loadError = failure
         loadStates()
+    }
+
+    /// Maps a validated catalog topic onto the view models the SwiftUI layer
+    /// already uses. Identifiers pass through untouched, which is what keeps
+    /// saved bookmarks and per-card state resolving across the update.
+    private static func viewModel(for topic: CurriculumTopic) -> EconTopic {
+        EconTopic(
+            id: topic.topicID,
+            name: topic.name,
+            icon: topic.icon,
+            cards: topic.cards.map { card in
+                EconCard(id: card.cardID,
+                         topicId: topic.topicID,
+                         concept: card.title,
+                         conceptBody: card.definition,
+                         exampleBody: card.example,
+                         source: "\(card.source.organization) — \(card.source.documentTitle)",
+                         difficulty: card.difficulty.rawValue)
+            })
     }
 
     private func loadStates() {
@@ -99,7 +125,7 @@ final class ContentStore: ObservableObject {
         let pool = unlockedAll
             ? allCards
             : allCards.filter { isTopicFree($0.topicId) }
-        // Unseen cards first, then least recently seen
+        // Unseen cards first, then least recently seen.
         let sorted = pool.sorted { a, b in
             let sa = cardStates[a.id]?.lastSeen
             let sb = cardStates[b.id]?.lastSeen
@@ -120,5 +146,10 @@ final class ContentStore: ObservableObject {
 
     func topicName(for topicId: String) -> String {
         topics.first(where: { $0.id == topicId })?.name ?? topicId
+    }
+
+    func accessState(for topicId: String, unlockedAll: Bool) -> EconAccessState {
+        if isTopicFree(topicId) { return .free }
+        return unlockedAll ? .unlocked : .locked
     }
 }

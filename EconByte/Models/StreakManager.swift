@@ -1,5 +1,4 @@
 import Foundation
-import UserNotifications
 
 @MainActor
 final class StreakManager: ObservableObject {
@@ -66,25 +65,8 @@ final class StreakManager: ObservableObject {
         UserDefaults.standard.set(iso, forKey: lastDateKey)
     }
 
-    func requestNotificationPermission() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
-            if granted {
-                Task { @MainActor in StreakManager.shared.scheduleStreakReminder() }
-            }
-        }
-    }
-
-    func scheduleStreakReminder() {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["streak-reminder"])
-        var components = DateComponents()
-        components.hour = 19
-        components.minute = 0
-        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
-        let content = UNMutableNotificationContent()
-        content.title = "EconByte"
-        content.body = "Your streak is at risk 🔥 · 3 cards = 90 seconds."
-        content.sound = .default
-        let request = UNNotificationRequest(identifier: "streak-reminder", content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-    }
+    // Notification authorization and scheduling moved to `NotificationPolicy` /
+    // `NotificationCoordinator` in version 1.1. The 1.0 reminder here read
+    // "Your streak is at risk" and prompted for authorization without an opt-in;
+    // both are prohibited by design section 11.1 (CONTENT-DECISIONS.md D8).
 }

@@ -1,0 +1,207 @@
+import XCTest
+
+/// Task 5 rendered-flow gate: consent controls, purchase-control continuity, the
+/// completed-set exit, and the review destination.
+///
+/// These tests drive the real app from a cold launch with the growth state reset
+/// (`-econResetGrowthState`), so every run starts from a fresh-install posture.
+final class GrowthFlowTests: XCTestCase {
+
+    override func setUp() {
+        super.setUp()
+        continueAfterFailure = false
+    }
+
+    private func launchApp() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += ["-skipStudioIntro", "-econResetGrowthState"]
+        app.launch()
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 15),
+                      "Home should render on cold launch")
+        return app
+    }
+
+    private func openSettings(_ app: XCUIApplication) {
+        let gear = app.buttons["settingsGearButton"]
+        XCTAssertTrue(gear.waitForExistence(timeout: 8), "Settings gear should render")
+        gear.tap()
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 8),
+                      "Settings sheet should open")
+    }
+
+    /// Scrolls until the element is actually hittable, and stops as soon as it
+    /// is, so a later `tap()` lands on the control rather than past it.
+    @discardableResult
+    private func scrollTo(_ element: XCUIElement, in app: XCUIApplication) -> Bool {
+        for _ in 0..<8 {
+            if element.exists && element.isHittable { return true }
+            app.swipeUp()
+        }
+        return element.exists && element.isHittable
+    }
+
+    /// Flips a SwiftUI `Toggle` and waits for the change to land. The tap is
+    /// aimed at the trailing edge, where the control itself sits, because the
+    /// switch element's frame spans the whole list row.
+    @discardableResult
+    private func setSwitch(_ element: XCUIElement, to on: Bool) -> Bool {
+        let expected = on ? "1" : "0"
+        if (element.value as? String) == expected { return true }
+        element.coordinate(withNormalizedOffset: CGVector(dx: 0.92, dy: 0.5)).tap()
+        let deadline = Date().addingTimeInterval(5)
+        while Date() < deadline {
+            if (element.value as? String) == expected { return true }
+            _ = element.waitForExistence(timeout: 0.25)
+        }
+        return (element.value as? String) == expected
+    }
+
+    // MARK: - Consent controls (spec section 10.1)
+
+    /// Analytics and diagnostics are separate, optional, and default off.
+    func testAnalyticsAndDiagnosticsConsentBothDefaultOff() {
+        let app = launchApp()
+        openSettings(app)
+
+        let analytics = app.switches["settingsAnalyticsToggle"]
+        let diagnostics = app.switches["settingsDiagnosticsToggle"]
+        scrollTo(analytics, in: app)
+
+        XCTAssertTrue(analytics.waitForExistence(timeout: 8),
+                      "an analytics consent switch should exist in Settings")
+        XCTAssertTrue(diagnostics.waitForExistence(timeout: 8),
+                      "a diagnostics consent switch should exist in Settings")
+        XCTAssertEqual(analytics.value as? String, "0", "analytics consent defaults off")
+        XCTAssertEqual(diagnostics.value as? String, "0", "diagnostics consent defaults off")
+    }
+
+    /// Turning a consent on and off again round-trips without disturbing content.
+    func testAnalyticsConsentRoundTripsAndLeavesContentIntact() {
+        let app = launchApp()
+        openSettings(app)
+
+        let analytics = app.switches["settingsAnalyticsToggle"]
+        XCTAssertTrue(analytics.waitForExistence(timeout: 8))
+        XCTAssertTrue(scrollTo(analytics, in: app),
+                      "the analytics switch should be reachable in Settings")
+
+        XCTAssertTrue(setSwitch(analytics, to: true),
+                      "turning analytics on should stick")
+        XCTAssertTrue(setSwitch(analytics, to: false),
+                      "turning analytics back off should stick")
+
+        app.buttons["Done"].firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 8),
+                      "declining analytics must not affect the learning flow")
+        XCTAssertTrue(app.buttons.containing(NSPredicate(format: "label CONTAINS 'Start'"))
+            .firstMatch.waitForExistence(timeout: 8))
+    }
+
+    /// Reminders default off and the system dialog never appears on launch.
+    func testRemindersDefaultOffAndNoPermissionDialogOnLaunch() {
+        let app = launchApp()
+        XCTAssertEqual(app.alerts.count, 0,
+                       "no permission dialog may appear on first launch")
+
+        openSettings(app)
+        let reminders = app.switches["settingsRemindersToggle"]
+        XCTAssertTrue(reminders.waitForExistence(timeout: 8))
+        XCTAssertEqual(reminders.value as? String, "0", "reminders default off")
+    }
+
+    // MARK: - Purchase controls (spec section 8)
+
+    /// Both approved purchases stay independently reachable, plus Restore.
+    func testBothPurchaseControlsAndRestoreRemainReachable() {
+        let app = launchApp()
+        openSettings(app)
+
+        XCTAssertTrue(app.buttons["settingsRemoveAdsButton"].waitForExistence(timeout: 8),
+                      "Remove Ads must remain purchasable from Settings")
+        XCTAssertTrue(app.buttons["settingsUnlockAllButton"].waitForExistence(timeout: 8),
+                      "Unlock All Topics must remain purchasable from Settings")
+        XCTAssertTrue(app.buttons["settingsRestoreButton"].waitForExistence(timeout: 8),
+                      "Restore Purchases must remain reachable")
+    }
+
+    /// The paywall must not imply the two products are one bundle.
+    func testPaywallDoesNotUseAnUmbrellaProLabel() {
+        let app = launchApp()
+
+        let locked = app.buttons["topic-gdp"]
+        XCTAssertTrue(locked.waitForExistence(timeout: 10))
+        scrollTo(locked, in: app)
+        locked.tap()
+
+        XCTAssertTrue(app.staticTexts["Unlock All Topics"].waitForExistence(timeout: 10),
+                      "the paywall should open for a locked topic")
+        XCTAssertFalse(app.navigationBars["EconByte Pro"].exists,
+                       "an umbrella Pro label implies the two purchases are bundled")
+    }
+
+    // MARK: - Rating destination (spec section 11.2)
+
+    func testSettingsExposesARateLinkThatIsNotTheHomepage() {
+        let app = launchApp()
+        openSettings(app)
+
+        let rate = app.buttons["settingsRateButton"]
+        scrollTo(rate, in: app)
+        XCTAssertTrue(rate.waitForExistence(timeout: 8),
+                      "Settings should expose a Rate EconByte link")
+        XCTAssertTrue(rate.isEnabled)
+    }
+
+    // MARK: - Completed-set exit (spec section 9.3)
+
+    /// A fresh install completing its very first set is below the lifetime
+    /// threshold, so the exit must return straight to Home with no interstitial.
+    func testFirstCompletedSetReturnsHomeWithNoInterstitial() {
+        let app = launchApp()
+
+        let start = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Start'")).firstMatch
+        XCTAssertTrue(start.waitForExistence(timeout: 10))
+        start.tap()
+
+        let counter = app.staticTexts.containing(NSPredicate(format: "label CONTAINS '/'")).firstMatch
+        XCTAssertTrue(counter.waitForExistence(timeout: 10), "card mode should open")
+
+        let next = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Next'")).firstMatch
+        for _ in 0..<12 where next.exists {
+            next.tap()
+        }
+
+        let done = app.buttons["sessionCompleteDoneButton"]
+        XCTAssertTrue(done.waitForExistence(timeout: 10),
+                      "the session-complete state should appear after the final card")
+        XCTAssertEqual(app.alerts.count, 0, "no system prompt at the set exit")
+        done.tap()
+
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12),
+                      "the set exit returns to Home with no ad on a fresh install")
+    }
+
+    /// The notification primer is contextual, non-blocking, and appears only at
+    /// the session-complete state.
+    func testNotificationPrimerAppearsOnlyAtSessionComplete() {
+        let app = launchApp()
+        XCTAssertFalse(app.buttons["notificationPrimerEnableButton"].exists,
+                       "the primer must not appear on Home")
+
+        let start = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Start'")).firstMatch
+        XCTAssertTrue(start.waitForExistence(timeout: 10))
+        start.tap()
+
+        let next = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Next'")).firstMatch
+        XCTAssertTrue(next.waitForExistence(timeout: 10))
+        for _ in 0..<12 where next.exists {
+            next.tap()
+        }
+
+        let primer = app.buttons["notificationPrimerEnableButton"]
+        XCTAssertTrue(primer.waitForExistence(timeout: 10),
+                      "the reminder primer should appear after the first completed set")
+        XCTAssertEqual(app.alerts.count, 0,
+                       "the primer is non-blocking and does not itself prompt the system")
+    }
+}

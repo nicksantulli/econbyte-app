@@ -4,7 +4,7 @@ struct BookmarksView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var streak: StreakManager
-    @EnvironmentObject private var ads: AdManager
+    @EnvironmentObject private var growth: EconGrowth
     @State private var showReview = false
 
     var body: some View {
@@ -67,7 +67,7 @@ struct BookmarksView: View {
                 CardModeView(cards: content.bookmarkedCards, title: "Saved Cards")
                     .environmentObject(content)
                     .environmentObject(streak)
-                    .environmentObject(ads)
+                    .environmentObject(growth)
             }
         }
         .tint(Econ.sky)

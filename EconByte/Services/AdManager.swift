@@ -1,141 +1,100 @@
 import Foundation
-import AppTrackingTransparency
 import UIKit
 
-enum AdConfig {
-    static let cardsPerAd = 5
-    static let maxAdsPerSession = 3
-    static let minimumIntervalSeconds: TimeInterval = 60
-}
-
-// MARK: - AdRegion (DUD-224 — EEA/UK ad geo-restriction)
+// MARK: - Interstitial adapter
 //
-// Owner decision (Jun 14): do NOT serve ads to EEA/UK users. Suppressing ad
-// requests in those regions sidesteps GDPR / Google UMP consent entirely — no
-// consent form, no UMP SDK call. ATT is kept for US / rest-of-world. The check
-// uses the device's *region setting* (privacy-friendly, no location permission)
-// and fails CLOSED: an unknown region is treated as restricted (no ads).
-enum AdRegion {
-    /// EEA member states + the United Kingdom.
-    static let restrictedRegionCodes: Set<String> = [
-        // EU 27
-        "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
-        "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
-        "SI", "ES", "SE",
-        // EEA (non-EU)
-        "IS", "LI", "NO",
-        // United Kingdom
-        "GB",
-    ]
-
-    /// True when ads must be suppressed: the device region is in the EEA/UK, or
-    /// it can't be determined (fail closed).
-    static var isAdRestricted: Bool {
-        let code: String?
-        if #available(iOS 16, *) {
-            code = Locale.current.region?.identifier
-        } else {
-            code = Locale.current.regionCode
-        }
-        guard let code, !code.isEmpty else { return true }
-        return restrictedRegionCodes.contains(code.uppercased())
-    }
-}
+// This type is a *provider adapter only*. Every eligibility rule — entitlement,
+// region, placement, blockers, and caps — lives in `EconMonetization`, so ad
+// policy is testable without the SDK.
+//
+// Version 1.1 removed the AppTrackingTransparency pathway that 1.0 used here.
+// See `CONTENT-DECISIONS.md` D2 for what 1.0 actually did, why it went, and the
+// Info.plist / privacy-manifest work that is sequenced after the archive privacy
+// report. Requests are non-personalized (`npa=1`, `rdp=1`) and capped at a `G`
+// content rating.
 
 #if canImport(GoogleMobileAds)
 import GoogleMobileAds
 
 @MainActor
-final class AdManager: NSObject, ObservableObject {
+final class AdManager: NSObject, EconInterstitialAdapting {
     static let shared = AdManager()
 
-    private var adUnitID: String {
-        #if DEBUG
-        "ca-app-pub-3940256099942544/4411468910"
-        #else
-        "ca-app-pub-9950526548980224/9740067293"   // ← Owner provides real unit
-        #endif
-    }
+    /// Raised on load or presentation failure so the caller can record a bounded
+    /// diagnostic code. Failures are otherwise silent to the learning flow.
+    var onFailure: ((EconDiagnosticCode, Error?) -> Void)?
 
     private var interstitial: InterstitialAd?
     private var isLoading = false
+    private var didStart = false
+    private var pendingPolicy = EconAdRequestPolicy()
 
-    private var sessionCardCount = 0
-    private var sessionAdCount = 0
-    private var lastShownAt: Date?
+    var isAdLoaded: Bool { interstitial != nil }
 
-    /// When true (Remove Ads IAP owned), no interstitials are requested or shown.
-    /// Synced from `PurchaseManager` via `setAdsDisabled(_:)`.
-    @Published private(set) var adsDisabled = false
+    func startSDK(policy: EconAdRequestPolicy) {
+        guard !didStart else { return }
+        didStart = true
+        pendingPolicy = policy
 
-    func setAdsDisabled(_ disabled: Bool) { adsDisabled = disabled }
+        let configuration = MobileAds.shared.requestConfiguration
+        configuration.maxAdContentRating = .general
+        // Belt and braces alongside the per-request `npa` extra: this forces
+        // non-personalized treatment for every request in the process.
+        configuration.publisherPrivacyPersonalizationState = .disabled
 
-    static let testDeviceIdentifiers = ["ef5558e3631904432fb53d8a5955da9d"]
-
-    func start() {
-        // DUD-224: never serve ads in the EEA/UK (Owner decision) — bail before
-        // the SDK starts or any ad is requested, which sidesteps GDPR/UMP.
-        guard !AdRegion.isAdRestricted else {
-            NSLog("[AdManager] EEA/UK region — ads disabled")
-            return
-        }
-        MobileAds.shared.requestConfiguration.testDeviceIdentifiers = Self.testDeviceIdentifiers
         MobileAds.shared.start { _ in
-            Task { @MainActor in AdManager.shared.loadAd() }
+            Task { @MainActor in AdManager.shared.preload(policy: policy) }
         }
     }
 
-    private func loadAd() {
-        guard !isLoading, interstitial == nil else { return }
+    func preload(policy: EconAdRequestPolicy) {
+        pendingPolicy = policy
+        guard didStart, !isLoading, interstitial == nil else { return }
         isLoading = true
-        Task {
+        Task { @MainActor in
             do {
-                let ad = try await InterstitialAd.load(with: adUnitID, request: Request())
+                let ad = try await InterstitialAd.load(with: EconAdUnit.current,
+                                                       request: Self.makeRequest(policy: policy))
                 self.interstitial = ad
                 self.isLoading = false
-                NSLog("[AdManager] interstitial loaded")
             } catch {
                 self.isLoading = false
-                NSLog("[AdManager] load failed: \(error)")
+                self.onFailure?(.adLoadFailed, error)
             }
         }
     }
 
-    private var canShow: Bool {
-        guard sessionAdCount < AdConfig.maxAdsPerSession else { return false }
-        if let last = lastShownAt {
-            return Date().timeIntervalSince(last) >= AdConfig.minimumIntervalSeconds
+    func discardLoadedAd() {
+        interstitial = nil
+    }
+
+    func present() async -> Bool {
+        guard let ad = interstitial, let presenter = Self.topViewController() else {
+            return false
         }
+        do {
+            try ad.canPresent(from: presenter)
+        } catch {
+            interstitial = nil
+            onFailure?(.adPresentFailed, error)
+            return false
+        }
+        interstitial = nil
+        ad.fullScreenContentDelegate = self
+        ad.present(from: presenter)
         return true
     }
 
-    func noteCardSwipe() async {
-        guard !adsDisabled else { return }
-        sessionCardCount += 1
-        guard sessionCardCount % AdConfig.cardsPerAd == 0, canShow else { return }
-        await presentInterstitial()
+    private static func makeRequest(policy: EconAdRequestPolicy) -> Request {
+        let request = Request()
+        let extras = Extras()
+        extras.additionalParameters = policy.extras
+        request.register(extras)
+        return request
     }
 
-    private func presentInterstitial() async {
-        // DUD-224: no ads in the EEA/UK — also skip the ATT prompt there.
-        guard !AdRegion.isAdRestricted else { return }
-        if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
-            _ = await ATTrackingManager.requestTrackingAuthorization()
-        }
-        guard let ad = interstitial else { return }
-        guard let presenter = Self.topViewController() else {
-            NSLog("[AdManager] no root view controller — skipping interstitial")
-            return
-        }
-        sessionAdCount += 1
-        lastShownAt = Date()
-        interstitial = nil
-        ad.present(from: presenter)
-        loadAd()
-    }
-
-    /// Walks the key window's root VC chain so interstitials present correctly
-    /// on iPhone and iPad (compatibility mode). `present(from: nil)` is unreliable.
+    /// Walks the key window's root VC chain so interstitials present correctly on
+    /// iPhone and in iPad compatibility mode. `present(from: nil)` is unreliable.
     private static func topViewController() -> UIViewController? {
         let root = UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
@@ -148,38 +107,33 @@ final class AdManager: NSObject, ObservableObject {
     }
 }
 
+extension AdManager: FullScreenContentDelegate {
+    func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
+        preload(policy: pendingPolicy)
+    }
+
+    func ad(_ ad: FullScreenPresentingAd,
+            didFailToPresentFullScreenContentWithError error: Error) {
+        onFailure?(.adPresentFailed, error)
+        preload(policy: pendingPolicy)
+    }
+}
+
 #else
 
+/// Simulator/CI fallback when the Google package is unavailable. Loads nothing,
+/// presents nothing — the policy layer is exercised the same way either side.
 @MainActor
-final class AdManager: NSObject, ObservableObject {
+final class AdManager: NSObject, EconInterstitialAdapting {
     static let shared = AdManager()
-    private var sessionCardCount = 0
-    private var sessionAdCount = 0
-    private var lastShownAt: Date?
 
-    @Published private(set) var adsDisabled = false
-    func setAdsDisabled(_ disabled: Bool) { adsDisabled = disabled }
+    var onFailure: ((EconDiagnosticCode, Error?) -> Void)?
 
-    private var canShow: Bool {
-        guard sessionAdCount < AdConfig.maxAdsPerSession else { return false }
-        if let last = lastShownAt { return Date().timeIntervalSince(last) >= AdConfig.minimumIntervalSeconds }
-        return true
-    }
-
-    func start() { NSLog("[AdManager:MOCK] start()") }
-
-    func noteCardSwipe() async {
-        guard !adsDisabled else { return }
-        sessionCardCount += 1
-        guard sessionCardCount % AdConfig.cardsPerAd == 0, canShow else { return }
-        if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
-            _ = await ATTrackingManager.requestTrackingAuthorization()
-        }
-        sessionAdCount += 1
-        lastShownAt = Date()
-        NSLog("[AdManager:MOCK] interstitial #\(sessionAdCount) at card \(sessionCardCount)")
-        try? await Task.sleep(nanoseconds: 600_000_000)
-    }
+    var isAdLoaded: Bool { false }
+    func startSDK(policy: EconAdRequestPolicy) {}
+    func preload(policy: EconAdRequestPolicy) {}
+    func discardLoadedAd() {}
+    func present() async -> Bool { false }
 }
 
 #endif

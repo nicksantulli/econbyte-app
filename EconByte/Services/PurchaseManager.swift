@@ -39,6 +39,13 @@ final class PurchaseManager: ObservableObject {
     private let removeAdsKey  = "iap.removeAds.purchased"
 
     private var updates: Task<Void, Never>?
+    /// Restore is single-flight: `AppStore.sync()` is only ever called from an
+    /// explicit user action, and never twice concurrently (design section 8).
+    private var restoreTask: Task<PurchaseResult, Never>?
+
+    /// Raised on an unverified transaction so the caller can record a bounded
+    /// diagnostic code. Never carries transaction data.
+    var onDiagnostic: ((EconDiagnosticCode) -> Void)?
 
     var productsReady: Bool { !products.isEmpty }
 
@@ -115,17 +122,25 @@ final class PurchaseManager: ObservableObject {
     // MARK: - Restore
 
     func restorePurchases() async -> PurchaseResult {
-        do {
-            try await AppStore.sync()
-            await updatePurchasedProducts()
-            if isUnlockAllPurchased || isRemoveAdsPurchased {
-                return .success
+        if let inFlight = restoreTask { return await inFlight.value }
+        let task = Task { () -> PurchaseResult in
+            do {
+                try await AppStore.sync()
+                await updatePurchasedProducts()
+                if isUnlockAllPurchased || isRemoveAdsPurchased {
+                    return .success
+                }
+                return .failed("No previous purchases were found for this Apple ID.")
+            } catch {
+                NSLog("[PurchaseManager] restore failed: \(error)")
+                onDiagnostic?(.restoreFailed)
+                return .failed(error.localizedDescription)
             }
-            return .failed("No previous purchases were found for this Apple ID.")
-        } catch {
-            NSLog("[PurchaseManager] restore failed: \(error)")
-            return .failed(error.localizedDescription)
         }
+        restoreTask = task
+        let result = await task.value
+        restoreTask = nil
+        return result
     }
 
     // MARK: - Entitlements
@@ -152,7 +167,11 @@ final class PurchaseManager: ObservableObject {
 
     private func listenForTransactions() async {
         for await result in Transaction.updates {
-            guard case .verified(let transaction) = result else { continue }
+            guard case .verified(let transaction) = result else {
+                // Unverified transactions never grant an entitlement.
+                onDiagnostic?(.transactionUnverified)
+                continue
+            }
             await updatePurchasedProducts()
             await transaction.finish()
         }

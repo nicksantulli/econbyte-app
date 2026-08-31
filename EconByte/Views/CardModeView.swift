@@ -6,7 +6,7 @@ struct CardModeView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var streak: StreakManager
-    @EnvironmentObject private var ads: AdManager
+    @EnvironmentObject private var growth: EconGrowth
     @State private var currentIndex = 0
     @State private var dragOffset: CGFloat = 0
     @State private var sessionDone = false
@@ -20,6 +20,7 @@ struct CardModeView: View {
                 }
                 .environmentObject(streak)
                 .environmentObject(content)
+                .environmentObject(growth)
             } else if cards.isEmpty {
                 VStack(spacing: 16) {
                     Text("No cards available.")
@@ -92,7 +93,14 @@ struct CardModeView: View {
         let card = cards[currentIndex]
         content.markSeen(card.id)
         streak.noteCardSeen()
-        Task { await ads.noteCardSwipe() }
+        // No ad here. Version 1.1's only interstitial placement is the return
+        // from a completed set to Home, never inside a card (design section 9.3).
+        growth.telemetry.capture(.cardViewed, properties: [
+            "card_id": .token(card.id),
+            "topic_id": .token(card.topicId),
+            "difficulty": .token(card.difficulty),
+            "position": .int(currentIndex),
+        ])
         withAnimation(.easeOut(duration: 0.2)) { dragOffset = 0 }
         if currentIndex < cards.count - 1 {
             currentIndex += 1
