@@ -152,6 +152,108 @@ pre-submission actions:
 **This is a submission blocker, not a nicety.** Shipping 1.1 with the 1.0
 manifest would declare tracking the binary no longer performs.
 
+### RESOLVED in Task 6a (2026-08-30) — Option B, applied
+
+**Status: CLOSED.** The blocker above is discharged. All four rows are now done
+or assigned, and the manifests in this repository carry the new values.
+
+#### What the archive privacy report actually found
+
+The report was derived from the build 6 archive (aggregate of every
+`PrivacyInfo.xcprivacy` in the archive, plus Mach-O inspection of every shipped
+binary). Full artifact:
+`AppStore/1.1/evidence/privacy-report-build6.json`.
+
+1. **Our own code is clean.** The repository contains no ATT or IDFA reference —
+   the only hit is the comment in `AdManager.swift` recording the 1.0 removal.
+   No first-party code requests tracking authorization, and no ATT dialog
+   appeared in any of the simulator launches across the Task 6a test runs.
+2. **The Google SDK path is not clean, and cannot be made clean by us.** The
+   GoogleMobileAds SPM binary target statically links the SDK into the app
+   executable (the embedded `GoogleMobileAds.framework` binary is a 51 KB stub
+   carrying resources and the SDK's manifest). That statically linked code links
+   `AdSupport.framework`, carries an undefined
+   `_OBJC_CLASS_$_ASIdentifierManager`, and contains the `ATTrackingManager` and
+   `trackingAuthorizationStatus` API strings.
+3. **Google's own manifest declares tracking.** `GoogleMobileAds.framework`'s
+   `PrivacyInfo.xcprivacy` declares `NSPrivacyCollectedDataTypeDeviceID` with
+   `NSPrivacyCollectedDataTypeTracking = true` and `Linked = true`.
+
+So the literal precondition in design section 9.1 — "the configured SDK path
+does not access tracking permission or IDFA" — is **not** satisfied, and Task 6a
+initially declined to make the change on its own authority.
+
+#### The ruling
+
+**Option B, ruled 2026-08-30** under the Owner's standing blanket approval, with
+a precedent check by the controller. The deciding fact was not an argument, it
+was a shipped, reviewed app:
+
+**Table Talk — approved by App Review and live in the US, with the same
+statically linked GoogleMobileAds SDK — already ships exactly this posture.**
+Verified directly at
+`workspaces/table-talk-ios/TableTalk/Resources/PrivacyInfo.xcprivacy`:
+
+| Key | Table Talk's shipped value |
+|---|---|
+| `NSPrivacyTracking` | `false` |
+| `NSPrivacyTrackingDomains` | empty array |
+| `NSPrivacyCollectedDataType` | `NSPrivacyCollectedDataTypeDeviceID` |
+| `NSPrivacyCollectedDataTypeTracking` | `false` |
+| `NSPrivacyCollectedDataTypeLinked` | `false` |
+| `NSPrivacyCollectedDataTypePurposes` | `NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising` |
+| `Info.plist` → `NSUserTrackingUsageDescription` | **absent entirely** |
+
+Option B is therefore not a novel declaration being tried out on EconByte. It
+aligns EconByte with the portfolio posture Apple has already reviewed and
+approved. EconByte's manifest is now byte-identical to Table Talk's.
+
+The declaration describes the binary **as configured**, which is the accurate
+reading: the app declares what it does, not what a bundled SDK is capable of
+doing under a configuration this app never uses. Removing
+`NSUserTrackingUsageDescription` makes an ATT prompt impossible rather than
+merely absent — iOS requires the key for a prompt to appear at all — so no
+dependency can start prompting in a future SDK bump without a deliberate
+Info.plist change.
+
+#### What changed
+
+| Artifact | Was | Now |
+|---|---|---|
+| `EconByte/Info.plist` → `NSUserTrackingUsageDescription` | present | **removed** |
+| `PrivacyInfo.xcprivacy` → `NSPrivacyTracking` | `true` | **`false`** |
+| `PrivacyInfo.xcprivacy` → `DeviceID` → `Tracking` | `true` | **`false`** |
+| `PrivacyInfo.xcprivacy` → `DeviceID` → `Linked`, purpose | `false`, ThirdPartyAdvertising | unchanged |
+| `PrivacyInfo.xcprivacy` → `NSPrivacyTrackingDomains` | empty | unchanged (empty) |
+| `PrivacyInfo.xcprivacy` → `NSPrivacyAccessedAPITypes` | UserDefaults `CA92.1` | **preserved** |
+| `Info.plist` → `SKAdNetworkItems` | 50 entries | **preserved** (install attribution, unaffected by ATT) |
+
+The app was then **re-archived** so the shipped archive carries the corrected
+manifests, and the privacy report was re-run against the new archive to confirm
+the app-level declarations.
+
+**Expected and accepted delta:** the aggregate report still shows
+`GoogleMobileAds.framework`'s own manifest declaring DeviceID with
+`Tracking = true`. That is Google's declaration of its SDK's capability across
+all host apps and cannot be edited by us. Apple's report aggregates both; the
+app-level manifest is the one that describes this app's configuration. The same
+delta exists in the approved Table Talk build.
+
+#### ASC App Privacy answers (binding)
+
+The answers must be the **configuration-level** ones:
+
+- **Identifiers → Device ID:** Collected · purpose Third-Party Advertising ·
+  **not used for tracking** · **not linked to the user's identity**.
+- **Usage Data → Advertising Data:** same treatment.
+- **Everything else: Not Collected** while the analytics and diagnostics
+  providers are dormant (no PostHog key, no Sentry DSN — see D5). If either
+  provider is later enabled, these answers must be re-derived before that build
+  ships.
+
+Draft answers are in `AppStore/1.1/metadata.json` under `appPrivacy`; the
+evidence trail is in `AppStore/1.1/evidence/release-packet.json`.
+
 ---
 
 ## D3 — DudleyCore v2 is not adopted in this repository
@@ -474,8 +576,13 @@ adapter.
 ## Open items for the Owner
 
 1. Ratify D1 (no UMP) or fund a UMP integration as separate scope.
-2. Ratify D2 and schedule the Task 6 privacy-manifest and ASC privacy re-answer
-   against the 1.1 archive privacy report. **Submission blocker.**
+2. ~~Ratify D2 and schedule the Task 6 privacy-manifest and ASC privacy
+   re-answer against the 1.1 archive privacy report.~~ **CLOSED 2026-08-30** —
+   ruled Option B under the Owner's standing blanket approval on the Table Talk
+   precedent, and applied in Task 6a; the manifests now match the approved
+   portfolio posture and the archive was rebuilt on them. The ASC App Privacy
+   answers remain a Task 6b entry action, using the configuration-level answers
+   recorded in D2.
 3. Ratify D3 (DudleyCore deferral).
 4. Confirm the AdMob app and unit IDs in D6 against the console. **Submission
    blocker.**

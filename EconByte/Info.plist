@@ -32,8 +32,6 @@
 	<false/>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-9950526548980224~6219329532</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>EconByte uses this to show relevant ads and measure ad performance.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict><key>SKAdNetworkIdentifier</key><string>22mmun2rn5.skadnetwork</string></dict>
