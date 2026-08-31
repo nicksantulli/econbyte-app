@@ -155,7 +155,7 @@
           "cardID": "inf-006",
           "topicID": "inflation",
           "title": "Hyperinflation",
-          "definition": "Hyperinflation is inflation so rapid that money stops working as a store of value and, eventually, as a means of payment. Economists conventionally use a threshold of more than 50 percent per month to mark it off from ordinary high inflation.",
+          "definition": "Hyperinflation is inflation so rapid that money stops working as a store of value and, eventually, as a means of payment. Economists conventionally mark it off from ordinary high inflation at more than 50 percent per month - a threshold proposed by Phillip Cagan in 1956, not a legal definition.",
           "example": "In Germany in 1923 wages were paid daily in many places, because by evening the morning's notes bought less. When the Rentenmark replaced the Mark that November, the entire German war debt of 154 billion Mark was worth 15.4 Pfennig.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
@@ -172,7 +172,7 @@
             "reviewer": "EconByte editorial review (Dudley Development)"
           },
           "claim": {
-            "units": "percent per month (definitional threshold); nominal debt value",
+            "units": "nominal debt value before and after currency reform",
             "geography": "Germany",
             "claimKind": "observation",
             "observationPeriod": "1923 hyperinflation and the November 1923 currency reform",
@@ -348,7 +348,7 @@
           "topicID": "interest-rates",
           "title": "The Yield Curve",
           "definition": "The yield curve plots government bond yields against their maturities. Longer maturities normally yield more. When short-term yields exceed long-term ones the curve is inverted, a pattern that has often, though not always, preceded U.S. recessions.",
-          "example": "The 10-year minus 2-year Treasury spread first went negative on 1 April 2022, turned negative again that July, and did not close above zero for good until 5 September 2024. Lenders were being paid less to tie money up for a decade than for two years.",
+          "example": "The 10-year minus 2-year Treasury spread first went negative on 1 April 2022, turned negative again that July, and did not close above zero for good until 6 September 2024. Lenders were being paid less to tie money up for a decade than for two years.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "advanced",
           "source": {
@@ -367,7 +367,7 @@
             "units": "percentage points (10-year minus 2-year Treasury yield)",
             "geography": "United States",
             "claimKind": "observation",
-            "observationPeriod": "1 April 2022 through 5 September 2024",
+            "observationPeriod": "1 April 2022 through 6 September 2024",
             "retrievalDate": "2026-08-30"
           },
           "supersedes": "econbyte-1.0:ir-005"
@@ -472,7 +472,7 @@
           "difficulty": "intro",
           "source": {
             "organization": "U.S. Bureau of Economic Analysis",
-            "documentTitle": "What to Know About GDP",
+            "documentTitle": "Gross Domestic Product",
             "url": "https://www.bea.gov/resources/learning-center/what-to-know-gdp",
             "publicationDate": "2026-08-30",
             "datePrecision": "observed-last-modified",
@@ -654,7 +654,7 @@
           "difficulty": "intermediate",
           "source": {
             "organization": "U.S. Bureau of Economic Analysis",
-            "documentTitle": "What to Know About GDP",
+            "documentTitle": "Gross Domestic Product",
             "url": "https://www.bea.gov/resources/learning-center/what-to-know-gdp",
             "publicationDate": "2026-08-30",
             "datePrecision": "observed-last-modified",
@@ -1226,7 +1226,7 @@
           "topicID": "trade-tariffs",
           "title": "Protection and Its Costs",
           "definition": "Protection shields a domestic industry from foreign competition using tariffs, quotas, or regulation. The benefits are concentrated in the protected industry, while the costs are spread thinly across buyers, downstream industries, and exporters who face retaliation.",
-          "example": "The WTO's own case for open trade describes where protection tends to end up: bloated, inefficient producers supplying customers with outdated products, and factories closing and jobs lost anyway - after the subsidies have been paid. The 2 groups that notice are the protected firm and, much later, everyone else.",
+          "example": "The WTO's own case for open trade puts it bluntly: protection \"ultimately leads to bloated, inefficient producers supplying consumers with outdated, unattractive products.\" The 2 groups that notice are the protected firm, and - much later, after the subsidies have been paid - everyone else.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
           "source": {
@@ -1277,13 +1277,13 @@
           "topicID": "trade-tariffs",
           "title": "Supply Chains and Resilience",
           "definition": "Concentrating production wherever it is cheapest lowers cost and raises exposure to a single disruption. Diversifying or relocating production buys resilience by giving up some of that efficiency. It is a deliberate trade, not a free improvement.",
-          "example": "The New York Fed built the Global Supply Chain Pressure Index to put a number on the disruption, combining shipping costs and manufacturing indicators back to 1997. Its research finds that moves in the index track goods and producer price inflation in both the United States and the euro area.",
+          "example": "The New York Fed built the Global Supply Chain Pressure Index to put a number on the disruption. Its staff report finds recent inflationary pressures closely related to the index, especially in producer prices in the United States and the euro area - 2 economies, one shared bottleneck.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
           "source": {
             "organization": "Federal Reserve Bank of New York",
-            "documentTitle": "Global Supply Chain Pressure Index (GSCPI)",
-            "url": "https://www.newyorkfed.org/research/policy/gscpi",
+            "documentTitle": "The GSCPI: A New Barometer of Global Supply Chain Pressures (Staff Report 1017)",
+            "url": "https://www.newyorkfed.org/research/staff_reports/sr1017",
             "publicationDate": "2026-08-30",
             "datePrecision": "observed-on-verification-date",
             "verificationDate": "2026-08-30"
@@ -1418,7 +1418,7 @@
           "topicID": "housing-market",
           "title": "The Rate Lock-In Effect",
           "definition": "A homeowner holding a low fixed-rate mortgage gives it up by selling. When market rates are much higher, moving means a materially larger payment on a comparable home, so fewer owners list. Fewer listings tighten supply even while demand is falling.",
-          "example": "An owner holding a 3 percent mortgage who moves to a similar house at 7 percent takes on a far larger payment for the same roof. The rational move is to stay - and a market where nobody lists is a market with no supply, whatever demand is doing.",
+          "example": "An owner holding a 3 percent mortgage who moves to a similar house at 7 percent takes on a far larger payment for the same roof. Staying is the individually rational response, which is why listings dry up - and a market where nobody lists is a market with no supply, whatever demand is doing.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
           "source": {
@@ -1632,7 +1632,7 @@
           "topicID": "central-banks",
           "title": "Lender of Last Resort",
           "definition": "A solvent bank can still fail if depositors withdraw faster than it can sell assets at a fair price. A central bank lending against good collateral during a panic stops that liquidity problem from turning into an insolvency.",
-          "example": "Deposit insurance stops the run before it starts. The FDIC insures up to $250,000 per depositor, per insured bank, for each ownership category - so a saver under that limit has no reason to queue, and a queue that never forms needs no lender of last resort.",
+          "example": "Deposit insurance stops the run before it starts. The FDIC states that deposits are automatically insured to at least $250,000 at each insured bank - so a saver under that limit has no reason to queue, and a queue that never forms needs no lender of last resort.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
           "source": {
@@ -1648,10 +1648,10 @@
             "reviewer": "EconByte editorial review (Dudley Development)"
           },
           "claim": {
-            "units": "U.S. dollars (standard maximum deposit insurance amount)",
+            "units": "U.S. dollars (minimum insured amount at each insured bank)",
             "geography": "United States",
             "claimKind": "observation",
-            "observationPeriod": "standard limit as published by the FDIC (as published on 2026-08-30)",
+            "observationPeriod": "coverage as stated by the FDIC (as published on 2026-08-30)",
             "retrievalDate": "2026-08-30"
           },
           "supersedes": "econbyte-1.0:cb-005"
@@ -3120,7 +3120,7 @@
           "difficulty": "intro",
           "source": {
             "organization": "U.S. Bureau of Economic Analysis",
-            "documentTitle": "What to Know About GDP",
+            "documentTitle": "Gross Domestic Product",
             "url": "https://www.bea.gov/resources/learning-center/what-to-know-gdp",
             "publicationDate": "2026-08-30",
             "datePrecision": "observed-last-modified",

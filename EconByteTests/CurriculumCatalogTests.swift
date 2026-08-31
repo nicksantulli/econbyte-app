@@ -57,6 +57,8 @@ final class CurriculumCatalogTests: XCTestCase {
     /// Pinned from the shipped 1.0 catalog at commit 42df3dc
     /// (`EconByte/Content/cards.json`): the concept each card identifier
     /// taught, plus tokens that concept cannot be expressed without.
+    /// The tokens are deliberately discriminating - see
+    /// `testLegacyConceptPinsCannotBeSatisfiedByAnotherCard`.
     private static let legacyConcepts: [String: (concept: String, tokens: [String])] = [
         "inf-001": ("What is Inflation?", ["purchasing power", "prices"]),
         "inf-002": ("The Consumer Price Index (CPI)", ["consumer price index", "basket"]),
@@ -64,35 +66,35 @@ final class CurriculumCatalogTests: XCTestCase {
         "inf-004": ("Demand-Pull Inflation", ["demand-pull"]),
         "inf-005": ("Cost-Push Inflation", ["cost-push"]),
         "inf-006": ("Hyperinflation", ["hyperinflation"]),
-        "inf-007": ("Deflation: The Opposite Problem", ["deflation"]),
-        "inf-008": ("The Fed's 2% Inflation Target", ["2 percent"]),
-        "ir-001": ("What is an Interest Rate?", ["interest rate", "borrowing"]),
+        "inf-007": ("Deflation: The Opposite Problem", ["deflation", "sustained fall"]),
+        "inf-008": ("The Fed's 2% Inflation Target", ["low but positive", "buffer"]),
+        "ir-001": ("What is an Interest Rate?", ["price of borrowing", "lenders receive"]),
         "ir-002": ("The Federal Funds Rate", ["federal funds rate"]),
-        "ir-003": ("Real vs. Nominal Interest Rates", ["real", "nominal"]),
+        "ir-003": ("Real vs. Nominal Interest Rates", ["nominal rate", "subtracts inflation"]),
         "ir-004": ("How Rates Cool Inflation", ["borrowing costs", "demand"]),
         "ir-005": ("The Yield Curve", ["yield curve", "inverted"]),
-        "ir-006": ("Zero Interest Rate Policy (ZIRP)", ["lower bound", "zero"]),
-        "ir-007": ("Credit Card Rates vs. The Fed", ["revolving"]),
-        "ir-008": ("Negative Interest Rates", ["below zero", "policy rate"]),
+        "ir-006": ("Zero Interest Rate Policy (ZIRP)", ["lower bound", "physical cash"]),
+        "ir-007": ("Credit Card Rates vs. The Fed", ["revolving credit", "reprice"]),
+        "ir-008": ("Negative Interest Rates", ["below zero", "excess reserves"]),
         "gdp-001": ("What is GDP?", ["gross domestic product", "produced"]),
         "gdp-002": ("The Four Components of GDP", ["consumption", "net exports"]),
-        "gdp-003": ("Real vs. Nominal GDP", ["nominal", "real"]),
+        "gdp-003": ("Real vs. Nominal GDP", ["nominal gdp", "base year"]),
         "gdp-004": ("GDP Per Capita", ["per capita", "population"]),
         "gdp-005": ("Recession: Two Quarters of Negative GDP", ["two consecutive quarters"]),
-        "gdp-006": ("GDP Growth Rate", ["annual rate"]),
+        "gdp-006": ("GDP Growth Rate", ["annual rate", "compounded"]),
         "gdp-007": ("GDP vs. GNP", ["gross national product", "borders"]),
         "gdp-008": ("What GDP Misses", ["market transactions"]),
-        "sd-001": ("The Law of Demand", ["higher price", "less"]),
-        "sd-002": ("The Law of Supply", ["higher price", "more"]),
+        "sd-001": ("The Law of Demand", ["demand curve", "downward-sloping"]),
+        "sd-002": ("The Law of Supply", ["supply curve", "upward-sloping"]),
         "sd-003": ("Equilibrium Price", ["equilibrium"]),
         "sd-004": ("Price Elasticity", ["elastic"]),
         "sd-005": ("Supply Shocks", ["supply shock"]),
         "sd-006": ("Price Ceilings", ["price ceiling", "maximum"]),
         "sd-007": ("Price Floors", ["price floor", "minimum wage"]),
         "sd-008": ("Substitutes and Complements", ["substitutes", "complements"]),
-        "lm-001": ("The Unemployment Rate", ["unemployment rate", "labor force"]),
+        "lm-001": ("The Unemployment Rate", ["unemployment rate", "four weeks"]),
         "lm-002": ("The Labor Force Participation Rate", ["participation rate"]),
-        "lm-003": ("Frictional Unemployment", ["frictional"]),
+        "lm-003": ("Frictional Unemployment", ["frictional", "churn"]),
         "lm-004": ("Structural Unemployment", ["structural"]),
         "lm-005": ("The Phillips Curve", ["phillips curve"]),
         "lm-006": ("The Gig Economy", ["contractors", "freelancers"]),
@@ -114,14 +116,14 @@ final class CurriculumCatalogTests: XCTestCase {
         "hm-006": ("Rent vs. Own", ["renting", "owning"]),
         "hm-007": ("Institutional Investors in Housing", ["landlords", "institutional"]),
         "hm-008": ("Housing Starts", ["housing starts", "leading indicator"]),
-        "cb-001": ("What Does a Central Bank Do?", ["central bank", "lender of last resort"]),
-        "cb-002": ("Monetary Policy", ["monetary policy"]),
+        "cb-001": ("What Does a Central Bank Do?", ["lender of last resort", "supervises"]),
+        "cb-002": ("Monetary Policy", ["monetary policy", "credit conditions"]),
         "cb-003": ("Quantitative Easing (QE)", ["longer-term securities", "balance sheet"]),
         "cb-004": ("Central Bank Independence", ["independence"]),
         "cb-005": ("The Lender of Last Resort", ["lender of last resort", "panic"]),
         "cb-006": ("The ECB and the Eurozone", ["currency union", "single policy rate"]),
         "cb-007": ("Forward Guidance", ["forward guidance"]),
-        "cb-008": ("Digital Currencies (CBDCs)", ["digital"]),
+        "cb-008": ("Digital Currencies (CBDCs)", ["digital form", "settle payments"]),
         "rec-001": ("What is a Recession?", ["nber", "decline"]),
         "rec-002": ("Leading Indicators", ["leading indicators"]),
         "rec-003": ("The Business Cycle", ["expansion", "trough"]),
@@ -271,6 +273,27 @@ final class CurriculumCatalogTests: XCTestCase {
                 (missing: \(missing)) and carries no supersedesNote explaining the \
                 reassignment. A bookmark saved on this id would now open a different lesson.
                 """)
+        }
+    }
+
+    /// A concept pin is only worth having if it identifies one card. If card B's
+    /// prose satisfies card A's pin, then swapping A's content for B's would slip
+    /// past the stability check above - the guarantee would look enforced while
+    /// being satisfiable by the wrong lesson.
+    func testLegacyConceptPinsCannotBeSatisfiedByAnotherCard() throws {
+        let catalog = try loadCatalog()
+        let prose = Dictionary(uniqueKeysWithValues: catalog.allCards.map {
+            ($0.cardID, "\($0.title) \($0.definition)".lowercased())
+        })
+
+        for (cardID, pinned) in Self.legacyConcepts {
+            for (otherID, otherProse) in prose where otherID != cardID {
+                let satisfied = pinned.tokens.allSatisfy { otherProse.contains($0) }
+                XCTAssertFalse(
+                    satisfied,
+                    "\(cardID)'s pin \(pinned.tokens) is fully satisfied by \(otherID); "
+                    + "it does not identify the concept \"\(pinned.concept)\"")
+            }
         }
     }
 
