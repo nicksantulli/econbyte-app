@@ -1,11 +1,11 @@
 {
-  "archive": "EconByte-final.xcarchive",
+  "archive": "EconByte-pre.xcarchive",
   "app": {
     "bundleId": "com.nsantulli.econbyte",
     "marketingVersion": "1.1",
     "buildNumber": "6",
-    "NSUserTrackingUsageDescriptionPresent": false,
-    "NSUserTrackingUsageDescription": null,
+    "NSUserTrackingUsageDescriptionPresent": true,
+    "NSUserTrackingUsageDescription": "EconByte uses this to show relevant ads and measure ad performance.",
     "SKAdNetworkItemCount": 50,
     "ITSAppUsesNonExemptEncryption": false
   },
@@ -13,13 +13,13 @@
     {
       "path": "Products/Applications/EconByte.app/PrivacyInfo.xcprivacy",
       "owner": "first-party (EconByte)",
-      "NSPrivacyTracking": false,
+      "NSPrivacyTracking": true,
       "NSPrivacyTrackingDomains": [],
       "collectedDataTypes": [
         {
           "type": "NSPrivacyCollectedDataTypeDeviceID",
           "linked": false,
-          "tracking": false,
+          "tracking": true,
           "purposes": [
             "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising"
           ]
