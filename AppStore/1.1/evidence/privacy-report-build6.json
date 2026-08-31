@@ -1,0 +1,206 @@
+{
+  "archive": "EconByte-pre.xcarchive",
+  "app": {
+    "bundleId": "com.nsantulli.econbyte",
+    "marketingVersion": "1.1",
+    "buildNumber": "6",
+    "NSUserTrackingUsageDescriptionPresent": true,
+    "NSUserTrackingUsageDescription": "EconByte uses this to show relevant ads and measure ad performance.",
+    "SKAdNetworkItemCount": 50,
+    "ITSAppUsesNonExemptEncryption": false
+  },
+  "privacyManifests": [
+    {
+      "path": "Products/Applications/EconByte.app/PrivacyInfo.xcprivacy",
+      "owner": "first-party (EconByte)",
+      "NSPrivacyTracking": true,
+      "NSPrivacyTrackingDomains": [],
+      "collectedDataTypes": [
+        {
+          "type": "NSPrivacyCollectedDataTypeDeviceID",
+          "linked": false,
+          "tracking": true,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising"
+          ]
+        }
+      ],
+      "accessedAPITypes": [
+        {
+          "category": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "reasons": [
+            "CA92.1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Products/Applications/EconByte.app/Frameworks/GoogleMobileAds.framework/PrivacyInfo.xcprivacy",
+      "owner": "third-party SDK",
+      "NSPrivacyTracking": null,
+      "NSPrivacyTrackingDomains": [],
+      "collectedDataTypes": [
+        {
+          "type": "NSPrivacyCollectedDataTypeOtherDiagnosticData",
+          "linked": false,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+            "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising",
+            "NSPrivacyCollectedDataTypePurposeAnalytics"
+          ]
+        },
+        {
+          "type": "NSPrivacyCollectedDataTypeCoarseLocation",
+          "linked": true,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+            "NSPrivacyCollectedDataTypePurposeAnalytics",
+            "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising"
+          ]
+        },
+        {
+          "type": "NSPrivacyCollectedDataTypePerformanceData",
+          "linked": false,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+            "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising",
+            "NSPrivacyCollectedDataTypePurposeAnalytics"
+          ]
+        },
+        {
+          "type": "NSPrivacyCollectedDataTypeCrashData",
+          "linked": false,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeAnalytics"
+          ]
+        },
+        {
+          "type": "NSPrivacyCollectedDataTypeAdvertisingData",
+          "linked": true,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+            "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising",
+            "NSPrivacyCollectedDataTypePurposeAnalytics"
+          ]
+        },
+        {
+          "type": "NSPrivacyCollectedDataTypeProductInteraction",
+          "linked": true,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeAnalytics",
+            "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising",
+            "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising"
+          ]
+        },
+        {
+          "type": "NSPrivacyCollectedDataTypeDeviceID",
+          "linked": true,
+          "tracking": true,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+            "NSPrivacyCollectedDataTypePurposeAnalytics",
+            "NSPrivacyCollectedDataTypePurposeDeveloperAdvertising"
+          ]
+        }
+      ],
+      "accessedAPITypes": [
+        {
+          "category": "NSPrivacyAccessedAPICategorySystemBootTime",
+          "reasons": [
+            "35F9.1"
+          ]
+        },
+        {
+          "category": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "reasons": [
+            "CA92.1"
+          ]
+        },
+        {
+          "category": "NSPrivacyAccessedAPICategoryDiskSpace",
+          "reasons": [
+            "E174.1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Products/Applications/EconByte.app/Frameworks/UserMessagingPlatform.framework/PrivacyInfo.xcprivacy",
+      "owner": "third-party SDK",
+      "NSPrivacyTracking": null,
+      "NSPrivacyTrackingDomains": [],
+      "collectedDataTypes": [
+        {
+          "type": "NSPrivacyCollectedDataTypeCoarseLocation",
+          "linked": false,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+          ]
+        },
+        {
+          "type": "NSPrivacyCollectedDataTypePerformanceData",
+          "linked": false,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+          ]
+        },
+        {
+          "type": "NSPrivacyCollectedDataTypeProductInteraction",
+          "linked": false,
+          "tracking": false,
+          "purposes": [
+            "NSPrivacyCollectedDataTypePurposeAppFunctionality"
+          ]
+        }
+      ],
+      "accessedAPITypes": [
+        {
+          "category": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "reasons": [
+            "CA92.1"
+          ]
+        }
+      ]
+    }
+  ],
+  "binaries": [
+    {
+      "path": "Products/Applications/EconByte.app/EconByte",
+      "linksAdSupport": true,
+      "linksAppTrackingTransparency": false,
+      "linksAdServices": false,
+      "undefinedTrackingSymbols": [
+        "(undefined) external _OBJC_CLASS_$_ASIdentifierManager (from AdSupport)"
+      ],
+      "trackingApiStrings": [
+        "ATTrackingManager",
+        "advertisingIdentifier",
+        "trackingAuthorizationStatus"
+      ]
+    },
+    {
+      "path": "Products/Applications/EconByte.app/Frameworks/GoogleMobileAds.framework/GoogleMobileAds",
+      "linksAdSupport": false,
+      "linksAppTrackingTransparency": false,
+      "linksAdServices": false,
+      "undefinedTrackingSymbols": [],
+      "trackingApiStrings": []
+    },
+    {
+      "path": "Products/Applications/EconByte.app/Frameworks/UserMessagingPlatform.framework/UserMessagingPlatform",
+      "linksAdSupport": false,
+      "linksAppTrackingTransparency": false,
+      "linksAdServices": false,
+      "undefinedTrackingSymbols": [],
+      "trackingApiStrings": []
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "capture": {
     "marketingVersion": "1.1",
     "buildNumber": 6,
-    "commit": "SET_AT_COMMIT_TIME",
+    "commit": "edd00ae1c7a2ba17a5ed682c7d3c500e71b7d96a (app source state; the storefront commit 8a187a0 that follows it changes no app code)",
     "device": "iPhone 17 Pro Max simulator (VR-AppStore-6.9), iOS 26.5, build 23F77",
     "configuration": "Release, with ENABLE_TESTABILITY=YES passed on the command line only because xcodebuild builds the whole scheme's test action and the unit-test target needs @testable; it changes no UI and no shipped code",
     "resolution": "1320x2868 portrait, the 6.9\" iPhone display class",
