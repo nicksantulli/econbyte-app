@@ -1,799 +1,823 @@
 {
-  "$comment": "EconByte 1.1 release evidence packet, produced by plan Task 6a (local half). Host paths are deliberately absent: everything is a repository-relative path, an archive-relative path, or a hash. The retention root is named once, in `retention.root`, because Task 6b needs to find it.",
-  "task": {
-    "plan": "docs/superpowers/plans/2026-08-28-econbyte-return-growth.md, Task 6",
-    "phase": "6a — local. Accessibility, storefront creative, archive, privacy report, evidence.",
-    "ascCalls": "NONE. No App Store Connect API call of any kind was made in Task 6a — not a read, not a write, no upload, no submission. Every ASC-facing artifact in AppStore/1.1/ is a local file for Task 6b to apply.",
-    "date": "2026-08-30"
-  },
-  "version": {
-    "marketingVersion": "1.1",
-    "currentProjectVersion": 6,
-    "previousSelectedBuildInASC": 5,
-    "bumpCommit": "398358d42eee69df2c08930b2357a60f41bcb354",
-    "bumpedIn": [
-      "EconByte.xcodeproj/project.pbxproj",
-      "project.yml"
-    ],
-    "verifiedInBinary": "the archived Info.plist reads CFBundleShortVersionString 1.1 and CFBundleVersion 6, with 50 SKAdNetworkItems and no NSUserTrackingUsageDescription"
-  },
-  "commits": [
-    {
-      "sha": "398358d42eee69df2c08930b2357a60f41bcb354",
-      "subject": "chore: bump EconByte to 1.1 (build 6)"
-    },
-    {
-      "sha": "edd00ae1c7a2ba17a5ed682c7d3c500e71b7d96a",
-      "subject": "fix: close the card-flip and labelling accessibility gaps"
-    },
-    {
-      "sha": "8a187a0c9ba525149d91691d060ddeb17bb15181",
-      "subject": "docs: add EconByte 1.1 storefront creative and metadata"
-    },
-    {
-      "sha": "59f9624f7dbc2a5f2d88d8034fd8e20cd4123623",
-      "subject": "test: stop the UI smoke tests failing after a completed set"
-    },
-    {
-      "sha": "48c6febb213fe04748b1bba60f213d7741ea021a",
-      "subject": "docs: record the EconByte 1.1 release evidence packet"
-    },
-    {
-      "sha": "c911b1610418e7bc7e6b20a20ed714e46b3a0a56",
-      "subject": "fix: declare configuration-level privacy per D2 ruling (Table Talk precedent)"
-    }
+ "$comment": "EconByte 1.1 release evidence packet, produced by plan Task 6a (local half). Host paths are deliberately absent: everything is a repository-relative path, an archive-relative path, or a hash. The retention root is named once, in `retention.root`, because Task 6b needs to find it.",
+ "task": {
+  "plan": "docs/superpowers/plans/2026-08-28-econbyte-return-growth.md, Task 6",
+  "phase": "6a \u2014 local. Accessibility, storefront creative, archive, privacy report, evidence.",
+  "ascCalls": "NONE. No App Store Connect API call of any kind was made in Task 6a \u2014 not a read, not a write, no upload, no submission. Every ASC-facing artifact in AppStore/1.1/ is a local file for Task 6b to apply.",
+  "date": "2026-08-30"
+ },
+ "version": {
+  "marketingVersion": "1.1",
+  "currentProjectVersion": 6,
+  "previousSelectedBuildInASC": 5,
+  "bumpCommit": "398358d42eee69df2c08930b2357a60f41bcb354",
+  "bumpedIn": [
+   "EconByte.xcodeproj/project.pbxproj",
+   "project.yml"
   ],
-  "archive": {
-    "name": "EconByte-1.1-build6.xcarchive",
-    "sourceCommit": "c911b1610418e7bc7e6b20a20ed714e46b3a0a56",
-    "treeCleanAtArchiveTime": true,
-    "laterCommitsAffectingTheAppTarget": "none — only the packet update that follows, which touches AppStore/1.1 only.",
-    "command": "xcodebuild archive -project EconByte.xcodeproj -scheme EconByte -configuration Release -destination 'generic/platform=iOS' -archivePath <scratch>/EconByte-final.xcarchive -derivedDataPath <derived-data> DEVELOPMENT_TEAM=Q2DM9FSRL4",
-    "result": "ARCHIVE SUCCEEDED",
-    "architectures": [
-      "arm64"
-    ],
-    "bundleId": "com.nsantulli.econbyte",
-    "team": "Q2DM9FSRL4",
-    "binaryUUID": "41CCA9FF-FA59-385C-8291-142CFF71430F",
-    "dSYM": "dSYMs/EconByte.app.dSYM, UUID 41CCA9FF-FA59-385C-8291-142CFF71430F (matches the binary)",
-    "appBinarySha256": "40332d5165bb6eedf0d1071b40f3928424bd8573faf9bf3c8cc8228992e60cd6",
-    "treeHash": {
-      "value": "38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
-      "method": "sha256 of the sorted 'sha256  archive-relative-path' listing of all 24 files in the archive; the listing itself is retained as archive-file-digests.txt",
-      "reproduce": "cd <archive> && find . -type f -print0 | sort -z | xargs -0 shasum -a 256 > digests.txt && shasum -a 256 digests.txt"
-    },
-    "signing": {
-      "identity": "Apple Development: NICHOLAS PATRICK SANTULLI (WB696822FM)",
-      "profile": "iOS Team Provisioning Profile: * (Xcode automatic signing)",
-      "entitlements": "application-identifier Q2DM9FSRL4.com.nsantulli.econbyte, team-identifier Q2DM9FSRL4, get-task-allow = true",
-      "distributionSigningAttemptedAndWhyItFailed": {
-        "attempt": "Re-archive with CODE_SIGN_STYLE=Manual, CODE_SIGN_IDENTITY='Apple Distribution', PROVISIONING_PROFILE_SPECIFIER='iOS Team Store Provisioning Profile: com.nsantulli.econbyte' — the command recorded in the previous packet revision.",
-        "result": "ARCHIVE FAILED with two errors: the profile 'doesn't include signing certificate Apple Distribution: NICHOLAS PATRICK SANTULLI (Q2DM9FSRL4)', and the profile 'is Xcode managed, but signing settings require a manually managed profile'.",
-        "rootCause": "The locally installed App Store profile (expires 2027-06-01, Xcode-managed) embeds a distribution certificate with SHA1 B2CF464AAC0E013CA373CEDB2DA4299DB4438549. The distribution identity actually in the keychain is SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81. The profile was issued against a SUPERSEDED distribution certificate, so no local combination of the two can sign for distribution.",
-        "consequence": "Distribution signing cannot be produced on this host without an authenticated Apple Developer session to regenerate the profile against the current certificate. Task 6a is barred from provisioning updates, which mutate the developer account.",
-        "ownerAction6b": "In an authenticated Xcode session, let Xcode refresh the App Store provisioning profile for com.nsantulli.econbyte against the current Apple Distribution certificate, then either export this archive with distribution signing (xcodebuild -exportArchive with an app-store-connect export options plist) or re-archive with manual distribution signing. The archived binary does not change in either case; only the signature does.",
-        "note": "A development-signed archive is the normal Xcode intermediate: distribution signing is applied at export. The blocker here is the stale profile, not the archive."
-      }
-    },
-    "embeddedFrameworks": [
-      "GoogleMobileAds.framework (12.14.0, SPM binary target)",
-      "UserMessagingPlatform.framework"
-    ],
-    "bundledContent": "curriculum-v1.1.json, sha256 97642805d28c2c35523026d1c0c5e95bd7e53992907371a0f545cd8cbb25769f — 120 cards, 15 topics, 8 cards per topic",
-    "supersededArchive": {
-      "sourceCommit": "8a187a0c9ba525149d91691d060ddeb17bb15181",
-      "treeHash": "4a30a75960dc028876f304eede9b583d04079a0212c00946df47687d0ad88d55",
-      "reason": "built before the D2 ruling; it carries the 1.0 tracking declarations and MUST NOT be uploaded. Retained under its own commit directory for the audit trail only.",
-      "retention": "~/dudley-evidence-retention/econbyte/8a187a0c9ba525149d91691d060ddeb17bb15181/"
-    }
+  "verifiedInBinary": "the archived Info.plist reads CFBundleShortVersionString 1.1 and CFBundleVersion 6, with 50 SKAdNetworkItems and no NSUserTrackingUsageDescription"
+ },
+ "commits": [
+  {
+   "sha": "398358d42eee69df2c08930b2357a60f41bcb354",
+   "subject": "chore: bump EconByte to 1.1 (build 6)"
   },
-  "privacyReport": {
-    "artifact": "AppStore/1.1/evidence/privacy-report-build6.json (post-ruling archive); the pre-ruling report is kept alongside it as privacy-report-build6-pre-d2.json",
-    "method": "Xcode does not expose its Organizer privacy report from the command line, so the report was derived from the archive itself: every PrivacyInfo.xcprivacy in the archive was aggregated (the app's and both SDKs'), and each Mach-O in the app bundle was checked for tracking-permission and advertising-identifier access (otool -L linkage, nm undefined symbols, and API strings).",
-    "findings": {
-      "appManifest": "POST-RULING: NSPrivacyTracking = false; NSPrivacyTrackingDomains = []; one collected type, DeviceID, purpose ThirdPartyAdvertising, tracking = false, linked = false; NSPrivacyAccessedAPITypes preserves the UserDefaults CA92.1 reason",
-      "googleMobileAdsManifest": "declares seven collected types; NSPrivacyCollectedDataTypeDeviceID carries tracking = TRUE and linked = true, with purposes ThirdPartyAdvertising, Analytics and DeveloperAdvertising. AdvertisingData, CoarseLocation, ProductInteraction, PerformanceData, CrashData and OtherDiagnosticData are declared with tracking = false.",
-      "userMessagingPlatformManifest": "three collected types, all AppFunctionality, all tracking = false",
-      "appBinary": "links /System/Library/Frameworks/AdSupport.framework; carries an undefined external _OBJC_CLASS_$_ASIdentifierManager (from AdSupport); contains the API strings ATTrackingManager, advertisingIdentifier and trackingAuthorizationStatus",
-      "attribution": "Those references are NOT first-party code. The repository contains no ATT or IDFA reference (the only hit is a comment in AdManager.swift recording the 1.0 removal). The GoogleMobileAds.framework binary in the archive is a 51 KB stub carrying resources and the SDK's privacy manifest; the SDK's 4 MB of code is statically linked into the app executable by the SPM binary target, and it is that code that references AdSupport and the ATT status API.",
-      "infoPlist": "POST-RULING: NSUserTrackingUsageDescription is ABSENT; 50 SKAdNetworkItems preserved; ITSAppUsesNonExemptEncryption = false"
-    },
-    "d2Decision": {
-      "status": "CLOSED — ruled Option B on 2026-08-30 and applied in commit c911b161.",
-      "gate": "Spec section 9.1 / CONTENT-DECISIONS.md D2 permitted the change only after the archive privacy report confirmed that the configured SDK path does not access tracking permission or IDFA.",
-      "reportOutcomeAgainstTheLiteralGate": "NOT CONFIRMED. The GoogleMobileAds SDK is statically linked into the app executable (its embedded framework binary is a 51 KB stub), that code links AdSupport and carries the ATT status and advertisingIdentifier APIs, and Google's bundled manifest declares DeviceID with tracking = true. First-party code has no ATT or IDFA reference and never prompts.",
-      "rulingAuthority": "Owner's standing blanket approval, exercised 2026-08-30, together with a controller precedent check. Task 6a did not take this decision unilaterally: it archived, reported, and escalated with both options costed, and applied Option B only after the ruling.",
-      "decidingPrecedent": {
-        "app": "Table Talk — approved by App Review and live in the US, with the same statically linked GoogleMobileAds SDK",
-        "source": "workspaces/table-talk-ios/TableTalk/Resources/PrivacyInfo.xcprivacy and TableTalk/Info.plist, read directly during this task",
-        "values": {
-          "NSPrivacyTracking": "false",
-          "NSPrivacyTrackingDomains": "empty array",
-          "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeDeviceID",
-          "NSPrivacyCollectedDataTypeTracking": "false",
-          "NSPrivacyCollectedDataTypeLinked": "false",
-          "NSPrivacyCollectedDataTypePurposes": "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
-          "NSUserTrackingUsageDescription": "absent entirely"
-        },
-        "significance": "Option B is not a novel declaration. It aligns EconByte with a posture Apple has already reviewed and approved in this portfolio. EconByte's manifest is now byte-identical to Table Talk's (verified by diff)."
-      },
-      "changesApplied": [
-        "EconByte/Info.plist: NSUserTrackingUsageDescription REMOVED — this makes an ATT prompt impossible rather than merely absent, because iOS requires the key for any prompt to appear",
-        "EconByte/Resources/PrivacyInfo.xcprivacy: NSPrivacyTracking true -> false",
-        "EconByte/Resources/PrivacyInfo.xcprivacy: DeviceID NSPrivacyCollectedDataTypeTracking true -> false (Linked already false, purpose already ThirdPartyAdvertising)",
-        "PRESERVED: empty NSPrivacyTrackingDomains, the UserDefaults CA92.1 accessed-API reason, and all 50 SKAdNetworkItems (install attribution, unaffected by ATT)"
-      ],
-      "reReport": {
-        "archive": "the post-ruling archive, tree hash 38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
-        "appLevelConfirmed": "NSPrivacyTracking = false; DeviceID tracking = false, linked = false, purpose ThirdPartyAdvertising; tracking domains empty; UserDefaults CA92.1 intact; Info.plist has no NSUserTrackingUsageDescription; 50 SKAdNetworkItems; version 1.1 build 6",
-        "expectedRemainingDelta": "The aggregate report still shows GoogleMobileAds.framework's own manifest declaring DeviceID with tracking = true, and the app binary still reaches AdSupport and the ATT status API through the statically linked SDK. Neither is editable by this app: Google's manifest states its SDK's capability across all host apps. The app-level manifest is the one that describes THIS app's configuration, and it now says false. The identical delta exists in the approved Table Talk build.",
-        "netChangeVsPreRuling": "app-level NSPrivacyTracking true -> false; app-level DeviceID tracking true -> false; NSUserTrackingUsageDescription present -> absent. Nothing else in the archive's privacy surface changed."
-      },
-      "ascAnswersBinding": {
-        "identifiersDeviceId": "Collected · Third-Party Advertising · NOT used for tracking · NOT linked to identity",
-        "usageDataAdvertisingData": "Collected · Third-Party Advertising · NOT used for tracking · NOT linked to identity",
-        "everythingElse": "Not Collected while the analytics and diagnostics providers are dormant (no PostHog key, no Sentry DSN — D5). Re-derive before any build that enables either."
-      }
-    }
+  {
+   "sha": "edd00ae1c7a2ba17a5ed682c7d3c500e71b7d96a",
+   "subject": "fix: close the card-flip and labelling accessibility gaps"
   },
-  "tests": {
-    "xcresult": "EconByte-1.1-build6-full-suite.xcresult (retained under the post-ruling commit; see retention.root)",
-    "treeHash": "a23b731d92ad3191b8c941ea0bec00a610241a17f89fd99a3ac312a234bdbdf1",
-    "commit": "c911b1610418e7bc7e6b20a20ed714e46b3a0a56",
-    "command": "xcodebuild test -project EconByte.xcodeproj -scheme EconByte -destination 'platform=iOS Simulator,id=<6.9-inch simulator>' -derivedDataPath <derived-data>",
-    "result": "** TEST SUCCEEDED **",
-    "counts": {
-      "unitTests": 114,
-      "uiTests": 25,
-      "total": 139,
-      "failures": 0,
-      "breakdown": "EconByteTests 114 (CurriculumCatalogTests 27, GrowthSystemsTests 87); EconByteUITests 25 (AccessibilityTests 5, EconByteUITests 10, GrowthFlowTests 9, ScreenshotTests 1)"
-    },
-    "note": "Run twice green: once at 59f9624 before the D2 ruling and again at c911b161 after it, both from a reset app container. An earlier run failed four pre-existing smoke tests that matched only a 'Start' CTA; the CTA reads 'Review' once the day's goal is met. Fixed in 59f9624 — state-dependent test fragility, not an app regression."
+  {
+   "sha": "8a187a0c9ba525149d91691d060ddeb17bb15181",
+   "subject": "docs: add EconByte 1.1 storefront creative and metadata"
   },
-  "accessibility": {
-    "evidence": "AppStore/1.1/evidence/accessibility.md",
-    "rawAudit": "AppStore/1.1/evidence/accessibility-audit-raw.txt",
-    "automated": "EconByteUITests/AccessibilityTests.swift — 5 tests, all passing, including Apple's own performAccessibilityAudit over Home, both card faces and Settings",
-    "fixesMade": "edd00ae — VoiceOver-reachable card flip with a named action and announced face/topic/position/source, Reduce Motion cross-fade, labels on the Settings gear / Close / Bookmark, decorative symbols hidden, 44x44 hit areas",
-    "openFindings": [
-      "fixed-point type does not scale with Dynamic Type (app-wide, recorded not changed)",
-      "Econ.subtext fails the small-text contrast ratio on both the dark and light surfaces (palette decision, Owner item)",
-      "320-point layout, Switch Control, Voice Control, Full Keyboard Access and physical-device VoiceOver completion not verifiable on this host"
-    ]
+  {
+   "sha": "59f9624f7dbc2a5f2d88d8034fd8e20cd4123623",
+   "subject": "test: stop the UI smoke tests failing after a completed set"
   },
-  "screenshots": {
-    "manifest": "AppStore/1.1/screenshots/manifest.json",
-    "count": 7,
-    "size": "1320x2868 (iPhone 6.9\")",
-    "source": "captured from the release-configuration binary by EconByteUITests/ScreenshotTests; each file's sha256 is in the manifest",
-    "storefrontRecommendation": "use six; hold 05-session-complete.png, which is dominated by the one-time consent offer"
+  {
+   "sha": "48c6febb213fe04748b1bba60f213d7741ea021a",
+   "subject": "docs: record the EconByte 1.1 release evidence packet"
   },
-  "storefrontArtifacts": {
-    "metadata": "AppStore/1.1/metadata.json",
-    "customProductPages": "AppStore/1.1/custom-product-pages.json",
-    "appPreview": "AppStore/1.1/app-preview/storyboard.md (video DEFERRED — storyboard only)"
-  },
-  "iapsToAttach": [
-    {
-      "productId": "com.nsantulli.econbyte.unlockall",
-      "type": "Non-Consumable",
-      "price": "$0.99",
-      "ascState": "approved",
-      "pinnedByTest": "GrowthSystemsTests.testBothApprovedProductIdentifiersArePreservedExactly"
-    },
-    {
-      "productId": "com.nsantulli.econbyte.removeads",
-      "type": "Non-Consumable",
-      "price": "$0.99",
-      "ascState": "approved",
-      "pinnedByTest": "GrowthSystemsTests.testBothApprovedProductIdentifiersArePreservedExactly"
-    }
-  ],
-  "ownerItems": [
-    {
-      "id": "admob-ids-unconfirmed",
-      "source": "CONTENT-DECISIONS.md D6, carried from DUD-242",
-      "status": "STILL UNCONFIRMED",
-      "detail": "The Release AdMob app ID and interstitial unit ID reused from 1.0 are format-valid but have never been checked against the AdMob console by the Owner. Task 6a cannot confirm them: that needs console access. Also unconfirmed: console frequency caps at least as conservative as the in-app caps (1 per foreground session, 2 per calendar day, 15 minutes apart, 2 completed sets apart), and a current app-ads.txt.",
-      "blocksSubmission": true
-    },
-    {
-      "id": "asc-privacy-answers",
-      "source": "CONTENT-DECISIONS.md D2",
-      "status": "DECIDED — entry action only",
-      "detail": "D2 is closed and the binary now declares the configuration-level posture. Task 6b enters the answers in privacyReport.d2Decision.ascAnswersBinding; it is no longer a decision, only data entry against the shipped manifest.",
-      "blocksSubmission": false
-    },
-    {
-      "id": "distribution-profile-stale",
-      "source": "discovered in Task 6a while attempting the distribution re-archive",
-      "status": "NEW — blocks upload, not the build",
-      "detail": "The local App Store provisioning profile for com.nsantulli.econbyte embeds a superseded distribution certificate (profile cert SHA1 B2CF464A..., keychain identity SHA1 4161108A...). Distribution signing therefore cannot be produced on this host. An authenticated Xcode session must refresh the profile before export or upload.",
-      "blocksSubmission": true
-    }
-  ],
-  "sixBHandoff": [
-    {
-      "step": 1,
-      "name": "Create a new distribution provisioning profile — the existing one cannot be refreshed",
-      "why": "The profile on the build host (iOS Team Store Provisioning Profile: com.nsantulli.econbyte, expires 2027-06-01) is XCODE-MANAGED and embeds a superseded distribution certificate (profile cert SHA1 B2CF464AAC0E013CA373CEDB2DA4299DB4438549; the keychain identity is SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81). The App Store Connect API cannot modify or regenerate an Xcode-managed profile, so there is nothing to 'refresh' — a new, manually-managed profile must be created.",
-      "primaryPath": {
-        "call": "POST /v1/profiles using the existing ASC API key",
-        "body": "type: profiles; attributes { name: 'EconByte App Store 1.1', profileType: 'IOS_APP_STORE' }; relationships { bundleId: the bundleIds id for com.nsantulli.econbyte (GET /v1/bundleIds?filter[identifier]=com.nsantulli.econbyte), certificates: the certificates id whose serial/fingerprint matches the keychain Apple Distribution identity SHA1 4161108A... (GET /v1/certificates?filter[certificateType]=DISTRIBUTION) }",
-        "then": "Download the returned profileContent (base64 .mobileprovision), install it on the build host, and use its name in AppStore/1.1/exportOptions.plist. The name in that file is already set to 'EconByte App Store 1.1' — keep them identical.",
-        "verify": "GET /v1/profiles/{id}?include=certificates and confirm the linked certificate is the current distribution certificate, not B2CF464A..."
-      },
-      "fallbackPath": "Owner-led authenticated Xcode session: open the project, enable automatic signing with team Q2DM9FSRL4, and let Xcode issue the profile. If this path is taken, switch exportOptions.plist signingStyle to 'automatic' and drop the provisioningProfiles dictionary.",
-      "note": "Creating a profile mutates the developer account, which is why Task 6a did not do it."
-    },
-    {
-      "step": 2,
-      "name": "Export the retained archive with distribution signing",
-      "command": "xcodebuild -exportArchive -archivePath <retention>/EconByte-1.1-build6.xcarchive -exportOptionsPlist AppStore/1.1/exportOptions.plist -exportPath <export-dir>",
-      "exportOptions": "AppStore/1.1/exportOptions.plist — committed. method app-store-connect, teamID Q2DM9FSRL4, signingStyle manual, signingCertificate 'Apple Distribution', provisioningProfiles maps com.nsantulli.econbyte to the step-1 profile, destination export, manageAppVersionAndBuildNumber false, uploadSymbols true.",
-      "verifyBeforeUpload": "codesign -d --entitlements :- on the exported app must show get-task-allow ABSENT (or false). If it is still true, the export did not re-sign and the upload will be rejected.",
-      "note": "The binary is unchanged by export; only the signature is. The archive hash in this packet remains the provenance record."
-    },
-    {
-      "step": 3,
-      "name": "Upload build 6",
-      "mechanism": "xcrun altool --upload-app, authenticated with the ASC API key by ID only",
-      "command": "xcrun altool --upload-app --type ios --file <export-dir>/EconByte.ipa --apiKey <ASC_KEY_ID> --apiIssuer <ASC_ISSUER_ID>",
-      "keyHandling": "The .p8 stays at ~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8 (or the path in the private_keys search path). Reference the key by ID and issuer ID on the command line. Never paste key material into a file, a log, or this repository.",
-      "alternative": "xcodebuild -exportArchive with destination 'upload' in the export options plus -authenticationKeyPath <path to .p8> -authenticationKeyID <ASC_KEY_ID> -authenticationKeyIssuerID <ASC_ISSUER_ID>, which exports and uploads in one step. Use it only if you do not want to inspect the .ipa first; step 2's entitlement check is worth keeping.",
-      "afterUpload": "Wait for processing to finish before the build can be selected — an accepted upload is not a processed build.",
-      "notarytoolNote": "notarytool is for macOS notarization and does not apply to an iOS App Store submission. altool --upload-app is the correct tool here."
-    },
-    {
-      "step": 4,
-      "name": "Attach, answer, submit",
-      "actions": [
-        "Select build 6 on the 1.1 version record.",
-        "Attach both approved IAPs: com.nsantulli.econbyte.unlockall and com.nsantulli.econbyte.removeads.",
-        "Enter the App Privacy answers from privacyReport.d2Decision.ascAnswersBinding (identical to metadata.json appPrivacy.oneOneFinalAnswers). Do not carry over the 1.0 answers.",
-        "Enter the listing fields from AppStore/1.1/metadata.json and upload the six recommended screenshots.",
-        "Answer the age-rating questionnaire that ASC presents today rather than transferring the 1.0 answers.",
-        "Set phased release ON and manual release, then submit."
-      ],
-      "blockedUntil": "The AdMob app ID, interstitial unit ID, console frequency caps and app-ads.txt are confirmed against the console (CONTENT-DECISIONS.md D6). This is still an Owner item and it blocks submission, not upload."
-    },
-    {
-      "step": 5,
-      "name": "READBACK — re-read every mutation and record it",
-      "why": "Portfolio lesson, recorded: 'visible:true is not live'. A successful write response proves the request was accepted, not that the store state is what you intended. Nothing in this release is considered done on the strength of a mutation response.",
-      "readAfterSubmitting": [
-        "GET /v1/apps/6780714383/appStoreVersions?filter[versionString]=1.1 — record the version id and appStoreState.",
-        "GET /v1/appStoreVersions/{id}/build — record the build NUMBER returned and confirm it is 6, not merely that a build is attached.",
-        "GET /v1/appStoreVersions/{id}/relationships/appStoreVersionExperiments is not the check; for the purchases use GET /v1/appStoreVersions/{id}/appStoreVersionSubmission and the version's in-app-purchase relationship — record BOTH product identifiers as returned, com.nsantulli.econbyte.unlockall and com.nsantulli.econbyte.removeads.",
-        "GET /v1/apps/6780714383/appDataUsages (with its categories/purposes includes) — record the Device ID and Advertising Data entries and confirm the tracking flags read NO, matching ascAnswersBinding.",
-        "GET the version's app screenshots and confirm the uploaded set count and display type."
-      ],
-      "recordWhere": "Append the readback results to this packet as a new 'sixBReadback' object with the timestamp, each endpoint, and the exact value returned. A readback that disagrees with the intent is a stop condition, not a note.",
-      "doNotClaim": "Do not report 1.1 as submitted, or the privacy answers as entered, from a 2xx response alone."
-    },
-    {
-      "step": 6,
-      "name": "After approval",
-      "actions": [
-        "Verify public availability, both IAPs, and the privacy/support URLs on the live listing.",
-        "Create the three custom product pages in AppStore/1.1/custom-product-pages.json, each with only its own screenshot subset.",
-        "Begin the 24h/7d/30d metric collection in design section 15.2."
-      ]
-    }
-  ],
-  "controlPlaneUpdatesForTheController": {
-    "$comment": "vault/launch/econbyte/*.md live in the control-plane repository, which has a single-writer rule. Task 6a did not touch them. These are the edits the controller should apply.",
-    "vault/launch/econbyte/metadata.md": [
-      "The file's front matter still says 'SUBMISSION-READY — freemium model; resubmit build 3 Jun 19 2026' at repo main 42df3dc. Update the status and repo pointer to EconByte 1.1 build 6 at commit c911b161.",
-      "The DUD-226 reconciliation banner describes 80 cards / 10 topics with 2 free and 8 paid. For 1.1 this becomes 120 cards / 15 topics with 2 free and 13 paid.",
-      "The description, keywords, promotional text, What's New and review notes are superseded by AppStore/1.1/metadata.json in the app repository; point to it rather than duplicating it.",
-      "DELETE the 'ATT prompt required at first ad load' line — false for 1.1, and the usage description is now absent from Info.plist entirely.",
-      "REPLACE the App Privacy table's 'Used for Tracking: Yes' rows with the D2 configuration-level answers: Device ID and Advertising Data collected for third-party advertising, NOT used for tracking, NOT linked to identity; everything else Not Collected while the providers are dormant.",
-      "The ad description 'Interstitial every 5 card swipes, max 3/session' is 1.0 behaviour. 1.1 shows at most one interstitial per session and two per day, only at a completed-set exit."
-    ],
-    "vault/launch/econbyte/runbook.md": [
-      "Add a 1.1 section: version 1.1 / build 6, the two approved IAPs to attach, the review-note path through the free experience, and the phased + manual release choice.",
-      "Record the evidence retention location for the 1.1 archive, xcresult and privacy reports (see retention.root).",
-      "Record that Task 6a made no ASC call and that all ASC work is 6b's.",
-      "Record D2 as CLOSED (Option B, Table Talk precedent) with the binding ASC App Privacy answers, so the runbook stops treating it as an open decision.",
-      "Add the stale distribution-profile item to the pre-submission checklist so it fails closed until the profile is refreshed.",
-      "Keep the AdMob identifier confirmation (D6) as a blocking pre-submission check."
-    ]
-  },
-  "retention": {
-    "root": "~/dudley-evidence-retention/econbyte/c911b1610418e7bc7e6b20a20ed714e46b3a0a56/",
-    "durable": true,
-    "notInTmp": "Deliberately outside /private/tmp so it survives a reboot and the host's disk janitor.",
-    "contents": [
-      "EconByte-1.1-build6.xcarchive — the post-ruling archive with the corrected manifests, plus dSYMs",
-      "archive-file-digests.txt, archive-tree-hash.txt — 38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
-      "EconByte-1.1-build6-full-suite.xcresult — the green full-suite result bundle at this commit",
-      "xcresult-file-digests.txt, xcresult-tree-hash.txt — a23b731d92ad3191b8c941ea0bec00a610241a17f89fd99a3ac312a234bdbdf1",
-      "privacy-report-build6.json — the post-ruling report; privacy-report-build6-pre-d2.json — the report that produced the ruling",
-      "accessibility-audit-raw.txt — raw XCTest accessibility audit output",
-      "archive.log, full-suite.log, screenshot-capture.log — unredacted build logs, RETAINED ONLY. There is no committed copy of these three. The only committed evidence copies are AppStore/1.1/evidence/accessibility-audit-raw.txt (host paths stripped) and the two privacy reports (archive-relative paths only)."
-    ],
-    "supersededRoot": "~/dudley-evidence-retention/econbyte/8a187a0c9ba525149d91691d060ddeb17bb15181/ — the pre-ruling archive and its evidence, kept for the audit trail. NOT uploadable: it carries the 1.0 tracking declarations."
-  },
-  "buildHostNotes": {
-    "capacityRule": "Every build, test and archive in this task ran through a single-invocation gate: host-capacity-check.sh must pass and no other xcodebuild may be running, retried every 60s. Several runs waited on a Table Talk test run holding the slot.",
-    "derivedDataPath": "a task-specific DerivedData directory, not the shared default",
-    "diskIncident": "The host started this task below the 8 GiB build floor. Reclaimed space by pruning regenerable caches and 3,772 abandoned scratch directories older than 90 minutes left in the user temp directory by another lane's harness (~11.8 GiB). Worth adding to the disk janitor: it is a live leak, not a one-off.",
-    "simulatorContention": "The 6.9\" simulator is shared. A manual screenshot pass was interrupted when another lane launched its own app on it, which is why the screenshots are captured by a UI test that holds the build slot for the duration."
-  },
-  "exportOptions": "AppStore/1.1/exportOptions.plist — committed for Task 6b; see sixBHandoff steps 1 and 2 for the signing decision it encodes.",
-  "sixBReadback": {
-    "$comment": "Task 6b execution record. Every value below is a READ-BACK from App Store Connect after the corresponding write, not a restatement of a 2xx response. Written 2026-08-30. Credentials, key material and JWTs never appear here: the ASC API key is referenced by key ID only, and the issuer ID is redacted from every retained log.",
-    "executedAt": "2026-08-30T22:05:00-07:00",
-    "outcome": "STOPPED BEFORE SUBMISSION — steps 1-3 complete, step 4 complete except App Privacy, step 5 readback performed, submission NOT made.",
-    "stopCondition": {
-      "id": "app-privacy-not-expressible-via-asc-api",
-      "rule": "Instruction stop condition: \"any privacy-answer field the API won't accept as specified\"; and step 5 makes the appDataUsages tracking readback mandatory.",
-      "finding": "The App Privacy (data-usage) resources do not exist in the App Store Connect API as reachable by this key. Every documented and adjacent path returns HTTP 404 PATH_ERROR — not 403, not an empty collection. The 1.1 privacy answers in appPrivacy.oneOneFinalAnswers therefore cannot be entered through the API, and the mandatory step-5 readback confirming the tracking flags read NO cannot be performed at all.",
-      "probes": [
-        {
-          "endpoint": "/v1/apps/6780714383/appDataUsages",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The relationship 'appDataUsages' does not exist",
-          "requestId": "LIXB25W2K3AWO6JNAQL43MBOIU"
-        },
-        {
-          "endpoint": "/v1/appDataUsages?filter[app]=6780714383",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The resource 'v1/appDataUsages' does not exist",
-          "requestId": "Y2B7MDYEIO2GGRMYSTOUCEHABE"
-        },
-        {
-          "endpoint": "/v1/appDataUsagesPublishState?filter[app]=6780714383",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The resource 'v1/appDataUsagesPublishState' does not exist",
-          "requestId": "RUPY6ACIKY2PXXH5VSNIFT7PGM"
-        },
-        {
-          "endpoint": "/v1/apps/6780714383/relationships/appDataUsages",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The relationship 'appDataUsages' does not exist"
-        },
-        {
-          "endpoint": "/v1/appDataUsageCategories",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The resource 'v1/appDataUsageCategories' does not exist"
-        },
-        {
-          "endpoint": "/v1/appDataUsagePurposes",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The resource 'v1/appDataUsagePurposes' does not exist"
-        },
-        {
-          "endpoint": "/v1/appDataUsageDataProtections",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The resource 'v1/appDataUsageDataProtections' does not exist"
-        },
-        {
-          "endpoint": "/v1/appDataUsageGroupings",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The resource 'v1/appDataUsageGroupings' does not exist"
-        },
-        {
-          "endpoint": "/v2/appDataUsages?filter[app]=6780714383",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The path provided does not match a defined resource type."
-        },
-        {
-          "endpoint": "/v1/apps/6780714383/appPrivacyDetails",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The relationship 'appPrivacyDetails' does not exist"
-        },
-        {
-          "endpoint": "/v1/apps/6780714383/appPrivacyConfiguration",
-          "httpStatus": 404,
-          "code": "PATH_ERROR",
-          "detail": "The relationship 'appPrivacyConfiguration' does not exist"
-        },
-        {
-          "endpoint": "GET /v1/apps/6780714383 (relationship inventory)",
-          "httpStatus": 200,
-          "detail": "The app resource exposes 40 relationships; none of them is appDataUsages or any privacy-details equivalent. The absence is structural, not a permission failure."
-        }
-      ],
-      "whySubmittingAnywayWasRefused": "The App Privacy answers currently on the app record are the superseded 1.0 answers, whose tracking flags are YES for Device ID and Advertising Data (appPrivacy.oneZeroAnswers). The shipped build-6 binary declares NSPrivacyTracking = false with DeviceID tracking = false, and metadata.json states in terms that the 1.0 answers must NEVER be entered for 1.1. Submitting now would submit version 1.1 under a privacy declaration that contradicts its own binary. That is a materially false declaration to Apple, not a formality, so the Owner's submit-asap directive was not read as authorising it. Everything that does not depend on the privacy answers has been completed and verified, so the remaining Owner action is a single screen.",
-      "ownerActionToClear": "In App Store Connect (web UI, signed in as the Owner): App Privacy -> Edit. For \"Device ID\" and \"Usage Data > Advertising Data\", keep them COLLECTED with purpose Third-Party Advertising and Not Linked to User, and set USED FOR TRACKING = NO on both. Leave every other data type Not Collected. Publish the changes, then submit version 1.1 for review with phased release ON and manual release (both are already set on the version record — see releaseControls below). The exact answer set is appPrivacy.oneOneFinalAnswers in AppStore/1.1/metadata.json, identical to privacyReport.d2Decision.ascAnswersBinding.",
-      "notAttempted": "The ASC web UI was not driven and no Apple ID credentials were handled. This step needs an authenticated Owner session."
-    },
-    "step1_provisioningProfile": {
-      "status": "COMPLETE",
-      "lookups": [
-        {
-          "endpoint": "/v1/bundleIds?filter[identifier]=com.nsantulli.econbyte",
-          "httpStatus": 200,
-          "result": "bundleIds id N2XLLHXB7Z, seedId Q2DM9FSRL4"
-        },
-        {
-          "endpoint": "/v1/certificates?filter[certificateType]=DISTRIBUTION",
-          "httpStatus": 200,
-          "result": "two DISTRIBUTION certificates; SHA1 computed locally from each certificateContent: 77PRC7HF9V = 7AE1ACFCD45B02712E5531F1672DC6F17629D5A5, J5VB55VL9X = 4161108AB0A51FA62347816ED01B33A3EFDA3F81. J5VB55VL9X is the keychain identity named in the handoff and was the one linked."
-        }
-      ],
-      "create": {
-        "endpoint": "POST /v1/profiles",
-        "httpStatus": 201,
-        "requestId": "AKNWBHRBALH5VQ4TZIUJODLUPU",
-        "result": "profiles id 9562W33RGV, name \"EconByte App Store 1.1\", profileType IOS_APP_STORE, profileState ACTIVE, uuid e0617050-5fd0-4e4c-b625-f59ca98d15b9, expires 2027-07-30T15:57:23Z"
-      },
-      "verify": {
-        "endpoint": "/v1/profiles/9562W33RGV?include=certificates",
-        "httpStatus": 200,
-        "requestId": "USEYRPQWZV54JK6L6SYP5RZHWM",
-        "linkedCertificate": "J5VB55VL9X, SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81 — the current keychain distribution identity, NOT the superseded B2CF464AAC0E013CA373CEDB2DA4299DB4438549",
-        "linkedBundleId": "N2XLLHXB7Z (com.nsantulli.econbyte)"
-      },
-      "installedAt": [
-        "~/Library/MobileDevice/Provisioning Profiles/e0617050-5fd0-4e4c-b625-f59ca98d15b9.mobileprovision",
-        "~/Library/Developer/Xcode/UserData/Provisioning Profiles/e0617050-5fd0-4e4c-b625-f59ca98d15b9.mobileprovision"
-      ],
-      "decodedProfile": "Name EconByte App Store 1.1, TeamIdentifier Q2DM9FSRL4, application-identifier Q2DM9FSRL4.com.nsantulli.econbyte, get-task-allow false, one DeveloperCertificate with SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81.",
-      "note": "The primaryPath was taken; the Owner-led Xcode fallback was not needed. No pre-existing profile named \"EconByte App Store 1.1\" existed (GET /v1/profiles returned only the Wheres This House and VibeRater profiles), so nothing was overwritten. The stale Xcode-managed profile on the host was left untouched."
-    },
-    "step2_export": {
-      "status": "COMPLETE",
-      "archiveHashVerifiedBeforeExport": {
-        "expected": "38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
-        "recomputed": "38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
-        "fileCount": 24,
-        "method": "archive.treeHash.reproduce, run verbatim",
-        "result": "MATCH — the correct post-D2 archive was exported. The DO-NOT-UPLOAD sibling at ~/dudley-evidence-retention/econbyte/8a187a0c.../ was never touched."
-      },
-      "command": "xcodebuild -exportArchive -archivePath ~/dudley-evidence-retention/econbyte/c911b1610418e7bc7e6b20a20ed714e46b3a0a56/EconByte-1.1-build6.xcarchive -exportOptionsPlist AppStore/1.1/exportOptions.plist -exportPath <scratch>/export",
-      "result": "** EXPORT SUCCEEDED **. xcodebuild logged a non-fatal warning that it could not log in to the developer account nicksantulli@yahoo.com (session expired); manual signing does not need that session, and the export used the step-1 profile.",
-      "entitlementCheck": {
-        "command": "codesign -d --entitlements :- <export>/Payload/EconByte.app",
-        "get-task-allow": "false — PRESENT AND FALSE, i.e. not a development signature",
-        "other": "application-identifier Q2DM9FSRL4.com.nsantulli.econbyte, com.apple.developer.team-identifier Q2DM9FSRL4, beta-reports-active true"
-      },
-      "signingAuthority": "Apple Distribution: NICHOLAS PATRICK SANTULLI (Q2DM9FSRL4) -> Apple Worldwide Developer Relations Certification Authority -> Apple Root CA",
-      "ipa": {
-        "path": "<scratch>/export/EconByte.ipa",
-        "bytes": 3223983,
-        "sha256": "934854f148a1ccd9a2ca057470b3d9b6f3b48fd18b13b42657b503183ae23155"
-      },
-      "appBinaryAfterResign": {
-        "sha256": "eb6f174dc4c2eb30d2a222dad2e491c5247d2ecd934f9eecfa4231e6040ce981",
-        "note": "Differs from archive.appBinarySha256 (40332d51...) by design: export re-signs the binary, which rewrites its embedded signature. The archive tree hash above remains the provenance record for the unsigned content."
-      },
-      "embeddedInfoPlist": "CFBundleShortVersionString 1.1, CFBundleVersion 6, CFBundleIdentifier com.nsantulli.econbyte, ITSAppUsesNonExemptEncryption false — nothing renumbered at export, as manageAppVersionAndBuildNumber false requires."
-    },
-    "step3_upload": {
-      "status": "COMPLETE — build processed, confirmed by readback",
-      "validate": {
-        "command": "xcrun altool --validate-app --type ios --file <export>/EconByte.ipa --apiKey <ASC_KEY_ID> --apiIssuer <redacted>",
-        "result": "VERIFY SUCCEEDED with no errors (altool 26.40.1)"
-      },
-      "upload": {
-        "command": "xcrun altool --upload-app --type ios --file <export>/EconByte.ipa --apiKey <ASC_KEY_ID> --apiIssuer <redacted>",
-        "result": "UPLOAD SUCCEEDED with no errors",
-        "deliveryUuid": "5139f524-df39-4ad0-a7aa-708381f491db",
-        "transferred": "3223983 bytes"
-      },
-      "processingReadback": {
-        "endpoint": "/v1/builds?filter[app]=6780714383&filter[version]=6",
-        "httpStatus": 200,
-        "buildId": "5139f524-df39-4ad0-a7aa-708381f491db",
-        "version": "6",
-        "processingState": "VALID",
-        "uploadedDate": "2026-08-30T21:58:57-07:00",
-        "note": "Processing finished before the first poll; VALID was read from the API, not inferred from the altool exit code."
-      },
-      "keyHandling": "The .p8 stayed at ~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8 and was referenced by key ID only. No key material, JWT or issuer ID was written to this packet or to any retained log; the issuer ID was substituted with <ISSUER-REDACTED> before the logs were retained."
-    },
-    "step4_versionAndMetadata": {
-      "status": "COMPLETE EXCEPT APP PRIVACY AND SUBMISSION",
-      "versionCreated": {
-        "endpoint": "POST /v1/appStoreVersions",
-        "httpStatus": 201,
-        "requestId": "SW7OP4JUXHVGDWIX2I45BU7T2I",
-        "result": "No 1.1 record existed — only 1.0 (a94efd22-390f-42c8-b85b-64b41505724f, READY_FOR_SALE). Created appStoreVersions id fea0f3f4-1de9-4150-bdee-ab5526024ea3, versionString 1.1, platform IOS, releaseType MANUAL, copyright \"(c) 2026 Nicholas Santulli\"."
-      },
-      "buildAttached": {
-        "endpoint": "PATCH /v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/relationships/build",
-        "httpStatus": 204,
-        "requestId": "XNPFOF2YLFG3YULDBAS6X5DDGE"
-      },
-      "listingApplied": {
-        "endpoint": "PATCH /v1/appStoreVersionLocalizations/55287126-c8f5-43e1-b787-3f4bda95a860",
-        "httpStatus": 200,
-        "requestId": "E4PWH6DVVGK7N72HO6RI63UNUI",
-        "note": "The en-US localization was cloned from 1.0 when the version was created and carried the 1.0 description and keywords; it was overwritten with the metadata.json 1.1 values."
-      },
-      "subtitleApplied": {
-        "endpoint": "PATCH /v1/appInfoLocalizations/c9d0f559-6370-4f91-bea2-f30ad4062959",
-        "httpStatus": 200,
-        "requestId": "RPBWWHAJCULLYLNJV2OVPOTGKU",
-        "before": "Learn Economics. In 5 Minutes.",
-        "after": "Learn Inflation. In 5 Minutes."
-      },
-      "screenshots": {
-        "setCreated": {
-          "endpoint": "POST /v1/appScreenshotSets",
-          "httpStatus": 201,
-          "requestId": "Z2DP5SOVHUG7WGJZZLG5JV3X4Y",
-          "id": "c96779c1-a744-4c70-bcec-6601a2751ed8",
-          "screenshotDisplayType": "APP_IPHONE_67",
-          "why": "APP_IPHONE_67 is the display type that accepts the manifest's 1320x2868 6.9-inch captures. This resolves manifest.sizesNotProducedLocally: ASC demanded no 6.5-inch set, and scales the 6.9-inch set for smaller iPhone classes."
-        },
-        "uploaded": "the six manifest.storefrontRecommendation.use files, each reserved with POST /v1/appScreenshots, PUT to its uploadOperations, then PATCH uploaded:true with the file's md5 as sourceFileChecksum",
-        "held": "05-session-complete.png was NOT uploaded, per the manifest hold.",
-        "staleSetDeleted": {
-          "endpoint": "DELETE /v1/appScreenshotSets/985dc864-ef77-4924-a9f5-833a018b8fac",
-          "httpStatus": 204,
-          "requestId": "EAJPQ56CP6JT4KAZQ474IML4PY",
-          "why": "Creating the 1.1 version cloned 1.0's APP_IPHONE_65 set — six 1.0 captures (simulator_screenshot_*.png). Leaving them would have shipped 1.0 imagery (10 topics) against a 1.1 listing that promises 15 topics and 120 cards, on the display class those images serve. Deleted so the 1.1 storefront set is exactly the manifest's six. The live 1.0 version record is a separate resource and was not touched."
-        }
-      },
-      "ageRating": {
-        "endpoint": "/v1/appInfos/751ca167-51f9-4ac3-82d3-669603805ffe/ageRatingDeclaration",
-        "httpStatus": 200,
-        "method": "The questionnaire ASC presents TODAY was read and compared field by field against metadata.json ageRating.answers rather than transferring the 1.0 answers.",
-        "result": "Every content field metadata.json specifies already read NONE/false and was left alone. The current schema has questions metadata.json predates: advertising (already true — correct, the app serves interstitials), gunsOrOtherWeapons NONE, healthOrWellnessTopics false, lootBox false, parentalControls false, ageAssurance false.",
-        "oneFieldChanged": {
-          "endpoint": "PATCH /v1/ageRatingDeclarations/751ca167-51f9-4ac3-82d3-669603805ffe",
-          "httpStatus": 200,
-          "requestId": "WSUTNGSOJPQBWB6V7DEERCANCA",
-          "field": "socialMedia",
-          "before": null,
-          "after": false,
-          "why": "It was unanswered (null) and would have blocked submission. false is the factual answer: reviewNotes states there are no accounts, no user-generated content and no third-party login."
-        },
-        "resultingRating": "appInfo 751ca167 reports appStoreAgeRating FOUR_PLUS, brazilAgeRating L, ageRatingOverride NONE — the proposed 4+ is confirmed against the current questionnaire."
-      },
-      "encryption": "No ASC answer was needed. The build carries ITSAppUsesNonExemptEncryption = false in Info.plist, and the attached build reads usesNonExemptEncryption: false — read back from /v1/appStoreVersions/{id}/build, not assumed.",
-      "reviewNotes": {
-        "endpoint": "PATCH /v1/appStoreReviewDetails/b9ed4baa-edfc-4422-a1ae-dc4ee4266378",
-        "httpStatus": 200,
-        "requestId": "CV3EQ6IE56CJDWL2KYJ3E5AW6U",
-        "result": "metadata.json reviewNotes applied, 3216 characters; the record previously held the 1.0 notes describing 10 topics. Contact remains Nicholas Santulli / support@dudleyapps.com, demoAccountRequired false."
-      },
-      "inAppPurchases": {
-        "reviewerNoteAddressed": "The handoff's step-5 IAP endpoint was imprecise, as flagged. The corrected finding is recorded here with the exact endpoints and responses.",
-        "finding": "There is no per-version IAP attachment in the current App Store Connect API. Both products are already APPROVED from 1.0, which makes them live for the app rather than something a version carries.",
-        "endpointsTried": [
-          {
-            "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/relationships/inAppPurchases",
-            "httpStatus": 404,
-            "code": "PATH_ERROR",
-            "detail": "The relationship 'inAppPurchases' does not exist",
-            "requestId": "NVJZZING3XRP6K7Z2MKR4F4MHQ",
-            "note": "This is the legacy path the handoff implied. It no longer exists on appStoreVersions."
-          },
-          {
-            "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/appStoreVersionSubmission",
-            "httpStatus": 404,
-            "code": "NOT_FOUND",
-            "note": "The appStoreVersionSubmissions resource named in the handoff is the deprecated submission mechanism and holds nothing for this version. The current mechanism is /v1/reviewSubmissions with reviewSubmissionItems."
-          },
-          {
-            "endpoint": "GET /v1/appStoreVersions/{id} (relationship inventory)",
-            "httpStatus": 200,
-            "note": "The version resource exposes 13 relationships; none is inAppPurchases."
-          }
-        ],
-        "authoritativeReadback": {
-          "endpoint": "/v1/apps/6780714383/inAppPurchasesV2?fields[inAppPurchases]=productId,name,state,inAppPurchaseType",
-          "httpStatus": 200,
-          "requestId": "TCMVLKR6EQFGICYKJ432KNB43Y",
-          "products": [
-            {
-              "id": "6780979932",
-              "productId": "com.nsantulli.econbyte.unlockall",
-              "name": "Unlock All Topics",
-              "type": "NON_CONSUMABLE",
-              "state": "APPROVED"
-            },
-            {
-              "id": "6780980599",
-              "productId": "com.nsantulli.econbyte.removeads",
-              "name": "Remove Ads",
-              "type": "NON_CONSUMABLE",
-              "state": "APPROVED"
-            }
-          ],
-          "interpretation": "Both product identifiers are present and read APPROVED — exactly the two the packet requires and the two pinned by GrowthSystemsTests.testBothApprovedProductIdentifiersArePreservedExactly. Because they are APPROVED they must NOT be added as reviewSubmissionItems: that item type is for purchases awaiting review, and an APPROVED product would be rejected. No action was required or possible, and none was taken."
-        }
-      },
-      "appPrivacy": "NOT ENTERED — see stopCondition. This is the only step-4 action left outstanding."
-    },
-    "releaseControls": {
-      "phasedRelease": {
-        "endpoint": "POST /v1/appStoreVersionPhasedReleases",
-        "httpStatus": 201,
-        "requestId": "RAYBXH2NPCJTME5UYIZP4Z5ODQ",
-        "readback": {
-          "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/appStoreVersionPhasedRelease",
-          "httpStatus": 200,
-          "requestId": "R3U6OSOKABQO3D5RQYA2ZTI354",
-          "phasedReleaseState": "INACTIVE",
-          "startDate": null,
-          "currentDayNumber": 0
-        },
-        "interpretation": "Phased release is ON. INACTIVE is the correct pre-release state: the resource exists on the version, so the phased rollout is armed, and it moves to ACTIVE only once the Owner releases the approved build. The absence of this resource — not the INACTIVE value — is what would mean phased release is off."
-      },
-      "manualRelease": {
-        "attribute": "releaseType",
-        "value": "MANUAL",
-        "readFrom": "/v1/apps/6780714383/appStoreVersions?filter[versionString]=1.1&fields[appStoreVersions]=versionString,appStoreState,appVersionState,releaseType,platform,createdDate",
-        "interpretation": "Approval will not auto-publish. This satisfies the Owner's standing directive that release stay manual."
-      }
-    },
-    "step5_readback": {
-      "$comment": "Performed as specified, with the endpoints corrected where the handoff was imprecise. Nothing below is claimed from a write response.",
-      "performedAt": "2026-08-30T22:05:00-07:00",
-      "version": {
-        "endpoint": "/v1/apps/6780714383/appStoreVersions?filter[versionString]=1.1&fields[appStoreVersions]=versionString,appStoreState,appVersionState,releaseType,platform,createdDate",
-        "httpStatus": 200,
-        "requestId": "G6ZD54DKSPWVMSLQEEJIC6AW2M",
-        "id": "fea0f3f4-1de9-4150-bdee-ab5526024ea3",
-        "versionString": "1.1",
-        "appStoreState": "PREPARE_FOR_SUBMISSION",
-        "appVersionState": "PREPARE_FOR_SUBMISSION",
-        "releaseType": "MANUAL",
-        "platform": "IOS",
-        "agreesWithIntent": "YES for the metadata; the state is PREPARE_FOR_SUBMISSION rather than WAITING_FOR_REVIEW because the submission was deliberately withheld at the stop condition."
-      },
-      "attachedBuildNumber": {
-        "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/build?fields[builds]=version,processingState,uploadedDate,usesNonExemptEncryption,expired",
-        "httpStatus": 200,
-        "requestId": "7TDFVA5MMLOVJDSLHWQURKETU4",
-        "buildId": "5139f524-df39-4ad0-a7aa-708381f491db",
-        "version": "6",
-        "processingState": "VALID",
-        "expired": false,
-        "usesNonExemptEncryption": false,
-        "agreesWithIntent": "YES — the build NUMBER returned is 6, not merely that some build is attached."
-      },
-      "inAppPurchases": {
-        "endpoint": "/v1/apps/6780714383/inAppPurchasesV2?fields[inAppPurchases]=productId,name,state,inAppPurchaseType",
-        "httpStatus": 200,
-        "requestId": "TCMVLKR6EQFGICYKJ432KNB43Y",
-        "productIdentifiersReturned": [
-          "com.nsantulli.econbyte.unlockall",
-          "com.nsantulli.econbyte.removeads"
-        ],
-        "states": [
-          "APPROVED",
-          "APPROVED"
-        ],
-        "agreesWithIntent": "YES — both product identifiers read back exactly. See step4.inAppPurchases for why no version-level attachment exists to verify."
-      },
-      "appDataUsagesTrackingFlags": {
-        "endpoint": "/v1/apps/6780714383/appDataUsages and every adjacent path",
-        "httpStatus": 404,
-        "valueReturned": "NONE — the resource does not exist in the API",
-        "agreesWithIntent": "CANNOT BE DETERMINED. This readback is mandatory and is impossible through the API. It is the stop condition."
-      },
-      "screenshotSet": {
-        "endpoint": "/v1/appScreenshotSets/c96779c1-a744-4c70-bcec-6601a2751ed8/appScreenshots",
-        "httpStatus": 200,
-        "requestId": "U3WLZ5EXJKVTPUNBBND7C2Z3IY",
-        "displayType": "APP_IPHONE_67",
-        "count": 6,
-        "files": [
-          {
-            "fileName": "01-home.png",
-            "width": 1320,
-            "height": 2868,
-            "assetDeliveryState": "COMPLETE"
-          },
-          {
-            "fileName": "02-topics.png",
-            "width": 1320,
-            "height": 2868,
-            "assetDeliveryState": "COMPLETE"
-          },
-          {
-            "fileName": "03-card-front.png",
-            "width": 1320,
-            "height": 2868,
-            "assetDeliveryState": "COMPLETE"
-          },
-          {
-            "fileName": "04-card-back.png",
-            "width": 1320,
-            "height": 2868,
-            "assetDeliveryState": "COMPLETE"
-          },
-          {
-            "fileName": "06-home-streak.png",
-            "width": 1320,
-            "height": 2868,
-            "assetDeliveryState": "COMPLETE"
-          },
-          {
-            "fileName": "07-bookmarks.png",
-            "width": 1320,
-            "height": 2868,
-            "assetDeliveryState": "COMPLETE"
-          }
-        ],
-        "setsOnTheLocalization": 1,
-        "agreesWithIntent": "YES — exactly the six proposed files, all 1320x2868, all COMPLETE, 05-session-complete.png absent as held."
-      },
-      "listing": {
-        "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/appStoreVersionLocalizations",
-        "httpStatus": 200,
-        "requestId": "E2S3SYLIVHJWBN52PWJLV3QJZA",
-        "locale": "en-US",
-        "keywords": "financial literacy,inflation,interest rates,fed,gdp,tariffs,recession,taxes,explainer,econ",
-        "descriptionLength": 2021,
-        "whatsNewLength": 982,
-        "promotionalTextLength": 142,
-        "supportUrl": "https://dudleyapps.com/support",
-        "marketingUrl": null,
-        "agreesWithIntent": "YES — byte-identical to metadata.json listing values."
-      },
-      "subtitle": {
-        "endpoint": "/v1/appInfos/751ca167-51f9-4ac3-82d3-669603805ffe/appInfoLocalizations",
-        "httpStatus": 200,
-        "requestId": "ZZMYEDSQTTCPQ2L7XKZJU6W64I",
-        "value": "Learn Inflation. In 5 Minutes.",
-        "agreesWithIntent": "YES"
-      },
-      "openReviewSubmissions": {
-        "endpoint": "/v1/apps/6780714383/reviewSubmissions?filter[state]=READY_FOR_REVIEW,WAITING_FOR_REVIEW,IN_REVIEW,UNRESOLVED_ISSUES",
-        "httpStatus": 200,
-        "requestId": "3J7SATIASPJOSHYTSW4Y3U7IAM",
-        "count": 0,
-        "interpretation": "No review submission exists. 1.1 has NOT been submitted. Stated explicitly so no later reader infers a submission from the completed metadata."
-      },
-      "disagreements": "None. Every value read back matches what was written. The only unresolved item is the privacy readback, which returned no value at all rather than a conflicting one."
-    },
-    "openItems": [
-      {
-        "id": "D6-admob-ids-unconfirmed",
-        "severity": "OPEN — POST-RELEASE VERIFICATION REQUIRED",
-        "status": "STILL UNCONFIRMED. Carried forward, not cleared.",
-        "controllerRuling": "The packet marks D6 submission-blocking (ownerItems.admob-ids-unconfirmed.blocksSubmission = true, sixBHandoff step 4 blockedUntil). The controller ruled that the Owner's explicit submit-asap directive OVERRIDES that agent-authored gate, so 6b proceeded through preparation without it. The override changes when D6 is checked, not whether it must be.",
-        "whatIsUnconfirmed": "The Release AdMob app ID and interstitial unit ID reused from 1.0 are format-valid but have never been checked against the AdMob console. Also unconfirmed: that the console frequency caps are at least as conservative as the in-app caps (1 per foreground session, 2 per calendar day, 15 minutes apart, 2 completed sets apart), and that a current app-ads.txt is published.",
-        "risk": "If the IDs are wrong, ads silently fail to fill and 1.1 ships with dead ad inventory — a revenue defect, not a review rejection. Wrong or absent console caps would let the served frequency exceed what the listing, the review notes and the 4+ rating were argued on.",
-        "whoCanClear": "Owner only — it needs AdMob console access, which no agent has.",
-        "whenToClear": "Before the Owner releases the approved build, and in any case as the first post-approval check in step 6."
-      },
-      {
-        "id": "app-name-mismatch-not-applied",
-        "severity": "INFORMATIONAL — deliberately not acted on",
-        "detail": "metadata.json app.name is \"EconByte: Daily Economics\" (25 chars) but the live App Store name is \"EconByte\". The name was NOT changed. It is a storefront identity change, it was not in the 6b metadata instruction (which enumerated what's-new, description, keywords, promo, subtitle), and nothing in the packet records it as an intended 1.1 change. Raised for the Owner rather than applied silently."
-      },
-      {
-        "id": "subtitle-changeFrom1_0-annotation-was-wrong",
-        "severity": "INFORMATIONAL — packet accuracy",
-        "detail": "metadata.json listing.subtitle.changeFrom1_0 says \"unchanged\". It is not: the live subtitle read \"Learn Economics. In 5 Minutes.\" and metadata.json specifies \"Learn Inflation. In 5 Minutes.\". The metadata.json value was applied as instructed, so 1.1 does change the subtitle. The annotation, not the value, was wrong."
-      },
-      {
-        "id": "privacy-policy-url-trailing-slash",
-        "severity": "INFORMATIONAL — not acted on",
-        "detail": "metadata.json listing.urls.privacy is \"https://dudleyapps.com/privacy/\" (trailing slash); the appInfoLocalization holds \"https://dudleyapps.com/privacy\" (no slash). Both resolve to the canonical privacy page. Left as-is: the privacy URL was not in the 6b metadata instruction and the difference is cosmetic."
-      }
-    ],
-    "retention": {
-      "root": "~/dudley-evidence-retention/econbyte/c911b1610418e7bc7e6b20a20ed714e46b3a0a56/",
-      "added": [
-        "sixb-export.log — xcodebuild -exportArchive output",
-        "sixb-altool-validate.log — altool --validate-app output, issuer ID redacted",
-        "sixb-altool-upload.log — altool --upload-app output, issuer ID redacted",
-        "sixb-asc-readback.json — the raw readback responses behind step5_readback"
-      ],
-      "redaction": "The ASC issuer ID was replaced with <ISSUER-REDACTED> in every retained log. No .p8 content, no JWT and no bearer token appears in any retained or committed file. The API key is named by key ID only."
-    },
-    "doNotClaim": "EconByte 1.1 is NOT submitted and its App Privacy answers are NOT entered. The version record is fully prepared and verified up to those two acts. Every statement in this object is backed by a GET performed after the corresponding write."
+  {
+   "sha": "c911b1610418e7bc7e6b20a20ed714e46b3a0a56",
+   "subject": "fix: declare configuration-level privacy per D2 ruling (Table Talk precedent)"
   }
+ ],
+ "archive": {
+  "name": "EconByte-1.1-build6.xcarchive",
+  "sourceCommit": "c911b1610418e7bc7e6b20a20ed714e46b3a0a56",
+  "treeCleanAtArchiveTime": true,
+  "laterCommitsAffectingTheAppTarget": "none \u2014 only the packet update that follows, which touches AppStore/1.1 only.",
+  "command": "xcodebuild archive -project EconByte.xcodeproj -scheme EconByte -configuration Release -destination 'generic/platform=iOS' -archivePath <scratch>/EconByte-final.xcarchive -derivedDataPath <derived-data> DEVELOPMENT_TEAM=Q2DM9FSRL4",
+  "result": "ARCHIVE SUCCEEDED",
+  "architectures": [
+   "arm64"
+  ],
+  "bundleId": "com.nsantulli.econbyte",
+  "team": "Q2DM9FSRL4",
+  "binaryUUID": "41CCA9FF-FA59-385C-8291-142CFF71430F",
+  "dSYM": "dSYMs/EconByte.app.dSYM, UUID 41CCA9FF-FA59-385C-8291-142CFF71430F (matches the binary)",
+  "appBinarySha256": "40332d5165bb6eedf0d1071b40f3928424bd8573faf9bf3c8cc8228992e60cd6",
+  "treeHash": {
+   "value": "38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
+   "method": "sha256 of the sorted 'sha256  archive-relative-path' listing of all 24 files in the archive; the listing itself is retained as archive-file-digests.txt",
+   "reproduce": "cd <archive> && find . -type f -print0 | sort -z | xargs -0 shasum -a 256 > digests.txt && shasum -a 256 digests.txt"
+  },
+  "signing": {
+   "identity": "Apple Development: NICHOLAS PATRICK SANTULLI (WB696822FM)",
+   "profile": "iOS Team Provisioning Profile: * (Xcode automatic signing)",
+   "entitlements": "application-identifier Q2DM9FSRL4.com.nsantulli.econbyte, team-identifier Q2DM9FSRL4, get-task-allow = true",
+   "distributionSigningAttemptedAndWhyItFailed": {
+    "attempt": "Re-archive with CODE_SIGN_STYLE=Manual, CODE_SIGN_IDENTITY='Apple Distribution', PROVISIONING_PROFILE_SPECIFIER='iOS Team Store Provisioning Profile: com.nsantulli.econbyte' \u2014 the command recorded in the previous packet revision.",
+    "result": "ARCHIVE FAILED with two errors: the profile 'doesn't include signing certificate Apple Distribution: NICHOLAS PATRICK SANTULLI (Q2DM9FSRL4)', and the profile 'is Xcode managed, but signing settings require a manually managed profile'.",
+    "rootCause": "The locally installed App Store profile (expires 2027-06-01, Xcode-managed) embeds a distribution certificate with SHA1 B2CF464AAC0E013CA373CEDB2DA4299DB4438549. The distribution identity actually in the keychain is SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81. The profile was issued against a SUPERSEDED distribution certificate, so no local combination of the two can sign for distribution.",
+    "consequence": "Distribution signing cannot be produced on this host without an authenticated Apple Developer session to regenerate the profile against the current certificate. Task 6a is barred from provisioning updates, which mutate the developer account.",
+    "ownerAction6b": "In an authenticated Xcode session, let Xcode refresh the App Store provisioning profile for com.nsantulli.econbyte against the current Apple Distribution certificate, then either export this archive with distribution signing (xcodebuild -exportArchive with an app-store-connect export options plist) or re-archive with manual distribution signing. The archived binary does not change in either case; only the signature does.",
+    "note": "A development-signed archive is the normal Xcode intermediate: distribution signing is applied at export. The blocker here is the stale profile, not the archive."
+   }
+  },
+  "embeddedFrameworks": [
+   "GoogleMobileAds.framework (12.14.0, SPM binary target)",
+   "UserMessagingPlatform.framework"
+  ],
+  "bundledContent": "curriculum-v1.1.json, sha256 97642805d28c2c35523026d1c0c5e95bd7e53992907371a0f545cd8cbb25769f \u2014 120 cards, 15 topics, 8 cards per topic",
+  "supersededArchive": {
+   "sourceCommit": "8a187a0c9ba525149d91691d060ddeb17bb15181",
+   "treeHash": "4a30a75960dc028876f304eede9b583d04079a0212c00946df47687d0ad88d55",
+   "reason": "built before the D2 ruling; it carries the 1.0 tracking declarations and MUST NOT be uploaded. Retained under its own commit directory for the audit trail only.",
+   "retention": "~/dudley-evidence-retention/econbyte/8a187a0c9ba525149d91691d060ddeb17bb15181/"
+  }
+ },
+ "privacyReport": {
+  "artifact": "AppStore/1.1/evidence/privacy-report-build6.json (post-ruling archive); the pre-ruling report is kept alongside it as privacy-report-build6-pre-d2.json",
+  "method": "Xcode does not expose its Organizer privacy report from the command line, so the report was derived from the archive itself: every PrivacyInfo.xcprivacy in the archive was aggregated (the app's and both SDKs'), and each Mach-O in the app bundle was checked for tracking-permission and advertising-identifier access (otool -L linkage, nm undefined symbols, and API strings).",
+  "findings": {
+   "appManifest": "POST-RULING: NSPrivacyTracking = false; NSPrivacyTrackingDomains = []; one collected type, DeviceID, purpose ThirdPartyAdvertising, tracking = false, linked = false; NSPrivacyAccessedAPITypes preserves the UserDefaults CA92.1 reason",
+   "googleMobileAdsManifest": "declares seven collected types; NSPrivacyCollectedDataTypeDeviceID carries tracking = TRUE and linked = true, with purposes ThirdPartyAdvertising, Analytics and DeveloperAdvertising. AdvertisingData, CoarseLocation, ProductInteraction, PerformanceData, CrashData and OtherDiagnosticData are declared with tracking = false.",
+   "userMessagingPlatformManifest": "three collected types, all AppFunctionality, all tracking = false",
+   "appBinary": "links /System/Library/Frameworks/AdSupport.framework; carries an undefined external _OBJC_CLASS_$_ASIdentifierManager (from AdSupport); contains the API strings ATTrackingManager, advertisingIdentifier and trackingAuthorizationStatus",
+   "attribution": "Those references are NOT first-party code. The repository contains no ATT or IDFA reference (the only hit is a comment in AdManager.swift recording the 1.0 removal). The GoogleMobileAds.framework binary in the archive is a 51 KB stub carrying resources and the SDK's privacy manifest; the SDK's 4 MB of code is statically linked into the app executable by the SPM binary target, and it is that code that references AdSupport and the ATT status API.",
+   "infoPlist": "POST-RULING: NSUserTrackingUsageDescription is ABSENT; 50 SKAdNetworkItems preserved; ITSAppUsesNonExemptEncryption = false"
+  },
+  "d2Decision": {
+   "status": "CLOSED \u2014 ruled Option B on 2026-08-30 and applied in commit c911b161.",
+   "gate": "Spec section 9.1 / CONTENT-DECISIONS.md D2 permitted the change only after the archive privacy report confirmed that the configured SDK path does not access tracking permission or IDFA.",
+   "reportOutcomeAgainstTheLiteralGate": "NOT CONFIRMED. The GoogleMobileAds SDK is statically linked into the app executable (its embedded framework binary is a 51 KB stub), that code links AdSupport and carries the ATT status and advertisingIdentifier APIs, and Google's bundled manifest declares DeviceID with tracking = true. First-party code has no ATT or IDFA reference and never prompts.",
+   "rulingAuthority": "Owner's standing blanket approval, exercised 2026-08-30, together with a controller precedent check. Task 6a did not take this decision unilaterally: it archived, reported, and escalated with both options costed, and applied Option B only after the ruling.",
+   "decidingPrecedent": {
+    "app": "Table Talk \u2014 approved by App Review and live in the US, with the same statically linked GoogleMobileAds SDK",
+    "source": "workspaces/table-talk-ios/TableTalk/Resources/PrivacyInfo.xcprivacy and TableTalk/Info.plist, read directly during this task",
+    "values": {
+     "NSPrivacyTracking": "false",
+     "NSPrivacyTrackingDomains": "empty array",
+     "NSPrivacyCollectedDataType": "NSPrivacyCollectedDataTypeDeviceID",
+     "NSPrivacyCollectedDataTypeTracking": "false",
+     "NSPrivacyCollectedDataTypeLinked": "false",
+     "NSPrivacyCollectedDataTypePurposes": "NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising",
+     "NSUserTrackingUsageDescription": "absent entirely"
+    },
+    "significance": "Option B is not a novel declaration. It aligns EconByte with a posture Apple has already reviewed and approved in this portfolio. EconByte's manifest is now byte-identical to Table Talk's (verified by diff)."
+   },
+   "changesApplied": [
+    "EconByte/Info.plist: NSUserTrackingUsageDescription REMOVED \u2014 this makes an ATT prompt impossible rather than merely absent, because iOS requires the key for any prompt to appear",
+    "EconByte/Resources/PrivacyInfo.xcprivacy: NSPrivacyTracking true -> false",
+    "EconByte/Resources/PrivacyInfo.xcprivacy: DeviceID NSPrivacyCollectedDataTypeTracking true -> false (Linked already false, purpose already ThirdPartyAdvertising)",
+    "PRESERVED: empty NSPrivacyTrackingDomains, the UserDefaults CA92.1 accessed-API reason, and all 50 SKAdNetworkItems (install attribution, unaffected by ATT)"
+   ],
+   "reReport": {
+    "archive": "the post-ruling archive, tree hash 38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
+    "appLevelConfirmed": "NSPrivacyTracking = false; DeviceID tracking = false, linked = false, purpose ThirdPartyAdvertising; tracking domains empty; UserDefaults CA92.1 intact; Info.plist has no NSUserTrackingUsageDescription; 50 SKAdNetworkItems; version 1.1 build 6",
+    "expectedRemainingDelta": "The aggregate report still shows GoogleMobileAds.framework's own manifest declaring DeviceID with tracking = true, and the app binary still reaches AdSupport and the ATT status API through the statically linked SDK. Neither is editable by this app: Google's manifest states its SDK's capability across all host apps. The app-level manifest is the one that describes THIS app's configuration, and it now says false. The identical delta exists in the approved Table Talk build.",
+    "netChangeVsPreRuling": "app-level NSPrivacyTracking true -> false; app-level DeviceID tracking true -> false; NSUserTrackingUsageDescription present -> absent. Nothing else in the archive's privacy surface changed."
+   },
+   "ascAnswersBinding": {
+    "identifiersDeviceId": "Collected \u00b7 Third-Party Advertising \u00b7 NOT used for tracking \u00b7 NOT linked to identity",
+    "usageDataAdvertisingData": "Collected \u00b7 Third-Party Advertising \u00b7 NOT used for tracking \u00b7 NOT linked to identity",
+    "everythingElse": "Not Collected while the analytics and diagnostics providers are dormant (no PostHog key, no Sentry DSN \u2014 D5). Re-derive before any build that enables either."
+   }
+  }
+ },
+ "tests": {
+  "xcresult": "EconByte-1.1-build6-full-suite.xcresult (retained under the post-ruling commit; see retention.root)",
+  "treeHash": "a23b731d92ad3191b8c941ea0bec00a610241a17f89fd99a3ac312a234bdbdf1",
+  "commit": "c911b1610418e7bc7e6b20a20ed714e46b3a0a56",
+  "command": "xcodebuild test -project EconByte.xcodeproj -scheme EconByte -destination 'platform=iOS Simulator,id=<6.9-inch simulator>' -derivedDataPath <derived-data>",
+  "result": "** TEST SUCCEEDED **",
+  "counts": {
+   "unitTests": 114,
+   "uiTests": 25,
+   "total": 139,
+   "failures": 0,
+   "breakdown": "EconByteTests 114 (CurriculumCatalogTests 27, GrowthSystemsTests 87); EconByteUITests 25 (AccessibilityTests 5, EconByteUITests 10, GrowthFlowTests 9, ScreenshotTests 1)"
+  },
+  "note": "Run twice green: once at 59f9624 before the D2 ruling and again at c911b161 after it, both from a reset app container. An earlier run failed four pre-existing smoke tests that matched only a 'Start' CTA; the CTA reads 'Review' once the day's goal is met. Fixed in 59f9624 \u2014 state-dependent test fragility, not an app regression."
+ },
+ "accessibility": {
+  "evidence": "AppStore/1.1/evidence/accessibility.md",
+  "rawAudit": "AppStore/1.1/evidence/accessibility-audit-raw.txt",
+  "automated": "EconByteUITests/AccessibilityTests.swift \u2014 5 tests, all passing, including Apple's own performAccessibilityAudit over Home, both card faces and Settings",
+  "fixesMade": "edd00ae \u2014 VoiceOver-reachable card flip with a named action and announced face/topic/position/source, Reduce Motion cross-fade, labels on the Settings gear / Close / Bookmark, decorative symbols hidden, 44x44 hit areas",
+  "openFindings": [
+   "fixed-point type does not scale with Dynamic Type (app-wide, recorded not changed)",
+   "Econ.subtext fails the small-text contrast ratio on both the dark and light surfaces (palette decision, Owner item)",
+   "320-point layout, Switch Control, Voice Control, Full Keyboard Access and physical-device VoiceOver completion not verifiable on this host"
+  ]
+ },
+ "screenshots": {
+  "manifest": "AppStore/1.1/screenshots/manifest.json",
+  "count": 7,
+  "size": "1320x2868 (iPhone 6.9\")",
+  "source": "captured from the release-configuration binary by EconByteUITests/ScreenshotTests; each file's sha256 is in the manifest",
+  "storefrontRecommendation": "use six; hold 05-session-complete.png, which is dominated by the one-time consent offer"
+ },
+ "storefrontArtifacts": {
+  "metadata": "AppStore/1.1/metadata.json",
+  "customProductPages": "AppStore/1.1/custom-product-pages.json",
+  "appPreview": "AppStore/1.1/app-preview/storyboard.md (video DEFERRED \u2014 storyboard only)"
+ },
+ "iapsToAttach": [
+  {
+   "productId": "com.nsantulli.econbyte.unlockall",
+   "type": "Non-Consumable",
+   "price": "$0.99",
+   "ascState": "approved",
+   "pinnedByTest": "GrowthSystemsTests.testBothApprovedProductIdentifiersArePreservedExactly"
+  },
+  {
+   "productId": "com.nsantulli.econbyte.removeads",
+   "type": "Non-Consumable",
+   "price": "$0.99",
+   "ascState": "approved",
+   "pinnedByTest": "GrowthSystemsTests.testBothApprovedProductIdentifiersArePreservedExactly"
+  }
+ ],
+ "ownerItems": [
+  {
+   "id": "admob-ids-unconfirmed",
+   "source": "CONTENT-DECISIONS.md D6, carried from DUD-242",
+   "status": "STILL UNCONFIRMED",
+   "detail": "The Release AdMob app ID and interstitial unit ID reused from 1.0 are format-valid but have never been checked against the AdMob console by the Owner. Task 6a cannot confirm them: that needs console access. Also unconfirmed: console frequency caps at least as conservative as the in-app caps (1 per foreground session, 2 per calendar day, 15 minutes apart, 2 completed sets apart), and a current app-ads.txt.",
+   "blocksSubmission": true
+  },
+  {
+   "id": "asc-privacy-answers",
+   "source": "CONTENT-DECISIONS.md D2",
+   "status": "DECIDED \u2014 entry action only",
+   "detail": "D2 is closed and the binary now declares the configuration-level posture. Task 6b enters the answers in privacyReport.d2Decision.ascAnswersBinding; it is no longer a decision, only data entry against the shipped manifest.",
+   "blocksSubmission": false
+  },
+  {
+   "id": "distribution-profile-stale",
+   "source": "discovered in Task 6a while attempting the distribution re-archive",
+   "status": "NEW \u2014 blocks upload, not the build",
+   "detail": "The local App Store provisioning profile for com.nsantulli.econbyte embeds a superseded distribution certificate (profile cert SHA1 B2CF464A..., keychain identity SHA1 4161108A...). Distribution signing therefore cannot be produced on this host. An authenticated Xcode session must refresh the profile before export or upload.",
+   "blocksSubmission": true
+  }
+ ],
+ "sixBHandoff": [
+  {
+   "step": 1,
+   "name": "Create a new distribution provisioning profile \u2014 the existing one cannot be refreshed",
+   "why": "The profile on the build host (iOS Team Store Provisioning Profile: com.nsantulli.econbyte, expires 2027-06-01) is XCODE-MANAGED and embeds a superseded distribution certificate (profile cert SHA1 B2CF464AAC0E013CA373CEDB2DA4299DB4438549; the keychain identity is SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81). The App Store Connect API cannot modify or regenerate an Xcode-managed profile, so there is nothing to 'refresh' \u2014 a new, manually-managed profile must be created.",
+   "primaryPath": {
+    "call": "POST /v1/profiles using the existing ASC API key",
+    "body": "type: profiles; attributes { name: 'EconByte App Store 1.1', profileType: 'IOS_APP_STORE' }; relationships { bundleId: the bundleIds id for com.nsantulli.econbyte (GET /v1/bundleIds?filter[identifier]=com.nsantulli.econbyte), certificates: the certificates id whose serial/fingerprint matches the keychain Apple Distribution identity SHA1 4161108A... (GET /v1/certificates?filter[certificateType]=DISTRIBUTION) }",
+    "then": "Download the returned profileContent (base64 .mobileprovision), install it on the build host, and use its name in AppStore/1.1/exportOptions.plist. The name in that file is already set to 'EconByte App Store 1.1' \u2014 keep them identical.",
+    "verify": "GET /v1/profiles/{id}?include=certificates and confirm the linked certificate is the current distribution certificate, not B2CF464A..."
+   },
+   "fallbackPath": "Owner-led authenticated Xcode session: open the project, enable automatic signing with team Q2DM9FSRL4, and let Xcode issue the profile. If this path is taken, switch exportOptions.plist signingStyle to 'automatic' and drop the provisioningProfiles dictionary.",
+   "note": "Creating a profile mutates the developer account, which is why Task 6a did not do it."
+  },
+  {
+   "step": 2,
+   "name": "Export the retained archive with distribution signing",
+   "command": "xcodebuild -exportArchive -archivePath <retention>/EconByte-1.1-build6.xcarchive -exportOptionsPlist AppStore/1.1/exportOptions.plist -exportPath <export-dir>",
+   "exportOptions": "AppStore/1.1/exportOptions.plist \u2014 committed. method app-store-connect, teamID Q2DM9FSRL4, signingStyle manual, signingCertificate 'Apple Distribution', provisioningProfiles maps com.nsantulli.econbyte to the step-1 profile, destination export, manageAppVersionAndBuildNumber false, uploadSymbols true.",
+   "verifyBeforeUpload": "codesign -d --entitlements :- on the exported app must show get-task-allow ABSENT (or false). If it is still true, the export did not re-sign and the upload will be rejected.",
+   "note": "The binary is unchanged by export; only the signature is. The archive hash in this packet remains the provenance record."
+  },
+  {
+   "step": 3,
+   "name": "Upload build 6",
+   "mechanism": "xcrun altool --upload-app, authenticated with the ASC API key by ID only",
+   "command": "xcrun altool --upload-app --type ios --file <export-dir>/EconByte.ipa --apiKey <ASC_KEY_ID> --apiIssuer <ASC_ISSUER_ID>",
+   "keyHandling": "The .p8 stays at ~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8 (or the path in the private_keys search path). Reference the key by ID and issuer ID on the command line. Never paste key material into a file, a log, or this repository.",
+   "alternative": "xcodebuild -exportArchive with destination 'upload' in the export options plus -authenticationKeyPath <path to .p8> -authenticationKeyID <ASC_KEY_ID> -authenticationKeyIssuerID <ASC_ISSUER_ID>, which exports and uploads in one step. Use it only if you do not want to inspect the .ipa first; step 2's entitlement check is worth keeping.",
+   "afterUpload": "Wait for processing to finish before the build can be selected \u2014 an accepted upload is not a processed build.",
+   "notarytoolNote": "notarytool is for macOS notarization and does not apply to an iOS App Store submission. altool --upload-app is the correct tool here."
+  },
+  {
+   "step": 4,
+   "name": "Attach, answer, submit",
+   "actions": [
+    "Select build 6 on the 1.1 version record.",
+    "Attach both approved IAPs: com.nsantulli.econbyte.unlockall and com.nsantulli.econbyte.removeads.",
+    "Enter the App Privacy answers from privacyReport.d2Decision.ascAnswersBinding (identical to metadata.json appPrivacy.oneOneFinalAnswers). Do not carry over the 1.0 answers.",
+    "Enter the listing fields from AppStore/1.1/metadata.json and upload the six recommended screenshots.",
+    "Answer the age-rating questionnaire that ASC presents today rather than transferring the 1.0 answers.",
+    "Set phased release ON and manual release, then submit."
+   ],
+   "blockedUntil": "The AdMob app ID, interstitial unit ID, console frequency caps and app-ads.txt are confirmed against the console (CONTENT-DECISIONS.md D6). This is still an Owner item and it blocks submission, not upload."
+  },
+  {
+   "step": 5,
+   "name": "READBACK \u2014 re-read every mutation and record it",
+   "why": "Portfolio lesson, recorded: 'visible:true is not live'. A successful write response proves the request was accepted, not that the store state is what you intended. Nothing in this release is considered done on the strength of a mutation response.",
+   "readAfterSubmitting": [
+    "GET /v1/apps/6780714383/appStoreVersions?filter[versionString]=1.1 \u2014 record the version id and appStoreState.",
+    "GET /v1/appStoreVersions/{id}/build \u2014 record the build NUMBER returned and confirm it is 6, not merely that a build is attached.",
+    "GET /v1/appStoreVersions/{id}/relationships/appStoreVersionExperiments is not the check; for the purchases use GET /v1/appStoreVersions/{id}/appStoreVersionSubmission and the version's in-app-purchase relationship \u2014 record BOTH product identifiers as returned, com.nsantulli.econbyte.unlockall and com.nsantulli.econbyte.removeads.",
+    "GET /v1/apps/6780714383/appDataUsages (with its categories/purposes includes) \u2014 record the Device ID and Advertising Data entries and confirm the tracking flags read NO, matching ascAnswersBinding.",
+    "GET the version's app screenshots and confirm the uploaded set count and display type."
+   ],
+   "recordWhere": "Append the readback results to this packet as a new 'sixBReadback' object with the timestamp, each endpoint, and the exact value returned. A readback that disagrees with the intent is a stop condition, not a note.",
+   "doNotClaim": "Do not report 1.1 as submitted, or the privacy answers as entered, from a 2xx response alone."
+  },
+  {
+   "step": 6,
+   "name": "After approval",
+   "actions": [
+    "Verify public availability, both IAPs, and the privacy/support URLs on the live listing.",
+    "Create the three custom product pages in AppStore/1.1/custom-product-pages.json, each with only its own screenshot subset.",
+    "Begin the 24h/7d/30d metric collection in design section 15.2."
+   ]
+  }
+ ],
+ "controlPlaneUpdatesForTheController": {
+  "$comment": "vault/launch/econbyte/*.md live in the control-plane repository, which has a single-writer rule. Task 6a did not touch them. These are the edits the controller should apply.",
+  "vault/launch/econbyte/metadata.md": [
+   "The file's front matter still says 'SUBMISSION-READY \u2014 freemium model; resubmit build 3 Jun 19 2026' at repo main 42df3dc. Update the status and repo pointer to EconByte 1.1 build 6 at commit c911b161.",
+   "The DUD-226 reconciliation banner describes 80 cards / 10 topics with 2 free and 8 paid. For 1.1 this becomes 120 cards / 15 topics with 2 free and 13 paid.",
+   "The description, keywords, promotional text, What's New and review notes are superseded by AppStore/1.1/metadata.json in the app repository; point to it rather than duplicating it.",
+   "DELETE the 'ATT prompt required at first ad load' line \u2014 false for 1.1, and the usage description is now absent from Info.plist entirely.",
+   "REPLACE the App Privacy table's 'Used for Tracking: Yes' rows with the D2 configuration-level answers: Device ID and Advertising Data collected for third-party advertising, NOT used for tracking, NOT linked to identity; everything else Not Collected while the providers are dormant.",
+   "The ad description 'Interstitial every 5 card swipes, max 3/session' is 1.0 behaviour. 1.1 shows at most one interstitial per session and two per day, only at a completed-set exit."
+  ],
+  "vault/launch/econbyte/runbook.md": [
+   "Add a 1.1 section: version 1.1 / build 6, the two approved IAPs to attach, the review-note path through the free experience, and the phased + manual release choice.",
+   "Record the evidence retention location for the 1.1 archive, xcresult and privacy reports (see retention.root).",
+   "Record that Task 6a made no ASC call and that all ASC work is 6b's.",
+   "Record D2 as CLOSED (Option B, Table Talk precedent) with the binding ASC App Privacy answers, so the runbook stops treating it as an open decision.",
+   "Add the stale distribution-profile item to the pre-submission checklist so it fails closed until the profile is refreshed.",
+   "Keep the AdMob identifier confirmation (D6) as a blocking pre-submission check."
+  ]
+ },
+ "retention": {
+  "root": "~/dudley-evidence-retention/econbyte/c911b1610418e7bc7e6b20a20ed714e46b3a0a56/",
+  "durable": true,
+  "notInTmp": "Deliberately outside /private/tmp so it survives a reboot and the host's disk janitor.",
+  "contents": [
+   "EconByte-1.1-build6.xcarchive \u2014 the post-ruling archive with the corrected manifests, plus dSYMs",
+   "archive-file-digests.txt, archive-tree-hash.txt \u2014 38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
+   "EconByte-1.1-build6-full-suite.xcresult \u2014 the green full-suite result bundle at this commit",
+   "xcresult-file-digests.txt, xcresult-tree-hash.txt \u2014 a23b731d92ad3191b8c941ea0bec00a610241a17f89fd99a3ac312a234bdbdf1",
+   "privacy-report-build6.json \u2014 the post-ruling report; privacy-report-build6-pre-d2.json \u2014 the report that produced the ruling",
+   "accessibility-audit-raw.txt \u2014 raw XCTest accessibility audit output",
+   "archive.log, full-suite.log, screenshot-capture.log \u2014 unredacted build logs, RETAINED ONLY. There is no committed copy of these three. The only committed evidence copies are AppStore/1.1/evidence/accessibility-audit-raw.txt (host paths stripped) and the two privacy reports (archive-relative paths only)."
+  ],
+  "supersededRoot": "~/dudley-evidence-retention/econbyte/8a187a0c9ba525149d91691d060ddeb17bb15181/ \u2014 the pre-ruling archive and its evidence, kept for the audit trail. NOT uploadable: it carries the 1.0 tracking declarations."
+ },
+ "buildHostNotes": {
+  "capacityRule": "Every build, test and archive in this task ran through a single-invocation gate: host-capacity-check.sh must pass and no other xcodebuild may be running, retried every 60s. Several runs waited on a Table Talk test run holding the slot.",
+  "derivedDataPath": "a task-specific DerivedData directory, not the shared default",
+  "diskIncident": "The host started this task below the 8 GiB build floor. Reclaimed space by pruning regenerable caches and 3,772 abandoned scratch directories older than 90 minutes left in the user temp directory by another lane's harness (~11.8 GiB). Worth adding to the disk janitor: it is a live leak, not a one-off.",
+  "simulatorContention": "The 6.9\" simulator is shared. A manual screenshot pass was interrupted when another lane launched its own app on it, which is why the screenshots are captured by a UI test that holds the build slot for the duration."
+ },
+ "exportOptions": "AppStore/1.1/exportOptions.plist \u2014 committed for Task 6b; see sixBHandoff steps 1 and 2 for the signing decision it encodes.",
+ "sixBReadback": {
+  "$comment": "Task 6b execution record. Every value below is a READ-BACK from App Store Connect after the corresponding write, not a restatement of a 2xx response. Written 2026-08-30. Credentials, key material and JWTs never appear here: the ASC API key is referenced by key ID only, and the issuer ID is redacted from every retained log.",
+  "executedAt": "2026-08-30T22:05:00-07:00",
+  "outcome": "STOPPED BEFORE SUBMISSION \u2014 steps 1-3 complete, step 4 complete except App Privacy, step 5 readback performed, submission NOT made.",
+  "stopCondition": {
+   "id": "app-privacy-not-expressible-via-asc-api",
+   "rule": "Instruction stop condition: \"any privacy-answer field the API won't accept as specified\"; and step 5 makes the appDataUsages tracking readback mandatory.",
+   "finding": "The App Privacy (data-usage) resources do not exist in the App Store Connect API as reachable by this key. Every documented and adjacent path returns HTTP 404 PATH_ERROR \u2014 not 403, not an empty collection. The 1.1 privacy answers in appPrivacy.oneOneFinalAnswers therefore cannot be entered through the API, and the mandatory step-5 readback confirming the tracking flags read NO cannot be performed at all.",
+   "probes": [
+    {
+     "endpoint": "/v1/apps/6780714383/appDataUsages",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The relationship 'appDataUsages' does not exist",
+     "requestId": "LIXB25W2K3AWO6JNAQL43MBOIU"
+    },
+    {
+     "endpoint": "/v1/appDataUsages?filter[app]=6780714383",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The resource 'v1/appDataUsages' does not exist",
+     "requestId": "Y2B7MDYEIO2GGRMYSTOUCEHABE"
+    },
+    {
+     "endpoint": "/v1/appDataUsagesPublishState?filter[app]=6780714383",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The resource 'v1/appDataUsagesPublishState' does not exist",
+     "requestId": "RUPY6ACIKY2PXXH5VSNIFT7PGM"
+    },
+    {
+     "endpoint": "/v1/apps/6780714383/relationships/appDataUsages",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The relationship 'appDataUsages' does not exist"
+    },
+    {
+     "endpoint": "/v1/appDataUsageCategories",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The resource 'v1/appDataUsageCategories' does not exist"
+    },
+    {
+     "endpoint": "/v1/appDataUsagePurposes",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The resource 'v1/appDataUsagePurposes' does not exist"
+    },
+    {
+     "endpoint": "/v1/appDataUsageDataProtections",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The resource 'v1/appDataUsageDataProtections' does not exist"
+    },
+    {
+     "endpoint": "/v1/appDataUsageGroupings",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The resource 'v1/appDataUsageGroupings' does not exist"
+    },
+    {
+     "endpoint": "/v2/appDataUsages?filter[app]=6780714383",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The path provided does not match a defined resource type."
+    },
+    {
+     "endpoint": "/v1/apps/6780714383/appPrivacyDetails",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The relationship 'appPrivacyDetails' does not exist"
+    },
+    {
+     "endpoint": "/v1/apps/6780714383/appPrivacyConfiguration",
+     "httpStatus": 404,
+     "code": "PATH_ERROR",
+     "detail": "The relationship 'appPrivacyConfiguration' does not exist"
+    },
+    {
+     "endpoint": "GET /v1/apps/6780714383 (relationship inventory)",
+     "httpStatus": 200,
+     "detail": "The app resource exposes 40 relationships; none of them is appDataUsages or any privacy-details equivalent. The absence is structural, not a permission failure."
+    }
+   ],
+   "whySubmittingAnywayWasRefused": "The App Privacy answers currently on the app record are the superseded 1.0 answers, whose tracking flags are YES for Device ID and Advertising Data (appPrivacy.oneZeroAnswers). The shipped build-6 binary declares NSPrivacyTracking = false with DeviceID tracking = false, and metadata.json states in terms that the 1.0 answers must NEVER be entered for 1.1. Submitting now would submit version 1.1 under a privacy declaration that contradicts its own binary. That is a materially false declaration to Apple, not a formality, so the Owner's submit-asap directive was not read as authorising it. Everything that does not depend on the privacy answers has been completed and verified, so the remaining Owner action is a single screen.",
+   "ownerActionToClear": "In App Store Connect (web UI, signed in as the Owner): App Privacy -> Edit. For \"Device ID\" and \"Usage Data > Advertising Data\", keep them COLLECTED with purpose Third-Party Advertising and Not Linked to User, and set USED FOR TRACKING = NO on both. Leave every other data type Not Collected. Publish the changes, then submit version 1.1 for review with phased release ON and manual release (both are already set on the version record \u2014 see releaseControls below). The exact answer set is appPrivacy.oneOneFinalAnswers in AppStore/1.1/metadata.json, identical to privacyReport.d2Decision.ascAnswersBinding.",
+   "notAttempted": "The ASC web UI was not driven and no Apple ID credentials were handled. This step needs an authenticated Owner session."
+  },
+  "step1_provisioningProfile": {
+   "status": "COMPLETE",
+   "lookups": [
+    {
+     "endpoint": "/v1/bundleIds?filter[identifier]=com.nsantulli.econbyte",
+     "httpStatus": 200,
+     "result": "bundleIds id N2XLLHXB7Z, seedId Q2DM9FSRL4"
+    },
+    {
+     "endpoint": "/v1/certificates?filter[certificateType]=DISTRIBUTION",
+     "httpStatus": 200,
+     "result": "two DISTRIBUTION certificates; SHA1 computed locally from each certificateContent: 77PRC7HF9V = 7AE1ACFCD45B02712E5531F1672DC6F17629D5A5, J5VB55VL9X = 4161108AB0A51FA62347816ED01B33A3EFDA3F81. J5VB55VL9X is the keychain identity named in the handoff and was the one linked."
+    }
+   ],
+   "create": {
+    "endpoint": "POST /v1/profiles",
+    "httpStatus": 201,
+    "requestId": "AKNWBHRBALH5VQ4TZIUJODLUPU",
+    "result": "profiles id 9562W33RGV, name \"EconByte App Store 1.1\", profileType IOS_APP_STORE, profileState ACTIVE, uuid e0617050-5fd0-4e4c-b625-f59ca98d15b9, expires 2027-07-30T15:57:23Z"
+   },
+   "verify": {
+    "endpoint": "/v1/profiles/9562W33RGV?include=certificates",
+    "httpStatus": 200,
+    "requestId": "USEYRPQWZV54JK6L6SYP5RZHWM",
+    "linkedCertificate": "J5VB55VL9X, SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81 \u2014 the current keychain distribution identity, NOT the superseded B2CF464AAC0E013CA373CEDB2DA4299DB4438549",
+    "linkedBundleId": "N2XLLHXB7Z (com.nsantulli.econbyte)"
+   },
+   "installedAt": [
+    "~/Library/MobileDevice/Provisioning Profiles/e0617050-5fd0-4e4c-b625-f59ca98d15b9.mobileprovision",
+    "~/Library/Developer/Xcode/UserData/Provisioning Profiles/e0617050-5fd0-4e4c-b625-f59ca98d15b9.mobileprovision"
+   ],
+   "decodedProfile": "Name EconByte App Store 1.1, TeamIdentifier Q2DM9FSRL4, application-identifier Q2DM9FSRL4.com.nsantulli.econbyte, get-task-allow false, one DeveloperCertificate with SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81.",
+   "note": "The primaryPath was taken; the Owner-led Xcode fallback was not needed. No pre-existing profile named \"EconByte App Store 1.1\" existed (GET /v1/profiles returned only the Wheres This House and VibeRater profiles), so nothing was overwritten. The stale Xcode-managed profile on the host was left untouched."
+  },
+  "step2_export": {
+   "status": "COMPLETE",
+   "archiveHashVerifiedBeforeExport": {
+    "expected": "38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
+    "recomputed": "38d70e116b6f87f1e74fe63772df6043dd1f29e065cf875e20e0faaa4974aa41",
+    "fileCount": 24,
+    "method": "archive.treeHash.reproduce, run verbatim",
+    "result": "MATCH \u2014 the correct post-D2 archive was exported. The DO-NOT-UPLOAD sibling at ~/dudley-evidence-retention/econbyte/8a187a0c.../ was never touched."
+   },
+   "command": "xcodebuild -exportArchive -archivePath ~/dudley-evidence-retention/econbyte/c911b1610418e7bc7e6b20a20ed714e46b3a0a56/EconByte-1.1-build6.xcarchive -exportOptionsPlist AppStore/1.1/exportOptions.plist -exportPath <scratch>/export",
+   "result": "** EXPORT SUCCEEDED **. xcodebuild logged a non-fatal warning that it could not log in to the developer account nicksantulli@yahoo.com (session expired); manual signing does not need that session, and the export used the step-1 profile.",
+   "entitlementCheck": {
+    "command": "codesign -d --entitlements :- <export>/Payload/EconByte.app",
+    "get-task-allow": "false \u2014 PRESENT AND FALSE, i.e. not a development signature",
+    "other": "application-identifier Q2DM9FSRL4.com.nsantulli.econbyte, com.apple.developer.team-identifier Q2DM9FSRL4, beta-reports-active true"
+   },
+   "signingAuthority": "Apple Distribution: NICHOLAS PATRICK SANTULLI (Q2DM9FSRL4) -> Apple Worldwide Developer Relations Certification Authority -> Apple Root CA",
+   "ipa": {
+    "path": "<scratch>/export/EconByte.ipa",
+    "bytes": 3223983,
+    "sha256": "934854f148a1ccd9a2ca057470b3d9b6f3b48fd18b13b42657b503183ae23155"
+   },
+   "appBinaryAfterResign": {
+    "sha256": "eb6f174dc4c2eb30d2a222dad2e491c5247d2ecd934f9eecfa4231e6040ce981",
+    "note": "Differs from archive.appBinarySha256 (40332d51...) by design: export re-signs the binary, which rewrites its embedded signature. The archive tree hash above remains the provenance record for the unsigned content."
+   },
+   "embeddedInfoPlist": "CFBundleShortVersionString 1.1, CFBundleVersion 6, CFBundleIdentifier com.nsantulli.econbyte, ITSAppUsesNonExemptEncryption false \u2014 nothing renumbered at export, as manageAppVersionAndBuildNumber false requires."
+  },
+  "step3_upload": {
+   "status": "COMPLETE \u2014 build processed, confirmed by readback",
+   "validate": {
+    "command": "xcrun altool --validate-app --type ios --file <export>/EconByte.ipa --apiKey <ASC_KEY_ID> --apiIssuer <redacted>",
+    "result": "VERIFY SUCCEEDED with no errors (altool 26.40.1)"
+   },
+   "upload": {
+    "command": "xcrun altool --upload-app --type ios --file <export>/EconByte.ipa --apiKey <ASC_KEY_ID> --apiIssuer <redacted>",
+    "result": "UPLOAD SUCCEEDED with no errors",
+    "deliveryUuid": "5139f524-df39-4ad0-a7aa-708381f491db",
+    "transferred": "3223983 bytes"
+   },
+   "processingReadback": {
+    "endpoint": "/v1/builds?filter[app]=6780714383&filter[version]=6",
+    "httpStatus": 200,
+    "buildId": "5139f524-df39-4ad0-a7aa-708381f491db",
+    "version": "6",
+    "processingState": "VALID",
+    "uploadedDate": "2026-08-30T21:58:57-07:00",
+    "note": "Processing finished before the first poll; VALID was read from the API, not inferred from the altool exit code."
+   },
+   "keyHandling": "The .p8 stayed at ~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8 and was referenced by key ID only. No key material, JWT or issuer ID was written to this packet or to any retained log; the issuer ID was substituted with <ISSUER-REDACTED> before the logs were retained."
+  },
+  "step4_versionAndMetadata": {
+   "status": "COMPLETE EXCEPT APP PRIVACY AND SUBMISSION",
+   "versionCreated": {
+    "endpoint": "POST /v1/appStoreVersions",
+    "httpStatus": 201,
+    "requestId": "SW7OP4JUXHVGDWIX2I45BU7T2I",
+    "result": "No 1.1 record existed \u2014 only 1.0 (a94efd22-390f-42c8-b85b-64b41505724f, READY_FOR_SALE). Created appStoreVersions id fea0f3f4-1de9-4150-bdee-ab5526024ea3, versionString 1.1, platform IOS, releaseType MANUAL, copyright \"(c) 2026 Nicholas Santulli\"."
+   },
+   "buildAttached": {
+    "endpoint": "PATCH /v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/relationships/build",
+    "httpStatus": 204,
+    "requestId": "XNPFOF2YLFG3YULDBAS6X5DDGE"
+   },
+   "listingApplied": {
+    "endpoint": "PATCH /v1/appStoreVersionLocalizations/55287126-c8f5-43e1-b787-3f4bda95a860",
+    "httpStatus": 200,
+    "requestId": "E4PWH6DVVGK7N72HO6RI63UNUI",
+    "note": "The en-US localization was cloned from 1.0 when the version was created and carried the 1.0 description and keywords; it was overwritten with the metadata.json 1.1 values."
+   },
+   "subtitleApplied": {
+    "endpoint": "PATCH /v1/appInfoLocalizations/c9d0f559-6370-4f91-bea2-f30ad4062959",
+    "httpStatus": 200,
+    "requestId": "RPBWWHAJCULLYLNJV2OVPOTGKU",
+    "before": "Learn Economics. In 5 Minutes.",
+    "after": "Learn Inflation. In 5 Minutes."
+   },
+   "screenshots": {
+    "setCreated": {
+     "endpoint": "POST /v1/appScreenshotSets",
+     "httpStatus": 201,
+     "requestId": "Z2DP5SOVHUG7WGJZZLG5JV3X4Y",
+     "id": "c96779c1-a744-4c70-bcec-6601a2751ed8",
+     "screenshotDisplayType": "APP_IPHONE_67",
+     "why": "APP_IPHONE_67 is the display type that accepts the manifest's 1320x2868 6.9-inch captures. This resolves manifest.sizesNotProducedLocally: ASC demanded no 6.5-inch set, and scales the 6.9-inch set for smaller iPhone classes."
+    },
+    "uploaded": "the six manifest.storefrontRecommendation.use files, each reserved with POST /v1/appScreenshots, PUT to its uploadOperations, then PATCH uploaded:true with the file's md5 as sourceFileChecksum",
+    "held": "05-session-complete.png was NOT uploaded, per the manifest hold.",
+    "staleSetDeleted": {
+     "endpoint": "DELETE /v1/appScreenshotSets/985dc864-ef77-4924-a9f5-833a018b8fac",
+     "httpStatus": 204,
+     "requestId": "EAJPQ56CP6JT4KAZQ474IML4PY",
+     "why": "Creating the 1.1 version cloned 1.0's APP_IPHONE_65 set \u2014 six 1.0 captures (simulator_screenshot_*.png). Leaving them would have shipped 1.0 imagery (10 topics) against a 1.1 listing that promises 15 topics and 120 cards, on the display class those images serve. Deleted so the 1.1 storefront set is exactly the manifest's six. The live 1.0 version record is a separate resource and was not touched."
+    }
+   },
+   "ageRating": {
+    "endpoint": "/v1/appInfos/751ca167-51f9-4ac3-82d3-669603805ffe/ageRatingDeclaration",
+    "httpStatus": 200,
+    "method": "The questionnaire ASC presents TODAY was read and compared field by field against metadata.json ageRating.answers rather than transferring the 1.0 answers.",
+    "result": "Every content field metadata.json specifies already read NONE/false and was left alone. The current schema has questions metadata.json predates: advertising (already true \u2014 correct, the app serves interstitials), gunsOrOtherWeapons NONE, healthOrWellnessTopics false, lootBox false, parentalControls false, ageAssurance false.",
+    "oneFieldChanged": {
+     "endpoint": "PATCH /v1/ageRatingDeclarations/751ca167-51f9-4ac3-82d3-669603805ffe",
+     "httpStatus": 200,
+     "requestId": "WSUTNGSOJPQBWB6V7DEERCANCA",
+     "field": "socialMedia",
+     "before": null,
+     "after": false,
+     "why": "It was unanswered (null) and would have blocked submission. false is the factual answer: reviewNotes states there are no accounts, no user-generated content and no third-party login."
+    },
+    "resultingRating": "appInfo 751ca167 reports appStoreAgeRating FOUR_PLUS, brazilAgeRating L, ageRatingOverride NONE \u2014 the proposed 4+ is confirmed against the current questionnaire."
+   },
+   "encryption": "No ASC answer was needed. The build carries ITSAppUsesNonExemptEncryption = false in Info.plist, and the attached build reads usesNonExemptEncryption: false \u2014 read back from /v1/appStoreVersions/{id}/build, not assumed.",
+   "reviewNotes": {
+    "endpoint": "PATCH /v1/appStoreReviewDetails/b9ed4baa-edfc-4422-a1ae-dc4ee4266378",
+    "httpStatus": 200,
+    "requestId": "CV3EQ6IE56CJDWL2KYJ3E5AW6U",
+    "result": "metadata.json reviewNotes applied, 3216 characters; the record previously held the 1.0 notes describing 10 topics. Contact remains Nicholas Santulli / support@dudleyapps.com, demoAccountRequired false."
+   },
+   "inAppPurchases": {
+    "reviewerNoteAddressed": "The handoff's step-5 IAP endpoint was imprecise, as flagged. The corrected finding is recorded here with the exact endpoints and responses.",
+    "finding": "There is no per-version IAP attachment in the current App Store Connect API. Both products are already APPROVED from 1.0, which makes them live for the app rather than something a version carries.",
+    "endpointsTried": [
+     {
+      "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/relationships/inAppPurchases",
+      "httpStatus": 404,
+      "code": "PATH_ERROR",
+      "detail": "The relationship 'inAppPurchases' does not exist",
+      "requestId": "NVJZZING3XRP6K7Z2MKR4F4MHQ",
+      "note": "This is the legacy path the handoff implied. It no longer exists on appStoreVersions."
+     },
+     {
+      "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/appStoreVersionSubmission",
+      "httpStatus": 404,
+      "code": "NOT_FOUND",
+      "note": "The appStoreVersionSubmissions resource named in the handoff is the deprecated submission mechanism and holds nothing for this version. The current mechanism is /v1/reviewSubmissions with reviewSubmissionItems."
+     },
+     {
+      "endpoint": "GET /v1/appStoreVersions/{id} (relationship inventory)",
+      "httpStatus": 200,
+      "note": "The version resource exposes 13 relationships; none is inAppPurchases."
+     }
+    ],
+    "authoritativeReadback": {
+     "endpoint": "/v1/apps/6780714383/inAppPurchasesV2?fields[inAppPurchases]=productId,name,state,inAppPurchaseType",
+     "httpStatus": 200,
+     "requestId": "TCMVLKR6EQFGICYKJ432KNB43Y",
+     "products": [
+      {
+       "id": "6780979932",
+       "productId": "com.nsantulli.econbyte.unlockall",
+       "name": "Unlock All Topics",
+       "type": "NON_CONSUMABLE",
+       "state": "APPROVED"
+      },
+      {
+       "id": "6780980599",
+       "productId": "com.nsantulli.econbyte.removeads",
+       "name": "Remove Ads",
+       "type": "NON_CONSUMABLE",
+       "state": "APPROVED"
+      }
+     ],
+     "interpretation": "Both product identifiers are present and read APPROVED \u2014 exactly the two the packet requires and the two pinned by GrowthSystemsTests.testBothApprovedProductIdentifiersArePreservedExactly. Because they are APPROVED they must NOT be added as reviewSubmissionItems: that item type is for purchases awaiting review, and an APPROVED product would be rejected. No action was required or possible, and none was taken."
+    }
+   },
+   "appPrivacy": "NOT ENTERED \u2014 see stopCondition. This is the only step-4 action left outstanding."
+  },
+  "releaseControls": {
+   "phasedRelease": {
+    "endpoint": "POST /v1/appStoreVersionPhasedReleases",
+    "httpStatus": 201,
+    "requestId": "RAYBXH2NPCJTME5UYIZP4Z5ODQ",
+    "readback": {
+     "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/appStoreVersionPhasedRelease",
+     "httpStatus": 200,
+     "requestId": "R3U6OSOKABQO3D5RQYA2ZTI354",
+     "phasedReleaseState": "INACTIVE",
+     "startDate": null,
+     "currentDayNumber": 0
+    },
+    "interpretation": "Phased release is ON. INACTIVE is the correct pre-release state: the resource exists on the version, so the phased rollout is armed, and it moves to ACTIVE only once the Owner releases the approved build. The absence of this resource \u2014 not the INACTIVE value \u2014 is what would mean phased release is off."
+   },
+   "manualRelease": {
+    "attribute": "releaseType",
+    "value": "MANUAL",
+    "readFrom": "/v1/apps/6780714383/appStoreVersions?filter[versionString]=1.1&fields[appStoreVersions]=versionString,appStoreState,appVersionState,releaseType,platform,createdDate",
+    "interpretation": "Approval will not auto-publish. This satisfies the Owner's standing directive that release stay manual."
+   }
+  },
+  "step5_readback": {
+   "$comment": "Performed as specified, with the endpoints corrected where the handoff was imprecise. Nothing below is claimed from a write response.",
+   "performedAt": "2026-08-30T22:05:00-07:00",
+   "version": {
+    "endpoint": "/v1/apps/6780714383/appStoreVersions?filter[versionString]=1.1&fields[appStoreVersions]=versionString,appStoreState,appVersionState,releaseType,platform,createdDate",
+    "httpStatus": 200,
+    "requestId": "G6ZD54DKSPWVMSLQEEJIC6AW2M",
+    "id": "fea0f3f4-1de9-4150-bdee-ab5526024ea3",
+    "versionString": "1.1",
+    "appStoreState": "PREPARE_FOR_SUBMISSION",
+    "appVersionState": "PREPARE_FOR_SUBMISSION",
+    "releaseType": "MANUAL",
+    "platform": "IOS",
+    "agreesWithIntent": "YES for the metadata; the state is PREPARE_FOR_SUBMISSION rather than WAITING_FOR_REVIEW because the submission was deliberately withheld at the stop condition."
+   },
+   "attachedBuildNumber": {
+    "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/build?fields[builds]=version,processingState,uploadedDate,usesNonExemptEncryption,expired",
+    "httpStatus": 200,
+    "requestId": "7TDFVA5MMLOVJDSLHWQURKETU4",
+    "buildId": "5139f524-df39-4ad0-a7aa-708381f491db",
+    "version": "6",
+    "processingState": "VALID",
+    "expired": false,
+    "usesNonExemptEncryption": false,
+    "agreesWithIntent": "YES \u2014 the build NUMBER returned is 6, not merely that some build is attached."
+   },
+   "inAppPurchases": {
+    "endpoint": "/v1/apps/6780714383/inAppPurchasesV2?fields[inAppPurchases]=productId,name,state,inAppPurchaseType",
+    "httpStatus": 200,
+    "requestId": "TCMVLKR6EQFGICYKJ432KNB43Y",
+    "productIdentifiersReturned": [
+     "com.nsantulli.econbyte.unlockall",
+     "com.nsantulli.econbyte.removeads"
+    ],
+    "states": [
+     "APPROVED",
+     "APPROVED"
+    ],
+    "agreesWithIntent": "YES \u2014 both product identifiers read back exactly. See step4.inAppPurchases for why no version-level attachment exists to verify."
+   },
+   "appDataUsagesTrackingFlags": {
+    "endpoint": "/v1/apps/6780714383/appDataUsages and every adjacent path",
+    "httpStatus": 404,
+    "valueReturned": "NONE \u2014 the resource does not exist in the API",
+    "agreesWithIntent": "CANNOT BE DETERMINED. This readback is mandatory and is impossible through the API. It is the stop condition."
+   },
+   "screenshotSet": {
+    "endpoint": "/v1/appScreenshotSets/c96779c1-a744-4c70-bcec-6601a2751ed8/appScreenshots",
+    "httpStatus": 200,
+    "requestId": "U3WLZ5EXJKVTPUNBBND7C2Z3IY",
+    "displayType": "APP_IPHONE_67",
+    "count": 6,
+    "files": [
+     {
+      "fileName": "01-home.png",
+      "width": 1320,
+      "height": 2868,
+      "assetDeliveryState": "COMPLETE"
+     },
+     {
+      "fileName": "02-topics.png",
+      "width": 1320,
+      "height": 2868,
+      "assetDeliveryState": "COMPLETE"
+     },
+     {
+      "fileName": "03-card-front.png",
+      "width": 1320,
+      "height": 2868,
+      "assetDeliveryState": "COMPLETE"
+     },
+     {
+      "fileName": "04-card-back.png",
+      "width": 1320,
+      "height": 2868,
+      "assetDeliveryState": "COMPLETE"
+     },
+     {
+      "fileName": "06-home-streak.png",
+      "width": 1320,
+      "height": 2868,
+      "assetDeliveryState": "COMPLETE"
+     },
+     {
+      "fileName": "07-bookmarks.png",
+      "width": 1320,
+      "height": 2868,
+      "assetDeliveryState": "COMPLETE"
+     }
+    ],
+    "setsOnTheLocalization": 1,
+    "agreesWithIntent": "YES \u2014 exactly the six proposed files, all 1320x2868, all COMPLETE, 05-session-complete.png absent as held."
+   },
+   "listing": {
+    "endpoint": "/v1/appStoreVersions/fea0f3f4-1de9-4150-bdee-ab5526024ea3/appStoreVersionLocalizations",
+    "httpStatus": 200,
+    "requestId": "E2S3SYLIVHJWBN52PWJLV3QJZA",
+    "locale": "en-US",
+    "keywords": "financial literacy,inflation,interest rates,fed,gdp,tariffs,recession,taxes,explainer,econ",
+    "descriptionLength": 2021,
+    "whatsNewLength": 982,
+    "promotionalTextLength": 142,
+    "supportUrl": "https://dudleyapps.com/support",
+    "marketingUrl": null,
+    "agreesWithIntent": "YES \u2014 byte-identical to metadata.json listing values."
+   },
+   "subtitle": {
+    "endpoint": "/v1/appInfos/751ca167-51f9-4ac3-82d3-669603805ffe/appInfoLocalizations",
+    "httpStatus": 200,
+    "requestId": "ZZMYEDSQTTCPQ2L7XKZJU6W64I",
+    "value": "Learn Inflation. In 5 Minutes.",
+    "agreesWithIntent": "YES"
+   },
+   "openReviewSubmissions": {
+    "endpoint": "/v1/apps/6780714383/reviewSubmissions?filter[state]=READY_FOR_REVIEW,WAITING_FOR_REVIEW,IN_REVIEW,UNRESOLVED_ISSUES",
+    "httpStatus": 200,
+    "requestId": "3J7SATIASPJOSHYTSW4Y3U7IAM",
+    "count": 0,
+    "interpretation": "No review submission exists. 1.1 has NOT been submitted. Stated explicitly so no later reader infers a submission from the completed metadata."
+   },
+   "disagreements": "None. Every value read back matches what was written. The only unresolved item is the privacy readback, which returned no value at all rather than a conflicting one."
+  },
+  "openItems": [
+   {
+    "id": "D6-admob-ids-unconfirmed",
+    "severity": "OPEN \u2014 POST-RELEASE VERIFICATION REQUIRED",
+    "status": "STILL UNCONFIRMED. Carried forward, not cleared.",
+    "controllerRuling": "The packet marks D6 submission-blocking (ownerItems.admob-ids-unconfirmed.blocksSubmission = true, sixBHandoff step 4 blockedUntil). The controller ruled that the Owner's explicit submit-asap directive OVERRIDES that agent-authored gate, so 6b proceeded through preparation without it. The override changes when D6 is checked, not whether it must be.",
+    "whatIsUnconfirmed": "The Release AdMob app ID and interstitial unit ID reused from 1.0 are format-valid but have never been checked against the AdMob console. Also unconfirmed: that the console frequency caps are at least as conservative as the in-app caps (1 per foreground session, 2 per calendar day, 15 minutes apart, 2 completed sets apart), and that a current app-ads.txt is published.",
+    "risk": "If the IDs are wrong, ads silently fail to fill and 1.1 ships with dead ad inventory \u2014 a revenue defect, not a review rejection. Wrong or absent console caps would let the served frequency exceed what the listing, the review notes and the 4+ rating were argued on.",
+    "whoCanClear": "Owner only \u2014 it needs AdMob console access, which no agent has.",
+    "whenToClear": "Before the Owner releases the approved build, and in any case as the first post-approval check in step 6."
+   },
+   {
+    "id": "app-name-mismatch-not-applied",
+    "severity": "INFORMATIONAL \u2014 deliberately not acted on",
+    "detail": "metadata.json app.name is \"EconByte: Daily Economics\" (25 chars) but the live App Store name is \"EconByte\". The name was NOT changed. It is a storefront identity change, it was not in the 6b metadata instruction (which enumerated what's-new, description, keywords, promo, subtitle), and nothing in the packet records it as an intended 1.1 change. Raised for the Owner rather than applied silently."
+   },
+   {
+    "id": "subtitle-changeFrom1_0-annotation-was-wrong",
+    "severity": "INFORMATIONAL \u2014 packet accuracy",
+    "detail": "metadata.json listing.subtitle.changeFrom1_0 says \"unchanged\". It is not: the live subtitle read \"Learn Economics. In 5 Minutes.\" and metadata.json specifies \"Learn Inflation. In 5 Minutes.\". The metadata.json value was applied as instructed, so 1.1 does change the subtitle. The annotation, not the value, was wrong."
+   },
+   {
+    "id": "privacy-policy-url-trailing-slash",
+    "severity": "INFORMATIONAL \u2014 not acted on",
+    "detail": "metadata.json listing.urls.privacy is \"https://dudleyapps.com/privacy/\" (trailing slash); the appInfoLocalization holds \"https://dudleyapps.com/privacy\" (no slash). Both resolve to the canonical privacy page. Left as-is: the privacy URL was not in the 6b metadata instruction and the difference is cosmetic."
+   }
+  ],
+  "retention": {
+   "root": "~/dudley-evidence-retention/econbyte/c911b1610418e7bc7e6b20a20ed714e46b3a0a56/",
+   "added": [
+    "sixb-export.log \u2014 xcodebuild -exportArchive output",
+    "sixb-altool-validate.log \u2014 altool --validate-app output, issuer ID redacted",
+    "sixb-altool-upload.log \u2014 altool --upload-app output, issuer ID redacted",
+    "sixb-asc-readback.json \u2014 the raw readback responses behind step5_readback"
+   ],
+   "redaction": "The ASC issuer ID was replaced with <ISSUER-REDACTED> in every retained log. No .p8 content, no JWT and no bearer token appears in any retained or committed file. The API key is named by key ID only."
+  },
+  "doNotClaim": "EconByte 1.1 is NOT submitted and its App Privacy answers are NOT entered. The version record is fully prepared and verified up to those two acts. Every statement in this object is backed by a GET performed after the corresponding write."
+ },
+ "submissionRecord": {
+  "$comment": "Final submission record, written 2026-08-31 by the orchestrator after Owner-directed web-UI drive ('Drive it'). Supersedes sixBReadback.outcome STOPPED BEFORE SUBMISSION.",
+  "executedAt": "2026-08-31T13:06:01Z",
+  "channel": "ASC web UI driven in Owner's Chrome session (App Privacy answers are not settable via API; submission performed in the same session)",
+  "appPrivacyResolution": {
+   "deviceId": "Tracking flipped YES->NO and PUBLISHED in the web UI (page header confirmed 'Published' with Device ID showing only 'Used for Third-Party Advertising').",
+   "advertisingData": "Tracking answer LEFT AS YES ('Used for tracking purposes' still shown). ASC hard-blocks publishing the last tracking=NO answer while a relevant binary contains NSUserTrackingUsageDescription; the live 1.0 binary carries the key (build 6 does not - verified in the retained archive Info.plist). Publish was attempted three times and refused with the NSUserTrackingUsageDescription warning; the edit was cancelled rather than falsified.",
+   "postReleaseAction": "After 1.1 replaces 1.0 on the storefront, re-enter Advertising Data and publish tracking=NO. Until then the label over-declares tracking for build 6, which is the safe direction and consistent with App Review evaluating the new binary."
+  },
+  "submissionReadback": {
+   "reviewSubmissionId": "88065533-e070-4c2a-b0d9-0ba4b763c69e",
+   "state": "WAITING_FOR_REVIEW",
+   "submittedDate": "2026-08-31T13:06:01.028Z",
+   "itemState": "READY_FOR_REVIEW",
+   "itemNote": "Single item: iOS App 1.1 (build 6). Both non-consumable IAPs are already APPROVED and require no co-submission.",
+   "appStoreVersion": {
+    "id": "fea0f3f4-1de9-4150-bdee-ab5526024ea3",
+    "appVersionState": "WAITING_FOR_REVIEW",
+    "releaseType": "MANUAL"
+   },
+   "method": "GET /v1/reviewSubmissions?filter[app]=6780714383 and GET /v1/apps/6780714383/appStoreVersions?filter[versionString]=1.1 via scripts/asc_api.mjs after the web-UI submit"
+  },
+  "openStorefrontGap": "ASC banner: 'This app was removed from sale from the App Store.' Submission is independent of sale availability; re-adding to sale via Pricing and Availability remains a separate Owner-visible step tied to the return-lane gates (Tasks 2-3 of the return plan)."
+ }
 }
