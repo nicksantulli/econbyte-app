@@ -436,8 +436,11 @@ final class EconGrowth: ObservableObject {
     let notifications: NotificationCoordinator
 
     private var didStartFirstSession = false
+    private let defaults: UserDefaults
 
-    private init() {
+    private init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-econResetGrowthState") {
             EconGrowth.resetPersistedState()
@@ -446,12 +449,13 @@ final class EconGrowth: ObservableObject {
 
         let environment = EconTelemetryEnvironment.current
         self.environment = environment
-        self.telemetry = EconTelemetry(environment: environment)
-        self.diagnostics = EconDiagnostics(environment: environment)
-        self.monetization = EconMonetization(adapter: AdManager.shared)
-        self.review = ReviewRequestCoordinator(currentVersion: environment.appVersion,
+        self.telemetry = EconTelemetry(defaults: defaults, environment: environment)
+        self.diagnostics = EconDiagnostics(defaults: defaults, environment: environment)
+        self.monetization = EconMonetization(adapter: AdManager.shared, defaults: defaults)
+        self.review = ReviewRequestCoordinator(defaults: defaults,
+                                               currentVersion: environment.appVersion,
                                                requestReview: { EconGrowth.requestSystemReview() })
-        self.notifications = NotificationCoordinator()
+        self.notifications = NotificationCoordinator(defaults: defaults)
 
         AdManager.shared.onFailure = { [weak self] code, error in
             self?.diagnostics.capture(code, detail: error.map(EconDiagnosticDetail.init))
@@ -537,11 +541,11 @@ final class EconGrowth: ObservableObject {
     }
 
     var consentPromptShown: Bool {
-        UserDefaults.standard.bool(forKey: ConsentPromptPolicy.shownDefaultsKey)
+        ConsentPromptPolicy.wasShown(in: defaults)
     }
 
     func noteConsentPromptShown() {
-        UserDefaults.standard.set(true, forKey: ConsentPromptPolicy.shownDefaultsKey)
+        ConsentPromptPolicy.noteShown(in: defaults)
     }
 
     /// Records the outcome of the *system* authorization dialog. Callers pass

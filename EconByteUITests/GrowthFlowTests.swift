@@ -23,9 +23,9 @@ final class GrowthFlowTests: XCTestCase {
 
     private func openSettings(_ app: XCUIApplication) {
         let gear = app.buttons["settingsGearButton"]
-        XCTAssertTrue(gear.waitForExistence(timeout: 8), "Settings gear should render")
+        XCTAssertTrue(gear.waitForExistence(timeout: 15), "Settings gear should render")
         gear.tap()
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 8),
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 15),
                       "Settings sheet should open")
     }
 
@@ -155,19 +155,33 @@ final class GrowthFlowTests: XCTestCase {
     // MARK: - Completed-set exit (spec section 9.3)
 
     /// Drives a full daily set and leaves the app on the session-complete state.
+    ///
+    /// The Home CTA reads "Start" only until today's goal is met; once a set is
+    /// finished it becomes "Review", so both labels are accepted — otherwise a
+    /// second call could never find the button. Cards are advanced until the
+    /// completion state actually appears rather than a fixed number of times, so
+    /// a dropped tap on a loaded machine cannot strand the deck mid-set.
     private func completeASet(in app: XCUIApplication) {
-        let start = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Start'")).firstMatch
-        XCTAssertTrue(start.waitForExistence(timeout: 10))
-        start.tap()
+        let cta = app.buttons.containing(
+            NSPredicate(format: "label CONTAINS 'Start' OR label CONTAINS 'Review'")
+        ).firstMatch
+        XCTAssertTrue(cta.waitForExistence(timeout: 15), "Home should offer today's set")
+        cta.tap()
 
         let counter = app.staticTexts.containing(NSPredicate(format: "label CONTAINS '/'")).firstMatch
-        XCTAssertTrue(counter.waitForExistence(timeout: 10), "card mode should open")
+        XCTAssertTrue(counter.waitForExistence(timeout: 15), "card mode should open")
 
+        let done = app.buttons["sessionCompleteDoneButton"]
         let next = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Next'")).firstMatch
-        for _ in 0..<12 where next.exists {
-            next.tap()
+        for _ in 0..<30 {
+            if done.exists { break }
+            if next.exists, next.isHittable {
+                next.tap()
+            } else {
+                _ = done.waitForExistence(timeout: 0.5)
+            }
         }
-        XCTAssertTrue(app.buttons["sessionCompleteDoneButton"].waitForExistence(timeout: 10),
+        XCTAssertTrue(done.waitForExistence(timeout: 15),
                       "the session-complete state should appear after the final card")
     }
 
@@ -215,6 +229,36 @@ final class GrowthFlowTests: XCTestCase {
 
         // Declining leaves the learning flow untouched.
         app.buttons["consentPromptDoneButton"].tap()
+        app.buttons["sessionCompleteDoneButton"].tap()
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12))
+    }
+
+    /// The primer defers past the consent offer — so prove it actually arrives
+    /// on the next completed set rather than being lost.
+    func testReminderPrimerArrivesOnTheSecondCompletedSet() {
+        let app = launchApp()
+
+        // First set: consent is offered, the primer stands down.
+        completeASet(in: app)
+        XCTAssertTrue(app.switches["consentPromptAnalyticsToggle"].waitForExistence(timeout: 10),
+                      "the first completed set offers the consent choices")
+        XCTAssertFalse(app.buttons["notificationPrimerEnableButton"].exists,
+                       "the primer defers while consent is being offered")
+        app.buttons["consentPromptDoneButton"].tap()
+        app.buttons["sessionCompleteDoneButton"].tap()
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12))
+
+        // Second set: the primer arrives, and consent is not asked again.
+        completeASet(in: app)
+        let primer = app.buttons["notificationPrimerEnableButton"]
+        XCTAssertTrue(primer.waitForExistence(timeout: 10),
+                      "the reminder primer should arrive on the next completed set")
+        XCTAssertFalse(app.switches["consentPromptAnalyticsToggle"].exists,
+                       "the consent offer is made once, not repeated")
+        XCTAssertEqual(app.alerts.count, 0,
+                       "the primer is non-blocking and prompts no system dialog itself")
+
+        app.buttons["notificationPrimerDismissButton"].tap()
         app.buttons["sessionCompleteDoneButton"].tap()
         XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12))
     }

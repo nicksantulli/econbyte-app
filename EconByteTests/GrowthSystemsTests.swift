@@ -938,6 +938,25 @@ final class GrowthSystemsTests: XCTestCase {
                        "the contextual offer is made once")
     }
 
+    /// The one-offer gate is persisted, and reads and writes the injected suite
+    /// rather than a global, so it is testable and resettable.
+    func testConsentPromptShownFlagRoundTripsThroughTheInjectedDefaults() {
+        XCTAssertFalse(ConsentPromptPolicy.wasShown(in: defaults))
+        XCTAssertTrue(ConsentPromptPolicy.eligible(
+            completedSetCount: 1,
+            alreadyShown: ConsentPromptPolicy.wasShown(in: defaults)))
+
+        ConsentPromptPolicy.noteShown(in: defaults)
+
+        XCTAssertTrue(ConsentPromptPolicy.wasShown(in: defaults))
+        XCTAssertFalse(ConsentPromptPolicy.eligible(
+            completedSetCount: 1,
+            alreadyShown: ConsentPromptPolicy.wasShown(in: defaults)),
+            "the contextual offer is never repeated")
+        XCTAssertFalse(ConsentPromptPolicy.wasShown(in: UserDefaults(suiteName: suiteName + ".other")!),
+                       "the flag is scoped to the suite it was written to")
+    }
+
     /// Two unrelated asks must not land on one screen: the reminder primer waits
     /// a set while the consent choices are presented.
     func testReminderPrimerDefersWhileTheConsentPromptIsPresented() {
@@ -1111,6 +1130,55 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(results, [false],
                        "a denied dialog must not be recorded as a success")
         XCTAssertFalse(coordinator.remindersEnabled)
+    }
+
+    /// Paths where iOS presents no dialog must report nothing: reporting them
+    /// is the intent-vs-outcome conflation the event contract exists to avoid.
+    @MainActor
+    func testPathsThatPresentNoDialogReportNoAuthorizationResult() async {
+        // Already authorized: iOS returns immediately and shows nothing.
+        let authorized = SpyNotificationCenter()
+        authorized.authorization = .authorized
+        let a = NotificationCoordinator(center: authorized, defaults: defaults)
+        await settle()
+        var aResults: [Bool] = []
+        a.enableReminders { aResults.append($0) }
+        await settle()
+        XCTAssertTrue(a.remindersEnabled, "an authorized reader still gets reminders on")
+        XCTAssertTrue(aResults.isEmpty, "no dialog resolved, so nothing is reported")
+
+        // Already denied: iOS never re-presents.
+        let denied = SpyNotificationCenter()
+        denied.authorization = .denied
+        let d = NotificationCoordinator(center: denied,
+                                        defaults: UserDefaults(suiteName: suiteName + ".denied")!)
+        await settle()
+        var dResults: [Bool] = []
+        d.enableReminders { dResults.append($0) }
+        await settle()
+        XCTAssertEqual(denied.authorizationRequests, 0)
+        XCTAssertTrue(dResults.isEmpty)
+
+        // Already enabled: nothing happens at all.
+        var eResults: [Bool] = []
+        a.enableReminders { eResults.append($0) }
+        await settle()
+        XCTAssertTrue(eResults.isEmpty)
+    }
+
+    /// A 1.0 upgrader who denied notifications must not be shown a primer whose
+    /// button cannot do anything.
+    func testPrimerIsSuppressedForAReaderWhoAlreadyDeniedNotifications() {
+        XCTAssertFalse(NotificationPolicy.primerEligible(completedSetCount: 3,
+                                                         primerAlreadyShown: false,
+                                                         remindersEnabled: false,
+                                                         consentPromptVisible: false,
+                                                         authorizationDenied: true))
+        XCTAssertTrue(NotificationPolicy.primerEligible(completedSetCount: 3,
+                                                        primerAlreadyShown: false,
+                                                        remindersEnabled: false,
+                                                        consentPromptVisible: false,
+                                                        authorizationDenied: false))
     }
 
     @MainActor

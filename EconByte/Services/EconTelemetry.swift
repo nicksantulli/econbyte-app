@@ -227,6 +227,14 @@ public enum ConsentPromptPolicy {
     public static func eligible(completedSetCount: Int, alreadyShown: Bool) -> Bool {
         completedSetCount >= 1 && !alreadyShown
     }
+
+    public static func wasShown(in defaults: UserDefaults) -> Bool {
+        defaults.bool(forKey: shownDefaultsKey)
+    }
+
+    public static func noteShown(in defaults: UserDefaults) {
+        defaults.set(true, forKey: shownDefaultsKey)
+    }
 }
 
 // MARK: - Sink

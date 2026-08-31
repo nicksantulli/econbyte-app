@@ -162,7 +162,8 @@ struct SessionCompleteView: View {
             completedSetCount: completedSets,
             primerAlreadyShown: growth.notifications.primerAlreadyShown,
             remindersEnabled: growth.notifications.remindersEnabled,
-            consentPromptVisible: showConsentPrompt) {
+            consentPromptVisible: showConsentPrompt,
+            authorizationDenied: growth.notifications.authorization == .denied) {
             showPrimer = true
             growth.notifications.notePrimerShown()
             growth.telemetry.capture(.notificationPrimerViewed,

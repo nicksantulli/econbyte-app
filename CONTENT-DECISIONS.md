@@ -351,8 +351,6 @@ locally before the system API is called. Settings now links to
 
 ---
 
----
-
 ## D10 — Consent choices are presented at the first completed set
 
 Design section 10.1 requires each consent choice to be presented after the first
@@ -419,6 +417,8 @@ carrying `sets_since_last_ad` as it stood *before* the reset, so the funnel has 
 true denominator. `review_prompt_eligible` is raised where the coordinator
 records local eligibility, before the system API call, keeping "we asked Apple"
 distinct from "Apple showed something".
+
+---
 
 ## Open items for the Owner
 

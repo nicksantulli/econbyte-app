@@ -120,12 +120,18 @@ public enum NotificationPolicy {
     /// and diagnostics choices are occupying the same moment, so a reader is
     /// never asked two unrelated questions on one screen. See
     /// `CONTENT-DECISIONS.md` D10.
+    ///
+    /// `authorizationDenied` suppresses it entirely: a reader who already denied
+    /// notifications — including anyone upgrading from 1.0, which prompted
+    /// automatically on first launch — would otherwise get a primer whose button
+    /// can do nothing, because iOS never re-presents the dialog.
     public static func primerEligible(completedSetCount: Int,
                                       primerAlreadyShown: Bool,
                                       remindersEnabled: Bool,
-                                      consentPromptVisible: Bool = false) -> Bool {
+                                      consentPromptVisible: Bool = false,
+                                      authorizationDenied: Bool = false) -> Bool {
         completedSetCount >= 1 && !primerAlreadyShown && !remindersEnabled
-            && !consentPromptVisible
+            && !consentPromptVisible && !authorizationDenied
     }
 }
 
@@ -160,32 +166,32 @@ public final class NotificationCoordinator: ObservableObject {
         }
     }
 
-    /// The only path to the system dialog. A previously denied user is linked to
-    /// system settings by the caller rather than prompted again.
-    /// `completion` reports the *system dialog's* outcome, not the toggle's
-    /// intent, so callers record `notification_permission_result` from what
-    /// actually happened.
-    public func enableReminders(completion: ((Bool) -> Void)? = nil) {
-        guard !remindersEnabled else {
-            completion?(true)
-            return
-        }
-        guard authorization != .denied else {
-            completion?(false)
-            return
-        }
+    /// The only path to the system dialog. A previously denied reader is linked
+    /// to system settings by the caller rather than prompted again.
+    ///
+    /// `onAuthorizationResolved` fires **only when a system dialog actually
+    /// resolved**, so `notification_permission_result` records what iOS did
+    /// rather than what the reader intended. Paths where no dialog is presented —
+    /// reminders already on, authorization already denied, or authorization
+    /// already granted (iOS returns immediately and shows nothing) — report
+    /// nothing at all.
+    public func enableReminders(onAuthorizationResolved: ((Bool) -> Void)? = nil) {
+        guard !remindersEnabled else { return }
+        guard authorization != .denied else { return }
+
+        // iOS presents the dialog only from `.notDetermined`.
+        let willPresentSystemDialog = (authorization == .notDetermined)
         didRequestAuthorization = true
         center.econRequestAuthorization { granted, _ in
             Task { @MainActor in
                 self.authorization = granted ? .authorized : .denied
-                guard granted else {
+                if granted {
+                    self.persist(true)
+                    self.schedule()
+                } else {
                     self.persist(false)
-                    completion?(false)
-                    return
                 }
-                self.persist(true)
-                self.schedule()
-                completion?(true)
+                if willPresentSystemDialog { onAuthorizationResolved?(granted) }
             }
         }
     }
