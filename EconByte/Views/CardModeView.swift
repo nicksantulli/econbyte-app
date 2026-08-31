@@ -36,11 +36,17 @@ struct CardModeView: View {
                         Button("✕") { dismiss() }
                             .foregroundColor(Econ.subtext)
                             .font(.title2)
+                            // A glyph-sized tap target fails the 44×44 minimum
+                            // (design section 12); widen the hit area only.
+                            .frame(minWidth: 44, minHeight: 44, alignment: .leading)
+                            .contentShape(Rectangle())
+                            .accessibilityLabel("Close")
                             .accessibilityIdentifier("cardModeCloseButton")
                         Spacer()
                         Text("\(min(currentIndex + 1, cards.count)) / \(cards.count)")
                             .font(.system(size: 15, weight: .medium, design: .rounded))
                             .foregroundColor(Econ.subtext)
+                            .accessibilityLabel("Card \(min(currentIndex + 1, cards.count)) of \(cards.count)")
                         Spacer()
                         Text(title)
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
@@ -54,10 +60,11 @@ struct CardModeView: View {
                         .tint(Econ.sky)
                         .padding(.horizontal, 20)
                         .padding(.bottom, 12)
+                        .accessibilityLabel("Set progress")
 
                     // Card
                     let card = cards[currentIndex]
-                    CardView(card: card, position: currentIndex)
+                    CardView(card: card, position: currentIndex, cardCount: cards.count)
                         .environmentObject(content)
                         .environmentObject(growth)
                         .padding(.horizontal, 20)

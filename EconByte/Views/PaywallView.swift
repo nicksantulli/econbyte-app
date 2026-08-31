@@ -38,6 +38,7 @@ struct PaywallView: View {
                             .font(.system(size: 52))
                             .foregroundColor(Econ.amber)
                             .padding(.top, 24)
+                            .accessibilityHidden(true)
 
                         Text("Unlock All Topics")
                             .font(.system(size: 26, weight: .heavy, design: .rounded))
@@ -145,6 +146,7 @@ struct PaywallView: View {
             Image(systemName: icon)
                 .foregroundColor(Econ.amber)
                 .frame(width: 24)
+                .accessibilityHidden(true)
             Text(text)
                 .font(.system(size: 15, design: .rounded))
                 .foregroundColor(Econ.white.opacity(0.9))

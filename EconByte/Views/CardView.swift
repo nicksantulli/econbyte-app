@@ -3,39 +3,81 @@ import SwiftUI
 struct CardView: View {
     let card: EconCard
     /// Position of this card within the current set, for the `position` property
-    /// on card telemetry.
+    /// on card telemetry and for the VoiceOver announcement.
     var position: Int = 0
+    /// Number of cards in the current set, announced with `position`.
+    var cardCount: Int = 0
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var growth: EconGrowth
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isFlipped = false
     @State private var rotation: Double = 0
 
+    /// With Reduce Motion the faces cross-fade, so the swap follows `isFlipped`
+    /// directly rather than the halfway point of a rotation that never runs.
+    private var showsBackFace: Bool { reduceMotion ? isFlipped : rotation >= 90 }
+
     var body: some View {
         ZStack {
-            if rotation < 90 {
-                frontFace
-            } else {
+            if showsBackFace {
                 backFace
-                    .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+                    .rotation3DEffect(.degrees(reduceMotion ? 0 : 180), axis: (x: 0, y: 1, z: 0))
+                    .transition(reduceMotion ? .opacity : .identity)
+            } else {
+                frontFace
+                    .transition(reduceMotion ? .opacity : .identity)
             }
         }
-        .rotation3DEffect(.degrees(rotation), axis: (x: 0, y: 1, z: 0))
+        .rotation3DEffect(.degrees(reduceMotion ? 0 : rotation), axis: (x: 0, y: 1, z: 0))
         .onTapGesture { flip() }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabelText)
+        .accessibilityValue(showsBackFace
+                            ? "Showing the real-world example"
+                            : "Showing the concept")
+        .accessibilityHint("Double tap to flip the card.")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { flip() }
+        .accessibilityAction(named: Text("Flip card")) { flip() }
+    }
+
+    /// Announces topic, position, face, the readable content, and — on the back
+    /// — whether a source is attached (design section 12).
+    private var accessibilityLabelText: Text {
+        let topic = content.topicName(for: card.topicId)
+        let place = cardCount > 0
+            ? "card \(position + 1) of \(cardCount)"
+            : "card \(position + 1)"
+        if showsBackFace {
+            let source = card.source.isEmpty ? "No source listed." : "Source: \(card.source)."
+            return Text("\(topic), \(place). Real-world example. \(card.exampleBody) \(source) For educational purposes only — not financial or investment advice.")
+        }
+        return Text("\(topic), \(place). Concept. \(card.concept). \(card.conceptBody) For educational purposes only — not financial or investment advice.")
     }
 
     private func flip() {
+        if reduceMotion {
+            // Reduce Motion: cross-fade instead of a 3D rotation, and keep
+            // `rotation` in step so the two paths cannot disagree.
+            withAnimation(.easeInOut(duration: 0.25)) { isFlipped.toggle() }
+            rotation = isFlipped ? 180 : 0
+            if isFlipped { noteFlipped() }
+            return
+        }
         withAnimation(.easeInOut(duration: 0.4)) {
             rotation = isFlipped ? 0 : 180
         }
         isFlipped.toggle()
-        if isFlipped {
-            content.markFlipped(card.id)
-            growth.telemetry.capture(.cardFlipped, properties: [
-                "card_id": .token(card.id),
-                "topic_id": .token(card.topicId),
-                "position": .int(position),
-            ])
-        }
+        if isFlipped { noteFlipped() }
+    }
+
+    private func noteFlipped() {
+        content.markFlipped(card.id)
+        growth.telemetry.capture(.cardFlipped, properties: [
+            "card_id": .token(card.id),
+            "topic_id": .token(card.topicId),
+            "position": .int(position),
+        ])
     }
 
     private var frontFace: some View {
@@ -141,6 +183,11 @@ struct CardView: View {
             Image(systemName: content.isBookmarked(card.id) ? "bookmark.fill" : "bookmark")
                 .foregroundColor(Econ.amber)
                 .font(.title3)
+                // 44×44 minimum tap target (design section 12).
+                .frame(minWidth: 44, minHeight: 44, alignment: .trailing)
+                .contentShape(Rectangle())
         }
+        .accessibilityLabel(content.isBookmarked(card.id) ? "Remove bookmark" : "Bookmark card")
+        .accessibilityIdentifier("cardBookmarkButton")
     }
 }

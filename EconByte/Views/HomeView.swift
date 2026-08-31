@@ -61,6 +61,7 @@ struct HomeView: View {
                         Image(systemName: "gearshape")
                             .foregroundColor(Econ.sky)
                     }
+                    .accessibilityLabel("Settings")
                     .accessibilityIdentifier("settingsGearButton")
                 }
             }
@@ -119,6 +120,9 @@ struct HomeView: View {
                 Image(systemName: completed ? "checkmark.seal.fill" : "newspaper.fill")
                     .foregroundColor(completed ? Econ.sky : Econ.amber)
                     .font(.title3)
+                    // Decorative: the adjacent text carries the meaning, and an
+                    // audit otherwise reads the raw SF Symbol name aloud.
+                    .accessibilityHidden(true)
                 Text("TODAY'S CARDS")
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundColor(Econ.subtext)
@@ -151,6 +155,7 @@ struct HomeView: View {
         HStack(spacing: 12) {
             Text("🔥")
                 .font(.title2)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Streak: \(streak.currentStreak) day\(streak.currentStreak == 1 ? "" : "s")")
                     .font(.system(size: 18, weight: .heavy, design: .rounded))

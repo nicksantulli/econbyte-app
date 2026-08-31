@@ -17,6 +17,7 @@ struct BookmarksView: View {
                             Image(systemName: "bookmark.slash")
                                 .font(.system(size: 48))
                                 .foregroundColor(Econ.subtext)
+                                .accessibilityHidden(true)
                             Text("No bookmarks yet.")
                                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                                 .foregroundColor(Econ.white)
