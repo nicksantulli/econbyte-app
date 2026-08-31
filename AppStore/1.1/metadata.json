@@ -110,18 +110,6 @@
   },
   "appPrivacy": {
     "status": "DECIDED. CONTENT-DECISIONS.md D2 was ruled Option B on 2026-08-30 on the Table Talk precedent and applied in commit c911b161; the shipped binary now declares NSPrivacyTracking = false with DeviceID tracking = false. Task 6b enters the answers below as data entry, not as a decision.",
-    "oneZeroAnswers": {
-      "identifiersDeviceId": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = YES",
-      "usageDataAdvertisingData": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = YES",
-      "everythingElse": "Not collected"
-    },
-    "basisFor1_1Answers": [
-      "the binary contains no App Tracking Transparency code, never requests tracking authorization, and no longer carries NSUserTrackingUsageDescription \u2014 without that key iOS cannot present an ATT prompt at all",
-      "every ad request carries npa=1 and rdp=1 with a G max ad content rating, so no advertising profile is built (EconAdRequestPolicy)",
-      "the app-level privacy manifest in the shipped archive declares NSPrivacyTracking = false and DeviceID with tracking = false, linked = false, purpose ThirdPartyAdvertising \u2014 byte-identical to the approved Table Talk posture",
-      "verified against the post-ruling archive by AppStore/1.1/evidence/privacy-report-build6.json"
-    ],
-    "ownerItemFor6b": "Enter the answers above against build 6. Google's bundled SDK manifest still declares device and advertising data for third-party advertising, so those two types stay COLLECTED; the tracking flag is NO. Do not carry over the 1.0 answers.",
     "oneOneFinalAnswers": {
       "identifiersDeviceId": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = NO",
       "usageDataAdvertisingData": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = NO",
@@ -132,7 +120,20 @@
       "location": "Not collected - the ad region gate reads the device region setting only, with no location permission and no IP lookup (D1)",
       "userContent": "Not collected - bookmarks, streak and card state stay on device",
       "notifications": "not a declarable data type: reminders are local notifications with no push token and no server"
-    }
+    },
+    "howToEnterThese": "Task 6b enters the values in THIS object \u2014 `appPrivacy.oneOneFinalAnswers` \u2014 which is identical to `privacyReport.d2Decision.ascAnswersBinding` in AppStore/1.1/evidence/release-packet.json. Do NOT enter `appPrivacy.oneZeroAnswers`: that object is the superseded 1.0 record, kept only to show what changed, and its tracking flags are YES. Google's bundled SDK manifest still declares device and advertising data for third-party advertising, so those two data types remain COLLECTED; what changed is that the tracking flag is NO.",
+    "oneZeroAnswers": {
+      "identifiersDeviceId": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = YES",
+      "usageDataAdvertisingData": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = YES",
+      "everythingElse": "Not collected"
+    },
+    "oneZeroAnswersNote": "SUPERSEDED 1.0 record. Historical reference only \u2014 never enter these in App Store Connect for version 1.1.",
+    "basisFor1_1Answers": [
+      "the binary contains no App Tracking Transparency code, never requests tracking authorization, and no longer carries NSUserTrackingUsageDescription \u2014 without that key iOS cannot present an ATT prompt at all",
+      "every ad request carries npa=1 and rdp=1 with a G max ad content rating, so no advertising profile is built (EconAdRequestPolicy)",
+      "the app-level privacy manifest in the shipped archive declares NSPrivacyTracking = false and DeviceID with tracking = false, linked = false, purpose ThirdPartyAdvertising \u2014 byte-identical to the approved Table Talk posture",
+      "verified against the post-ruling archive by AppStore/1.1/evidence/privacy-report-build6.json"
+    ]
   },
   "reviewNotes": {
     "value": "EconByte: Daily Economics is an educational card app. It explains economics concepts - inflation, interest rates, GDP, trade, taxes, fiscal policy - in short daily sets. IT IS NOT FINANCIAL ADVICE: every card carries an on-screen educational-use disclaimer, and the app makes no investment, tax or performance claims.\n\nWHAT IS NEW IN 1.1\n120 cards across 15 topics (was 80 across 10). Inflation and Interest Rates remain free; the other 13 topics are covered by the existing Unlock All Topics purchase.\n\nFREE REVIEWER PATH (no purchase needed)\n1. Launch the app. Tap Start on TODAY'S CARDS.\n2. Tap a card to flip it; the back shows a real-world example with its named source.\n3. Tap Next through the set to reach the completion screen.\n4. On Home, tap Bookmarks to see saved cards. Under BROWSE TOPICS, Inflation and Interest Rates are fully playable without any purchase.\n\nIN-APP PURCHASES (two independent one-time non-consumables, both already approved)\n- com.nsantulli.econbyte.unlockall, $0.99 - unlocks the 13 paid topics. Path: Home > BROWSE TOPICS > tap any locked topic (for example GDP) > Purchases screen > 'Unlock All - $0.99'. Also reachable at Home > gear > Settings > Purchases > Unlock All Topics.\n- com.nsantulli.econbyte.removeads, $0.99 - removes ads. Path: Home > gear > Settings > Purchases > Remove Ads.\n- Restore Purchases is on both the Purchases screen and Settings > Purchases.\n- The two products are deliberately independent: Remove Ads does not unlock topics, and Unlock All Topics does not remove ads. Settings states this in the section footer.\n- To exercise purchases without a sandbox account, open EconByte.xcodeproj and run the EconByte scheme: the scheme is wired to the committed StoreKit test configuration EconByte.storekit, which declares both product identifiers and prices.\n\nADVERTISING\nInterstitial ads are contextual and non-personalized only. The app does not request App Tracking Transparency authorization and does not use the advertising identifier; every ad request is sent with npa=1 and rdp=1 and a G maximum ad content rating. An ad can appear at exactly one place: after a set is completed, when returning to the home screen. It is capped at one per app session and two per calendar day, at least 15 minutes and two completed sets apart, and never appears while a card, paywall, purchase sheet, permission prompt or rating request is on screen. Ads are not served at all to devices set to an EEA country or the United Kingdom.\n\nNOTIFICATIONS\nOff by default. The iOS permission dialog appears only after an explicit opt-in: either Settings > Notifications > Daily Learning Reminder, or the 'Turn On Reminders' button that can appear on a session-complete screen. The reminder is a single local notification at 7:00 p.m.; there is no push server and no token.\n\nPRIVACY CHOICES\nUsage analytics and crash diagnostics are separate opt-in toggles in Settings, both off by default, offered once after the first completed set. No analytics or crash provider is configured in this build, so nothing is transmitted either way.\n\nOTHER\nNo accounts, no user-generated content, no third-party login. iPhone only, portrait only. All content ships in the binary and works offline."

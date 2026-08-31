@@ -35,8 +35,8 @@
       "subject": "test: stop the UI smoke tests failing after a completed set"
     },
     {
-      "sha": "48c6feb",
-      "subject": "docs: record the EconByte 1.1 release evidence packet (pre-ruling state)"
+      "sha": "48c6febb213fe04748b1bba60f213d7741ea021a",
+      "subject": "docs: record the EconByte 1.1 release evidence packet"
     },
     {
       "sha": "c911b1610418e7bc7e6b20a20ed714e46b3a0a56",
@@ -215,14 +215,73 @@
     }
   ],
   "sixBHandoff": [
-    "Refresh the App Store provisioning profile against the current Apple Distribution certificate, then export the retained archive with distribution signing (or re-archive with manual distribution signing \u2014 the binary is unchanged, only the signature).",
-    "Upload build 6 and attach both approved IAPs.",
-    "Enter the App Privacy answers exactly as recorded in privacyReport.d2Decision.ascAnswersBinding \u2014 the decision is made; this is data entry.",
-    "Confirm the AdMob app ID, unit ID, console caps and app-ads.txt before submitting (D6, still blocking).",
-    "Confirm in ASC which iPhone screenshot sizes are required today; the 6.9\" set is the only one captured locally.",
-    "Answer the current age-rating questionnaire in ASC rather than transferring the 1.0 answers.",
-    "Enter the metadata from AppStore/1.1/metadata.json, set phased release and manual release, and submit.",
-    "Create the three custom product pages only after approval."
+    {
+      "step": 1,
+      "name": "Create a new distribution provisioning profile \u2014 the existing one cannot be refreshed",
+      "why": "The profile on the build host (iOS Team Store Provisioning Profile: com.nsantulli.econbyte, expires 2027-06-01) is XCODE-MANAGED and embeds a superseded distribution certificate (profile cert SHA1 B2CF464AAC0E013CA373CEDB2DA4299DB4438549; the keychain identity is SHA1 4161108AB0A51FA62347816ED01B33A3EFDA3F81). The App Store Connect API cannot modify or regenerate an Xcode-managed profile, so there is nothing to 'refresh' \u2014 a new, manually-managed profile must be created.",
+      "primaryPath": {
+        "call": "POST /v1/profiles using the existing ASC API key",
+        "body": "type: profiles; attributes { name: 'EconByte App Store 1.1', profileType: 'IOS_APP_STORE' }; relationships { bundleId: the bundleIds id for com.nsantulli.econbyte (GET /v1/bundleIds?filter[identifier]=com.nsantulli.econbyte), certificates: the certificates id whose serial/fingerprint matches the keychain Apple Distribution identity SHA1 4161108A... (GET /v1/certificates?filter[certificateType]=DISTRIBUTION) }",
+        "then": "Download the returned profileContent (base64 .mobileprovision), install it on the build host, and use its name in AppStore/1.1/exportOptions.plist. The name in that file is already set to 'EconByte App Store 1.1' \u2014 keep them identical.",
+        "verify": "GET /v1/profiles/{id}?include=certificates and confirm the linked certificate is the current distribution certificate, not B2CF464A..."
+      },
+      "fallbackPath": "Owner-led authenticated Xcode session: open the project, enable automatic signing with team Q2DM9FSRL4, and let Xcode issue the profile. If this path is taken, switch exportOptions.plist signingStyle to 'automatic' and drop the provisioningProfiles dictionary.",
+      "note": "Creating a profile mutates the developer account, which is why Task 6a did not do it."
+    },
+    {
+      "step": 2,
+      "name": "Export the retained archive with distribution signing",
+      "command": "xcodebuild -exportArchive -archivePath <retention>/EconByte-1.1-build6.xcarchive -exportOptionsPlist AppStore/1.1/exportOptions.plist -exportPath <export-dir>",
+      "exportOptions": "AppStore/1.1/exportOptions.plist \u2014 committed. method app-store-connect, teamID Q2DM9FSRL4, signingStyle manual, signingCertificate 'Apple Distribution', provisioningProfiles maps com.nsantulli.econbyte to the step-1 profile, destination export, manageAppVersionAndBuildNumber false, uploadSymbols true.",
+      "verifyBeforeUpload": "codesign -d --entitlements :- on the exported app must show get-task-allow ABSENT (or false). If it is still true, the export did not re-sign and the upload will be rejected.",
+      "note": "The binary is unchanged by export; only the signature is. The archive hash in this packet remains the provenance record."
+    },
+    {
+      "step": 3,
+      "name": "Upload build 6",
+      "mechanism": "xcrun altool --upload-app, authenticated with the ASC API key by ID only",
+      "command": "xcrun altool --upload-app --type ios --file <export-dir>/EconByte.ipa --apiKey <ASC_KEY_ID> --apiIssuer <ASC_ISSUER_ID>",
+      "keyHandling": "The .p8 stays at ~/.appstoreconnect/private_keys/AuthKey_<ASC_KEY_ID>.p8 (or the path in the private_keys search path). Reference the key by ID and issuer ID on the command line. Never paste key material into a file, a log, or this repository.",
+      "alternative": "xcodebuild -exportArchive with destination 'upload' in the export options plus -authenticationKeyPath <path to .p8> -authenticationKeyID <ASC_KEY_ID> -authenticationKeyIssuerID <ASC_ISSUER_ID>, which exports and uploads in one step. Use it only if you do not want to inspect the .ipa first; step 2's entitlement check is worth keeping.",
+      "afterUpload": "Wait for processing to finish before the build can be selected \u2014 an accepted upload is not a processed build.",
+      "notarytoolNote": "notarytool is for macOS notarization and does not apply to an iOS App Store submission. altool --upload-app is the correct tool here."
+    },
+    {
+      "step": 4,
+      "name": "Attach, answer, submit",
+      "actions": [
+        "Select build 6 on the 1.1 version record.",
+        "Attach both approved IAPs: com.nsantulli.econbyte.unlockall and com.nsantulli.econbyte.removeads.",
+        "Enter the App Privacy answers from privacyReport.d2Decision.ascAnswersBinding (identical to metadata.json appPrivacy.oneOneFinalAnswers). Do not carry over the 1.0 answers.",
+        "Enter the listing fields from AppStore/1.1/metadata.json and upload the six recommended screenshots.",
+        "Answer the age-rating questionnaire that ASC presents today rather than transferring the 1.0 answers.",
+        "Set phased release ON and manual release, then submit."
+      ],
+      "blockedUntil": "The AdMob app ID, interstitial unit ID, console frequency caps and app-ads.txt are confirmed against the console (CONTENT-DECISIONS.md D6). This is still an Owner item and it blocks submission, not upload."
+    },
+    {
+      "step": 5,
+      "name": "READBACK \u2014 re-read every mutation and record it",
+      "why": "Portfolio lesson, recorded: 'visible:true is not live'. A successful write response proves the request was accepted, not that the store state is what you intended. Nothing in this release is considered done on the strength of a mutation response.",
+      "readAfterSubmitting": [
+        "GET /v1/apps/6780714383/appStoreVersions?filter[versionString]=1.1 \u2014 record the version id and appStoreState.",
+        "GET /v1/appStoreVersions/{id}/build \u2014 record the build NUMBER returned and confirm it is 6, not merely that a build is attached.",
+        "GET /v1/appStoreVersions/{id}/relationships/appStoreVersionExperiments is not the check; for the purchases use GET /v1/appStoreVersions/{id}/appStoreVersionSubmission and the version's in-app-purchase relationship \u2014 record BOTH product identifiers as returned, com.nsantulli.econbyte.unlockall and com.nsantulli.econbyte.removeads.",
+        "GET /v1/apps/6780714383/appDataUsages (with its categories/purposes includes) \u2014 record the Device ID and Advertising Data entries and confirm the tracking flags read NO, matching ascAnswersBinding.",
+        "GET the version's app screenshots and confirm the uploaded set count and display type."
+      ],
+      "recordWhere": "Append the readback results to this packet as a new 'sixBReadback' object with the timestamp, each endpoint, and the exact value returned. A readback that disagrees with the intent is a stop condition, not a note.",
+      "doNotClaim": "Do not report 1.1 as submitted, or the privacy answers as entered, from a 2xx response alone."
+    },
+    {
+      "step": 6,
+      "name": "After approval",
+      "actions": [
+        "Verify public availability, both IAPs, and the privacy/support URLs on the live listing.",
+        "Create the three custom product pages in AppStore/1.1/custom-product-pages.json, each with only its own screenshot subset.",
+        "Begin the 24h/7d/30d metric collection in design section 15.2."
+      ]
+    }
   ],
   "controlPlaneUpdatesForTheController": {
     "$comment": "vault/launch/econbyte/*.md live in the control-plane repository, which has a single-writer rule. Task 6a did not touch them. These are the edits the controller should apply.",
@@ -254,7 +313,7 @@
       "xcresult-file-digests.txt, xcresult-tree-hash.txt \u2014 a23b731d92ad3191b8c941ea0bec00a610241a17f89fd99a3ac312a234bdbdf1",
       "privacy-report-build6.json \u2014 the post-ruling report; privacy-report-build6-pre-d2.json \u2014 the report that produced the ruling",
       "accessibility-audit-raw.txt \u2014 raw XCTest accessibility audit output",
-      "archive.log, full-suite.log, screenshot-capture.log \u2014 unredacted build logs (retention only; committed copies are redacted)"
+      "archive.log, full-suite.log, screenshot-capture.log \u2014 unredacted build logs, RETAINED ONLY. There is no committed copy of these three. The only committed evidence copies are AppStore/1.1/evidence/accessibility-audit-raw.txt (host paths stripped) and the two privacy reports (archive-relative paths only)."
     ],
     "supersededRoot": "~/dudley-evidence-retention/econbyte/8a187a0c9ba525149d91691d060ddeb17bb15181/ \u2014 the pre-ruling archive and its evidence, kept for the audit trail. NOT uploadable: it carries the 1.0 tracking declarations."
   },
@@ -263,5 +322,6 @@
     "derivedDataPath": "a task-specific DerivedData directory, not the shared default",
     "diskIncident": "The host started this task below the 8 GiB build floor. Reclaimed space by pruning regenerable caches and 3,772 abandoned scratch directories older than 90 minutes left in the user temp directory by another lane's harness (~11.8 GiB). Worth adding to the disk janitor: it is a live leak, not a one-off.",
     "simulatorContention": "The 6.9\" simulator is shared. A manual screenshot pass was interrupted when another lane launched its own app on it, which is why the screenshots are captured by a UI test that holds the build slot for the duration."
-  }
+  },
+  "exportOptions": "AppStore/1.1/exportOptions.plist \u2014 committed for Task 6b; see sixBHandoff steps 1 and 2 for the signing decision it encodes."
 }

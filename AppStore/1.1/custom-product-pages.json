@@ -26,8 +26,17 @@
       "intent": "habit and microlearning searches - 'learn economics', 'daily learning', 'five minute learning'",
       "promotionalText": "One short set a day. Eight cards, plain language, a sourced example on the back of each one.",
       "description": "Economics, in the time it takes to make coffee.\n\nEconByte gives you one set of eight cards a day. The front of each card explains a single concept in plain language. Flip it over for a real-world example and the institution and document it came from. Finish the set, keep your streak, and save anything you want to read again.\n\n- 120 cards across 15 topics, eight cards per topic\n- Inflation and Interest Rates are free; the other 13 topics open with one $0.99 purchase\n- Bookmarks, streak and an optional daily reminder that stays off until you turn it on\n- No account, and everything works offline\n\nEducational content only. EconByte does not provide financial, investment or tax advice.",
-      "screenshots": ["01-home.png", "03-card-front.png", "04-card-back.png", "05-session-complete.png", "07-bookmarks.png"],
-      "campaign": {"ct": "econbyte-core-5min"}
+      "screenshots": [
+        "01-home.png",
+        "03-card-front.png",
+        "04-card-back.png",
+        "07-bookmarks.png",
+        "06-home-streak.png"
+      ],
+      "campaign": {
+        "ct": "econbyte-core-5min"
+      },
+      "screenshotNote": "05-session-complete.png is deliberately excluded, reconciling this page with the hold recorded in AppStore/1.1/screenshots/manifest.json (storefrontRecommendation.hold). The capture is dominated by the one-time analytics/diagnostics consent offer. The hold stands; the page uses the plain completion value carried by 06-home-streak.png instead."
     },
     {
       "id": "cpp-inflation",
@@ -35,8 +44,15 @@
       "intent": "inflation, CPI and cost-of-living searches",
       "promotionalText": "What inflation actually measures, why prices rose, and where the numbers come from. Free to read.",
       "description": "Why does the same grocery cart cost more?\n\nEconByte's Inflation topic answers that in eight short cards - what inflation measures, how the Consumer Price Index is built, what core inflation strips out, and what a central bank can and cannot do about it. Every card's back carries a real-world example with the source it came from, such as the Consumer Price Index series published by the Federal Reserve Bank of St. Louis.\n\n- Inflation is one of the two topics that are free, with no account and no sign-up\n- 15 topics and 120 cards in total; 13 topics open with one $0.99 purchase\n- Read offline, bookmark what you want to keep\n\nEducational content only. EconByte explains how prices are measured; it does not provide financial, investment or tax advice.",
-      "screenshots": ["03-card-front.png", "04-card-back.png", "02-topics.png", "01-home.png"],
-      "campaign": {"ct": "econbyte-inflation"}
+      "screenshots": [
+        "03-card-front.png",
+        "04-card-back.png",
+        "02-topics.png",
+        "01-home.png"
+      ],
+      "campaign": {
+        "ct": "econbyte-inflation"
+      }
     },
     {
       "id": "cpp-policy-literacy",
@@ -44,8 +60,15 @@
       "intent": "interest-rate, Federal Reserve and monetary-policy searches - policy literacy, not advice",
       "promotionalText": "What a rate decision is, who makes it, and how it reaches borrowing and saving. Explained, not advised.",
       "description": "Understand a rate decision before it reaches the headlines.\n\nEconByte's Interest Rates and Central Banks topics explain what a policy rate is, who sets it, how it travels through borrowing and saving, and what the yield curve is actually showing. Each card's back gives a real-world example with the institution and document behind it.\n\n- Interest Rates is free to read; Central Banks, Fiscal Policy, Debt & Deficits and 10 more topics open with one $0.99 purchase\n- 120 cards across 15 topics, eight per topic\n- Optional daily reminder, bookmarks, offline reading, no account\n\nEducational content only. EconByte explains policy; it does not provide financial, investment or tax advice, and it makes no claims about returns, rates you will receive, or outcomes.",
-      "screenshots": ["02-topics.png", "03-card-front.png", "04-card-back.png", "06-home-streak.png"],
-      "campaign": {"ct": "econbyte-rates-policy"}
+      "screenshots": [
+        "02-topics.png",
+        "03-card-front.png",
+        "04-card-back.png",
+        "06-home-streak.png"
+      ],
+      "campaign": {
+        "ct": "econbyte-rates-policy"
+      }
     }
   ],
   "sixBActions": [
