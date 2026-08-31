@@ -23,8 +23,11 @@ final class EconByteUITests: XCTestCase {
     }
 
     private func tapStart(in app: XCUIApplication) {
+        // The CTA reads "Start" until today's goal is met and "Review"
+        // afterwards, so matching only "Start" made these tests fail on any
+        // simulator that had already completed a set that day.
         let start = app.buttons.containing(
-            NSPredicate(format: "label CONTAINS 'Start'")
+            NSPredicate(format: "label CONTAINS 'Start' OR label CONTAINS 'Review'")
         ).firstMatch
         XCTAssertTrue(start.waitForExistence(timeout: 8))
         for _ in 0..<4 where !start.isHittable {
@@ -46,12 +49,12 @@ final class EconByteUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5),
                       "EconByte navigation title should render on the home screen")
 
-        // Today's Cards section and Start button.
+        // Today's Cards CTA: "Start" before the daily goal, "Review" after.
         let start = app.buttons.containing(
-            NSPredicate(format: "label CONTAINS 'Start'")
+            NSPredicate(format: "label CONTAINS 'Start' OR label CONTAINS 'Review'")
         ).firstMatch
         XCTAssertTrue(start.waitForExistence(timeout: 5),
-                      "Start button for Today's Cards should render on the home screen")
+                      "Today's Cards CTA should render on the home screen")
     }
 
     /// Browse Topics grid shows at least one topic tile after launch.
