@@ -1023,7 +1023,7 @@ final class GrowthSystemsTests: XCTestCase {
 
     @MainActor
     private func settle() async {
-        for _ in 0..<12 { await Task.yield() }
+        for _ in 0..<40 { await Task.yield() }
     }
 
     func testReminderIsScheduledForSevenPMLocalDaily() {

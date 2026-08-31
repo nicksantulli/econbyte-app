@@ -420,6 +420,57 @@ distinct from "Apple showed something".
 
 ---
 
+## D13 — Interruption blockers are raised before the dialog is certain
+
+When a reader taps **Turn On Reminders**, the app raises the `.notification` ad
+blocker and records `.notificationPrompt` as a negative session event *before*
+iOS has decided whether to present a dialog at all. On the paths where no dialog
+appears — authorization already granted, or already denied — the blocker and the
+disqualifier were still raised.
+
+**This is deliberate and is not being changed.** The two mechanisms have opposite
+failure costs:
+
+- **Blockers and the rating disqualifier** are suppression mechanisms. Erring
+  toward suppression costs at most one skipped ad impression or one deferred
+  rating request. Erring the other way shows an interstitial over a permission
+  moment, which is exactly what design section 9.3 forbids. Raising them on
+  intent is the conservative direction.
+- **`notification_permission_result`** is a *measurement*. Recording it on intent
+  would report dialogs that never happened and corrupt the section 15.2
+  authorization rate. That one is gated on a freshly read authorization status
+  and fires only when a dialog actually resolved.
+
+So the asymmetry is intentional: suppress on intent, measure on outcome.
+
+---
+
+## D14 — DEBUG-only test harness arguments
+
+Three launch arguments exist in DEBUG builds only and are compiled out of
+Release (Gate B item 11 requires no debug controls in the release UI):
+
+| Argument | Effect | Why it exists |
+|---|---|---|
+| `-skipStudioIntro` | Skips the studio intro animation | Pre-existing from 1.0 |
+| `-econResetGrowthState` | Clears consent, reminders, ad counters, review progress, card state, and streak | UI tests need a fresh-install posture |
+| `-econDisableAds` | Reports the device as ad-restricted | See below |
+
+`-econDisableAds` routes through the real DUD-224 region gate, so the ad SDK is
+never started and no request is made. It exists because one UI test drives the
+app through two completed sets to prove the reminder primer arrives on the
+second — and that second set-exit is the one moment where every ad gate passes.
+In DEBUG the app uses Google's public test unit, which fills whenever the
+machine has network, so without this the test would race a live interstitial and
+pass or fail on network conditions rather than on the behaviour under test.
+
+The ad path itself is still exercised for real: the first-set-exit UI test runs
+without the flag and asserts that policy suppresses the ad, and the unit suite
+covers fill, no-fill, and presentation failure deterministically with a spy
+adapter.
+
+---
+
 ## Open items for the Owner
 
 1. Ratify D1 (no UMP) or fund a UMP integration as separate scope.

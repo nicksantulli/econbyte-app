@@ -443,7 +443,7 @@ final class EconGrowth: ObservableObject {
 
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-econResetGrowthState") {
-            EconGrowth.resetPersistedState()
+            EconGrowth.resetPersistedState(in: defaults)
         }
         #endif
 
@@ -451,7 +451,9 @@ final class EconGrowth: ObservableObject {
         self.environment = environment
         self.telemetry = EconTelemetry(defaults: defaults, environment: environment)
         self.diagnostics = EconDiagnostics(defaults: defaults, environment: environment)
-        self.monetization = EconMonetization(adapter: AdManager.shared, defaults: defaults)
+        self.monetization = EconMonetization(adapter: AdManager.shared,
+                                             defaults: defaults,
+                                             region: EconGrowth.regionSource())
         self.review = ReviewRequestCoordinator(defaults: defaults,
                                                currentVersion: environment.appVersion,
                                                requestReview: { EconGrowth.requestSystemReview() })
@@ -531,6 +533,23 @@ final class EconGrowth: ObservableObject {
 
     // MARK: Review
 
+    /// The region gate the monetization coordinator consults.
+    ///
+    /// DEBUG builds honour `-econDisableAds`, which reports the device as
+    /// ad-restricted. That routes through the real DUD-224 suppression path — the
+    /// ad SDK is never started and no request is ever made — so a UI test can
+    /// assert non-ad behaviour at a genuinely ad-eligible moment without racing a
+    /// live fill from Google's test unit. It is a launch argument, not a build
+    /// setting, and does not exist in Release.
+    private static func regionSource() -> () -> EconAdRegionState {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-econDisableAds") {
+            return { .restricted }
+        }
+        #endif
+        return { EconAdRegion.current }
+    }
+
     private static func requestSystemReview() {
         guard let scene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
@@ -558,8 +577,7 @@ final class EconGrowth: ObservableObject {
     }
 
     #if DEBUG
-    static func resetPersistedState() {
-        let defaults = UserDefaults.standard
+    static func resetPersistedState(in defaults: UserDefaults) {
         EconMonetization.resetPersistedState(in: defaults)
         EconTelemetry.resetPersistedState(in: defaults)
         EconDiagnostics.resetPersistedState(in: defaults)

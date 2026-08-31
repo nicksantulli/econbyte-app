@@ -12,9 +12,15 @@ final class GrowthFlowTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    private func launchApp() -> XCUIApplication {
+    /// `adsDisabled` adds the DEBUG-only `-econDisableAds` argument, which reports
+    /// the device as ad-restricted through the real DUD-224 suppression path. Use
+    /// it for any test that drives the app past a genuinely ad-eligible exit but
+    /// is not itself asserting ad behaviour — otherwise a live fill from Google's
+    /// test unit can present an interstitial mid-assertion.
+    private func launchApp(adsDisabled: Bool = false) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += ["-skipStudioIntro", "-econResetGrowthState"]
+        if adsDisabled { app.launchArguments.append("-econDisableAds") }
         app.launch()
         XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 15),
                       "Home should render on cold launch")
@@ -187,6 +193,11 @@ final class GrowthFlowTests: XCTestCase {
 
     /// A fresh install completing its very first set is below the lifetime
     /// threshold, so the exit must return straight to Home with no interstitial.
+    ///
+    /// This one runs the ad path for real — no `-econDisableAds` — because the
+    /// assertion is exactly that the policy suppresses the ad, not that the
+    /// harness did. A regression that let a first-set exit become eligible would
+    /// fail here.
     func testFirstCompletedSetReturnsHomeWithNoInterstitial() {
         let app = launchApp()
         completeASet(in: app)
@@ -235,8 +246,15 @@ final class GrowthFlowTests: XCTestCase {
 
     /// The primer defers past the consent offer — so prove it actually arrives
     /// on the next completed set rather than being lost.
+    ///
+    /// This test completes two sets, and the second set-exit is the one moment
+    /// where every ad gate passes. Ads are therefore suppressed for it: the
+    /// subject here is the primer, and an interstitial arriving on a fill would
+    /// make the assertions non-deterministic. Ad behaviour at that exit is
+    /// covered deterministically in `GrowthSystemsTests` with a spy adapter that
+    /// controls fill, failure, and no-fill.
     func testReminderPrimerArrivesOnTheSecondCompletedSet() {
-        let app = launchApp()
+        let app = launchApp(adsDisabled: true)
 
         // First set: consent is offered, the primer stands down.
         completeASet(in: app)

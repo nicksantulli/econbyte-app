@@ -67,8 +67,9 @@ through cards → tap a card to flip it for the sourced example.
   Settings toggle). Enabling schedules one reminder at 7:00 p.m. local; turning
   it off removes it immediately.
 - The rating prompt will **not** appear in a fresh Simulator run: it needs 3
-  completed sets, 7 days since first launch, and a session with no purchase
-  failure, restore failure, paywall, ad, or permission prompt.
+  completed sets, 7 days since first launch, and a session with none of the
+  seven disqualifiers — a crash, a purchase failure, a restore failure, a
+  consent form, a notification prompt, a paywall, or an ad.
 - Settings → **Rate EconByte** opens the App Store review sheet for app ID
   `6780714383`.
 

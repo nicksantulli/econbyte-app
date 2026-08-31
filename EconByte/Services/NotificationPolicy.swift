@@ -175,23 +175,35 @@ public final class NotificationCoordinator: ObservableObject {
     /// reminders already on, authorization already denied, or authorization
     /// already granted (iOS returns immediately and shows nothing) — report
     /// nothing at all.
+    ///
+    /// The decision reads a *fresh* status from the notification centre rather
+    /// than the published cache, which `refreshAuthorization()` fills
+    /// asynchronously. A stale `.notDetermined` cache on an already-authorized
+    /// reader would otherwise emit a permission result for a dialog iOS never
+    /// showed — exactly the conflation this guarantee exists to prevent.
     public func enableReminders(onAuthorizationResolved: ((Bool) -> Void)? = nil) {
         guard !remindersEnabled else { return }
-        guard authorization != .denied else { return }
 
-        // iOS presents the dialog only from `.notDetermined`.
-        let willPresentSystemDialog = (authorization == .notDetermined)
-        didRequestAuthorization = true
-        center.econRequestAuthorization { granted, _ in
+        center.econAuthorizationStatus { status in
             Task { @MainActor in
-                self.authorization = granted ? .authorized : .denied
-                if granted {
-                    self.persist(true)
-                    self.schedule()
-                } else {
-                    self.persist(false)
+                self.authorization = status
+                guard status != .denied else { return }
+
+                // iOS presents the dialog only from `.notDetermined`.
+                let willPresentSystemDialog = (status == .notDetermined)
+                self.didRequestAuthorization = true
+                self.center.econRequestAuthorization { granted, _ in
+                    Task { @MainActor in
+                        self.authorization = granted ? .authorized : .denied
+                        if granted {
+                            self.persist(true)
+                            self.schedule()
+                        } else {
+                            self.persist(false)
+                        }
+                        if willPresentSystemDialog { onAuthorizationResolved?(granted) }
+                    }
                 }
-                if willPresentSystemDialog { onAuthorizationResolved?(granted) }
             }
         }
     }
