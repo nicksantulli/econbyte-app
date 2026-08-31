@@ -1,0 +1,89 @@
+{
+  "$comment": "Screenshots for EconByte 1.1, captured from the release-configuration binary by EconByteUITests/ScreenshotTests. No mockups, no device frames, no compositing - these are raw XCUIScreen captures. Not uploaded: Task 6a makes no App Store Connect call.",
+  "capture": {
+    "marketingVersion": "1.1",
+    "buildNumber": 6,
+    "commit": "SET_AT_COMMIT_TIME",
+    "device": "iPhone 17 Pro Max simulator (VR-AppStore-6.9), iOS 26.5, build 23F77",
+    "configuration": "Release, with ENABLE_TESTABILITY=YES passed on the command line only because xcodebuild builds the whole scheme's test action and the unit-test target needs @testable; it changes no UI and no shipped code",
+    "resolution": "1320x2868 portrait, the 6.9\" iPhone display class",
+    "appearance": "system light",
+    "method": "xcodebuild test -configuration Release -only-testing:EconByteUITests/ScreenshotTests, attachments exported with xcresulttool"
+  },
+  "storefrontRecommendation": {
+    "use": [
+      "01-home.png",
+      "02-topics.png",
+      "03-card-front.png",
+      "04-card-back.png",
+      "06-home-streak.png",
+      "07-bookmarks.png"
+    ],
+    "hold": [
+      "05-session-complete.png"
+    ],
+    "reason": "05 is a true capture, but the frame is dominated by the one-time analytics/diagnostics consent offer that appears after a reader's first completed set. It is excellent privacy evidence and a defensible storefront image if the Owner wants to lead with privacy; it is a weak lead image for a learning app. Recorded rather than silently dropped."
+  },
+  "sizesNotProducedLocally": [
+    "iPhone 6.5\" (1242x2688 / 1284x2778): no 6.5\" simulator device is installed and the host disk floor did not allow adding one. ASC scales the 6.9\" set for smaller iPhone classes; Task 6b confirms against the sizes ASC actually demands.",
+    "iPad: not applicable, the app is iPhone-only."
+  ],
+  "screenshots": [
+    {
+      "filename": "01-home.png",
+      "pixelSize": "1320x2868",
+      "displayClass": "iPhone 6.9\"",
+      "screen": "Home on a fresh install: TODAY'S CARDS with the eight-card set and Start, the streak row, and the top of BROWSE TOPICS showing Inflation and Interest Rates unlocked.",
+      "sha256": "1faae409635e70ee82085591d3acfe0a8f18f1720280972e514ba2b028073e4b",
+      "proposedForStorefront": true
+    },
+    {
+      "filename": "02-topics.png",
+      "pixelSize": "1320x2868",
+      "displayClass": "iPhone 6.9\"",
+      "screen": "BROWSE TOPICS scrolled to the new 1.1 topics - Exchange Rates, Consumer Spending, Taxes, Fiscal Policy and Economic Indicators - each showing the lock and 'Unlock to view', with the Bookmarks row beneath.",
+      "sha256": "fbe4605a01c2f2f9bb64e10b0661b968bc0d51d966e81c244acb226743c43fb5",
+      "proposedForStorefront": true
+    },
+    {
+      "filename": "03-card-front.png",
+      "pixelSize": "1320x2868",
+      "displayClass": "iPhone 6.9\"",
+      "screen": "Card front, Inflation card 1 of 8 ('What Inflation Measures'), with the topic chip, the bookmark control, the educational-use disclaimer and 'Tap to see example'.",
+      "sha256": "3b473bbbb22eee12232eb3c8746305ca95cef15ed6867144357a7524dec677ed",
+      "proposedForStorefront": true
+    },
+    {
+      "filename": "04-card-back.png",
+      "pixelSize": "1320x2868",
+      "displayClass": "iPhone 6.9\"",
+      "screen": "Card back for the same card: the real-world grocery-cart example and its source line (Federal Reserve Bank of St. Louis, CPIAUCSL), with the bookmark now filled.",
+      "sha256": "f01d5bece662a11d2824ae6e1cbb8a90f2d1b569e007cf3869bf321c20246b3d",
+      "proposedForStorefront": true
+    },
+    {
+      "filename": "05-session-complete.png",
+      "pixelSize": "1320x2868",
+      "displayClass": "iPhone 6.9\"",
+      "screen": "Session complete after finishing the eight-card set: streak 1 day, and the one-time consent offer with both toggles off by default.",
+      "sha256": "0509d7bf70f70cc5db8d804d74d0b482fa20395b10770eb8b3e1ee1a234350ba",
+      "proposedForStorefront": false
+    },
+    {
+      "filename": "06-home-streak.png",
+      "pixelSize": "1320x2868",
+      "displayClass": "iPhone 6.9\"",
+      "screen": "Home after completing a set: TODAY'S CARDS shows Done, the progress bar is full and the streak reads 1 day.",
+      "sha256": "f1e3c25d853b2f7ddebc89b7ef50bee4bffd90e55ca7871131c74bef8a0d4414",
+      "proposedForStorefront": true
+    },
+    {
+      "filename": "07-bookmarks.png",
+      "pixelSize": "1320x2868",
+      "displayClass": "iPhone 6.9\"",
+      "screen": "Bookmarks with the saved Inflation card, plus the Review Saved action.",
+      "sha256": "42815365856893be1560265c090b25057feec6678af5ea2b9165dd9ac9bf91ac",
+      "proposedForStorefront": true
+    }
+  ]
+}

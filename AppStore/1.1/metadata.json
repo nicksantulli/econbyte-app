@@ -1,0 +1,176 @@
+{
+  "$comment": "EconByte 1.1 App Store metadata, prepared locally in plan Task 6a. Nothing here has been sent to App Store Connect; no ASC call of any kind was made while producing this file. Task 6b applies it.",
+  "app": {
+    "name": "EconByte: Daily Economics",
+    "nameLength": 25,
+    "appleId": "6780714383",
+    "bundleId": "com.nsantulli.econbyte",
+    "sku": "econbyte-v1",
+    "copyright": "© 2026 Nicholas Santulli",
+    "marketingVersion": "1.1",
+    "buildNumber": 6,
+    "priorSelectedBuild": 5,
+    "platform": "iOS",
+    "deviceFamily": "iPhone only, portrait",
+    "minimumOSVersion": "16.6",
+    "primaryLocale": "en-US"
+  },
+  "listing": {
+    "subtitle": {
+      "value": "Learn Inflation. In 5 Minutes.",
+      "length": 30,
+      "limit": 30,
+      "changeFrom1_0": "unchanged — it already leads with the daily-learning job rather than card volume (design section 13.2), and it is exactly at the limit"
+    },
+    "promotionalText": {
+      "value": "Version 1.1 adds five topics - exchange rates, consumer spending, taxes, fiscal policy and economic indicators - for 120 sourced cards in all.",
+      "length": 142,
+      "limit": 170
+    },
+    "description": {
+      "value": "Finally understand the news about the economy - inflation, interest rates, tariffs, recessions - in a five-minute daily set.\n\nEconByte turns economics into short cards you actually finish. The front of each card explains one concept in plain language. Flip it over for a real-world example, with the institution and document it came from. Build a streak, save the cards you want to keep, and read everything offline.\n\nWHAT'S INSIDE\n- 120 cards across 15 topics, eight cards per topic\n- Inflation and Interest Rates are free, with no account and no sign-up\n- GDP, Supply & Demand, Labor Markets, Trade & Tariffs, Housing Market, Central Banks, Recessions, Debt & Deficits, Exchange Rates, Consumer Spending, Taxes, Fiscal Policy and Economic Indicators open with one $0.99 purchase\n\nHOW IT WORKS\n- Start today's set: eight cards, about five minutes\n- Tap a card to flip from the concept to the sourced example\n- Bookmark anything you want to come back to\n- Optional daily reminder, off until you turn it on\n\nSOURCED, NOT GUESSED\nEvery factual claim is traceable to a named institutional source - the Bureau of Labor Statistics, the Federal Reserve, the Congressional Budget Office and their peers - with the document and date shown on the back of the card. Claims that could not be reproduced from a primary source were removed rather than estimated.\n\nEDUCATION ONLY\nEconByte explains how the economy works. It does not provide financial, investment or tax advice, and it makes no claims about returns or performance.\n\nPURCHASES AND ADS\nTwo separate one-time purchases: Unlock All Topics ($0.99) opens the other 13 topics, and Remove Ads ($0.99) removes the ads. Neither is a subscription, and neither includes the other. Without Remove Ads, a short ad can appear only when you finish a set and return to the home screen - never while you are reading a card.\n\nACCESSIBILITY\nCards can be flipped with VoiceOver and announce their topic, position, face and source. Reduce Motion replaces the card rotation with a cross-fade.",
+      "limit": 4000,
+      "changeFrom1_0": "rewritten: 1.0's description described 10 topics and an every-5-cards ad. Both are false in 1.1."
+    },
+    "whatsNew": {
+      "value": "Version 1.1 - a bigger, re-sourced curriculum and quieter defaults.\n\nNEW CONTENT\n- 120 cards across 15 topics, eight per topic\n- Five new topics: Exchange Rates, Consumer Spending, Taxes, Fiscal Policy and Economic Indicators\n- Every card was re-verified against a named institutional source, with the document and date on the back\n- Inflation and Interest Rates stay free, and the other 13 topics are covered by the existing Unlock All Topics purchase at no extra charge\n\nREMINDERS AND CHOICES\n- Optional daily learning reminder, off until you turn it on\n- Usage analytics and crash diagnostics are separate opt-in choices, both off by default\n\nADS\n- Ads now appear only at a natural break, when you finish a set and return to the home screen, never while you are reading\n- Remove Ads remains a separate one-time purchase\n\nACCESSIBILITY\n- Cards can be flipped with VoiceOver and announce topic, position, face and source\n- Reduce Motion replaces the card rotation with a cross-fade",
+      "limit": 4000
+    },
+    "keywords": {
+      "value": "financial literacy,inflation,interest rates,fed,gdp,tariffs,recession,taxes,explainer,econ",
+      "length": 90,
+      "limit": 100,
+      "changeFrom1_0": "evolved from 1.0's 'economics,financial literacy,inflation,interest rates,gdp,daily learning,economics cards,learn'. Dropped 'economics', 'economics cards', 'daily learning' and 'learn' because the app name and subtitle already carry economics/daily/learn and Apple indexes those fields. Added the new 1.1 topic intents: fed, tariffs, recession, taxes. No competitor names, no misspellings, no duplicated tokens.",
+      "rejected": [
+        "'best economics app' and similar superlatives (metadata rules)",
+        "'stocks', 'investing', 'trading' - the app gives no investment advice, and the intent would mismatch"
+      ]
+    },
+    "categories": {
+      "primary": "Education",
+      "secondary": "Finance",
+      "changeFrom1_0": "unchanged"
+    },
+    "urls": {
+      "support": "https://dudleyapps.com/support",
+      "privacy": "https://dudleyapps.com/privacy/",
+      "marketing": null
+    },
+    "prohibitedClaimCheck": {
+      "rule": "no investment-performance claims anywhere (design sections 12, 13.2)",
+      "result": "pass",
+      "method": "every listing string above was read for return, yield, performance, savings-outcome and advice language; the description and What's New state the education-only limit explicitly"
+    }
+  },
+  "inAppPurchases": [
+    {
+      "productId": "com.nsantulli.econbyte.unlockall",
+      "referenceName": "Unlock All Topics",
+      "type": "Non-Consumable",
+      "price": "$0.99",
+      "ascState": "approved (unchanged since 1.0)",
+      "attachToVersion": true,
+      "note": "Covers the 13 paid topics of the 1.1 curriculum at no additional charge (design section 7.1). Does not remove ads."
+    },
+    {
+      "productId": "com.nsantulli.econbyte.removeads",
+      "referenceName": "Remove Ads",
+      "type": "Non-Consumable",
+      "price": "$0.99",
+      "ascState": "approved (unchanged since 1.0)",
+      "attachToVersion": true,
+      "note": "Removes interstitial ads. Does not unlock topics."
+    }
+  ],
+  "ageRating": {
+    "proposed": "4+",
+    "answers": {
+      "cartoonOrFantasyViolence": "None",
+      "realisticViolence": "None",
+      "prolongedGraphicViolence": "None",
+      "sexualContentOrNudity": "None",
+      "profanityOrCrudeHumor": "None",
+      "alcoholTobaccoOrDrugUse": "None",
+      "matureSuggestiveThemes": "None",
+      "horrorFearThemes": "None",
+      "medicalTreatmentInformation": "None",
+      "gamblingAndContests": "None",
+      "unrestrictedWebAccess": "No",
+      "userGeneratedContent": "No",
+      "messagingOrChat": "No",
+      "locationSharing": "No"
+    },
+    "ownerItemFor6b": "Apple has revised the age-rating questionnaire since 1.0 was rated. Task 6b must answer the questionnaire that ASC actually presents, including any new question about in-app advertising, and confirm the result is still 4+. Do not assume the 1.0 answers transfer."
+  },
+  "encryption": {
+    "itsAppUsesNonExemptEncryption": false,
+    "infoPlistKey": "ITSAppUsesNonExemptEncryption = false (EconByte/Info.plist)",
+    "ascAnswer": "The app uses only encryption exempt under Category 5 Part 2 - HTTPS/TLS through the OS and standard SDKs. No proprietary or non-exempt cryptography is implemented, so no CCATS or annual self-classification report is required.",
+    "verification": "grep of the source tree finds no CommonCrypto, CryptoKit, Security framework key operations or third-party crypto library; the only network callers are the Google Mobile Ads SDK and StoreKit, both over system TLS."
+  },
+  "appPrivacy": {
+    "status": "PLAN ONLY - final answers are re-derived from the 1.1 archive privacy report (CONTENT-DECISIONS.md D2, design section 9.1). Task 6a produced the report and the corrected privacy manifest; Task 6b enters the answers in ASC.",
+    "oneZeroAnswers": {
+      "identifiersDeviceId": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = YES",
+      "usageDataAdvertisingData": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = YES",
+      "everythingElse": "Not collected"
+    },
+    "oneOneExpectedAnswers": {
+      "identifiersDeviceId": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = NO",
+      "usageDataAdvertisingData": "Collected, Third-Party Advertising, Not linked to user, USED FOR TRACKING = NO",
+      "diagnostics": "Not collected - no Sentry DSN is configured, so the diagnostics sink is a no-op (CONTENT-DECISIONS.md D5)",
+      "productInteraction": "Not collected - no PostHog key is configured, so the telemetry sink is a no-op and nothing is transmitted (D5)",
+      "purchases": "Not collected - StoreKit performs the transaction; the app stores only a local entitlement flag",
+      "contactInfo": "Not collected",
+      "location": "Not collected - the ad region gate reads the device region setting only, with no location permission and no IP lookup (D1)",
+      "userContent": "Not collected - bookmarks, streak and card state stay on device",
+      "notifications": "not a declarable data type: reminders are local notifications with no push token and no server"
+    },
+    "basisFor1_1Answers": [
+      "the binary contains no App Tracking Transparency code and never requests tracking authorization (D2)",
+      "every ad request carries npa=1 and rdp=1 with a G max ad content rating, so no advertising profile is built (EconAdRequestPolicy)",
+      "the archive privacy report for build 6 shows no tracking-permission or IDFA access (see evidence/release-packet.json)"
+    ],
+    "ownerItemFor6b": "Answer the App Privacy questionnaire against the build-6 binary, not against the 1.0 answers. Google's own SDK privacy manifest still declares device and advertising data for third-party advertising, so those two types stay COLLECTED; only the tracking flag changes."
+  },
+  "reviewNotes": {
+    "value": "EconByte: Daily Economics is an educational card app. It explains economics concepts - inflation, interest rates, GDP, trade, taxes, fiscal policy - in short daily sets. IT IS NOT FINANCIAL ADVICE: every card carries an on-screen educational-use disclaimer, and the app makes no investment, tax or performance claims.\n\nWHAT IS NEW IN 1.1\n120 cards across 15 topics (was 80 across 10). Inflation and Interest Rates remain free; the other 13 topics are covered by the existing Unlock All Topics purchase.\n\nFREE REVIEWER PATH (no purchase needed)\n1. Launch the app. Tap Start on TODAY'S CARDS.\n2. Tap a card to flip it; the back shows a real-world example with its named source.\n3. Tap Next through the set to reach the completion screen.\n4. On Home, tap Bookmarks to see saved cards. Under BROWSE TOPICS, Inflation and Interest Rates are fully playable without any purchase.\n\nIN-APP PURCHASES (two independent one-time non-consumables, both already approved)\n- com.nsantulli.econbyte.unlockall, $0.99 - unlocks the 13 paid topics. Path: Home > BROWSE TOPICS > tap any locked topic (for example GDP) > Purchases screen > 'Unlock All - $0.99'. Also reachable at Home > gear > Settings > Purchases > Unlock All Topics.\n- com.nsantulli.econbyte.removeads, $0.99 - removes ads. Path: Home > gear > Settings > Purchases > Remove Ads.\n- Restore Purchases is on both the Purchases screen and Settings > Purchases.\n- The two products are deliberately independent: Remove Ads does not unlock topics, and Unlock All Topics does not remove ads. Settings states this in the section footer.\n- To exercise purchases without a sandbox account, open EconByte.xcodeproj and run the EconByte scheme: the scheme is wired to the committed StoreKit test configuration EconByte.storekit, which declares both product identifiers and prices.\n\nADVERTISING\nInterstitial ads are contextual and non-personalized only. The app does not request App Tracking Transparency authorization and does not use the advertising identifier; every ad request is sent with npa=1 and rdp=1 and a G maximum ad content rating. An ad can appear at exactly one place: after a set is completed, when returning to the home screen. It is capped at one per app session and two per calendar day, at least 15 minutes and two completed sets apart, and never appears while a card, paywall, purchase sheet, permission prompt or rating request is on screen. Ads are not served at all to devices set to an EEA country or the United Kingdom.\n\nNOTIFICATIONS\nOff by default. The iOS permission dialog appears only after an explicit opt-in: either Settings > Notifications > Daily Learning Reminder, or the 'Turn On Reminders' button that can appear on a session-complete screen. The reminder is a single local notification at 7:00 p.m.; there is no push server and no token.\n\nPRIVACY CHOICES\nUsage analytics and crash diagnostics are separate opt-in toggles in Settings, both off by default, offered once after the first completed set. No analytics or crash provider is configured in this build, so nothing is transmitted either way.\n\nOTHER\nNo accounts, no user-generated content, no third-party login. iPhone only, portrait only. All content ships in the binary and works offline."
+  },
+  "screenshots": {
+    "manifest": "AppStore/1.1/screenshots/manifest.json",
+    "displaySets": {
+      "iphone_6_9": {
+        "pixelSize": "1320x2868 portrait",
+        "status": "captured from the 1.1 release-configuration binary on iPhone 17 Pro Max (iOS 26.5)",
+        "count": 7
+      }
+    },
+    "sizesNotProducedLocally": [
+      {
+        "size": "iPhone 6.5\" (1242x2688 / 1284x2778)",
+        "reason": "no 6.5\" simulator device is installed and the host is under a disk floor that does not allow adding one; ASC scales the 6.9\" set for older iPhone display classes",
+        "owner": "Task 6b - confirm in ASC whether the 6.9\" set alone satisfies the current iPhone requirement; if a 6.5\" set is still demanded, capture it on a 6.5\" simulator"
+      },
+      {
+        "size": "iPad",
+        "reason": "the app is iPhone-only (TARGETED_DEVICE_FAMILY = 1), so no iPad set is required"
+      }
+    ]
+  },
+  "customProductPages": "AppStore/1.1/custom-product-pages.json",
+  "appPreview": {
+    "storyboard": "AppStore/1.1/app-preview/storyboard.md",
+    "status": "DEFERRED - storyboard written from the release candidate; the video itself is not produced in Task 6a"
+  },
+  "releaseOptions": {
+    "phasedRelease": "recommended ON - 1.1 changes the ad placement, the notification flow and the runtime content source; phased release keeps a rollback window",
+    "releaseType": "manual release after approval, so the Owner controls the moment",
+    "territories": "unchanged from the restored 1.0 availability; Task 6a made no availability change"
+  },
+  "ownerAndSixBItems": [
+    "AdMob app ID and interstitial unit ID remain Owner-unconfirmed against the console (CONTENT-DECISIONS.md D6). Confirm before submission, together with console frequency caps at least as conservative as the in-app caps and a current app-ads.txt.",
+    "App Privacy answers must be entered from the build-6 privacy report, not carried over from 1.0 (D2).",
+    "Confirm the current ASC age-rating questionnaire and the required iPhone screenshot sizes; both have changed since 1.0 was rated.",
+    "Attach both approved IAPs to version 1.1 before submitting."
+  ]
+}
