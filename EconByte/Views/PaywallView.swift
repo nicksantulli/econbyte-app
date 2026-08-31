@@ -5,6 +5,10 @@ import StoreKit
 /// `com.nsantulli.econbyte.unlockall` non-consumable ($0.99). Price is read
 /// from StoreKit (`product.displayPrice`) — never hardcoded — per DUD-186.
 struct PaywallView: View {
+    /// Where the reader came from, so `paywall_viewed` and the purchase events
+    /// carry a real entry point rather than an assumed one.
+    var entryPoint: EconEntryPoint = .topicGrid
+
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: PurchaseManager
     @EnvironmentObject private var growth: EconGrowth
@@ -129,7 +133,7 @@ struct PaywallView: View {
             growth.review.noteNegativeSessionEvent(.paywall)
             await store.loadProducts()
             growth.telemetry.capture(.paywallViewed, properties: [
-                "entry_point": .token(EconEntryPoint.topicGrid.rawValue),
+                "entry_point": .token(entryPoint.rawValue),
                 "products_available": .bool(store.productsReady),
             ])
         }
@@ -153,7 +157,7 @@ struct PaywallView: View {
         growth.monetization.setBlocker(.purchase, active: true)
         growth.telemetry.capture(.purchaseStarted, properties: [
             "product_id": .token(PurchaseManager.ProductID.unlockAll.rawValue),
-            "entry_point": .token(EconEntryPoint.paywall.rawValue),
+            "entry_point": .token(entryPoint.rawValue),
         ])
         Task {
             let result = await store.purchase(.unlockAll)
@@ -163,7 +167,7 @@ struct PaywallView: View {
             if case .success = result {
                 growth.telemetry.capture(.purchaseCompleted, properties: [
                     "product_id": .token(PurchaseManager.ProductID.unlockAll.rawValue),
-                    "entry_point": .token(EconEntryPoint.paywall.rawValue),
+                    "entry_point": .token(entryPoint.rawValue),
                 ])
             } else {
                 growth.review.noteNegativeSessionEvent(.purchaseFailure)
@@ -180,7 +184,7 @@ struct PaywallView: View {
         working = true
         growth.monetization.setBlocker(.restore, active: true)
         growth.telemetry.capture(.restoreStarted,
-                                 properties: ["entry_point": .token(EconEntryPoint.paywall.rawValue)])
+                                 properties: ["entry_point": .token(entryPoint.rawValue)])
         Task {
             let result = await store.restorePurchases()
             working = false

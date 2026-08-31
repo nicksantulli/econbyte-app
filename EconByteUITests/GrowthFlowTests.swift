@@ -154,11 +154,8 @@ final class GrowthFlowTests: XCTestCase {
 
     // MARK: - Completed-set exit (spec section 9.3)
 
-    /// A fresh install completing its very first set is below the lifetime
-    /// threshold, so the exit must return straight to Home with no interstitial.
-    func testFirstCompletedSetReturnsHomeWithNoInterstitial() {
-        let app = launchApp()
-
+    /// Drives a full daily set and leaves the app on the session-complete state.
+    private func completeASet(in app: XCUIApplication) {
         let start = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Start'")).firstMatch
         XCTAssertTrue(start.waitForExistence(timeout: 10))
         start.tap()
@@ -170,6 +167,15 @@ final class GrowthFlowTests: XCTestCase {
         for _ in 0..<12 where next.exists {
             next.tap()
         }
+        XCTAssertTrue(app.buttons["sessionCompleteDoneButton"].waitForExistence(timeout: 10),
+                      "the session-complete state should appear after the final card")
+    }
+
+    /// A fresh install completing its very first set is below the lifetime
+    /// threshold, so the exit must return straight to Home with no interstitial.
+    func testFirstCompletedSetReturnsHomeWithNoInterstitial() {
+        let app = launchApp()
+        completeASet(in: app)
 
         let done = app.buttons["sessionCompleteDoneButton"]
         XCTAssertTrue(done.waitForExistence(timeout: 10),
@@ -181,27 +187,35 @@ final class GrowthFlowTests: XCTestCase {
                       "the set exit returns to Home with no ad on a fresh install")
     }
 
-    /// The notification primer is contextual, non-blocking, and appears only at
-    /// the session-complete state.
-    func testNotificationPrimerAppearsOnlyAtSessionComplete() {
+    /// Design section 10.1: each consent choice is presented after the first
+    /// completed set, never on first launch, and never blocking.
+    func testConsentChoicesArePresentedAtTheFirstCompletedSet() {
         let app = launchApp()
+        XCTAssertFalse(app.switches["consentPromptAnalyticsToggle"].exists,
+                       "consent must not be asked for on first launch")
         XCTAssertFalse(app.buttons["notificationPrimerEnableButton"].exists,
-                       "the primer must not appear on Home")
+                       "the reminder primer must not appear on Home")
 
-        let start = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Start'")).firstMatch
-        XCTAssertTrue(start.waitForExistence(timeout: 10))
-        start.tap()
+        completeASet(in: app)
 
-        let next = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Next'")).firstMatch
-        XCTAssertTrue(next.waitForExistence(timeout: 10))
-        for _ in 0..<12 where next.exists {
-            next.tap()
-        }
-
-        let primer = app.buttons["notificationPrimerEnableButton"]
-        XCTAssertTrue(primer.waitForExistence(timeout: 10),
-                      "the reminder primer should appear after the first completed set")
+        let analytics = app.switches["consentPromptAnalyticsToggle"]
+        let diagnostics = app.switches["consentPromptDiagnosticsToggle"]
+        XCTAssertTrue(analytics.waitForExistence(timeout: 10),
+                      "the analytics choice should be offered after the first completed set")
+        XCTAssertTrue(diagnostics.waitForExistence(timeout: 10),
+                      "the diagnostics choice should be offered as a separate choice")
+        XCTAssertEqual(analytics.value as? String, "0", "analytics defaults off")
+        XCTAssertEqual(diagnostics.value as? String, "0", "diagnostics defaults off")
         XCTAssertEqual(app.alerts.count, 0,
-                       "the primer is non-blocking and does not itself prompt the system")
+                       "the offer is non-blocking and prompts no system dialog")
+
+        // Two unrelated asks never share a screen.
+        XCTAssertFalse(app.buttons["notificationPrimerEnableButton"].exists,
+                       "the reminder primer defers while consent is being offered")
+
+        // Declining leaves the learning flow untouched.
+        app.buttons["consentPromptDoneButton"].tap()
+        app.buttons["sessionCompleteDoneButton"].tap()
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12))
     }
 }

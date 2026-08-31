@@ -113,12 +113,19 @@ public enum NotificationPolicy {
                                      trigger: trigger)
     }
 
-    /// The primer is contextual: it appears after the first completed set, once,
-    /// and never when reminders are already on.
+    /// The primer is contextual: it appears after a completed set, once, and
+    /// never when reminders are already on.
+    ///
+    /// `consentPromptVisible` defers it by one completed set when the analytics
+    /// and diagnostics choices are occupying the same moment, so a reader is
+    /// never asked two unrelated questions on one screen. See
+    /// `CONTENT-DECISIONS.md` D10.
     public static func primerEligible(completedSetCount: Int,
                                       primerAlreadyShown: Bool,
-                                      remindersEnabled: Bool) -> Bool {
+                                      remindersEnabled: Bool,
+                                      consentPromptVisible: Bool = false) -> Bool {
         completedSetCount >= 1 && !primerAlreadyShown && !remindersEnabled
+            && !consentPromptVisible
     }
 }
 
@@ -131,6 +138,10 @@ public final class NotificationCoordinator: ObservableObject {
 
     /// Set when scheduling fails, so the caller can raise a diagnostic code.
     public private(set) var lastScheduleError: Error?
+
+    /// Raised on a scheduling failure so the caller can record
+    /// `notification_schedule_failed`.
+    public var onScheduleFailure: ((Error) -> Void)?
 
     private let center: EconNotificationScheduling
     private let defaults: UserDefaults
@@ -151,19 +162,30 @@ public final class NotificationCoordinator: ObservableObject {
 
     /// The only path to the system dialog. A previously denied user is linked to
     /// system settings by the caller rather than prompted again.
-    public func enableReminders() {
-        guard !remindersEnabled else { return }
-        guard authorization != .denied else { return }
+    /// `completion` reports the *system dialog's* outcome, not the toggle's
+    /// intent, so callers record `notification_permission_result` from what
+    /// actually happened.
+    public func enableReminders(completion: ((Bool) -> Void)? = nil) {
+        guard !remindersEnabled else {
+            completion?(true)
+            return
+        }
+        guard authorization != .denied else {
+            completion?(false)
+            return
+        }
         didRequestAuthorization = true
         center.econRequestAuthorization { granted, _ in
             Task { @MainActor in
                 self.authorization = granted ? .authorized : .denied
                 guard granted else {
                     self.persist(false)
+                    completion?(false)
                     return
                 }
                 self.persist(true)
                 self.schedule()
+                completion?(true)
             }
         }
     }
@@ -188,7 +210,10 @@ public final class NotificationCoordinator: ObservableObject {
     private func schedule() {
         center.econRemovePendingRequests(withIdentifiers: [NotificationPolicy.reminderIdentifier])
         center.econAdd(NotificationPolicy.makeReminderRequest()) { error in
-            Task { @MainActor in self.lastScheduleError = error }
+            Task { @MainActor in
+                self.lastScheduleError = error
+                if let error { self.onScheduleFailure?(error) }
+            }
         }
     }
 

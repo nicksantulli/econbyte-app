@@ -10,6 +10,9 @@ struct SessionCompleteView: View {
     @EnvironmentObject private var growth: EconGrowth
 
     @State private var showPrimer = false
+    @State private var showConsentPrompt = false
+    @State private var analyticsEnabled = false
+    @State private var diagnosticsEnabled = false
     @State private var exiting = false
 
     var body: some View {
@@ -27,6 +30,7 @@ struct SessionCompleteView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
+            if showConsentPrompt { consentPrompt }
             if showPrimer { primer }
 
             Spacer()
@@ -75,6 +79,50 @@ struct SessionCompleteView: View {
         .padding(.horizontal, 24)
     }
 
+    // MARK: Consent presentation (design section 10.1)
+
+    /// Both choices, offered once, after the first completed set — never on
+    /// first launch. Non-blocking and default off; declining changes nothing.
+    private var consentPrompt: some View {
+        VStack(spacing: 10) {
+            Text("Help improve EconByte?")
+                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                .foregroundColor(Econ.white)
+            Text("Two separate, optional choices. Both are off unless you turn them on, and neither affects your cards, streak, bookmarks, purchases, or ads. What you read or save is never shared.")
+                .font(.system(size: 12, design: .rounded))
+                .foregroundColor(Econ.subtext)
+                .multilineTextAlignment(.center)
+            Toggle("Share usage analytics", isOn: Binding(
+                get: { analyticsEnabled },
+                set: { value in
+                    analyticsEnabled = value
+                    growth.setAnalyticsEnabled(value, entryPoint: .sessionComplete)
+                }))
+                .font(.system(size: 14, design: .rounded))
+                .foregroundColor(Econ.white)
+                .tint(Econ.amber)
+                .accessibilityIdentifier("consentPromptAnalyticsToggle")
+            Toggle("Share crash diagnostics", isOn: Binding(
+                get: { diagnosticsEnabled },
+                set: { value in
+                    diagnosticsEnabled = value
+                    growth.setDiagnosticsEnabled(value, entryPoint: .sessionComplete)
+                }))
+                .font(.system(size: 14, design: .rounded))
+                .foregroundColor(Econ.white)
+                .tint(Econ.amber)
+                .accessibilityIdentifier("consentPromptDiagnosticsToggle")
+            Button("Done") { showConsentPrompt = false }
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundColor(Econ.sky)
+                .accessibilityIdentifier("consentPromptDoneButton")
+        }
+        .padding(16)
+        .background(Econ.tide.opacity(0.14))
+        .cornerRadius(14)
+        .padding(.horizontal, 24)
+    }
+
     // MARK: Behaviour
 
     private func onAppearOnce() async {
@@ -88,21 +136,33 @@ struct SessionCompleteView: View {
         ])
 
         // The rating request comes after the completion acknowledgement. If it
-        // fires, no ad may follow it at this exit.
+        // fires, no ad may follow it at this exit. `review_prompt_eligible` is
+        // raised by the coordinator before it calls the system API.
         let decision = growth.review.requestReviewIfEligible()
         if decision == .eligible {
             growth.telemetry.capture(.reviewPromptRequested, properties: [
                 "completed_set_count": .int(growth.review.state.completedSetCount),
-                "streak_bucket": .token(Self.streakBucket(streak.currentStreak)),
+                "streak_bucket": .token(ReviewRequestPolicy.streakBucket(streak.currentStreak)),
             ])
             growth.monetization.setBlocker(.review, active: true)
         }
 
         let completedSets = growth.review.state.completedSetCount
+
+        analyticsEnabled = growth.telemetry.isEnabled
+        diagnosticsEnabled = growth.diagnostics.isEnabled
+        if ConsentPromptPolicy.eligible(completedSetCount: completedSets,
+                                        alreadyShown: growth.consentPromptShown) {
+            showConsentPrompt = true
+            growth.noteConsentPromptShown()
+            growth.monetization.setBlocker(.consent, active: true)
+        }
+
         if NotificationPolicy.primerEligible(
             completedSetCount: completedSets,
             primerAlreadyShown: growth.notifications.primerAlreadyShown,
-            remindersEnabled: growth.notifications.remindersEnabled) {
+            remindersEnabled: growth.notifications.remindersEnabled,
+            consentPromptVisible: showConsentPrompt) {
             showPrimer = true
             growth.notifications.notePrimerShown()
             growth.telemetry.capture(.notificationPrimerViewed,
@@ -115,7 +175,9 @@ struct SessionCompleteView: View {
         // this exit, and it disqualifies the session for a rating request.
         growth.monetization.setBlocker(.notification, active: true)
         growth.review.noteNegativeSessionEvent(.notificationPrompt)
-        growth.notifications.enableReminders()
+        growth.notifications.enableReminders { granted in
+            growth.recordNotificationAuthorizationResult(granted: granted)
+        }
         showPrimer = false
     }
 
@@ -136,6 +198,7 @@ struct SessionCompleteView: View {
             }
             growth.monetization.setBlocker(.review, active: false)
             growth.monetization.setBlocker(.notification, active: false)
+            growth.monetization.setBlocker(.consent, active: false)
             onDone()
         }
     }
@@ -148,12 +211,4 @@ struct SessionCompleteView: View {
         }
     }
 
-    private static func streakBucket(_ streak: Int) -> String {
-        switch streak {
-        case ..<3: return "0-2"
-        case 3..<8: return "3-7"
-        case 8..<30: return "8-29"
-        default: return "30-plus"
-        }
-    }
 }

@@ -58,6 +58,17 @@ public enum ReviewRequestPolicy {
 
     public static var thresholds: ReviewRequestThresholds { ReviewRequestThresholds() }
 
+    /// Coarse streak bucket. Telemetry never carries the raw streak length as a
+    /// free value; this is the closed vocabulary both emission sites use.
+    public static func streakBucket(_ streak: Int) -> String {
+        switch streak {
+        case ..<3: return "0-2"
+        case 3..<8: return "3-7"
+        case 8..<30: return "8-29"
+        default: return "30-plus"
+        }
+    }
+
     public static func decide(state: ReviewRequestState,
                               currentVersion: String,
                               now: Date,
@@ -98,6 +109,10 @@ public final class ReviewRequestCoordinator: ObservableObject {
 
     public private(set) var lastDecision: ReviewRequestDecision?
     public private(set) var didCallSystemAPI = false
+
+    /// Raised when the local rules pass, before the system API is called, so the
+    /// eligible -> requested funnel is measurable separately.
+    public var onEligible: (() -> Void)?
 
     private let defaults: UserDefaults
     private let currentVersion: String
@@ -161,6 +176,7 @@ public final class ReviewRequestCoordinator: ObservableObject {
                                                   calendar: calendar)
         lastDecision = decision
         guard decision == .eligible else { return decision }
+        onEligible?()
         defaults.set(currentVersion, forKey: ReviewRequestPolicy.lastRequestedVersionDefaultsKey)
         didCallSystemAPI = true
         requestReview()

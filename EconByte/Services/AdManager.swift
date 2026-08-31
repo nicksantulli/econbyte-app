@@ -23,6 +23,7 @@ final class AdManager: NSObject, EconInterstitialAdapting {
     /// Raised on load or presentation failure so the caller can record a bounded
     /// diagnostic code. Failures are otherwise silent to the learning flow.
     var onFailure: ((EconDiagnosticCode, Error?) -> Void)?
+    var onAdDismissed: ((Bool) -> Void)?
 
     private var interstitial: InterstitialAd?
     private var isLoading = false
@@ -109,12 +110,14 @@ final class AdManager: NSObject, EconInterstitialAdapting {
 
 extension AdManager: FullScreenContentDelegate {
     func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
+        onAdDismissed?(true)
         preload(policy: pendingPolicy)
     }
 
     func ad(_ ad: FullScreenPresentingAd,
             didFailToPresentFullScreenContentWithError error: Error) {
         onFailure?(.adPresentFailed, error)
+        onAdDismissed?(false)
         preload(policy: pendingPolicy)
     }
 }
@@ -128,6 +131,7 @@ final class AdManager: NSObject, EconInterstitialAdapting {
     static let shared = AdManager()
 
     var onFailure: ((EconDiagnosticCode, Error?) -> Void)?
+    var onAdDismissed: ((Bool) -> Void)?
 
     var isAdLoaded: Bool { false }
     func startSDK(policy: EconAdRequestPolicy) {}

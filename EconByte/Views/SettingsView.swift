@@ -85,16 +85,16 @@ struct SettingsView: View {
     }
 
     private func setRemindersEnabled(_ enabled: Bool) {
-        if enabled {
-            growth.review.noteNegativeSessionEvent(.notificationPrompt)
-            growth.notifications.enableReminders()
-        } else {
+        guard enabled else {
+            // Turning reminders off does not resolve a system authorization, so
+            // it emits no `notification_permission_result`.
             growth.notifications.disableReminders()
+            return
         }
-        growth.telemetry.capture(.notificationPermissionResult, properties: [
-            "result_class": .token(enabled ? EconResultClass.success.rawValue
-                                           : EconResultClass.cancelled.rawValue),
-        ])
+        growth.review.noteNegativeSessionEvent(.notificationPrompt)
+        growth.notifications.enableReminders { granted in
+            growth.recordNotificationAuthorizationResult(granted: granted)
+        }
     }
 
     // MARK: - Purchases

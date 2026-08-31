@@ -33,6 +33,13 @@ final class GrowthSystemsTests: XCTestCase {
     @MainActor
     private final class SpyInterstitialAdapter: EconInterstitialAdapting {
         var isAdLoaded = true
+        var onAdDismissed: ((Bool) -> Void)?
+
+        /// Stands in for the provider's dismissal delegate callback.
+        func simulateDismissal(presentedCleanly: Bool) {
+            onAdDismissed?(presentedCleanly)
+        }
+
         var startCount = 0
         var preloadCount = 0
         var discardCount = 0
@@ -458,6 +465,56 @@ final class GrowthSystemsTests: XCTestCase {
                        "the per-session cap resets on a new process")
     }
 
+    /// `ad_eligible` and `ad_dismissed` are required section 15.2 launch
+    /// metrics: without them the ad funnel has no denominator and no close.
+    @MainActor
+    func testAdEligibilityAndDismissalAreObservable() async {
+        let adapter = SpyInterstitialAdapter()
+        var eligible: [(EconAdPlacement, Int)] = []
+        var dismissed: [(EconAdPlacement, EconResultClass)] = []
+
+        let monetization = EconMonetization(adapter: adapter,
+                                            defaults: defaults,
+                                            now: { self.date("2026-09-01T12:00:00Z") },
+                                            region: { .allowed })
+        monetization.onAdEligible = { eligible.append(($0, $1)) }
+        monetization.onAdDismissed = { dismissed.append(($0, $1)) }
+
+        monetization.noteForegroundSessionBegan()
+        for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
+
+        let outcome = await monetization.presentIfEligibleAtSetExit()
+        XCTAssertEqual(outcome, .presented)
+        XCTAssertEqual(eligible.count, 1, "eligibility is signalled exactly once per exit")
+        XCTAssertEqual(eligible.first?.0, .dailySetExit)
+        XCTAssertEqual(eligible.first?.1, 3,
+                       "sets_since_last_ad is captured before the counter resets")
+
+        adapter.simulateDismissal(presentedCleanly: true)
+        XCTAssertEqual(dismissed.count, 1)
+        XCTAssertEqual(dismissed.first?.1, .success)
+
+        adapter.simulateDismissal(presentedCleanly: false)
+        XCTAssertEqual(dismissed.last?.1, .provider,
+                       "a failed presentation closes the funnel as a provider result")
+    }
+
+    /// An ineligible exit must not fabricate an eligibility signal.
+    @MainActor
+    func testNoEligibilitySignalWhenTheExitIsIneligible() async {
+        let adapter = SpyInterstitialAdapter()
+        var eligible = 0
+        let monetization = EconMonetization(adapter: adapter,
+                                            defaults: defaults,
+                                            now: { self.date("2026-09-01T12:00:00Z") },
+                                            region: { .allowed })
+        monetization.onAdEligible = { _, _ in eligible += 1 }
+        monetization.noteForegroundSessionBegan()
+        monetization.noteSetCompleted(normally: true)
+        _ = await monetization.presentIfEligibleAtSetExit()
+        XCTAssertEqual(eligible, 0)
+    }
+
     // MARK: - 6. Telemetry schema (spec section 10.2)
 
     func testEventAllowlistMatchesTheSpecificationExactly() {
@@ -839,6 +896,61 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(callCount, 0)
     }
 
+    /// Eligibility is recorded locally *before* the system API is called, so
+    /// `review_prompt_eligible` and `review_prompt_requested` are distinct.
+    @MainActor
+    func testReviewEligibilityIsSignalledBeforeTheSystemAPI() {
+        let now = date("2026-09-10T12:00:00Z")
+        defaults.set(now.addingTimeInterval(-9 * 86_400),
+                     forKey: ReviewRequestPolicy.firstLaunchDefaultsKey)
+        var order: [String] = []
+        let coordinator = ReviewRequestCoordinator(defaults: defaults,
+                                                   currentVersion: "1.1",
+                                                   now: { now },
+                                                   requestReview: { order.append("requested") })
+        coordinator.onEligible = { order.append("eligible") }
+        coordinator.noteForegroundSessionBegan()
+        for _ in 0..<3 { coordinator.noteSetCompleted() }
+
+        XCTAssertEqual(coordinator.requestReviewIfEligible(), .eligible)
+        XCTAssertEqual(order, ["eligible", "requested"])
+
+        XCTAssertEqual(coordinator.requestReviewIfEligible(),
+                       .alreadyRequestedForVersion("1.1"))
+        XCTAssertEqual(order, ["eligible", "requested"],
+                       "an ineligible attempt signals nothing")
+    }
+
+    func testStreakBucketIsAClosedVocabulary() {
+        XCTAssertEqual(ReviewRequestPolicy.streakBucket(0), "0-2")
+        XCTAssertEqual(ReviewRequestPolicy.streakBucket(5), "3-7")
+        XCTAssertEqual(ReviewRequestPolicy.streakBucket(12), "8-29")
+        XCTAssertEqual(ReviewRequestPolicy.streakBucket(400), "30-plus")
+    }
+
+    // MARK: - 9b. Consent presentation (spec section 10.1)
+
+    func testConsentChoicesArePresentedAfterTheFirstCompletedSetAndOnlyOnce() {
+        XCTAssertFalse(ConsentPromptPolicy.eligible(completedSetCount: 0, alreadyShown: false),
+                       "never on first launch")
+        XCTAssertTrue(ConsentPromptPolicy.eligible(completedSetCount: 1, alreadyShown: false))
+        XCTAssertFalse(ConsentPromptPolicy.eligible(completedSetCount: 4, alreadyShown: true),
+                       "the contextual offer is made once")
+    }
+
+    /// Two unrelated asks must not land on one screen: the reminder primer waits
+    /// a set while the consent choices are presented.
+    func testReminderPrimerDefersWhileTheConsentPromptIsPresented() {
+        XCTAssertFalse(NotificationPolicy.primerEligible(completedSetCount: 1,
+                                                         primerAlreadyShown: false,
+                                                         remindersEnabled: false,
+                                                         consentPromptVisible: true))
+        XCTAssertTrue(NotificationPolicy.primerEligible(completedSetCount: 2,
+                                                        primerAlreadyShown: false,
+                                                        remindersEnabled: false,
+                                                        consentPromptVisible: false))
+    }
+
     // MARK: - 10. Notifications (spec section 11.1)
 
     @MainActor
@@ -847,6 +959,7 @@ final class GrowthSystemsTests: XCTestCase {
         var grantAuthorization = true
         var authorizationRequests = 0
         var added: [UNNotificationRequest] = []
+        var addError: Error?
         var removedPending: [String] = []
         var removedDelivered: [String] = []
 
@@ -864,6 +977,10 @@ final class GrowthSystemsTests: XCTestCase {
 
         nonisolated func econAdd(_ request: UNNotificationRequest, completion: @escaping (Error?) -> Void) {
             Task { @MainActor in
+                if let error = self.addError {
+                    completion(error)
+                    return
+                }
                 self.added.append(request)
                 completion(nil)
             }
@@ -978,6 +1095,38 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertTrue(center.removedPending.contains(NotificationPolicy.reminderIdentifier))
         XCTAssertTrue(center.removedDelivered.contains(NotificationPolicy.reminderIdentifier))
         XCTAssertTrue(center.added.isEmpty)
+    }
+
+    /// The result reported is the system dialog's, not the toggle's intent.
+    @MainActor
+    func testAuthorizationOutcomeIsReportedFromTheDialogNotTheToggle() async {
+        let center = SpyNotificationCenter()
+        center.grantAuthorization = false
+        let coordinator = NotificationCoordinator(center: center, defaults: defaults)
+
+        var results: [Bool] = []
+        coordinator.enableReminders { results.append($0) }
+        await settle()
+
+        XCTAssertEqual(results, [false],
+                       "a denied dialog must not be recorded as a success")
+        XCTAssertFalse(coordinator.remindersEnabled)
+    }
+
+    @MainActor
+    func testScheduleFailureRaisesADiagnosticCode() async {
+        let center = SpyNotificationCenter()
+        center.addError = NSError(domain: "UNErrorDomain", code: 1)
+        let coordinator = NotificationCoordinator(center: center, defaults: defaults)
+
+        var failures: [Error] = []
+        coordinator.onScheduleFailure = { failures.append($0) }
+        coordinator.enableReminders()
+        await settle()
+
+        XCTAssertEqual(failures.count, 1,
+                       "a scheduling failure must surface notification_schedule_failed")
+        XCTAssertEqual((failures.first as NSError?)?.domain, "UNErrorDomain")
     }
 
     @MainActor

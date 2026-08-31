@@ -216,6 +216,19 @@ public enum EconTelemetryConfiguration {
     public static var providerOptions: EconProviderOptions { EconProviderOptions() }
 }
 
+// MARK: - Consent presentation
+
+/// Design section 10.1: each consent choice is presented after the first
+/// completed set, never on first launch. Both remain reachable in Settings
+/// forever; this only governs the one contextual offer.
+public enum ConsentPromptPolicy {
+    public static let shownDefaultsKey = "econ.consent.promptShown"
+
+    public static func eligible(completedSetCount: Int, alreadyShown: Bool) -> Bool {
+        completedSetCount >= 1 && !alreadyShown
+    }
+}
+
 // MARK: - Sink
 
 public struct EconRecordedEvent: Equatable {
@@ -330,6 +343,7 @@ public final class EconTelemetry {
     public static func resetPersistedState(in defaults: UserDefaults = .standard) {
         defaults.removeObject(forKey: consentDefaultsKey)
         defaults.removeObject(forKey: installationIDDefaultsKey)
+        defaults.removeObject(forKey: ConsentPromptPolicy.shownDefaultsKey)
     }
     #endif
 }

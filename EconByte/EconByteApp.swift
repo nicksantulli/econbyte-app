@@ -24,6 +24,10 @@ struct EconByteApp: App {
             }
             .preferredColorScheme(.dark)
             .task {
+                // Reconcile verified entitlements BEFORE anything can start the
+                // ad SDK: a stale-false Remove Ads cache must never initialize
+                // the provider for an entitled reader. Mirrors the foreground path.
+                await store.updatePurchasedProducts()
                 growth.syncEntitlements(from: store)
                 growth.applicationDidBecomeActive()
                 growth.reportContentLoadFailureIfNeeded(content)

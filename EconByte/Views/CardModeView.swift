@@ -57,8 +57,9 @@ struct CardModeView: View {
 
                     // Card
                     let card = cards[currentIndex]
-                    CardView(card: card)
+                    CardView(card: card, position: currentIndex)
                         .environmentObject(content)
+                        .environmentObject(growth)
                         .padding(.horizontal, 20)
                         .offset(x: dragOffset)
                         .gesture(

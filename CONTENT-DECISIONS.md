@@ -52,6 +52,34 @@ its own consent QA — it is not a refactor of this code.
 describe geo-restriction, not consent management. They must not claim a consent
 form exists.
 
+### D1a — Switzerland: EconByte and Table Talk currently disagree
+
+EconByte's restricted set is EU 27 + Iceland, Liechtenstein, Norway, and the
+United Kingdom. **Switzerland (`CH`) is not in it.** That matches EconByte 1.0
+and the portfolio pattern shipped across all five apps: the spec's Switzerland
+clause (section 9.2) is scoped to UMP coverage, and under D1 there is no UMP.
+
+However, **Table Talk's Task 4 just added `CH` to its restricted set**, per its
+own spec. The two apps therefore now ship different EEA/UK geo-gates for the
+same owner decision. Neither is obviously wrong — Switzerland has its own FADP
+rather than GDPR — but they should not diverge by accident.
+
+**Owner action:** rule once, for the whole portfolio, and have both apps adopt
+the ruling. Until then, treat any statement of "the Dudley ad geo-gate" as
+app-specific.
+
+### D1b — `consent_update_failed` is unraised, and that is correct here
+
+Design section 10.3 requires a `consent_update_failed` diagnostic code. The code
+is declared in `EconDiagnosticCode` for schema completeness, but nothing raises
+it, because the only operation that could fail that way is a UMP consent-info
+update — which does not exist under D1. There is no local consent operation that
+can fail: the region gate is a synchronous locale read, and the analytics and
+diagnostics toggles are local writes.
+
+It is left declared rather than deleted so that adopting UMP later does not
+require a schema change. Every other declared code has a live raise site.
+
 ---
 
 ## D2 — App Tracking Transparency is removed from the ad path
@@ -323,6 +351,75 @@ locally before the system API is called. Settings now links to
 
 ---
 
+---
+
+## D10 — Consent choices are presented at the first completed set
+
+Design section 10.1 requires each consent choice to be presented after the first
+completed set, never on first launch. Round 1 shipped the toggles in Settings
+only, which met the "default off, separate, reversible" half of the requirement
+but not the "presented" half.
+
+**Now implemented.** Session Complete offers both choices, once, after the first
+completed set: two independent toggles, both off, with a plain-language note that
+declining changes nothing about cards, streak, bookmarks, purchases, or ads. The
+offer is non-blocking, prompts no system dialog, and is recorded as shown so it
+is never repeated. Both toggles remain in Settings permanently.
+
+**Deliberate sequencing deviation.** Section 11.1 puts the reminder primer at the
+same moment. Asking a reader two unrelated questions on one screen is a worse
+experience than either ask alone, so the reminder primer defers by one completed
+set while the consent offer is on screen (`primerEligible(consentPromptVisible:)`,
+pinned by test). The consent offer is the one the spec ties to a legal posture, so
+it goes first. If the Owner prefers both on one screen, that is a one-line change.
+
+An ad is also blocked at that exit (`EconAdBlocker.consent`), so no interstitial
+can ever follow a consent question.
+
+---
+
+## D11 — "Completed set" is broader than "daily set"
+
+Section 9.3 names the placement `daily_set_exit`. In the shipped app,
+`CardModeView` drives three deck types through the same completion screen: the
+daily set, a single-topic deck, and Saved Cards. All three currently count as a
+completed set for ad eligibility, the review threshold, the consent offer, and
+the reminder primer.
+
+**Decision: keep the broader definition.** Reasons:
+
+1. The reader's experience is identical in all three — a finished deck of cards
+   at the same completion screen. Showing an interstitial after the daily set but
+   never after a topic deck would be arbitrary from the reader's side.
+2. The caps, not the placement breadth, are what protect the experience: one
+   interstitial per foreground session, two per calendar day, fifteen minutes
+   apart, two completed sets apart, and two completed sets before the first ad
+   ever. Broadening the trigger cannot exceed those.
+3. The `daily_set_completed` and `ad_*` telemetry carries `set_id` and
+   `card_count`, so the dashboards can still separate deck types after the fact.
+
+**Consequence to state plainly:** an ad may follow a topic-deck or Saved Cards
+completion, not only the daily set. If the Owner wants the literal reading, the
+narrowing is a single parameter on `noteSetCompleted`. Flagged for ratification.
+
+---
+
+## D12 — Event emission completeness
+
+All 24 declared section 10.2 events now have a live emission site. Round 1
+declared the full schema but left five unemitted: `card_flipped`,
+`card_bookmark_changed`, `ad_eligible`, `ad_dismissed`, and
+`review_prompt_eligible`.
+
+`ad_eligible` and `ad_dismissed` are required section 15.2 launch metrics —
+"eligible ad sessions, fill, impressions" cannot be computed without them, so a
+declared-but-unemitted schema would have made the ad funnel unmeasurable the day
+a PostHog token is configured. `ad_eligible` is raised before any provider call,
+carrying `sets_since_last_ad` as it stood *before* the reset, so the funnel has a
+true denominator. `review_prompt_eligible` is raised where the coordinator
+records local eligibility, before the system API call, keeping "we asked Apple"
+distinct from "Apple showed something".
+
 ## Open items for the Owner
 
 1. Ratify D1 (no UMP) or fund a UMP integration as separate scope.
@@ -335,3 +432,9 @@ locally before the system API is called. Settings now links to
    through build configuration.
 6. Confirm the D4 paywall copy correction and the D8/D9 behaviour changes are
    acceptable for an update to an already-approved app.
+7. Rule on Switzerland (D1a) for the whole portfolio — EconByte and Table Talk
+   currently ship different restricted sets.
+8. Ratify D10's one-set sequencing of the consent offer ahead of the reminder
+   primer.
+9. Ratify D11 — an ad can follow a topic-deck or Saved Cards completion, not only
+   the daily set.

@@ -16,6 +16,7 @@ struct HomeView: View {
     @State private var showBookmarks = false
     @State private var showPaywall = false
     @State private var pendingPaywallAfterSettings = false
+    @State private var paywallEntryPoint: EconEntryPoint = .topicGrid
 
     private let dailyGoal = 3
 
@@ -64,6 +65,7 @@ struct HomeView: View {
             .onChange(of: showSettings) { showing in
                 guard !showing, pendingPaywallAfterSettings else { return }
                 pendingPaywallAfterSettings = false
+                paywallEntryPoint = .settings
                 showPaywall = true
             }
             .fullScreenCover(item: $cardModeSession) { session in
@@ -80,7 +82,7 @@ struct HomeView: View {
                     .environmentObject(growth)
             }
             .fullScreenCover(isPresented: $showPaywall) {
-                PaywallView()
+                PaywallView(entryPoint: paywallEntryPoint)
                     .environmentObject(store)
                     .environmentObject(growth)
             }
@@ -171,6 +173,7 @@ struct HomeView: View {
                                 "topic_id": .token(topic.id),
                                 "entry_point": .token(EconEntryPoint.topicGrid.rawValue),
                             ])
+                            paywallEntryPoint = .topicGrid
                             showPaywall = true
                         } else {
                             growth.telemetry.capture(.topicOpened, properties: [

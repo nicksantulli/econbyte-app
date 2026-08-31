@@ -2,7 +2,11 @@ import SwiftUI
 
 struct CardView: View {
     let card: EconCard
+    /// Position of this card within the current set, for the `position` property
+    /// on card telemetry.
+    var position: Int = 0
     @EnvironmentObject private var content: ContentStore
+    @EnvironmentObject private var growth: EconGrowth
     @State private var isFlipped = false
     @State private var rotation: Double = 0
 
@@ -24,7 +28,14 @@ struct CardView: View {
             rotation = isFlipped ? 0 : 180
         }
         isFlipped.toggle()
-        if isFlipped { content.markFlipped(card.id) }
+        if isFlipped {
+            content.markFlipped(card.id)
+            growth.telemetry.capture(.cardFlipped, properties: [
+                "card_id": .token(card.id),
+                "topic_id": .token(card.topicId),
+                "position": .int(position),
+            ])
+        }
     }
 
     private var frontFace: some View {
@@ -120,6 +131,11 @@ struct CardView: View {
     private var bookmarkButton: some View {
         Button {
             content.toggleBookmark(card.id)
+            growth.telemetry.capture(.cardBookmarkChanged, properties: [
+                "card_id": .token(card.id),
+                "topic_id": .token(card.topicId),
+                "is_bookmarked": .bool(content.isBookmarked(card.id)),
+            ])
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         } label: {
             Image(systemName: content.isBookmarked(card.id) ? "bookmark.fill" : "bookmark")

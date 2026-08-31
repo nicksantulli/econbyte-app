@@ -225,6 +225,9 @@ public struct EconAdPolicy {
 @MainActor
 public protocol EconInterstitialAdapting: AnyObject {
     var isAdLoaded: Bool { get }
+    /// Raised when a presented interstitial goes away. The flag is false when the
+    /// provider failed to present it rather than the reader dismissing it.
+    var onAdDismissed: ((Bool) -> Void)? { get set }
     func startSDK(policy: EconAdRequestPolicy)
     func preload(policy: EconAdRequestPolicy)
     func discardLoadedAd()
@@ -251,6 +254,13 @@ public final class EconMonetization: ObservableObject {
     public private(set) var state = EconAdState()
     public var policy: EconAdPolicy
     public private(set) var didStartSDK = false
+
+    /// Raised once per exit when every local eligibility rule passes, before any
+    /// provider call. Carries the set counter as it stood *before* the reset.
+    public var onAdEligible: ((EconAdPlacement, Int) -> Void)?
+
+    /// Raised when a presented interstitial closes, cleanly or otherwise.
+    public var onAdDismissed: ((EconAdPlacement, EconResultClass) -> Void)?
 
     private let adapter: EconInterstitialAdapting
     private let defaults: UserDefaults
@@ -281,6 +291,10 @@ public final class EconMonetization: ObservableObject {
         state.shownToday = defaults.integer(forKey: Key.shownToday)
         state.shownThisSession = 0
         rollDayIfNeeded()
+
+        adapter.onAdDismissed = { [weak self] presentedCleanly in
+            self?.onAdDismissed?(.dailySetExit, presentedCleanly ? .success : .provider)
+        }
     }
 
     // MARK: Entitlements
@@ -347,6 +361,10 @@ public final class EconMonetization: ObservableObject {
     public func presentIfEligibleAtSetExit() async -> EconAdOutcome {
         let decision = decisionAtSetExit()
         guard decision == .eligible else { return .notEligible(decision) }
+        // Every local rule passed. Recorded before any provider call, so the
+        // eligible -> impression -> dismissed funnel has a real denominator
+        // (design section 15.2).
+        onAdEligible?(.dailySetExit, state.setsSinceLastAd)
         guard adapter.isAdLoaded else {
             adapter.preload(policy: requestPolicy)
             return .noAdAvailable
@@ -441,6 +459,31 @@ final class EconGrowth: ObservableObject {
         PurchaseManager.shared.onDiagnostic = { [weak self] code in
             self?.diagnostics.capture(code)
         }
+
+        monetization.onAdEligible = { [weak self] placement, setsSinceLastAd in
+            self?.telemetry.capture(.adEligible, properties: [
+                "placement": .token(placement.rawValue),
+                "sets_since_last_ad": .int(setsSinceLastAd),
+            ])
+        }
+        monetization.onAdDismissed = { [weak self] placement, resultClass in
+            self?.telemetry.capture(.adDismissed, properties: [
+                "placement": .token(placement.rawValue),
+                "result_class": .token(resultClass.rawValue),
+            ])
+        }
+        review.onEligible = { [weak self] in
+            guard let self else { return }
+            self.telemetry.capture(.reviewPromptEligible, properties: [
+                "completed_set_count": .int(self.review.state.completedSetCount),
+                "streak_bucket": .token(
+                    ReviewRequestPolicy.streakBucket(StreakManager.shared.currentStreak)),
+            ])
+        }
+        notifications.onScheduleFailure = { [weak self] error in
+            self?.diagnostics.capture(.notificationScheduleFailed,
+                                      detail: EconDiagnosticDetail(error))
+        }
     }
 
     // MARK: Lifecycle
@@ -491,6 +534,23 @@ final class EconGrowth: ObservableObject {
         if #available(iOS 16, *) {
             SKStoreReviewController.requestReview(in: scene)
         }
+    }
+
+    var consentPromptShown: Bool {
+        UserDefaults.standard.bool(forKey: ConsentPromptPolicy.shownDefaultsKey)
+    }
+
+    func noteConsentPromptShown() {
+        UserDefaults.standard.set(true, forKey: ConsentPromptPolicy.shownDefaultsKey)
+    }
+
+    /// Records the outcome of the *system* authorization dialog. Callers pass
+    /// what the dialog actually returned, never the toggle's intent.
+    func recordNotificationAuthorizationResult(granted: Bool) {
+        telemetry.capture(.notificationPermissionResult, properties: [
+            "result_class": .token(granted ? EconResultClass.success.rawValue
+                                           : EconResultClass.cancelled.rawValue),
+        ])
     }
 
     #if DEBUG

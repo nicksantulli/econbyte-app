@@ -47,11 +47,29 @@ builds green for `iphonesimulator`; launches with no crash and logs
 `PrivacyInfo.xcprivacy` present in built `.app`.
 
 ## Content note
-The starter deck has 80 cards across 10 topics. Target before submission:
-150 cards / 20 topics. Write cards using the workflow in `vault/ideas/specs/econbyte.md §9`.
-Cards go in `EconByte/Content/cards.json` — the app reads the bundle at launch;
-no server, no update needed. Add the 10 remaining topics following the same JSON
-schema already in the file.
+Version 1.1 ships exactly **120 cards across 15 topics**, two free (Inflation,
+Interest Rates) and thirteen covered by the existing Unlock All Topics
+entitlement.
+
+Cards live in `EconByte/Resources/curriculum-v1.1.json` and are loaded through
+`CurriculumCatalog.loadValidated()`. The app reads the bundle at launch — no
+server, no update needed. The old `EconByte/Content/cards.json` was **deleted**
+in the 1.1 growth commit; do not recreate it.
+
+Editing content:
+
+1. Follow the schema in `EconByte/Content/CurriculumCatalog.swift` — every card
+   needs stable `cardID`/`topicID`, prose, disclaimer, difficulty, a full
+   `source` block, and `editorial` status plus reviewer.
+2. **Never reuse a `cardID` for a different concept.** Bookmarks and per-card
+   state are keyed on it. If a re-sourced card changes what it teaches, set
+   `supersedes` and `supersedesNote`.
+3. Run `EconByteTests/CurriculumCatalogTests` — it is the machine validator and
+   fails closed on counts, duplicate IDs, access drift, stale claims, and
+   prohibited financial-advice framing.
+
+Any change to the 120/15 counts or the free/paid split is a product decision,
+not an editing task.
 
 ## Going live with ads — the 2 IDs you must supply
 Real Dudley AdMob IDs are wired for RELEASE builds:
