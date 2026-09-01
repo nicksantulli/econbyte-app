@@ -1,0 +1,246 @@
+{
+ "appId": "6780714383",
+ "repo": "workspaces/econbyte-ios",
+ "version": "1.1",
+ "displayType": "APP_IPHONE_67",
+ "dryRun": false,
+ "executedAt": "2026-09-01T21:18:06.967Z",
+ "pages": [
+  {
+   "id": "cpp-core-five-minutes",
+   "name": "Economics in five minutes",
+   "promotionalText": "One short set a day. Eight cards, plain language, a sourced example on the back of each one.",
+   "screenshots": [
+    "01-home.png",
+    "03-card-front.png",
+    "04-card-back.png",
+    "07-bookmarks.png",
+    "06-home-streak.png"
+   ],
+   "cppId": "35377cee-23a2-4fda-b216-b898d31b8b14",
+   "created": true,
+   "versionId": "333e34bd-b2bc-4ba1-9cc5-ad1b2299022a",
+   "versionState": "PREPARE_FOR_SUBMISSION",
+   "localizationId": "76af31de-7768-4a44-aaad-e824c6599b64",
+   "screenshotSetId": "955ac9d0-864b-4454-9343-10d54be2c1fd",
+   "uploaded": [
+    {
+     "id": "adb0577f-f551-46c6-aed8-760cab968c8c",
+     "fileName": "01-home.png",
+     "position": 1,
+     "fileSize": 256661,
+     "md5": "892a4e4f235452625ca0ba0dbfa23fd8",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "3b963c1d-7507-4863-820a-9d71f9ac8942",
+     "fileName": "03-card-front.png",
+     "position": 2,
+     "fileSize": 206343,
+     "md5": "a8187b2e600c5ecdec29afba574715f6",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "6bb07801-55c4-44a9-8399-eee73a954dbd",
+     "fileName": "04-card-back.png",
+     "position": 3,
+     "fileSize": 198986,
+     "md5": "3e30bc593a1d7e7d010902fc2803f2f8",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "582c5a8b-8288-4880-b8fc-b6bb85f5f4db",
+     "fileName": "07-bookmarks.png",
+     "position": 4,
+     "fileSize": 124457,
+     "md5": "9b9c7605be7380655170dd1b1853490b",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "7cca9ef0-1edb-4d7b-8968-5a313d9aec16",
+     "fileName": "06-home-streak.png",
+     "position": 5,
+     "fileSize": 253541,
+     "md5": "9077c6621fb82212f14cab26fa77f2bc",
+     "state": "COMPLETE"
+    }
+   ],
+   "readbackOrder": [
+    {
+     "id": "adb0577f-f551-46c6-aed8-760cab968c8c",
+     "fileName": "01-home.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "3b963c1d-7507-4863-820a-9d71f9ac8942",
+     "fileName": "03-card-front.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "6bb07801-55c4-44a9-8399-eee73a954dbd",
+     "fileName": "04-card-back.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "582c5a8b-8288-4880-b8fc-b6bb85f5f4db",
+     "fileName": "07-bookmarks.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "7cca9ef0-1edb-4d7b-8968-5a313d9aec16",
+     "fileName": "06-home-streak.png",
+     "state": "COMPLETE"
+    }
+   ]
+  },
+  {
+   "id": "cpp-inflation",
+   "name": "Inflation explained",
+   "promotionalText": "What inflation actually measures, why prices rose, and where the numbers come from. Free to read.",
+   "screenshots": [
+    "03-card-front.png",
+    "04-card-back.png",
+    "02-topics.png",
+    "01-home.png"
+   ],
+   "cppId": "e2396dea-842c-4bae-b522-27a3427c7c90",
+   "created": true,
+   "versionId": "e1b58425-ec3e-495d-a88b-482f1b60f944",
+   "versionState": "PREPARE_FOR_SUBMISSION",
+   "localizationId": "13ebcb19-b1dd-4603-89fb-89a054993925",
+   "screenshotSetId": "5ea6e9fe-a096-4427-89ed-4bc162d66dab",
+   "uploaded": [
+    {
+     "id": "49042793-6e03-4609-90c9-43099a60a585",
+     "fileName": "03-card-front.png",
+     "position": 1,
+     "fileSize": 206343,
+     "md5": "a8187b2e600c5ecdec29afba574715f6",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "3226c3f7-3173-44c5-a5ce-5255697d5565",
+     "fileName": "04-card-back.png",
+     "position": 2,
+     "fileSize": 198986,
+     "md5": "3e30bc593a1d7e7d010902fc2803f2f8",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "8764b69b-2d1a-4583-a62c-ebbc9e12da13",
+     "fileName": "02-topics.png",
+     "position": 3,
+     "fileSize": 352743,
+     "md5": "08a2679c11b21d9ec7df4526ebcfe97f",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "f79fe72d-5dd5-425e-98c6-be25aa424ba8",
+     "fileName": "01-home.png",
+     "position": 4,
+     "fileSize": 256661,
+     "md5": "892a4e4f235452625ca0ba0dbfa23fd8",
+     "state": "COMPLETE"
+    }
+   ],
+   "readbackOrder": [
+    {
+     "id": "49042793-6e03-4609-90c9-43099a60a585",
+     "fileName": "03-card-front.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "3226c3f7-3173-44c5-a5ce-5255697d5565",
+     "fileName": "04-card-back.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "8764b69b-2d1a-4583-a62c-ebbc9e12da13",
+     "fileName": "02-topics.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "f79fe72d-5dd5-425e-98c6-be25aa424ba8",
+     "fileName": "01-home.png",
+     "state": "COMPLETE"
+    }
+   ]
+  },
+  {
+   "id": "cpp-policy-literacy",
+   "name": "Interest rates and your money",
+   "promotionalText": "What a rate decision is, who makes it, and how it reaches borrowing and saving. Explained, not advised.",
+   "screenshots": [
+    "02-topics.png",
+    "03-card-front.png",
+    "04-card-back.png",
+    "06-home-streak.png"
+   ],
+   "cppId": "5906a228-36a3-4041-84f8-e2b9d0ee4c4d",
+   "created": true,
+   "versionId": "a03531d8-b769-41b9-87e9-b62da50b8c97",
+   "versionState": "PREPARE_FOR_SUBMISSION",
+   "localizationId": "4040d859-c4ed-4fb2-a1fb-5a7aa914b609",
+   "screenshotSetId": "b93bd4ac-5ec2-400b-bd0f-dde3ddd6e632",
+   "uploaded": [
+    {
+     "id": "7813bfcd-b4ee-4bfa-bdb8-64d0a672a61c",
+     "fileName": "02-topics.png",
+     "position": 1,
+     "fileSize": 352743,
+     "md5": "08a2679c11b21d9ec7df4526ebcfe97f",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "4e69302d-ed28-4f9d-9726-dea4b1b2bb2a",
+     "fileName": "03-card-front.png",
+     "position": 2,
+     "fileSize": 206343,
+     "md5": "a8187b2e600c5ecdec29afba574715f6",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "cf13aa1d-5b5c-442b-92f9-fef408aa9886",
+     "fileName": "04-card-back.png",
+     "position": 3,
+     "fileSize": 198986,
+     "md5": "3e30bc593a1d7e7d010902fc2803f2f8",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "de3bb85a-ea13-4639-9041-262372536604",
+     "fileName": "06-home-streak.png",
+     "position": 4,
+     "fileSize": 253541,
+     "md5": "9077c6621fb82212f14cab26fa77f2bc",
+     "state": "COMPLETE"
+    }
+   ],
+   "readbackOrder": [
+    {
+     "id": "7813bfcd-b4ee-4bfa-bdb8-64d0a672a61c",
+     "fileName": "02-topics.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "4e69302d-ed28-4f9d-9726-dea4b1b2bb2a",
+     "fileName": "03-card-front.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "cf13aa1d-5b5c-442b-92f9-fef408aa9886",
+     "fileName": "04-card-back.png",
+     "state": "COMPLETE"
+    },
+    {
+     "id": "de3bb85a-ea13-4639-9041-262372536604",
+     "fileName": "06-home-streak.png",
+     "state": "COMPLETE"
+    }
+   ]
+  }
+ ],
+ "notes": [
+  "A custom product page localization overrides promotionalText, screenshots, and app previews only; the description field in custom-product-pages.json is NOT applied because the API exposes no description attribute on appCustomProductPageLocalizations."
+ ]
+}
