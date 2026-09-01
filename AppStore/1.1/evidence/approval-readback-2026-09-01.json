@@ -1,0 +1,19 @@
+{
+  "$comment": "Post-approval readback written 2026-09-01 by the orchestrator (Claude Fable 5.1). Every value below was read from the App Store Connect API or the public iTunes lookup endpoint at the recorded time; nothing is inferred. No external action was taken by the orchestrator: the release, phased-release completion, and storefront availability were performed by the Owner in App Store Connect.",
+  "readAt": "2026-09-01T21:30:00Z",
+  "method": "scripts/asc_api.mjs raw GET (App Store Connect API, key referenced by ID only) + GET https://itunes.apple.com/lookup?id=6780714383&country=us",
+  "reviewSubmission": {"id": "88065533-e070-4c2a-b0d9-0ba4b763c69e", "submittedDate": "2026-08-31T13:06:01.028Z", "state": "COMPLETE", "previousState": "WAITING_FOR_REVIEW"},
+  "appStoreVersion": {"id": "fea0f3f4-1de9-4150-bdee-ab5526024ea3", "versionString": "1.1", "appStoreState": "READY_FOR_SALE", "appVersionState": "READY_FOR_DISTRIBUTION", "releaseType": "MANUAL", "build": {"id": "5139f524-df39-4ad0-a7aa-708381f491db", "version": "6", "processingState": "VALID"}},
+  "phasedRelease": {"phasedReleaseState": "COMPLETE", "startDate": "2026-09-01T15:02:24Z", "currentDayNumber": 1, "interpretation": "The Owner released 1.1 on 2026-09-01 and the phased rollout reads COMPLETE on day 1, i.e. released to all users."},
+  "availability": {"availableInNewTerritories": true, "territoryAvailabilities": {"total": 175, "available": 175}, "publicLookup": {"resultCount": 1, "version": "1.1", "currentVersionReleaseDate": "2026-09-01T07:00:00Z", "trackViewUrl": "https://apps.apple.com/us/app/econbyte/id6780714383", "contentAdvisoryRating": "4+"}, "interpretation": "The earlier 'removed from sale' storefront gap (submissionRecord.openStorefrontGap) reads as CLOSED: the app is returned by the public lookup and all 175 territories read available. The web-UI banner itself was not observed by the orchestrator."},
+  "inAppPurchases": [
+    {"id": "6780980599", "productId": "com.nsantulli.econbyte.removeads", "state": "APPROVED"},
+    {"id": "6780979932", "productId": "com.nsantulli.econbyte.unlockall", "state": "APPROVED"}
+  ],
+  "remainingOwnerGatedSteps": [
+    {"id": "advertising-data-tracking-flip", "source": "submissionRecord.appPrivacyResolution.postReleaseAction", "status": "OPEN — Owner web UI only", "detail": "1.1 (build 6, no NSUserTrackingUsageDescription) has replaced 1.0 on the storefront, so the ASC block on publishing Advertising Data tracking=NO should now be lifted. Re-enter App Privacy → Advertising Data → tracking NO and publish. Not settable via API."},
+    {"id": "admob-ids-console-confirmation", "source": "ownerItems[admob-ids-unconfirmed]", "status": "OPEN — Owner console", "detail": "Release AdMob app/unit IDs, frequency caps, and app-ads.txt remain Owner-unconfirmed against the AdMob console."},
+    {"id": "custom-product-pages", "source": "sixBHandoff step 6", "status": "OPEN — Owner-gated ASC write", "detail": "Three custom product pages per AppStore/1.1/custom-product-pages.json. Creating them is an ASC write and needs explicit Owner approval before the orchestrator acts."},
+    {"id": "metrics-24h-7d-30d", "source": "sixBHandoff step 6 / design §15.2", "status": "OPEN — begins from release date 2026-09-01", "detail": "Missing metrics are marked unmeasured, never zero."}
+  ]
+}
