@@ -97,6 +97,45 @@ struct HomeView: View {
         cardModeSession = CardModeSession(cards: daily, title: "Today's Set")
     }
 
+    /// Test-only hook: exposes card inf-001's full `exampleBody` as the grocery
+    /// line's accessibility value so a UI test can prove the visible line is a
+    /// verbatim slice of the card (never an invented figure). Off in production.
+    private var exposeGroceryBinding: Bool {
+        ProcessInfo.processInfo.arguments.contains("-exposeGroceryBinding")
+    }
+
+    /// One sourced line of copy under TODAY'S CARDS (v1.1.1). The text is derived
+    /// from bundled card `inf-001` (BLS), not free-typed. Tapping it starts
+    /// today's set via the same `startTodaysSet(daily)` the Start/Review button
+    /// calls — no new screen. Inert when there is no daily set to start.
+    @ViewBuilder
+    private func groceryLine(_ daily: [EconCard]) -> some View {
+        if let g = content.groceryHighlight {
+            Button {
+                guard !daily.isEmpty else { return }
+                startTodaysSet(daily)
+            } label: {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(g.line)
+                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                        .foregroundColor(Econ.white.opacity(0.85))
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(g.source)
+                        .font(.system(size: 11, weight: .regular, design: .rounded))
+                        .foregroundColor(Econ.subtext)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            .disabled(daily.isEmpty)
+            .accessibilityIdentifier("homeGroceryLine")
+            .accessibilityLabel(Text(g.line))
+            .accessibilityValue(Text(exposeGroceryBinding ? g.exampleBody : g.source))
+            .accessibilityHint(Text("Starts today's set"))
+        }
+    }
+
     private var todaysSetCard: some View {
         let daily = content.dailySet(count: 8, unlockedAll: store.isUnlockAllPurchased)
         let seen = daily.filter { content.cardStates[$0.id]?.lastSeen != nil }.count
@@ -121,6 +160,7 @@ struct HomeView: View {
                          total: completed ? 1 : Double(max(daily.count, 1)))
                 .tint(completed ? Econ.sky : Econ.amber)
                 .background(Econ.mist.opacity(0.2))
+            groceryLine(daily)
             Group {
                 if completed {
                     Button("Review →") { startTodaysSet(daily) }

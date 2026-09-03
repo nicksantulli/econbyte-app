@@ -223,4 +223,71 @@ final class EconByteUITests: XCTestCase {
         XCTAssertTrue(removeAds.waitForExistence(timeout: 5),
                       "Remove Ads purchase row should render in Settings")
     }
+
+    // MARK: - Grocery highlight (v1.1.1)
+
+    /// Success criterion: the sourced grocery line renders on Home immediately
+    /// after launch — the reviewer can see it WITHOUT opening a card.
+    func testGroceryLineRendersOnHomeWithoutOpeningCard() {
+        let app = launchApp()
+
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+
+        let grocery = app.buttons["homeGroceryLine"]
+        XCTAssertTrue(grocery.waitForExistence(timeout: 5),
+                      "Grocery line should render on Home without opening any card")
+
+        // No card mode has been entered: CardModeView's close button (which only
+        // exists once a card set is open) must be absent, proving the grocery
+        // line is seen on Home itself, not after opening a card.
+        XCTAssertFalse(app.buttons["cardModeCloseButton"].exists,
+                       "Grocery line must be visible on Home before any card is opened")
+
+        // The visible line carries the card's real BLS grocery figure.
+        XCTAssertTrue(grocery.label.contains("grocery") && grocery.label.contains("$117"),
+                      "Grocery line should show the card's real figure. Saw: \(grocery.label)")
+    }
+
+    /// Binding proof (scope 1): the displayed grocery line is a verbatim slice of
+    /// card inf-001's `exampleBody`, never an invented number. Under
+    /// `-exposeGroceryBinding` the app exposes the card's full example as the
+    /// element's accessibility value; the visible label must be contained in it.
+    func testGroceryLineIsBoundToInf001CardContent() {
+        let app = XCUIApplication()
+        app.launchArguments += ["-skipStudioIntro", "-exposeGroceryBinding"]
+        app.launch()
+
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        let grocery = app.buttons["homeGroceryLine"]
+        XCTAssertTrue(grocery.waitForExistence(timeout: 5))
+
+        let displayed = grocery.label
+        let cardExample = (grocery.value as? String) ?? ""
+        XCTAssertFalse(cardExample.isEmpty,
+                       "inf-001 exampleBody should be exposed under -exposeGroceryBinding")
+        XCTAssertTrue(cardExample.contains(displayed),
+                      "Displayed grocery line must be verbatim inf-001 content. "
+                      + "displayed=[\(displayed)] example=[\(cardExample)]")
+    }
+
+    /// Behaviour (scope 2): tapping the grocery line starts today's set — the
+    /// same flow as Start/Review, no new screen.
+    func testGroceryLineTapStartsTodaysSet() {
+        let app = launchApp()
+
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        let grocery = app.buttons["homeGroceryLine"]
+        XCTAssertTrue(grocery.waitForExistence(timeout: 5))
+        for _ in 0..<3 where !grocery.isHittable { app.swipeUp() }
+        XCTAssertTrue(grocery.isHittable, "Grocery line should be tappable on Home")
+        grocery.tap()
+
+        // Same destination as Start/Review: CardModeView, identified by its close
+        // button (which does not exist on Home). Using the close button — not the
+        // "N / 8" counter — avoids a false pass, since Home's topic tiles already
+        // show "seen/total" text containing "/".
+        let close = app.buttons["cardModeCloseButton"]
+        XCTAssertTrue(close.waitForExistence(timeout: 5),
+                      "Tapping the grocery line should open today's set (CardModeView)")
+    }
 }

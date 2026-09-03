@@ -121,4 +121,26 @@ final class ContentStore: ObservableObject {
     func topicName(for topicId: String) -> String {
         topics.first(where: { $0.id == topicId })?.name ?? topicId
     }
+
+    /// The grocery-inflation highlight surfaced on Home (v1.1.1).
+    ///
+    /// The `line` is *extracted verbatim* from card `inf-001`'s `exampleBody` —
+    /// never hand-typed into the view — so the figure shown on Home is provably
+    /// the card's own BLS-sourced content and cannot silently drift from the
+    /// catalog. Returns the full `exampleBody` too so a test can prove the
+    /// displayed line is contained within it. `nil` if the card is missing or
+    /// lacks the grocery sentence (the Home line then simply doesn't render).
+    var groceryHighlight: (line: String, source: String, exampleBody: String)? {
+        guard let card = allCards.first(where: { $0.id == "inf-001" }),
+              let start = card.exampleBody.range(of: "A grocery run") else { return nil }
+        let tail = card.exampleBody[start.lowerBound...]
+        // The grocery sentence ends at its terminating period.
+        let line: String
+        if let dot = tail.firstIndex(of: ".") {
+            line = String(tail[...dot])
+        } else {
+            line = String(tail)
+        }
+        return (line: line, source: card.source, exampleBody: card.exampleBody)
+    }
 }
