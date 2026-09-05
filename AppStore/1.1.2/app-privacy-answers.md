@@ -121,6 +121,59 @@ Device ID or Advertising Data, and do not change any "Used to Track You" answer.
 
 ---
 
+## ⚠️ Read before entering: what a REAL ingested crash actually carried
+
+On 2026-09-05 a deliberate DEBUG-only crash was sent from a Simulator build of
+1.1.2 (build 9) to the live `econbyte` Sentry project and then read back from
+Sentry. That is the first time this app's crash payload has been inspected as
+Sentry stores it rather than as the client intends it, and it turned up two
+things the three answers above do not cover. **Neither is caused by 1.1.2's
+code; both are how Sentry's server treats any event.**
+
+Reference event: issue **ECONBYTE-1**, event id `d0384c04e4f8450686e5bfb035aed840`,
+release `com.nsantulli.econbyte@1.1.2+9`, 2026-09-05T21:28:21Z. Users Impacted:
+**0** — the user object our `beforeSend` strips is genuinely absent, and neither
+`user.id` nor `user.ip` came back.
+
+### 1. Sentry stored a coarse location — likely a **Coarse Location** answer
+
+The stored event carries `user.geo` = **US, Colorado Springs, United States**.
+The client did everything available to it: `sendDefaultPii = false`, which
+sentry-cocoa 8.58.4 serialises as `sdk.settings.infer_ip = "never"`
+(`SentrySDKSettings.swift`), and the live `beforeSend` removes the user object
+outright. The geo is derived by Sentry's ingest from the request IP regardless.
+
+Two ways to settle it, and **this is an Owner/orchestrator call, not a code
+change**:
+
+- **Declare it.** Add **Coarse Location → App Functionality, not linked, not
+  tracking**. This is what the portfolio brief already assumes: the label union
+  agreed for Last Human and Table Talk (same SDK set) includes Coarse Location.
+  EconByte's three-row delta above was written before anyone had looked at a
+  real payload, and is narrower than its siblings for no defensible reason.
+- **Or turn it off at the source.** Sentry org/project → Security & Privacy →
+  *Prevent Storing of IP Addresses*. If that removes the geo, re-verify with a
+  fresh test crash and keep the label as written.
+
+Do not submit 1.1.2 with the label silent on this while the payload carries it.
+
+### 2. Sentry adds its own tags server-side, including a device hash
+
+The stored event carries tags the app never set: `app.device`
+(`device_app_hash`, an install-scoped device hash), `device` (`iPhone18,1`),
+`device.class`, `device.family`, `os`, `os.build`, `dist`, `release`, `level`,
+`handled`, `mechanism`, `interface_type`, `environment`.
+
+The client-side tag allowlist (`DiagnosticsTag` + `DiagnosticsFilter`) governs
+tags **we** set — it cannot remove tags Sentry derives from the event's device
+and app contexts during ingest. Nothing here is personal or free-form, and
+`device_app_hash` is scoped to this app's install rather than the device, but
+the **Diagnostics → Crash Data** row should be understood to include coarse
+device/OS class information, and `app.device` should be checked against the
+existing **Device ID** row before the label is published.
+
+---
+
 ## What does NOT change
 
 - **Ad-side declarations stay exactly as they are.** Device ID and Advertising
