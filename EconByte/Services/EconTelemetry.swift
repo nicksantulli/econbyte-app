@@ -27,7 +27,15 @@ import Foundation
 // `googleads.g.doubleclick.net` because the ad SDK tracks; that is unchanged and
 // unrelated. Nothing in THIS file is tracking: no advertising identifier is read,
 // no data is joined with third-party data, and the analytics identity is a random
-// per-install UUID that never leaves the PostHog project.
+// per-install id that never leaves the PostHog project.
+//
+// IDENTITY (corrected 2026-09-05): the identity is PostHog's OWN anonymous id,
+// read back from the SDK — not an id this app mints. It used to be an app-minted
+// UUID handed to `identify()`, which posthog-ios 3.71.4 silently IGNORES when
+// `personProfiles == .never` (PostHogSDK.identify → requirePersonProcessing).
+// Events were therefore keyed by the SDK's anonymous id while Settings displayed
+// the app's UUID and promised deletion by it — a deletion request quoting that
+// id would have matched nothing. The app no longer mints an id at all.
 //
 // CREDENTIAL POSTURE — read before touching this file: the key is injected at
 // build time from a gitignored xcconfig into Info.plist and read at runtime. A
@@ -425,6 +433,14 @@ enum TelemetryCredentials {
         apiKey(from: Bundle.main.infoDictionary) ?? embeddedAPIKey
     }
 
+    /// The key this *process* may use. A unit-test host, a UI-test launch, or
+    /// any Debug build resolves to `nil` — see InstrumentationContext — so a
+    /// test relaunch cannot write into the production project. The ingestion
+    /// proof passes `-AllowAnalyticsInDebug` to lift it deliberately.
+    static func resolved(_ credential: String?, in context: InstrumentationContext) -> String? {
+        context.suppressesLiveTransports ? nil : credential
+    }
+
     static var currentHost: String {
         host(from: Bundle.main.infoDictionary)
     }
@@ -434,16 +450,25 @@ enum TelemetryCredentials {
 
 protocol TelemetryTransporting: AnyObject {
     var isStarted: Bool { get }
-    func start(apiKey: String, configuration: TelemetryConfiguration, distinctID: String)
+
+    /// The id the vendor SDK actually stamps on the events it sends, read back
+    /// from the SDK rather than assumed. `nil` before `start` and whenever the
+    /// SDK cannot answer. This is what Settings displays, because it is the only
+    /// id a deletion request can match.
+    var distinctID: String? { get }
+
+    func start(apiKey: String, configuration: TelemetryConfiguration)
     func send(_ events: [TelemetryEvent]) async -> Bool
     func stopAndClearLocalState()
 }
 
 /// The transport used when no key exists. It exists so the policy layer above it
-/// is exercised identically whether or not a project is configured.
+/// is exercised identically whether or not a project is configured. It reports
+/// no distinct id because it sends nothing that could carry one.
 final class NoOpTelemetryTransport: TelemetryTransporting {
     private(set) var isStarted = false
-    func start(apiKey: String, configuration: TelemetryConfiguration, distinctID: String) {
+    var distinctID: String? { nil }
+    func start(apiKey: String, configuration: TelemetryConfiguration) {
         isStarted = true
     }
     func send(_ events: [TelemetryEvent]) async -> Bool { true }
@@ -524,15 +549,17 @@ final class EconTelemetry: ObservableObject {
         /// means "never answered", which is ON — that is the whole point of
         /// storing the negative rather than an opt-in.
         static let optOut = "ebAnalyticsOptOut"
-        static let identity = "ebAnalyticsIdentity"
     }
 
     /// The *effective* state: a destination is configured AND the user has not
     /// opted out.
     @Published private(set) var isAnalyticsEnabled = false
 
-    /// The random app-scoped identifier, shown in Settings so a user can quote
-    /// it in a deletion request. `nil` whenever analytics is off.
+    /// PostHog's own anonymous distinct id for this install, read back from the
+    /// SDK after it starts and shown in Settings so a user can quote it in a
+    /// deletion request. `nil` whenever analytics is off, and `nil` when the SDK
+    /// cannot answer — in which case Settings says so rather than showing an id
+    /// that is not on the wire.
     @Published private(set) var analyticsIdentity: String?
 
     /// The most recent validator rejection — surfaced in DEBUG builds so a
@@ -548,31 +575,31 @@ final class EconTelemetry: ObservableObject {
     private let apiKey: String?
     private let defaults: UserDefaults
     private let now: () -> Date
-    private let identityFactory: () -> String
     private let queue: TelemetryQueue
 
     convenience init() {
-        let apiKey = TelemetryCredentials.current
+        // A test/automation/Debug process resolves to no key at all, so nothing
+        // below this line can reach the live project (see InstrumentationContext).
+        let apiKey = TelemetryCredentials.resolved(TelemetryCredentials.current,
+                                                   in: .current)
         // Fail-soft transport selection: with no key we never touch the vendor
         // SDK at all (NoOp). A real key wires the PostHog adapter, which starts
         // at construction unless the user has opted out (see startAnalytics).
         // Either way a missing/blank key can never initialize or send anything.
-        let transport: TelemetryTransporting = apiKey == nil
-            ? NoOpTelemetryTransport()
-            : PostHogTelemetryTransport(host: TelemetryCredentials.currentHost)
+        let transport: TelemetryTransporting = apiKey.map {
+            PostHogTelemetryTransport(apiKey: $0, host: TelemetryCredentials.currentHost)
+        } ?? NoOpTelemetryTransport()
         self.init(transport: transport, apiKey: apiKey, defaults: .standard)
     }
 
     init(transport: TelemetryTransporting,
          apiKey: String?,
          defaults: UserDefaults,
-         now: @escaping () -> Date = Date.init,
-         identityFactory: @escaping () -> String = { UUID().uuidString }) {
+         now: @escaping () -> Date = Date.init) {
         self.transport = transport
         self.apiKey = apiKey
         self.defaults = defaults
         self.now = now
-        self.identityFactory = identityFactory
         let limits = TelemetryConfiguration()
         self.queue = TelemetryQueue(capacity: limits.maxQueueSize,
                                     batchSize: limits.maxBatchSize,
@@ -597,9 +624,11 @@ final class EconTelemetry: ObservableObject {
     }
 
     /// The Settings toggle, expressed as it reads to the user: `true` == share
-    /// analytics. Turning it off stops capture, clears the local queue, and
-    /// rotates the identity away — all before this call returns — and persists
-    /// across launches. Turning it back on mints a fresh identity.
+    /// analytics. Turning it off stops capture, clears this app's queue, and
+    /// tells the transport to opt out and delete the vendor SDK's own persisted
+    /// state — all before this call returns — and persists across launches.
+    /// Turning it back on leaves the SDK to mint a fresh anonymous id, because
+    /// the old one was deleted with everything else.
     func setAnalyticsConsent(_ enabled: Bool) {
         defaults.set(!enabled, forKey: Key.optOut)
         if enabled {
@@ -611,23 +640,25 @@ final class EconTelemetry: ObservableObject {
     }
 
     /// Idempotent: a second call while already running must not re-start the
-    /// vendor SDK or mint a second identity.
+    /// vendor SDK.
+    ///
+    /// The displayed identity is read back from the transport AFTER the SDK is
+    /// up, so it is the id the SDK will actually stamp on events rather than one
+    /// this app hoped it would use.
     private func startAnalytics() {
         guard let apiKey, !isAnalyticsEnabled else { return }
-        let identity = defaults.string(forKey: Key.identity) ?? identityFactory()
-        defaults.set(identity, forKey: Key.identity)
-        analyticsIdentity = identity
         isAnalyticsEnabled = true
-        transport.start(apiKey: apiKey, configuration: configuration, distinctID: identity)
+        transport.start(apiKey: apiKey, configuration: configuration)
+        analyticsIdentity = transport.distinctID
     }
 
     private func stopAnalytics() {
         isAnalyticsEnabled = false
         queue.removeAll()
-        // Rotate: the old identity is forgotten locally, so re-enabling creates
-        // a new one and cannot be joined to previously transmitted events.
-        defaults.removeObject(forKey: Key.identity)
         analyticsIdentity = nil
+        // The transport opts out at the vendor SDK and deletes the SDK's own
+        // persisted queue and identity, so re-enabling starts from nothing and
+        // cannot be joined to previously transmitted events.
         transport.stopAndClearLocalState()
     }
 

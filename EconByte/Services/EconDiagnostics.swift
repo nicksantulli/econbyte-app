@@ -39,6 +39,21 @@ struct DiagnosticsConfiguration: Equatable {
     var enableUserInteractionTracing = false
     var enableAppLaunchProfiling = false
 
+    /// Sessions — off. sentry-cocoa defaults this to YES, and a session envelope
+    /// is not a crash: it is a per-launch record of who opened the app and for
+    /// how long, sent on every foreground/background transition whether or not
+    /// anything went wrong. Settings and the App Store answers both say EconByte
+    /// sends crash reports, so sessions must not leave. This is the field the
+    /// crash-only claim actually rests on.
+    var enableAutoSessionTracking = false
+
+    /// App hangs and watchdog terminations — off. Both are "the app was slow or
+    /// the OS killed it" telemetry rather than crashes, and watchdog tracking
+    /// persists scope to disk between launches. Held as fields (rather than
+    /// literals in the adapter) so the configuration scan covers them.
+    var enableAppHangTracking = false
+    var enableWatchdogTerminationTracking = false
+
     // Breadcrumbs and logs — all off
     var enableAutoBreadcrumbTracking = false
     var enableNetworkBreadcrumbs = false
@@ -131,6 +146,14 @@ enum DiagnosticsCredentials {
     static var current: String? {
         dsn(from: Bundle.main.infoDictionary) ?? embeddedDSN
     }
+
+    /// The DSN this *process* may use. Same rule as the analytics key: a
+    /// unit-test host, a UI-test launch, or any Debug build gets `nil`, so a
+    /// deliberate test crash cannot land in the production Sentry project. The
+    /// ingestion proof passes `-AllowAnalyticsInDebug` to lift it deliberately.
+    static func resolved(_ credential: String?, in context: InstrumentationContext) -> String? {
+        context.suppressesLiveTransports ? nil : credential
+    }
 }
 
 // MARK: - Transport seam
@@ -191,7 +214,9 @@ final class EconDiagnostics: ObservableObject {
         #else
         let release = true
         #endif
-        let dsn = DiagnosticsCredentials.current
+        // A test/automation/Debug process resolves to no DSN at all, so a test
+        // crash can never reach the live project (see InstrumentationContext).
+        let dsn = DiagnosticsCredentials.resolved(DiagnosticsCredentials.current, in: .current)
         // Fail-soft transport selection: with no DSN the vendor SDK is never
         // touched (NoOp) and nothing below can start it. A real DSN wires the
         // Sentry adapter, which the designated init then starts.

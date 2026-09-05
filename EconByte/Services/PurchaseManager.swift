@@ -12,6 +12,32 @@ import SwiftUI
 /// truth, restored automatically across devices via the Apple ID) and mirrored
 /// into UserDefaults so gating decisions are synchronous on cold launch before
 /// StoreKit finishes its async refresh.
+/// How a purchase control reads while StoreKit has not delivered a price.
+///
+/// There is no fallback price literal anywhere in the UI. A hardcoded "$0.99" is
+/// wrong in every non-US storefront, wrong the moment the tier changes, and
+/// wrong when the product is simply unavailable — and it is exactly the shape
+/// App Review has objected to on a Dudley build before. When there is no price
+/// there is no price shown, and the control that would spend money is disabled.
+enum PurchasePresentation {
+
+    /// Shown in place of a price that StoreKit has not supplied. Deliberately
+    /// not a currency string: it must be impossible to read as an amount.
+    static let unavailablePrice = "—"
+
+    static func priceText(_ displayPrice: String?) -> String {
+        guard let displayPrice, !displayPrice.isEmpty else { return unavailablePrice }
+        return displayPrice
+    }
+
+    /// A buy control may only be live when there is a real, StoreKit-formatted
+    /// price to charge and nothing else is in flight.
+    static func canPurchase(displayPrice: String?, isWorking: Bool, isLoading: Bool) -> Bool {
+        guard let displayPrice, !displayPrice.isEmpty else { return false }
+        return !isWorking && !isLoading
+    }
+}
+
 @MainActor
 final class PurchaseManager: ObservableObject {
     static let shared = PurchaseManager()

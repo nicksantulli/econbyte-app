@@ -51,14 +51,21 @@ struct EconByteApp: App {
     /// exists for the case where the smoke device previously opted out.
     /// Compiled out of Release entirely. With no key/DSN configured it is still
     /// fail-soft: the facades no-op and nothing initializes.
+    ///
+    /// From 1.1.2 a Debug process reaches the LIVE projects only when
+    /// `-AllowAnalyticsInDebug` is also passed (see InstrumentationContext) — so
+    /// the ingestion proof is launched with BOTH arguments, and this hook alone
+    /// stays inert. The log line below reports which of the two happened.
     private static func applyInstrumentationSmokeIfRequested() {
         #if DEBUG
         guard ProcessInfo.processInfo.arguments.contains("-EBInstrumentationSmoke")
                 || UserDefaults.standard.bool(forKey: "EBInstrumentationSmoke") else { return }
+        let context = InstrumentationContext.current
         NSLog("[EB][smoke] instrumentation smoke: forcing analytics on for this run")
+        NSLog("[EB][smoke] context: allowFlag=\(context.isExplicitlyAllowed) unitTest=\(context.isUnitTestRun) automation=\(context.isAutomationRun) debugBuild=\(context.isDebugBuild) suppressed=\(context.suppressesLiveTransports)")
         EconTelemetry.shared.setAnalyticsConsent(true)
         EconDiagnostics.shared.setDiagnosticsConsent(true)
-        NSLog("[EB][smoke] analytics configured=\(EconTelemetry.shared.isConfigured) enabled=\(EconTelemetry.shared.isAnalyticsEnabled); diagnostics configured=\(EconDiagnostics.shared.isConfigured) enabled=\(EconDiagnostics.shared.isDiagnosticsEnabled)")
+        NSLog("[EB][smoke] analytics configured=\(EconTelemetry.shared.isConfigured) enabled=\(EconTelemetry.shared.isAnalyticsEnabled) distinctId=\(EconTelemetry.shared.analyticsIdentity ?? "none"); diagnostics configured=\(EconDiagnostics.shared.isConfigured) enabled=\(EconDiagnostics.shared.isDiagnosticsEnabled)")
         #endif
     }
 

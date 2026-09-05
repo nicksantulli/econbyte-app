@@ -3,14 +3,77 @@ import Foundation
 import PostHog
 #endif
 
+// MARK: - Where posthog-ios keeps its files
+//
+// The SDK writes everything for one project under
+// `<Application Support>/<bundle id>/<project token>/` (PostHogStorage
+// `getAppFolderUrl`), including the offline event queue.
+//
+// This matters because `reset()` and `close()` DO NOT delete that queue:
+// PostHogStorage.reset explicitly skips `.queue` / `.replayQeueue` / `.logsQueue`
+// ("each queue manages its own disk state"), so an opt-out that only calls them
+// leaves finished-but-unsent events on disk which the SDK sends the moment
+// analytics is switched back on. Deleting the directory is the only way to make
+// the Settings promise ("stops sending straight away, clears the queue on this
+// device") true.
+//
+// Deleting the whole project directory rather than the queue files alone is
+// deliberate and load-bearing in a second way: `optOut()` persists
+// `posthog.optOut = true`, and `setup()` reads that flag back on the next start
+// (PostHogSDK.setup). Leaving it behind would make re-enabling analytics
+// silently dead. Removing the directory removes the flag and the anonymous id
+// together, which is exactly the "fresh, unjoinable identity" the opt-out
+// promises.
+enum PostHogLocalStore {
+
+    /// The keys PostHogStorage.reset() leaves on disk. Not read by the app —
+    /// the purge removes the whole directory — but named here because they are
+    /// the reason the purge exists, and the suite builds its fixture from them.
+    static let survivesResetAndClose = [
+        "posthog.queueFolder.uuid",
+        "posthog.queueFolder",
+        "posthog.queue.plist",
+        "posthog.replayFolder.uuid",
+        "posthog.replayBufferFolder",
+        "posthog.logsFolder",
+        "posthog.anonymousId",
+    ]
+
+    /// iOS keeps this per app container; the SDK's own base directory.
+    static var applicationSupportDirectory: URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? URL(fileURLWithPath: NSTemporaryDirectory())
+    }
+
+    static func projectDirectory(base: URL,
+                                 bundleIdentifier: String,
+                                 projectToken: String) -> URL {
+        base.appendingPathComponent(bundleIdentifier, isDirectory: true)
+            .appendingPathComponent(projectToken, isDirectory: true)
+    }
+
+    /// Removes the directory. An absent directory is a success, not a failure —
+    /// nothing left to leak is the outcome we want either way.
+    @discardableResult
+    static func purge(directory: URL, fileManager: FileManager = .default) -> Bool {
+        guard fileManager.fileExists(atPath: directory.path) else { return true }
+        do {
+            try fileManager.removeItem(at: directory)
+            return true
+        } catch {
+            return false
+        }
+    }
+}
+
 // MARK: - PostHog adapter (the vendor surface behind TelemetryTransporting)
 //
 // This is the ONLY file in the app that imports PostHog. Everything that
 // protects the user — the typed event allowlist, the validator, the bounded
-// queue, the opt-out gate, the anonymous identity — lives ABOVE this seam in
-// EconTelemetry.swift and runs before a single call reaches here. The adapter's
-// whole job is: apply the reviewed configuration, hand PostHog an
-// already-validated event, and never do anything on its own.
+// queue, the opt-out gate — lives ABOVE this seam in EconTelemetry.swift and
+// runs before a single call reaches here. The adapter's whole job is: apply the
+// reviewed configuration, hand PostHog an already-validated event, report the
+// id the SDK is really using, and never do anything on its own.
 //
 // FAIL-SOFT: this transport is only ever constructed when a non-nil PostHog key
 // exists (see EconTelemetry.init); with no key the facade uses
@@ -25,22 +88,61 @@ import PostHog
 //   * no logs, no tracing headers, no swizzling — several of these default to
 //     ON in the SDK, so they are set explicitly rather than assumed
 //   * personProfiles = never  → anonymous, no person profiles server-side
-//   * the distinct id is the app-scoped random UUID minted by the facade; no
-//     device identifier, no advertising identifier, no PII, ever.
+//   * the distinct id is PostHog's own anonymous per-install id; no device
+//     identifier, no advertising identifier, no PII, ever.
+//
+// IDENTITY: the adapter does NOT call `identify`. Under
+// `personProfiles = .never` posthog-ios 3.71.4 ignores it outright
+// (PostHogSDK.identify bails at `requirePersonProcessing`), so calling it
+// achieved nothing except to make the app believe it had chosen the id. The id
+// is read back with `getDistinctId()` instead, and that is the value Settings
+// shows and a deletion request can quote.
 final class PostHogTelemetryTransport: TelemetryTransporting {
 
     /// PostHog ingest host (US cloud by default; EU projects override via the
     /// secrets xcconfig). Never `nil` — resolved by TelemetryCredentials.
     private let host: String
 
+    /// Held from construction so teardown can find the SDK's directory even in a
+    /// process where `start` was never called.
+    private var projectToken: String
+    private let storageBase: URL
+    private let bundleIdentifier: String
+    private let fileManager: FileManager
+
     private(set) var isStarted = false
 
-    init(host: String) {
+    /// True when the last teardown actually removed the SDK's directory. Read by
+    /// the suite; a false here would mean the opt-out copy is overstating.
+    private(set) var didPurgeLocalState = false
+
+    init(apiKey: String,
+         host: String,
+         storageBase: URL = PostHogLocalStore.applicationSupportDirectory,
+         bundleIdentifier: String = Bundle.main.bundleIdentifier ?? "",
+         fileManager: FileManager = .default) {
+        self.projectToken = apiKey
         self.host = host
+        self.storageBase = storageBase
+        self.bundleIdentifier = bundleIdentifier
+        self.fileManager = fileManager
     }
 
-    func start(apiKey: String, configuration: TelemetryConfiguration, distinctID: String) {
+    /// The id on the wire, straight from the SDK. Empty means the SDK has no
+    /// storage manager yet, which is reported as "no id" rather than "".
+    var distinctID: String? {
+        guard isStarted else { return nil }
+        #if canImport(PostHog)
+        let identifier = PostHogSDK.shared.getDistinctId()
+        return identifier.isEmpty ? nil : identifier
+        #else
+        return nil
+        #endif
+    }
+
+    func start(apiKey: String, configuration: TelemetryConfiguration) {
         guard !isStarted else { return }
+        projectToken = apiKey
         #if canImport(PostHog)
         let config = PostHogConfig(projectToken: apiKey, host: host)
 
@@ -92,10 +194,6 @@ final class PostHogTelemetryTransport: TelemetryTransporting {
         config.maxQueueSize = configuration.maxQueueSize
 
         PostHogSDK.shared.setup(config)
-        // Route the app-scoped random UUID as the distinct id. With
-        // personProfiles = .never this creates no person profile; it only labels
-        // events with our anonymous, rotate-able id.
-        PostHogSDK.shared.identify(distinctID)
         #endif
         isStarted = true
     }
@@ -115,14 +213,28 @@ final class PostHogTelemetryTransport: TelemetryTransporting {
         return true
     }
 
+    /// Opt out at the SDK, tear it down, then delete everything it persisted.
+    ///
+    /// Order matters. `optOut()` stops further capture, `close()` stops the
+    /// queues and their timers, and only then is the directory removed — so the
+    /// SDK cannot rewrite a file between the delete and the teardown.
     func stopAndClearLocalState() {
         #if canImport(PostHog)
-        // Forget the local identity and any queued/persisted events, then tear
-        // the SDK down so re-enabling starts clean.
+        PostHogSDK.shared.optOut()
         PostHogSDK.shared.reset()
         PostHogSDK.shared.close()
         #endif
+        didPurgeLocalState = PostHogLocalStore.purge(directory: localStateDirectory,
+                                                     fileManager: fileManager)
         isStarted = false
+    }
+
+    /// The directory this transport owns on disk, exposed so the suite can put
+    /// a queue in it and watch the opt-out remove it.
+    var localStateDirectory: URL {
+        PostHogLocalStore.projectDirectory(base: storageBase,
+                                           bundleIdentifier: bundleIdentifier,
+                                           projectToken: projectToken)
     }
 
     /// Maps the closed TelemetryValue set to PostHog's `[String: Any]`. Only the

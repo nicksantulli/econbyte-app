@@ -32,8 +32,11 @@ Two vendor SDKs are linked behind the `TelemetryTransporting` /
 analytics and no crash reporting at all.
 
 - **Product analytics → PostHog**, project **`econbyte`**.
-- **Crash diagnostics → Sentry**, project **`econbyte`** (crash-only; no session
-  replay, no tracing, no profiling).
+- **Crash diagnostics → Sentry**, project **`econbyte`** (crash-only: no
+  sessions, no app-hang or watchdog reports, no session replay, no tracing, no
+  profiling). `enableAutoSessionTracking` defaults to ON in sentry-cocoa and is
+  explicitly OFF here — a session envelope is a per-launch usage record, not a
+  crash, and the app's copy says crash reports.
 
 Never reuse another Dudley app's project. Table Talk's projects are
 `table-talk` / `tabletalk` and are separate on purpose — cross-app identity
@@ -58,23 +61,67 @@ Crash reports have no switch on purpose: the envelope is a stack trace with the
 user object and every breadcrumb stripped, and a crash reporter most people
 leave off reports nothing. Settings says out loud that they are sent.
 
-Switching analytics off stops capture before the call returns, clears the local
-queue, tears the SDK down, resets the per-install id, and persists
-(`ebAnalyticsOptOut` — absent means "never answered", which is ON). Switching it
-back on mints a **new** id, so the two sides of an opt-out cannot be stitched
-together.
+Switching analytics off stops capture before the call returns, clears this app's
+queue, calls the SDK's own `optOut()`, tears the SDK down, **deletes the SDK's
+storage directory**, and persists (`ebAnalyticsOptOut` — absent means "never
+answered", which is ON). Switching it back on gets a **new** id, so the two
+sides of an opt-out cannot be stitched together.
+
+The directory deletion is not belt-and-braces, it is the fix: posthog-ios
+`PostHogStorage.reset()` deliberately skips the event queue, so `reset()` +
+`close()` alone leave unsent events on disk that ship the moment analytics is
+re-enabled — after the user was told the queue was cleared. Removing the
+directory also clears the SDK's persisted `optOut` flag, without which
+re-enabling would be silently dead.
+
+### The Analytics ID
+
+Settings shows **PostHog's own distinct id**, read back with `getDistinctId()`.
+The app mints no id of its own. It used to: an app UUID was handed to
+`identify()`, which posthog-ios **ignores** under `personProfiles = .never`
+(`PostHogSDK.identify` bails at `requirePersonProcessing`), so events were keyed
+by the SDK's anonymous id while Settings displayed something else and promised
+deletion by it. A support request quoting the old displayed id would have
+matched nothing. When the SDK cannot answer, the row reads **"not available"** —
+never a placeholder a user could quote.
 
 Fail-soft: **no key/DSN → the SDK is never initialised**, whatever the defaults
 say. A checkout without `Config/Secrets.xcconfig` collects nothing, and Settings
 then says "Off — nothing is collected" instead of offering a switch that does
 nothing.
 
+### No production analytics from test runs
+
+A **unit-test host**, a **UI-test / automation launch**, or **any Debug build**
+resolves *no credentials at all* and therefore configures neither SDK — see
+`EconByte/Services/InstrumentationContext.swift`. Test relaunches were writing
+`app_opened_v1` into the production project and a deliberate test crash could
+have reached production Sentry; ingested test traffic is indistinguishable from
+user traffic and PostHog has no delete-by-property, so the only fix is not to
+send it.
+
+The single deliberate way in is the launch argument **`-AllowAnalyticsInDebug`**,
+which the ingestion proof passes and nothing else does. Release is unaffected:
+none of the three markers exists in a shipped run.
+
+> **Analysts:** sim/test events reached PostHog project `econbyte` (594265) and
+> the `econbyte` Sentry project during the 1.1.2 instrumentation work on
+> **2026-09-04 and 2026-09-05**. Exclude that window; from this change on,
+> only a run carrying `-AllowAnalyticsInDebug` can produce it.
+
 ### Proving it, without shipping a switch
 
 `-EBInstrumentationSmoke YES` forces analytics on for one run and logs the
-resolved state; `-EBInstrumentationCrash YES` crashes the app on purpose three
-seconds after launch so the next launch uploads a Sentry report. Both are
-**DEBUG-only** and compiled out of Release.
+resolved state and the SDK's distinct id; `-EBInstrumentationCrash YES` crashes
+the app on purpose three seconds after launch so the next launch uploads a
+Sentry report. Both are **DEBUG-only** and compiled out of Release, and from
+1.1.2 both need **`-AllowAnalyticsInDebug`** alongside them to reach the live
+projects:
+
+```
+xcrun simctl launch <sim> com.nsantulli.econbyte \
+  -EBInstrumentationSmoke YES -AllowAnalyticsInDebug YES
+```
 
 ### How config is supplied (names only — never keys/DSNs in git)
 

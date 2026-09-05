@@ -57,14 +57,21 @@ Device ID or Advertising Data, and do not change any "Used to Track You" answer.
 
 - Collected: **Yes** · Purposes: **Analytics**
 - Linked to the user: **No** · Used for tracking: **No**
-- What it is: a random v4 UUID minted on first launch and stored only in this
-  app's `UserDefaults` (`ebAnalyticsIdentity`). It is the `distinct_id` on every
-  analytics event, and it is shown to the user in Settings so they can quote it
-  in a deletion request.
-- Why **User ID** and not Device ID: it is assigned by the app, is per-install
-  (a reinstall produces a new one), and is regenerated whenever the user
-  switches analytics off and back on. It is not the device ID, not the
-  advertising ID, and not any other device-level identifier.
+- What it is: PostHog's own anonymous per-install id (a random UUID the SDK
+  mints and stores under the app's Application Support container). It is the
+  `distinct_id` on every analytics event, and it is shown to the user in
+  Settings so they can quote it in a deletion request.
+- **Corrected 2026-09-05:** this used to be described as an app-minted UUID in
+  `UserDefaults` (`ebAnalyticsIdentity`). The app no longer mints one — under
+  `personProfiles = .never` posthog-ios ignores `identify`, so that UUID was
+  never on the wire and Settings was showing an id no deletion request could
+  match. Nothing about the *category* of the answer changes: it is still one
+  random, app-scoped, per-install identifier and nothing else.
+- Why **User ID** and not Device ID: it is assigned by the app's analytics SDK
+  and stored in the app's own container, is per-install (a reinstall produces a
+  new one), and is regenerated whenever the user switches analytics off and back
+  on — the opt-out deletes the SDK's storage directory. It is not the device ID,
+  not the advertising ID, and not any other device-level identifier.
 - Why not linked: there is no account, no server of ours, and no user record of
   any kind to link it to.
 - Why not tracking: it never leaves the `econbyte` PostHog project, is never
@@ -76,13 +83,18 @@ Device ID or Advertising Data, and do not change any "Used to Track You" answer.
 
 - Collected: **Yes** · Purposes: **App Functionality, Analytics**
 - Linked to the user: **No** · Used for tracking: **No**
-- What it is: Sentry, crash-only. A stack trace plus six coarse tags (release,
-  build, environment, OS major version, device-class bucket, lifecycle state).
-  No user object, no screenshots, no view hierarchy, no session replay, no
-  traces, no profiles, no network breadcrumbs, and no app breadcrumb describing
+- What it is: Sentry, crash-only. A stack trace plus at most six coarse tags
+  (release, build, environment, OS major version, device-class bucket, lifecycle
+  state). **No sessions**, no app-hang or watchdog reports, no user object, no
+  screenshots, no view hierarchy, no session replay, no traces, no profiles, no
+  network breadcrumbs, no free-form extras, and no app breadcrumb describing
   which card was on screen — all off in
   `EconByte/Services/SentryDiagnosticsTransport.swift`, and asserted by
-  `InstrumentationPrivacyTests`.
+  `InstrumentationPrivacyTests` against the live `beforeSend` rather than a copy
+  of it.
+- The SDK stamps its own installation id onto every event before `beforeSend`
+  runs; the live filter removes it, so no identifier of any kind rides on a
+  crash report.
 - Matches sentry-cocoa 8.58.4's own privacy manifest, which declares Crash Data
   for App Functionality, not linked, not tracking.
 

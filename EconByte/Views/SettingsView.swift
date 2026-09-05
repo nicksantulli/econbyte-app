@@ -51,12 +51,15 @@ struct SettingsView: View {
                                     if workingRemoveAds {
                                         ProgressView()
                                     } else {
-                                        Text(removeAdsProduct?.displayPrice ?? "$0.99")
+                                        Text(PurchasePresentation.priceText(removeAdsProduct?.displayPrice))
                                             .foregroundColor(Econ.amber)
                                     }
                                 }
                             }
-                            .disabled(anyWorking || store.isLoadingProducts)
+                            .disabled(!PurchasePresentation.canPurchase(
+                                displayPrice: removeAdsProduct?.displayPrice,
+                                isWorking: anyWorking,
+                                isLoading: store.isLoadingProducts))
                             .accessibilityIdentifier("settingsRemoveAdsButton")
                         }
                         if !store.isUnlockAllPurchased {
@@ -67,7 +70,7 @@ struct SettingsView: View {
                                 HStack {
                                     Text("Unlock All Topics")
                                     Spacer()
-                                    Text(unlockAllProduct?.displayPrice ?? "$0.99")
+                                    Text(PurchasePresentation.priceText(unlockAllProduct?.displayPrice))
                                         .foregroundColor(Econ.amber)
                                 }
                             }
@@ -221,14 +224,15 @@ struct PrivacyControlsSection: View {
                 .tint(Econ.amber)
                 .accessibilityIdentifier("analyticsConsentToggle")
 
-                if let identity = telemetry.analyticsIdentity {
-                    HStack {
+                if telemetry.isAnalyticsEnabled {
+                    HStack(alignment: .firstTextBaseline) {
                         Text("Analytics ID")
                             .foregroundColor(Econ.white)
-                        Spacer()
-                        Text(identity.prefix(8))
+                        Spacer(minLength: 12)
+                        Text(telemetry.analyticsIdentity ?? "not available")
                             .font(.system(.footnote, design: .monospaced))
                             .foregroundColor(Econ.subtext)
+                            .multilineTextAlignment(.trailing)
                             .textSelection(.enabled)
                     }
                     .accessibilityIdentifier("analyticsIdentityRow")
@@ -257,9 +261,10 @@ struct PrivacyControlsSection: View {
             lines.append("""
             Analytics are anonymous, bucketed counts of which topics and modes get used — \
             never a card, a definition, a bookmark, or what you paid. Turn this off and \
-            EconByte stops sending straight away, clears the queue on this device and resets \
-            your ID; events already sent are kept for 90 days, and Dudley support can delete \
-            them if you send them the ID above first.
+            EconByte stops sending straight away, deletes everything still waiting to be \
+            sent from this device, and throws the ID away so a new one is made if you ever \
+            turn it back on. Events already sent are kept for 90 days; Dudley support can \
+            delete those if you send them the ID above BEFORE you switch this off.
             """)
         }
         if diagnostics.isConfigured {

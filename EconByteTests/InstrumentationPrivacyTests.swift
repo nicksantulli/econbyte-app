@@ -138,7 +138,8 @@ final class InstrumentationPrivacyTests: XCTestCase {
     // MARK: - Fail-soft: the real adapters never start without a credential
 
     func testPostHogAdapterIsFailSoftWithoutAKey() async {
-        let transport = PostHogTelemetryTransport(host: TelemetryCredentials.defaultHost)
+        let transport = PostHogTelemetryTransport(apiKey: "phc_unused_by_this_test",
+                                                  host: TelemetryCredentials.defaultHost)
         let telemetry = EconTelemetry(transport: transport, apiKey: nil, defaults: defaults)
 
         telemetry.setAnalyticsConsent(true)
@@ -146,6 +147,7 @@ final class InstrumentationPrivacyTests: XCTestCase {
         await telemetry.flush()
 
         XCTAssertFalse(transport.isStarted, "no key → the PostHog SDK is never started")
+        XCTAssertNil(transport.distinctID, "an unstarted adapter reports no id, rather than a stale one")
         XCTAssertFalse(telemetry.isAnalyticsEnabled)
         XCTAssertNil(telemetry.analyticsIdentity)
 
@@ -168,6 +170,100 @@ final class InstrumentationPrivacyTests: XCTestCase {
         XCTAssertFalse(transport.isStarted, "no DSN → the Sentry SDK is never started")
         XCTAssertFalse(diagnostics.isDiagnosticsEnabled)
         XCTAssertEqual(diagnostics.lastRefusal, .noDSNConfigured)
+    }
+
+    // MARK: - The opt-out deletes the queue that reset()/close() leave behind
+    //
+    // posthog-ios 3.71.4's `PostHogStorage.reset()` deliberately skips the event
+    // queue ("each queue manages its own disk state"), and `close()` only stops
+    // the queue object. So an opt-out that calls reset+close leaves finished,
+    // unsent events on disk, and the SDK ships them the moment analytics is
+    // switched back on — after the user was told the queue had been cleared.
+    //
+    // This exercises the real adapter against a real directory: the SDK calls
+    // inside `stopAndClearLocalState` all early-return when the SDK was never set
+    // up, so what is left running is exactly the purge that ships.
+
+    private func makeTemporaryDirectory() throws -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("eb-posthog-purge-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        addTeardownBlock { try? FileManager.default.removeItem(at: url) }
+        return url
+    }
+
+    /// Writes the files the SDK would leave behind and proves the opt-out
+    /// removes them.
+    func testOptingOutDeletesThePostHogStateThatResetAndCloseLeaveBehind() throws {
+        let base = try makeTemporaryDirectory()
+        let token = "phc_test_project_token"
+        let bundleID = "com.nsantulli.econbyte.tests"
+        let transport = PostHogTelemetryTransport(apiKey: token,
+                                                  host: TelemetryCredentials.defaultHost,
+                                                  storageBase: base,
+                                                  bundleIdentifier: bundleID)
+
+        let projectDirectory = transport.localStateDirectory
+        XCTAssertEqual(projectDirectory,
+                       base.appendingPathComponent(bundleID, isDirectory: true)
+                           .appendingPathComponent(token, isDirectory: true),
+                       "the purge must target the directory posthog-ios actually writes to")
+
+        // A queued, unsent event plus the anonymous id — the two things that
+        // survive reset()/close() and would resurface on re-enable.
+        try FileManager.default.createDirectory(
+            at: projectDirectory.appendingPathComponent("posthog.queueFolder.uuid",
+                                                        isDirectory: true),
+            withIntermediateDirectories: true)
+        let queuedEvent = projectDirectory
+            .appendingPathComponent("posthog.queueFolder.uuid", isDirectory: true)
+            .appendingPathComponent(UUID().uuidString)
+        try Data("{}".utf8).write(to: queuedEvent)
+        let anonymousID = projectDirectory.appendingPathComponent("posthog.anonymousId")
+        try Data("01a06e5a".utf8).write(to: anonymousID)
+
+        XCTAssertTrue(FileManager.default.fileExists(atPath: queuedEvent.path))
+
+        transport.stopAndClearLocalState()
+
+        XCTAssertTrue(transport.didPurgeLocalState,
+                      "the adapter must report that the purge actually happened")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: queuedEvent.path),
+                       "an event queued before the opt-out must not survive it")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: anonymousID.path),
+                       "the SDK's anonymous id must go too, or re-enabling reuses the old identity")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: projectDirectory.path))
+    }
+
+    /// Every key the SDK's own reset leaves on disk is inside the directory the
+    /// purge removes — so the list cannot grow past what the purge covers.
+    func testEveryKeyThatSurvivesTheSDKResetLivesUnderThePurgedDirectory() throws {
+        let base = try makeTemporaryDirectory()
+        let transport = PostHogTelemetryTransport(apiKey: "phc_token",
+                                                  host: TelemetryCredentials.defaultHost,
+                                                  storageBase: base,
+                                                  bundleIdentifier: "com.example.tests")
+        let directory = transport.localStateDirectory
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+
+        XCTAssertFalse(PostHogLocalStore.survivesResetAndClose.isEmpty)
+        for key in PostHogLocalStore.survivesResetAndClose {
+            let file = directory.appendingPathComponent(key)
+            try Data("x".utf8).write(to: file)
+        }
+
+        XCTAssertTrue(PostHogLocalStore.purge(directory: directory))
+        for key in PostHogLocalStore.survivesResetAndClose {
+            XCTAssertFalse(
+                FileManager.default.fileExists(atPath: directory.appendingPathComponent(key).path),
+                "\(key) survived the opt-out purge")
+        }
+    }
+
+    func testPurgingAnAbsentDirectoryIsASuccess() throws {
+        let base = try makeTemporaryDirectory()
+        XCTAssertTrue(PostHogLocalStore.purge(directory: base.appendingPathComponent("nothing-here")),
+                      "nothing left to leak is the outcome either way")
     }
 
     /// The Sentry adapter can honestly promise local-cache removal (it owns the
@@ -202,6 +298,80 @@ final class InstrumentationPrivacyTests: XCTestCase {
         XCTAssertNil(DiagnosticsCredentials.dsn(from: [:]))
         XCTAssertNil(DiagnosticsCredentials.dsn(from: [DiagnosticsCredentials.infoPlistKey: ""]))
         XCTAssertNil(DiagnosticsCredentials.dsn(from: [DiagnosticsCredentials.infoPlistKey: "  "]))
+    }
+
+    // MARK: - A test or automation run may not reach the live projects
+    //
+    // Seen 2026-09-05: UI-test suites launch the REAL app with the REAL key, so
+    // every `xcodebuild test` relaunch wrote `app_opened_v1` into production
+    // analytics and a deliberate test crash could have written into production
+    // Sentry. Ingested test traffic is indistinguishable from user traffic and
+    // PostHog has no delete-by-property, so the fix has to be "never send it".
+
+    private func context(arguments: [String] = [],
+                         environment: [String: String] = [:],
+                         debug: Bool) -> InstrumentationContext {
+        InstrumentationContext(arguments: ["EconByte"] + arguments,
+                               environment: environment,
+                               isDebugBuild: debug)
+    }
+
+    /// This very process. If the suppression ever regresses, this assertion is
+    /// made by a run that would itself have been polluting the project.
+    func testThisTestProcessIsRecognisedAsATestRun() {
+        let live = InstrumentationContext.current
+        XCTAssertTrue(live.isUnitTestRun,
+                      "XCTestConfigurationFilePath must identify the unit-test host")
+        XCTAssertTrue(live.suppressesLiveTransports,
+                      "a unit-test run must never be allowed to configure a live transport")
+    }
+
+    func testAUnitTestRunResolvesNoCredentialsEvenWithRealOnesPresent() {
+        let testRun = context(environment: [InstrumentationContext.xcTestEnvironmentKey: "/tmp/x.xctestconfiguration"],
+                              debug: false)
+        XCTAssertNil(TelemetryCredentials.resolved("phc_real_key", in: testRun))
+        XCTAssertNil(DiagnosticsCredentials.resolved("https://k@o0.ingest.sentry.io/1", in: testRun))
+    }
+
+    func testAUITestLaunchResolvesNoCredentials() {
+        for argument in InstrumentationContext.automationArguments.sorted() {
+            let automation = context(arguments: [argument], debug: false)
+            XCTAssertTrue(automation.isAutomationRun, "\(argument) must mark the run as automation")
+            XCTAssertNil(TelemetryCredentials.resolved("phc_real_key", in: automation),
+                         "\(argument) must not reach the live analytics project")
+            XCTAssertNil(DiagnosticsCredentials.resolved("https://k@o0.ingest.sentry.io/1", in: automation),
+                         "\(argument) must not reach the live Sentry project")
+        }
+    }
+
+    func testAPlainDebugRunResolvesNoCredentials() {
+        let debugRun = context(debug: true)
+        XCTAssertTrue(debugRun.suppressesLiveTransports,
+                      "a developer's Simulator run is not a user and must not be counted as one")
+        XCTAssertNil(TelemetryCredentials.resolved("phc_real_key", in: debugRun))
+    }
+
+    /// The one deliberate way in — the ingestion proof, and nothing else.
+    func testTheExplicitAllowFlagLiftsSuppressionInEveryContext() {
+        let allowed = context(arguments: [InstrumentationContext.allowFlag, "-skipStudioIntro"],
+                              environment: [InstrumentationContext.xcTestEnvironmentKey: "/tmp/x"],
+                              debug: true)
+        XCTAssertFalse(allowed.suppressesLiveTransports)
+        XCTAssertEqual(TelemetryCredentials.resolved("phc_real_key", in: allowed), "phc_real_key")
+        XCTAssertEqual(DiagnosticsCredentials.resolved("dsn", in: allowed), "dsn")
+    }
+
+    /// The shipped path is untouched: no XCTest variable, no automation
+    /// argument, not a Debug build → the credentials resolve exactly as before.
+    func testAReleaseRunIsUnaffectedBySuppression() {
+        let release = context(debug: false)
+        XCTAssertFalse(release.isUnitTestRun)
+        XCTAssertFalse(release.isAutomationRun)
+        XCTAssertFalse(release.suppressesLiveTransports)
+        XCTAssertEqual(TelemetryCredentials.resolved("phc_real_key", in: release), "phc_real_key")
+        XCTAssertEqual(DiagnosticsCredentials.resolved("dsn", in: release), "dsn")
+        XCTAssertNil(TelemetryCredentials.resolved(nil, in: release),
+                     "suppression must not invent a credential where there is none")
     }
 
     // MARK: - Every reviewed switch is actually applied to the vendor object
@@ -278,6 +448,24 @@ final class InstrumentationPrivacyTests: XCTestCase {
                       "real code must survive the strip")
     }
 
+    /// The identity half of the same problem. Under `personProfiles = .never`,
+    /// posthog-ios 3.71.4 IGNORES `identify` outright (PostHogSDK.identify bails
+    /// at `requirePersonProcessing`), so an adapter that calls it has not chosen
+    /// the id — it has only made the app believe it did, while events are keyed
+    /// by the SDK's anonymous id and Settings shows something else entirely.
+    func testTheAdapterReadsTheIdBackInsteadOfCallingIdentify() throws {
+        let adapter = try adapterSource("PostHogTelemetryTransport.swift")
+        XCTAssertFalse(adapter.contains("PostHogSDK.shared.identify"),
+                       "identify is a no-op under personProfiles = .never — calling it only hides "
+                        + "which id is really on the wire")
+        XCTAssertTrue(adapter.contains("PostHogSDK.shared.getDistinctId()"),
+                      "the displayed id must be read back from the SDK, not assumed")
+        XCTAssertTrue(adapter.contains("PostHogSDK.shared.optOut()"),
+                      "the opt-out must reach the SDK, not just this app's queue")
+        XCTAssertTrue(adapter.contains("PostHogLocalStore.purge"),
+                      "reset() and close() leave the queue on disk — the opt-out must delete it")
+    }
+
     func testEveryDiagnosticsConfigurationFieldIsAppliedBySentryAdapter() throws {
         let adapter = try adapterSource("SentryDiagnosticsTransport.swift")
         for field in fieldNames(of: DiagnosticsConfiguration()) {
@@ -311,10 +499,114 @@ final class InstrumentationPrivacyTests: XCTestCase {
         XCTAssertFalse(diagnostics.enableAppLaunchProfiling)
         XCTAssertFalse(diagnostics.captureLogs)
         XCTAssertEqual(diagnostics.maxBreadcrumbs, 0)
+        // The three the SDK defaults to ON. A session envelope is a per-launch
+        // usage record, not a crash, and Settings + the App Store answers both
+        // say EconByte sends crash reports — so "crash-only" rests on this line.
+        XCTAssertFalse(diagnostics.enableAutoSessionTracking,
+                       "sentry-cocoa defaults sessions ON; a session is usage data, not a crash")
+        XCTAssertFalse(diagnostics.enableAppHangTracking)
+        XCTAssertFalse(diagnostics.enableWatchdogTerminationTracking)
+        XCTAssertEqual(diagnostics.tracesSampleRate, 0)
+        XCTAssertEqual(diagnostics.profilesSampleRate, 0)
+        XCTAssertFalse(diagnostics.attachScreenshot)
+        XCTAssertFalse(diagnostics.attachViewHierarchy)
         XCTAssertTrue(diagnostics.scrubServerSideIP,
                       "the one that is ON: Sentry must never store the client IP")
         XCTAssertFalse(diagnostics.sendDefaultPii,
                        "scrubServerSideIP is carried by sendDefaultPii=false, which serialises infer_ip=never")
+    }
+
+    // MARK: - The LIVE Sentry beforeSend, not a copy of it
+    //
+    // Until 1.1.2 `DiagnosticsFilter` was a detached model: the suite ran it over
+    // hand-built values while the real `beforeSend` did its own two-line strip,
+    // so the model could stay green while the shipped path did something else.
+    // `SentryDiagnosticsTransport.screen` IS the closure the SDK calls; these
+    // tests run it, substituting only the vendor envelope object.
+
+    /// Stands in for `SentryEvent`. `stripClearsUser` exists so a strip that
+    /// silently fails can be simulated — that is the case the post-condition in
+    /// `screen` is there to catch.
+    private final class FakeEnvelope: DiagnosticsEnvelope {
+        var scrubbableTags: [String: String]?
+        var carriesUserObject: Bool
+        var carriesBreadcrumbs: Bool
+        var carriesExtra: Bool
+        var stripCount = 0
+        var stripClearsUser = true
+        var stripClearsExtra = true
+
+        init(tags: [String: String]? = nil,
+             user: Bool = true,
+             breadcrumbs: Bool = false,
+             extra: Bool = false) {
+            scrubbableTags = tags
+            carriesUserObject = user
+            carriesBreadcrumbs = breadcrumbs
+            carriesExtra = extra
+        }
+
+        func stripIdentifyingFields() {
+            stripCount += 1
+            if stripClearsUser { carriesUserObject = false }
+            if stripClearsExtra { carriesExtra = false }
+            carriesBreadcrumbs = false
+        }
+    }
+
+    /// The normal path. sentry-cocoa 8.58.4 stamps its own installation id as
+    /// `event.user` BEFORE beforeSend runs (SentryClient.processEvent calls
+    /// setUserIdIfNoUserSet, then the callback), so an envelope arriving here
+    /// with a user object is the rule, not the exception — and it must be
+    /// stripped and SENT, not dropped. Dropping it would silently delete 100% of
+    /// EconByte's crash reports.
+    func testTheLiveScreenStripsTheSDKUserBreadcrumbsAndExtrasAndStillSends() {
+        let envelope = FakeEnvelope(tags: ["release": "1.1.2", "os_major": "18"],
+                                    user: true, breadcrumbs: true, extra: true)
+
+        let screened = SentryDiagnosticsTransport.screen(envelope)
+
+        XCTAssertNotNil(screened, "a crash carrying only the SDK's own user object must still be sent")
+        XCTAssertEqual(envelope.stripCount, 1)
+        XCTAssertFalse(envelope.carriesUserObject, "the SDK installation id never leaves")
+        XCTAssertFalse(envelope.carriesBreadcrumbs, "app breadcrumbs never leave")
+        XCTAssertFalse(envelope.carriesExtra, "free-form extras never leave")
+        XCTAssertEqual(envelope.scrubbableTags, ["release": "1.1.2", "os_major": "18"],
+                       "the six declared tags are the one thing the filter keeps")
+    }
+
+    /// The post-condition. If the strip ever stops working — a future SDK that
+    /// repopulates the user after the callback edits it — the envelope is
+    /// dropped rather than sent with an identity on it.
+    func testTheLiveScreenDropsAnEnvelopeWhoseUserSurvivesTheStrip() {
+        let envelope = FakeEnvelope(user: true)
+        envelope.stripClearsUser = false
+
+        XCTAssertNil(SentryDiagnosticsTransport.screen(envelope),
+                     "a user object that survives the strip means the strip is broken — drop it")
+    }
+
+    func testTheLiveScreenDropsAnEnvelopeWhoseExtrasSurviveTheStrip() {
+        let envelope = FakeEnvelope(user: true, extra: true)
+        envelope.stripClearsExtra = false
+
+        XCTAssertNil(SentryDiagnosticsTransport.screen(envelope),
+                     "an extras payload that survives the strip is an unfiltered free-text channel")
+    }
+
+    /// The live branch of the tag rule: a tag outside `DiagnosticsTag` drops the
+    /// whole envelope rather than shipping it.
+    func testTheLiveScreenDropsAnUndeclaredTag() {
+        let envelope = FakeEnvelope(tags: ["card_id": "inf-001", "release": "1.1.2"])
+
+        XCTAssertNil(SentryDiagnosticsTransport.screen(envelope),
+                     "a tag naming card content must never be sent, even attached to a crash")
+    }
+
+    func testTheLiveScreenLeavesNoEmptyTagDictionaryBehind() {
+        let envelope = FakeEnvelope(tags: [:])
+        XCTAssertNotNil(SentryDiagnosticsTransport.screen(envelope))
+        XCTAssertNil(envelope.scrubbableTags, "an empty tag map is cleared rather than sent as {}")
     }
 
     // MARK: - The Sentry beforeSend model drops what it says it drops
@@ -420,6 +712,47 @@ final class InstrumentationPrivacyTests: XCTestCase {
             XCTAssertNotNil(info[key],
                             "\(key) is missing from the built Info.plist — the xcconfig injection is broken")
         }
+    }
+
+    // MARK: - The binary is built from the SDKs that were reviewed
+    //
+    // Every privacy claim in this file is a claim about three specific vendor
+    // builds: posthog-ios 3.71.4, sentry-cocoa 8.58.4, GoogleMobileAds 12.14.0.
+    // A version range means the archive can contain a build nobody looked at —
+    // and GoogleMobileAds is the SDK carrying the app's only tracking
+    // declaration, so it is the worst one to leave floating.
+
+    func testEveryVendorSDKIsPinnedToAnExactVersion() throws {
+        let project = try String(
+            contentsOf: repoRoot().appendingPathComponent("EconByte.xcodeproj/project.pbxproj"),
+            encoding: .utf8)
+        for looseKind in ["upToNextMajorVersion", "upToNextMinorVersion", "branch", "revision"] {
+            XCTAssertFalse(project.contains(looseKind),
+                           "a \(looseKind) package requirement lets an unreviewed SDK build into "
+                            + "the archive — pin every dependency exactly")
+        }
+        XCTAssertEqual(project.components(separatedBy: "kind = exactVersion;").count - 1, 3,
+                       "all three vendor packages must be pinned exactly")
+    }
+
+    /// The resolved graph is committed, so a fresh clone and the machine that
+    /// archived the build resolve the same bytes.
+    func testPackageResolvedIsCommittedAndHoldsTheReviewedVersions() throws {
+        let url = repoRoot().appendingPathComponent(
+            "EconByte.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved")
+        let parsed = try JSONSerialization.jsonObject(with: try Data(contentsOf: url))
+        let pins = try XCTUnwrap((parsed as? [String: Any])?["pins"] as? [[String: Any]])
+
+        var versions: [String: String] = [:]
+        for pin in pins {
+            guard let identity = pin["identity"] as? String,
+                  let version = (pin["state"] as? [String: Any])?["version"] as? String else { continue }
+            versions[identity] = version
+        }
+
+        XCTAssertEqual(versions["posthog-ios"], "3.71.4")
+        XCTAssertEqual(versions["sentry-cocoa"], "8.58.4")
+        XCTAssertEqual(versions["swift-package-manager-google-mobile-ads"], "12.14.0")
     }
 
     // MARK: - Source helpers

@@ -3,16 +3,58 @@ import Foundation
 import Sentry
 #endif
 
+// MARK: - The envelope, as the live filter sees it
+//
+// `DiagnosticsFilter` is the reviewed model of what may leave. Until 1.1.2 it
+// was only ever run against a hand-built `DiagnosticEvent` in the suite, while
+// the real `beforeSend` did its own two-line strip — so the model could pass
+// every test while the live path did something else. This protocol is the join:
+// the closure the SDK calls runs `DiagnosticsFilter` over a real envelope, and
+// the suite runs the SAME closure over a stand-in. Only the vendor object is
+// substituted; the code under test is the code that ships.
+protocol DiagnosticsEnvelope: AnyObject {
+    /// Custom tags, the one field the filter is allowed to keep.
+    var scrubbableTags: [String: String]? { get set }
+    /// After `stripIdentifyingFields()` this must be false. It is checked, not
+    /// assumed — see `screen`.
+    var carriesUserObject: Bool { get }
+    /// Free-form app breadcrumbs and `extra`. Never sent.
+    var carriesBreadcrumbs: Bool { get }
+    var carriesExtra: Bool { get }
+    /// Remove the user object, the breadcrumbs and the extras.
+    func stripIdentifyingFields()
+}
+
+// `SentryEvent` is exposed to Swift as `Sentry.Event` (NS_SWIFT_NAME) in
+// sentry-cocoa 8.58.4; the ObjC name is what the SDK's own sources call it.
+#if canImport(Sentry)
+extension Sentry.Event: DiagnosticsEnvelope {
+    var scrubbableTags: [String: String]? {
+        get { tags }
+        set { tags = newValue }
+    }
+    var carriesUserObject: Bool { user != nil }
+    var carriesBreadcrumbs: Bool { !(breadcrumbs ?? []).isEmpty }
+    var carriesExtra: Bool { !(extra ?? [:]).isEmpty }
+    func stripIdentifyingFields() {
+        user = nil
+        breadcrumbs = nil
+        extra = nil
+    }
+}
+#endif
+
 // MARK: - Sentry adapter (the vendor surface behind DiagnosticsTransporting)
 //
 // The ONLY file in the app that imports Sentry. Crash-only. The policy that
 // decides whether diagnostics may run at all — the Release cache-removal
 // precondition, the DiagnosticsFilter — lives ABOVE this seam in
 // EconDiagnostics.swift. This adapter applies the reviewed crash-only options
-// and nothing else: no session replay, no tracing, no profiling, no logs, no
-// network/app breadcrumbs, no user object, no screenshots, no view hierarchy,
-// no server-side IP. Every field of DiagnosticsConfiguration is applied here;
-// InstrumentationPrivacyTests fails the build if one is not.
+// and nothing else: no sessions, no app-hang or watchdog reports, no session
+// replay, no tracing, no profiling, no logs, no network/app breadcrumbs, no user
+// object, no screenshots, no view hierarchy, no server-side IP. Every field of
+// DiagnosticsConfiguration is applied here; InstrumentationPrivacyTests fails
+// the build if one is not.
 //
 // FAIL-SOFT: only constructed when a non-nil DSN exists. If Sentry is not linked
 // (`!canImport`), every method is a no-op and `guaranteesLocalCacheRemoval` is
@@ -44,6 +86,43 @@ final class SentryDiagnosticsTransport: DiagnosticsTransporting {
         #endif
     }
 
+    // MARK: The live beforeSend
+    //
+    // Read the order carefully, because getting it wrong silently deletes crash
+    // reporting rather than breaking a build.
+    //
+    // sentry-cocoa 8.58.4 stamps its OWN installation id onto every event before
+    // any callback runs: `SentryClient.processEvent` calls
+    // `setUserIdIfNoUserSet:` (SentryClient.m, right after the scope is applied)
+    // and only then invokes `options.beforeSend`. So by the time this closure is
+    // reached, `event.user` is ALWAYS non-nil even though nothing in EconByte
+    // ever sets a user. Judging the envelope before stripping it would therefore
+    // drop 100% of crashes — the filter rejects on a user object by design.
+    //
+    // Hence: strip first, then judge what remains. The user check afterwards is a
+    // post-condition — it proves the strip worked rather than describing an error
+    // path — and the tag check is the live one: an app tag outside
+    // `DiagnosticsTag` drops the envelope instead of shipping it.
+
+    /// The closure `options.beforeSend` installs, factored out so the suite can
+    /// exercise the shipped code path directly. Returns `nil` to drop.
+    @discardableResult
+    static func screen<Envelope: DiagnosticsEnvelope>(_ event: Envelope) -> Envelope? {
+        event.stripIdentifyingFields()
+
+        let model = DiagnosticEvent(
+            tags: event.scrubbableTags ?? [:],
+            breadcrumbs: event.carriesBreadcrumbs ? ["present"] : [],
+            userID: event.carriesUserObject ? "present" : nil,
+            attachments: event.carriesExtra ? ["extra"] : [],
+            serverIP: nil
+        )
+
+        guard case let .send(scrubbed) = DiagnosticsFilter.beforeSend(model) else { return nil }
+        event.scrubbableTags = scrubbed.tags.isEmpty ? nil : scrubbed.tags
+        return event
+    }
+
     func start(dsn: String, configuration: DiagnosticsConfiguration) {
         guard !isStarted else { return }
         #if canImport(Sentry)
@@ -65,12 +144,17 @@ final class SentryDiagnosticsTransport: DiagnosticsTransporting {
             options.attachScreenshot = configuration.attachScreenshot
             options.attachViewHierarchy = configuration.attachViewHierarchy
 
+            // Sessions — off. The SDK default is ON, and a session envelope is
+            // not a crash; leaving this at its default is what made the previous
+            // build send per-launch usage to a project the copy calls crash-only.
+            options.enableAutoSessionTracking = configuration.enableAutoSessionTracking
+
             // Performance / profiling — off.
             options.tracesSampleRate = NSNumber(value: configuration.tracesSampleRate)
             options.enableAutoPerformanceTracing = configuration.enableAutoPerformanceTracing
             options.enableUserInteractionTracing = configuration.enableUserInteractionTracing
-            options.enableAppHangTracking = false
-            options.enableWatchdogTerminationTracking = false
+            options.enableAppHangTracking = configuration.enableAppHangTracking
+            options.enableWatchdogTerminationTracking = configuration.enableWatchdogTerminationTracking
             // `configureProfiling` is 8.58's live profiling switch and is left at
             // its default of nil — nil means no profiler is ever constructed.
             // `profilesSampleRate` and `enableAppLaunchProfiling` are deprecated
@@ -106,14 +190,17 @@ final class SentryDiagnosticsTransport: DiagnosticsTransporting {
             options.enableCrashHandler = configuration.enableCrashHandler
             options.attachStacktrace = configuration.attachStacktrace
 
-            // Defence in depth at the SDK boundary: strip every breadcrumb and
-            // drop the user object before anything is sent. This mirrors
-            // DiagnosticsFilter.beforeSend, which is unit-tested on our own model.
+            // Attachments: the two the SDK can produce on its own are already
+            // disabled above, and these veto them a second time at the moment of
+            // capture. An attachment is the one thing that could carry a picture
+            // of a card, so it gets both belts.
+            options.beforeCaptureScreenshot = { _ in false }
+            options.beforeCaptureViewHierarchy = { _ in false }
+
+            // Defence in depth at the SDK boundary.
             options.beforeBreadcrumb = { _ in nil }
             options.beforeSend = { event in
-                event.user = nil
-                event.breadcrumbs = nil
-                return event
+                SentryDiagnosticsTransport.screen(event)
             }
         }
         #endif

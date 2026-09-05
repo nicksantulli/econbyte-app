@@ -11,9 +11,13 @@ options:
 packages:
   # AdMob interstitials (see EconByte/Services/AdManager.swift). DEBUG uses
   # Google's TEST unit; RELEASE uses the Owner-provided unit.
+  # Pinned EXACTLY, like the other two: a `majorVersion` range let any 12.x
+  # resolve, so the ad SDK that shipped could differ from the one that was
+  # reviewed — and this is the SDK carrying the app's only tracking declaration.
+  # 12.14.0 is the reviewed version; Package.resolved is committed beside it.
   GoogleMobileAds:
     url: https://github.com/googleads/swift-package-manager-google-mobile-ads
-    majorVersion: 12.0.0
+    exactVersion: 12.14.0
   # Product analytics. The vendor SDK is touched only by
   # EconByte/Services/PostHogTelemetryTransport.swift, behind the
   # TelemetryTransporting seam. It is inert unless Config/Secrets.xcconfig

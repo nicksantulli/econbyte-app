@@ -2,8 +2,10 @@ import SwiftUI
 import StoreKit
 
 /// Paywall shown when a free user taps a locked topic. Sells the
-/// `com.nsantulli.econbyte.unlockall` non-consumable ($0.99). Price is read
-/// from StoreKit (`product.displayPrice`) — never hardcoded — per DUD-186.
+/// `com.nsantulli.econbyte.unlockall` non-consumable. The price is read from
+/// StoreKit (`product.displayPrice`) and is never hardcoded — per DUD-186 — so
+/// when StoreKit has not supplied one the button says "Unlock All" with no
+/// amount at all and is disabled.
 struct PaywallView: View {
     /// Which surface sent the user here. A closed vocabulary — never the topic
     /// that was locked.
@@ -23,8 +25,13 @@ struct PaywallView: View {
         return topics.filter { !ContentStore.shared.isTopicFree($0.id) }.count
     }
 
+    /// Only live when StoreKit has actually handed us a price to charge — see
+    /// `PurchasePresentation`. `productsReady` alone is not enough: the set can
+    /// load without the unlock product in it.
     private var canBuy: Bool {
-        store.productsReady && !working
+        PurchasePresentation.canPurchase(displayPrice: product?.displayPrice,
+                                         isWorking: working,
+                                         isLoading: store.isLoadingProducts)
     }
 
     var body: some View {
@@ -88,7 +95,8 @@ struct PaywallView: View {
                                 if working {
                                     ProgressView().tint(Econ.ink)
                                 } else {
-                                    Text("Unlock All — \(product?.displayPrice ?? "$0.99")")
+                                    Text(product.map { "Unlock All — \($0.displayPrice)" }
+                                            ?? "Unlock All")
                                 }
                             }
                             .buttonStyle(PrimaryButton())

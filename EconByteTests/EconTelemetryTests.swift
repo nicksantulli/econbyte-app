@@ -30,32 +30,50 @@ final class EconTelemetryTests: XCTestCase {
 
     /// Records every transport-facing call so a test can prove the analytics SDK
     /// was never started and no batch was ever sent.
+    ///
+    /// It also stands in for the vendor SDK's *identity*: `distinctID` is the id
+    /// the transport would stamp on a batch, and teardown rotates it — which is
+    /// what the real adapter's opt-out purge causes by deleting the SDK's
+    /// `posthog.anonymousId`. That lets a test assert the thing the previous
+    /// design got wrong: that the id Settings shows is the id on the payload.
     private final class SpyTelemetryTransport: TelemetryTransporting {
         var startCount = 0
         var stopCount = 0
-        var startedIdentity: String?
         var lastConfiguration: TelemetryConfiguration?
         var sentBatches: [[TelemetryEvent]] = []
+        /// The id stamped on each batch, in order — captured at send time.
+        var identitiesOnSentBatches: [String?] = []
         /// Set false to simulate an offline flush.
         var sendSucceeds = true
 
+        private var identityQueue: [String]
+        private var currentIdentity: String?
+
         private(set) var isStarted = false
 
-        func start(apiKey: String, configuration: TelemetryConfiguration, distinctID: String) {
+        init(identities: [String] = ["01a06e5a-sdk-anonymous-id"]) {
+            identityQueue = identities
+        }
+
+        var distinctID: String? { isStarted ? currentIdentity : nil }
+
+        func start(apiKey: String, configuration: TelemetryConfiguration) {
             startCount += 1
             isStarted = true
-            startedIdentity = distinctID
+            currentIdentity = identityQueue.isEmpty ? nil : identityQueue.removeFirst()
             lastConfiguration = configuration
         }
 
         func send(_ events: [TelemetryEvent]) async -> Bool {
             sentBatches.append(events)
+            identitiesOnSentBatches.append(distinctID)
             return sendSucceeds
         }
 
         func stopAndClearLocalState() {
             stopCount += 1
             isStarted = false
+            currentIdentity = nil
         }
 
         var sentEvents: [TelemetryEvent] { sentBatches.flatMap { $0 } }
@@ -79,16 +97,8 @@ final class EconTelemetryTests: XCTestCase {
 
     private func makeTelemetry(transport: SpyTelemetryTransport,
                                apiKey: String? = "phc_test_key_not_a_real_project",
-                               now: @escaping () -> Date = Date.init,
-                               identities: [String] = []) -> EconTelemetry {
-        var remaining = identities
-        return EconTelemetry(
-            transport: transport,
-            apiKey: apiKey,
-            defaults: defaults,
-            now: now,
-            identityFactory: { remaining.isEmpty ? UUID().uuidString : remaining.removeFirst() }
-        )
+                               now: @escaping () -> Date = Date.init) -> EconTelemetry {
+        EconTelemetry(transport: transport, apiKey: apiKey, defaults: defaults, now: now)
     }
 
     // MARK: - Default-on, opt-out, and identity
@@ -96,20 +106,64 @@ final class EconTelemetryTests: XCTestCase {
     /// A fresh install with a configured project sends from the first launch;
     /// the Settings switch is the way out, not the way in.
     func testAnalyticsIsOnByDefaultOnAFreshInstall() async {
-        let spy = SpyTelemetryTransport()
-        let telemetry = makeTelemetry(transport: spy, identities: ["identity-one"])
+        let spy = SpyTelemetryTransport(identities: ["identity-one"])
+        let telemetry = makeTelemetry(transport: spy)
 
         XCTAssertTrue(telemetry.isAnalyticsEnabled,
                       "analytics ship on; the user opts out rather than in")
         XCTAssertEqual(telemetry.analyticsIdentity, "identity-one")
         XCTAssertEqual(spy.startCount, 1, "the transport starts once, at construction")
-        XCTAssertEqual(spy.startedIdentity, "identity-one",
-                       "the distinct id is the app-scoped random UUID, never a device id")
 
         telemetry.capture(TelemetryEvent("app_opened_v1", ["app_version": .string("1.1.2 (9)")]))
         await telemetry.flush()
 
         XCTAssertEqual(spy.sentEvents.map(\.name), ["app_opened_v1"])
+    }
+
+    // MARK: - The id Settings shows is the id on the payload
+    //
+    // The defect this replaces: the app minted its own UUID, handed it to
+    // `identify`, showed it in Settings and promised deletion by it — while
+    // posthog-ios ignores `identify` under `personProfiles = .never` and keyed
+    // every event by its own anonymous id. A user quoting the displayed id would
+    // have matched nothing in the project.
+
+    func testTheDisplayedIdIsTheIdTheTransportStampsOnTheEvents() async {
+        let spy = SpyTelemetryTransport(identities: ["01a06e5a-sdk-anonymous-id"])
+        let telemetry = makeTelemetry(transport: spy)
+
+        telemetry.capture(TelemetryEvent("app_opened_v1", ["app_version": .string("1.1.2 (9)")]))
+        await telemetry.flush()
+
+        XCTAssertEqual(spy.identitiesOnSentBatches, ["01a06e5a-sdk-anonymous-id"],
+                       "sanity: the spy stamped the id it reports")
+        XCTAssertEqual(telemetry.analyticsIdentity, spy.identitiesOnSentBatches.first ?? nil,
+                       "Settings must show the id the events were actually sent under, or a "
+                        + "deletion request quoting it matches nothing")
+    }
+
+    /// The app mints nothing of its own any more, so there is no second id to
+    /// drift from the one on the wire — and nothing identity-shaped is left in
+    /// UserDefaults for a future change to start displaying again.
+    func testTheAppStoresNoIdentityOfItsOwn() {
+        let telemetry = makeTelemetry(transport: SpyTelemetryTransport())
+        XCTAssertNotNil(telemetry.analyticsIdentity)
+
+        XCTAssertNil(defaults.string(forKey: "ebAnalyticsIdentity"),
+                     "the app-minted identity is gone; the SDK owns the id")
+        let identityish = defaults.dictionaryRepresentation().keys
+            .filter { $0.lowercased().contains("identity") }
+        XCTAssertTrue(identityish.isEmpty, "unexpected identity keys persisted: \(identityish)")
+    }
+
+    /// A transport that cannot answer must produce "no id", never a placeholder
+    /// the user could quote. Settings renders this as "not available".
+    func testAnIdlessTransportShowsNoIdentityRatherThanAnInventedOne() {
+        let spy = SpyTelemetryTransport(identities: [])
+        let telemetry = makeTelemetry(transport: spy)
+
+        XCTAssertTrue(telemetry.isAnalyticsEnabled)
+        XCTAssertNil(telemetry.analyticsIdentity)
     }
 
     /// The opt-out has to be immediate *and* durable: no further event may be
@@ -141,14 +195,20 @@ final class EconTelemetryTests: XCTestCase {
     }
 
     /// And back on again — with a new identity, so the two sides of an opt-out
-    /// cannot be stitched together.
+    /// cannot be stitched together. The rotation is real rather than cosmetic:
+    /// the adapter's opt-out deletes the SDK's own `posthog.anonymousId`, which
+    /// the spy models by dropping its id on teardown.
     func testOptingBackInResumesSendingWithAFreshIdentity() async {
-        let telemetry = makeTelemetry(transport: SpyTelemetryTransport(),
-                                      identities: ["identity-one", "identity-two"])
+        let spy = SpyTelemetryTransport(identities: ["identity-one", "identity-two"])
+        let telemetry = makeTelemetry(transport: spy)
+        XCTAssertEqual(telemetry.analyticsIdentity, "identity-one")
+
         telemetry.setAnalyticsConsent(false)
+        XCTAssertNil(telemetry.analyticsIdentity, "an opted-out app shows no id at all")
+
         telemetry.setAnalyticsConsent(true)
         XCTAssertEqual(telemetry.analyticsIdentity, "identity-two",
-                       "re-enabling mints a new id rather than resurrecting the old one")
+                       "re-enabling picks up a new id rather than resurrecting the old one")
 
         let secondRun = SpyTelemetryTransport()
         let relaunched = makeTelemetry(transport: secondRun)
@@ -177,14 +237,15 @@ final class EconTelemetryTests: XCTestCase {
         XCTAssertEqual(spy.sentBatches.count, 0)
     }
 
-    /// Constructing twice over the same defaults must not mint a second id.
-    func testTheIdentityIsStableAcrossLaunches() {
-        let first = makeTelemetry(transport: SpyTelemetryTransport(),
-                                  identities: ["identity-one", "identity-two"])
-        let stored = first.analyticsIdentity
-        let second = makeTelemetry(transport: SpyTelemetryTransport(),
-                                   identities: ["identity-three"])
-        XCTAssertEqual(second.analyticsIdentity, stored)
+    /// Relaunching does not change the id, because the id is the SDK's and the
+    /// SDK's storage survives a relaunch. The app contributes nothing to it.
+    func testTheIdentityFollowsTheTransportAcrossLaunches() {
+        let first = makeTelemetry(transport: SpyTelemetryTransport(identities: ["sdk-anon-id"]))
+        XCTAssertEqual(first.analyticsIdentity, "sdk-anon-id")
+
+        let second = makeTelemetry(transport: SpyTelemetryTransport(identities: ["sdk-anon-id"]))
+        XCTAssertEqual(second.analyticsIdentity, "sdk-anon-id",
+                       "a relaunch reads the same id back out of the SDK")
     }
 
     // MARK: - The queue is bounded, expiring, and single-flight
@@ -478,6 +539,57 @@ final class EconTelemetryTests: XCTestCase {
         XCTAssertFalse(diagnostics.isDiagnosticsEnabled)
         XCTAssertEqual(spy.clearCount, 1, "the local envelope cache is deleted before teardown")
         XCTAssertEqual(spy.closeCount, 1)
+    }
+
+    // MARK: - Prices come from StoreKit or they do not appear
+    //
+    // Every purchase control used to fall back to a literal "$0.99" when the
+    // product had not loaded. That is wrong in every non-US storefront, wrong the
+    // moment the tier changes, and worst of all it was shown on a live buy button
+    // that the user could tap before there was anything to charge.
+
+    func testAMissingPriceIsNeverRenderedAsACurrencyAmount() {
+        XCTAssertEqual(PurchasePresentation.priceText(nil), PurchasePresentation.unavailablePrice)
+        XCTAssertEqual(PurchasePresentation.priceText(""), PurchasePresentation.unavailablePrice)
+        XCTAssertFalse(PurchasePresentation.unavailablePrice.contains("0.99"),
+                       "the placeholder must be impossible to read as a price")
+        XCTAssertFalse(PurchasePresentation.unavailablePrice.contains("$"))
+    }
+
+    /// A non-US storefront: whatever StoreKit formatted is what is shown, with
+    /// no reformatting and no currency assumption of our own.
+    func testAStoreKitFormattedPriceIsShownVerbatim() {
+        XCTAssertEqual(PurchasePresentation.priceText("0,99 €"), "0,99 €")
+        XCTAssertEqual(PurchasePresentation.priceText("￥160"), "￥160")
+        XCTAssertEqual(PurchasePresentation.priceText("$0.99"), "$0.99")
+    }
+
+    func testABuyControlIsDisabledUntilThereIsARealPriceToCharge() {
+        XCTAssertFalse(PurchasePresentation.canPurchase(displayPrice: nil,
+                                                        isWorking: false, isLoading: false),
+                       "an unavailable product must not present a live buy button")
+        XCTAssertFalse(PurchasePresentation.canPurchase(displayPrice: nil,
+                                                        isWorking: false, isLoading: true))
+        XCTAssertFalse(PurchasePresentation.canPurchase(displayPrice: "$0.99",
+                                                        isWorking: false, isLoading: true),
+                       "still loading — the price on screen may be about to change")
+        XCTAssertFalse(PurchasePresentation.canPurchase(displayPrice: "$0.99",
+                                                        isWorking: true, isLoading: false),
+                       "a purchase already in flight blocks a second tap")
+        XCTAssertTrue(PurchasePresentation.canPurchase(displayPrice: "0,99 €",
+                                                       isWorking: false, isLoading: false))
+    }
+
+    /// No view may reintroduce a hardcoded price. The scan reads code only, so a
+    /// price mentioned in a comment or a product identifier does not count.
+    func testNoViewFallsBackToAHardcodedPrice() throws {
+        for source in try appSourceFiles() where source.pathComponents.contains("Views") {
+            let code = InstrumentationPrivacyTests.strippingComments(
+                try String(contentsOf: source, encoding: .utf8))
+            XCTAssertFalse(code.contains("$0.99"),
+                           "\(source.lastPathComponent) hardcodes a price — use "
+                            + "PurchasePresentation.priceText(product?.displayPrice)")
+        }
     }
 
     // MARK: - Source helpers
