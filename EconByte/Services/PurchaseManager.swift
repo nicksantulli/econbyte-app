@@ -19,6 +19,15 @@ final class PurchaseManager: ObservableObject {
     enum ProductID: String, CaseIterable {
         case unlockAll = "com.nsantulli.econbyte.unlockall"
         case removeAds  = "com.nsantulli.econbyte.removeads"
+
+        /// The bucketed family name analytics is allowed to see. The product id
+        /// itself is a prohibited property — a StoreKit identifier never leaves.
+        var family: EBProductFamily {
+            switch self {
+            case .unlockAll: return .unlockAll
+            case .removeAds: return .removeAds
+            }
+        }
     }
 
     enum PurchaseResult: Equatable {
@@ -72,23 +81,34 @@ final class PurchaseManager: ObservableObject {
             if loaded.isEmpty {
                 productsLoadError = "Store products are not available right now. Check your connection and try again."
                 NSLog("[PurchaseManager] product load returned empty set")
+                EconGrowth.productsLoaded(outcome: .unavailable)
             } else {
                 NSLog("[PurchaseManager] loaded \(loaded.count) product(s): \(loaded.map(\.id).joined(separator: ", "))")
+                EconGrowth.productsLoaded(outcome: .loaded)
             }
         } catch {
             products = []
             productsLoadError = error.localizedDescription
             NSLog("[PurchaseManager] product load failed: \(error)")
+            // Outcome only — never `error.localizedDescription`, which is a
+            // third-party string and a prohibited property.
+            EconGrowth.productsLoaded(outcome: .failed)
         }
     }
 
     // MARK: - Purchase
 
+    /// `entryPoint` is where the user tapped buy, so the funnel can be read
+    /// without ever learning what they bought beyond its family. Emission lives
+    /// here rather than at the two call sites so a future third buy button
+    /// cannot ship unmeasured.
     @discardableResult
-    func purchase(_ id: ProductID) async -> PurchaseResult {
+    func purchase(_ id: ProductID, from entryPoint: EBEntryPoint) async -> PurchaseResult {
+        EconGrowth.purchaseStarted(family: id.family, entryPoint: entryPoint)
         if products.isEmpty { await loadProducts() }
         guard let product = product(for: id) else {
             NSLog("[PurchaseManager] no product for \(id.rawValue)")
+            EconGrowth.purchaseFinished(family: id.family, outcome: .unavailable)
             return .productUnavailable
         }
         do {
@@ -98,32 +118,42 @@ final class PurchaseManager: ObservableObject {
                 let transaction = try checkVerified(verification)
                 await updatePurchasedProducts()
                 await transaction.finish()
+                EconGrowth.purchaseFinished(family: id.family, outcome: .completed)
                 return .success
             case .userCancelled:
+                EconGrowth.purchaseFinished(family: id.family, outcome: .cancelled)
                 return .cancelled
             case .pending:
+                EconGrowth.purchaseFinished(family: id.family, outcome: .pending)
                 return .pending
             @unknown default:
+                EconGrowth.purchaseFinished(family: id.family, outcome: .failed)
                 return .failed("Purchase could not be completed.")
             }
         } catch {
             NSLog("[PurchaseManager] purchase failed: \(error)")
+            EconGrowth.purchaseFinished(family: id.family, outcome: .failed)
             return .failed(error.localizedDescription)
         }
     }
 
     // MARK: - Restore
 
-    func restorePurchases() async -> PurchaseResult {
+    /// The three restore outcomes are distinguished HERE, where the branch is
+    /// known, rather than by matching on a user-facing message at the call site.
+    func restorePurchases(from entryPoint: EBEntryPoint) async -> PurchaseResult {
         do {
             try await AppStore.sync()
             await updatePurchasedProducts()
             if isUnlockAllPurchased || isRemoveAdsPurchased {
+                EconGrowth.restoreFinished(outcome: .completed, entryPoint: entryPoint)
                 return .success
             }
+            EconGrowth.restoreFinished(outcome: .nothingToRestore, entryPoint: entryPoint)
             return .failed("No previous purchases were found for this Apple ID.")
         } catch {
             NSLog("[PurchaseManager] restore failed: \(error)")
+            EconGrowth.restoreFinished(outcome: .failed, entryPoint: entryPoint)
             return .failed(error.localizedDescription)
         }
     }

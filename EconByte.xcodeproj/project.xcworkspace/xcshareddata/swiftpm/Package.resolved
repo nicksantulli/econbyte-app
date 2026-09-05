@@ -1,6 +1,24 @@
 {
-  "originHash" : "a0e7c8e02f923b679180e347f7fdac90c95fc27903ff96ecee91f17a7815ce78",
+  "originHash" : "c17d8ad104080aee8016befe5dd3e05f09a9c15771d34dd77d76772f34f44b98",
   "pins" : [
+    {
+      "identity" : "posthog-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/PostHog/posthog-ios",
+      "state" : {
+        "revision" : "8551035fe72d8d6605cb077dd853867dc04283ec",
+        "version" : "3.71.4"
+      }
+    },
+    {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa",
+      "state" : {
+        "revision" : "f196cbb98e0388381d57908f2f5a9bdc385cde68",
+        "version" : "8.58.4"
+      }
+    },
     {
       "identity" : "swift-package-manager-google-mobile-ads",
       "kind" : "remoteSourceControl",

@@ -141,10 +141,41 @@ final class EconByteUITests: XCTestCase {
         XCTAssertTrue(gear.waitForExistence(timeout: 5), "Settings gear should render in the nav bar")
         gear.tap()
 
-        // Privacy Policy link (§5.1).
+        // The privacy section, in whichever of its two honest shapes this build
+        // has (1.1.2). The PostHog key and Sentry DSN come from a gitignored
+        // xcconfig, so the same source tree builds an unconfigured app (a fresh
+        // checkout, CI without secrets) and a configured one (the shipping
+        // archive) — and the assertion is that the screen matches the app:
+        //
+        //  * unconfigured → says nothing is collected, and offers no toggle;
+        //  * configured   → offers the analytics opt-out, already ON, and does
+        //    not claim nothing is collected. There is deliberately no
+        //    crash-report toggle in either shape — crash reporting has no
+        //    consent gate, and the footer says so instead.
+        let noCollection = app.descendants(matching: .any)["privacyCollectionDisabled"]
+        let analyticsToggle = app.switches["analyticsConsentToggle"]
+        XCTAssertTrue(noCollection.waitForExistence(timeout: 4)
+                        || analyticsToggle.waitForExistence(timeout: 4),
+                      "the privacy section must either say nothing is collected or offer the opt-out")
+        if noCollection.exists {
+            XCTAssertFalse(analyticsToggle.exists,
+                           "no analytics toggle may be offered when there is nowhere to send")
+        } else {
+            XCTAssertEqual(analyticsToggle.value as? String, "1",
+                           "analytics ship ON; the toggle is the opt-out, not an opt-in")
+        }
+        XCTAssertFalse(app.switches["diagnosticsConsentToggle"].exists,
+                       "crash reporting has no consent gate — there is no toggle to offer")
+
+        // Privacy Policy link (§5.1). It sits in the About section at the foot
+        // of the list, below the privacy section added in 1.1.2, so it may need
+        // scrolling into view before SwiftUI's List has rendered the row.
         let privacy = app.buttons.containing(
-            NSPredicate(format: "label CONTAINS 'Privacy'")
+            NSPredicate(format: "label CONTAINS 'Privacy Policy'")
         ).firstMatch
+        for _ in 0..<4 where !privacy.exists {
+            app.swipeUp()
+        }
         XCTAssertTrue(privacy.waitForExistence(timeout: 4),
                       "Privacy Policy link should appear in Settings")
         XCTAssertTrue(privacy.isEnabled,

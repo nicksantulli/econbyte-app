@@ -15,6 +15,9 @@ struct HomeView: View {
     @State private var showBookmarks = false
     @State private var showPaywall = false
     @State private var pendingPaywallAfterSettings = false
+    /// Which surface sent the user to the paywall, so `paywall_viewed_v1` can
+    /// say where it came from. Never anything about the topic they tapped.
+    @State private var paywallEntryPoint: EBEntryPoint = .topicGrid
     @AppStorage("seenOnboarding") private var seenOnboarding = false
 
     private let dailyGoal = 3
@@ -25,6 +28,8 @@ struct HomeView: View {
         let id = UUID()
         let cards: [EconCard]
         let title: String
+        let mode: EBMode
+        let entryPoint: EBEntryPoint
     }
 
     var body: some View {
@@ -63,10 +68,14 @@ struct HomeView: View {
             .onChange(of: showSettings) { showing in
                 guard !showing, pendingPaywallAfterSettings else { return }
                 pendingPaywallAfterSettings = false
+                paywallEntryPoint = .settings
                 showPaywall = true
             }
             .fullScreenCover(item: $cardModeSession) { session in
-                CardModeView(cards: session.cards, title: session.title)
+                CardModeView(cards: session.cards,
+                             title: session.title,
+                             mode: session.mode,
+                             entryPoint: session.entryPoint)
                     .environmentObject(content)
                     .environmentObject(streak)
                     .environmentObject(store)
@@ -79,7 +88,7 @@ struct HomeView: View {
                     .environmentObject(AdManager.shared)
             }
             .fullScreenCover(isPresented: $showPaywall) {
-                PaywallView().environmentObject(store)
+                PaywallView(entryPoint: paywallEntryPoint).environmentObject(store)
             }
         }
         .tint(Econ.sky)
@@ -93,8 +102,9 @@ struct HomeView: View {
         }
     }
 
-    private func startTodaysSet(_ daily: [EconCard]) {
-        cardModeSession = CardModeSession(cards: daily, title: "Today's Set")
+    private func startTodaysSet(_ daily: [EconCard], from entryPoint: EBEntryPoint) {
+        cardModeSession = CardModeSession(cards: daily, title: "Today's Set",
+                                          mode: .daily, entryPoint: entryPoint)
     }
 
     /// Test-only hook: exposes card inf-001's full `exampleBody` as the grocery
@@ -113,7 +123,7 @@ struct HomeView: View {
         if let g = content.groceryHighlight {
             Button {
                 guard !daily.isEmpty else { return }
-                startTodaysSet(daily)
+                startTodaysSet(daily, from: .homeHighlight)
             } label: {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(g.line)
@@ -163,10 +173,10 @@ struct HomeView: View {
             groceryLine(daily)
             Group {
                 if completed {
-                    Button("Review →") { startTodaysSet(daily) }
+                    Button("Review →") { startTodaysSet(daily, from: .home) }
                         .buttonStyle(SecondaryButton())
                 } else {
-                    Button("Start →") { startTodaysSet(daily) }
+                    Button("Start →") { startTodaysSet(daily, from: .home) }
                         .buttonStyle(PrimaryButton())
                 }
             }
@@ -205,11 +215,17 @@ struct HomeView: View {
                     let locked = !content.isTopicFree(topic.id) && !store.isUnlockAllPurchased
                     Button {
                         if locked {
+                            // Which topic was tapped is deliberately not sent:
+                            // `topic_id` is a prohibited property.
+                            EconGrowth.lockedTopicTapped(entryPoint: .topicGrid)
+                            paywallEntryPoint = .topicGrid
                             showPaywall = true
                         } else {
                             cardModeSession = CardModeSession(
                                 cards: content.cards(for: topic.id, unlockedAll: store.isUnlockAllPurchased),
-                                title: topic.name)
+                                title: topic.name,
+                                mode: .topic,
+                                entryPoint: .topicGrid)
                         }
                     } label: {
                         TopicTile(topic: topic, locked: locked)

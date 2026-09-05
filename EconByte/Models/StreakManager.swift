@@ -64,12 +64,15 @@ final class StreakManager: ObservableObject {
         UserDefaults.standard.set(currentStreak, forKey: streakKey)
         let iso = ISO8601DateFormatter().string(from: Date())
         UserDefaults.standard.set(iso, forKey: lastDateKey)
+        // Bucketed streak length only — never the exact day count, never a date.
+        EconGrowth.streakDayCredited(streak: currentStreak)
     }
 
     func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
-            if granted {
-                Task { @MainActor in StreakManager.shared.scheduleStreakReminder() }
+            Task { @MainActor in
+                EconGrowth.notificationPermissionResult(granted: granted)
+                if granted { StreakManager.shared.scheduleStreakReminder() }
             }
         }
     }

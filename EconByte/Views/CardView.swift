@@ -2,6 +2,10 @@ import SwiftUI
 
 struct CardView: View {
     let card: EconCard
+    /// Which deck the card is being read in. Passed down so a flip can be
+    /// attributed to daily / topic / bookmarks without the card itself being
+    /// identified — `card_id` and `topic_id` are prohibited properties.
+    var mode: EBMode = .daily
     @EnvironmentObject private var content: ContentStore
     @State private var isFlipped = false
     @State private var rotation: Double = 0
@@ -24,7 +28,10 @@ struct CardView: View {
             rotation = isFlipped ? 0 : 180
         }
         isFlipped.toggle()
-        if isFlipped { content.markFlipped(card.id) }
+        if isFlipped {
+            content.markFlipped(card.id)
+            EconGrowth.cardFlipped(mode: mode, difficulty: card.difficulty)
+        }
     }
 
     private var frontFace: some View {
@@ -120,6 +127,10 @@ struct CardView: View {
     private var bookmarkButton: some View {
         Button {
             content.toggleBookmark(card.id)
+            // Direction of the change plus a bucketed total — never which card,
+            // and never the bookmark list.
+            EconGrowth.bookmarkChanged(action: content.isBookmarked(card.id) ? .added : .removed,
+                                       bookmarkCount: content.bookmarkedCards.count)
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         } label: {
             Image(systemName: content.isBookmarked(card.id) ? "bookmark.fill" : "bookmark")

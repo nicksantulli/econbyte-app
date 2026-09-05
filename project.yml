@@ -14,10 +14,32 @@ packages:
   GoogleMobileAds:
     url: https://github.com/googleads/swift-package-manager-google-mobile-ads
     majorVersion: 12.0.0
+  # Product analytics. The vendor SDK is touched only by
+  # EconByte/Services/PostHogTelemetryTransport.swift, behind the
+  # TelemetryTransporting seam. It is inert unless Config/Secrets.xcconfig
+  # supplies POSTHOG_API_KEY (surfaced as Info.plist EBPostHogAPIKey) — a nil key
+  # means the SDK is never initialized. With a key it is ON by default from
+  # 1.1.2, with an opt-out in Settings.
+  # Project "econbyte" (NEVER reuse Table Talk's or VibeRater's PostHog project).
+  PostHog:
+    url: https://github.com/PostHog/posthog-ios
+    exactVersion: 3.71.4
+  # Crash diagnostics only. Touched only by
+  # EconByte/Services/SentryDiagnosticsTransport.swift, behind the
+  # DiagnosticsTransporting seam. Inert unless Config/Secrets.xcconfig supplies
+  # SENTRY_DSN (Info.plist EBSentryDSN); with a DSN it is ON from 1.1.2 and has
+  # no consent gate. No session replay, no tracing, crash-only. Project "econbyte".
+  Sentry:
+    url: https://github.com/getsentry/sentry-cocoa
+    exactVersion: 8.58.4
 settings:
   base:
-    MARKETING_VERSION: "1.1.1"
-    CURRENT_PROJECT_VERSION: "8"
+    # 1.1.2 / build 9. Build 8 is the 1.1.1 binary and the highest build App
+    # Store Connect holds for this app, so 9 is the first free number. Keep these
+    # in step with EconByte.xcodeproj/project.pbxproj — the archived Info.plist
+    # is what App Store Connect reads, and this file only reproduces the project.
+    MARKETING_VERSION: "1.1.2"
+    CURRENT_PROJECT_VERSION: "9"
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO
@@ -25,10 +47,17 @@ targets:
   EconByte:
     type: application
     platform: iOS
+    # Committed base xcconfig with EMPTY instrumentation defaults; it optionally
+    # includes the gitignored Config/Secrets.xcconfig. Never commit real values.
+    configFiles:
+      Debug: Config/Instrumentation.xcconfig
+      Release: Config/Instrumentation.xcconfig
     sources:
       - path: EconByte
     dependencies:
       - package: GoogleMobileAds
+      - package: PostHog
+      - package: Sentry
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.nsantulli.econbyte
@@ -38,6 +67,21 @@ targets:
         TARGETED_DEVICE_FAMILY: "1" # iPhone only
         SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
         ENABLE_USER_SCRIPT_SANDBOXING: YES
+
+  EconByteTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: EconByteTests
+    dependencies:
+      - target: EconByte
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nsantulli.econbyte.tests
+        GENERATE_INFOPLIST_FILE: YES   # override the project-wide NO for the test bundle
+        TARGETED_DEVICE_FAMILY: "1"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/EconByte.app/EconByte"
 
   EconByteUITests:
     type: bundle.ui-testing
@@ -55,16 +99,19 @@ targets:
 
 fileGroups:
   - EconByte.storekit   # local StoreKit config (dev/test only, not bundled into the app)
+  - Config/Instrumentation.xcconfig
 
 schemes:
   EconByte:
     build:
       targets:
         EconByte: all
+        EconByteTests: [test]
         EconByteUITests: [test]
     run:
       # Lets the Owner buy/restore IAPs in the simulator without App Store Connect.
       storeKitConfiguration: EconByte.storekit
     test:
       targets:
+        - EconByteTests
         - EconByteUITests

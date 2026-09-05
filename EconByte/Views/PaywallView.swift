@@ -5,6 +5,10 @@ import StoreKit
 /// `com.nsantulli.econbyte.unlockall` non-consumable ($0.99). Price is read
 /// from StoreKit (`product.displayPrice`) — never hardcoded — per DUD-186.
 struct PaywallView: View {
+    /// Which surface sent the user here. A closed vocabulary — never the topic
+    /// that was locked.
+    var entryPoint: EBEntryPoint = .topicGrid
+
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: PurchaseManager
     @State private var working = false
@@ -121,6 +125,9 @@ struct PaywallView: View {
             }
         }
         .tint(Econ.sky)
+        .onAppear {
+            EconGrowth.paywallViewed(entryPoint: entryPoint, productsReady: store.productsReady)
+        }
         .task { await store.loadProducts() }
     }
 
@@ -139,7 +146,7 @@ struct PaywallView: View {
     private func buy() {
         working = true
         Task {
-            let result = await store.purchase(.unlockAll)
+            let result = await store.purchase(.unlockAll, from: .paywall)
             working = false
             handlePurchaseResult(result, successTitle: "Unlocked")
         }
@@ -148,7 +155,7 @@ struct PaywallView: View {
     private func restore() {
         working = true
         Task {
-            let result = await store.restorePurchases()
+            let result = await store.restorePurchases(from: .paywall)
             working = false
             handlePurchaseResult(result, successTitle: "Restored")
         }

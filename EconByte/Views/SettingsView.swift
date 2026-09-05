@@ -112,6 +112,7 @@ struct SettingsView: View {
                         Text("DEBUG builds only. Flips entitlements without a real purchase so you can test locked vs unlocked in the Simulator. Stripped from release builds.")
                     }
                     #endif
+                    PrivacyControlsSection()
                     Section {
                         Link("Rate EconByte", destination: URL(string: "https://dudleyapps.com")!)
                         Link("Privacy Policy", destination: URL(string: "https://dudleyapps.com/privacy/")!)
@@ -144,7 +145,7 @@ struct SettingsView: View {
     private func purchaseRemoveAds() {
         workingRemoveAds = true
         Task {
-            let result = await store.purchase(.removeAds)
+            let result = await store.purchase(.removeAds, from: .settings)
             workingRemoveAds = false
             handlePurchaseResult(result, purchased: store.isRemoveAdsPurchased)
         }
@@ -153,7 +154,7 @@ struct SettingsView: View {
     private func restorePurchases() {
         workingRestore = true
         Task {
-            let result = await store.restorePurchases()
+            let result = await store.restorePurchases(from: .settings)
             workingRestore = false
             handlePurchaseResult(result, purchased: store.isUnlockAllPurchased || store.isRemoveAdsPurchased)
         }
@@ -184,5 +185,89 @@ struct SettingsView: View {
         alertTitle = title
         alertMessage = message
         showAlert = true
+    }
+}
+
+/// The privacy section. From 1.1.2 anonymous usage analytics are ON, and this is
+/// where the user switches them OFF; the switch is the only control, and it takes
+/// effect before the row finishes animating.
+///
+/// Crash reports have no switch on purpose: they are stack traces with no user
+/// object, no breadcrumbs and no personal data, and a crash reporter that is off
+/// reports nothing. The footer still says out loud that they are sent, so the
+/// screen never claims less collection than the app performs.
+///
+/// The random analytics identifier is shown so a user can quote it in a deletion
+/// request to Dudley support before switching analytics off (which resets it).
+///
+/// In a build with no PostHog project and no Sentry DSN — any checkout without
+/// `Config/Secrets.xcconfig` — this section says "nothing is collected" rather
+/// than offering a switch that silently does nothing.
+struct PrivacyControlsSection: View {
+    @ObservedObject private var telemetry = EconTelemetry.shared
+    @ObservedObject private var diagnostics = EconDiagnostics.shared
+
+    private var isConfigured: Bool { telemetry.isConfigured || diagnostics.isConfigured }
+
+    var body: some View {
+        Section {
+            if telemetry.isConfigured {
+                Toggle(isOn: Binding(
+                    get: { telemetry.isAnalyticsEnabled },
+                    set: { telemetry.setAnalyticsConsent($0) }
+                )) {
+                    Label("Share Anonymous Usage Analytics", systemImage: "chart.bar.fill")
+                }
+                .tint(Econ.amber)
+                .accessibilityIdentifier("analyticsConsentToggle")
+
+                if let identity = telemetry.analyticsIdentity {
+                    HStack {
+                        Text("Analytics ID")
+                            .foregroundColor(Econ.white)
+                        Spacer()
+                        Text(identity.prefix(8))
+                            .font(.system(.footnote, design: .monospaced))
+                            .foregroundColor(Econ.subtext)
+                            .textSelection(.enabled)
+                    }
+                    .accessibilityIdentifier("analyticsIdentityRow")
+                }
+            }
+
+            if !isConfigured {
+                Label("Off — nothing is collected", systemImage: "hand.raised.fill")
+                    .foregroundColor(Econ.subtext)
+                    .accessibilityIdentifier("privacyCollectionDisabled")
+            }
+        } header: {
+            Text("Privacy")
+        } footer: {
+            Text(footerText)
+        }
+    }
+
+    private var footerText: String {
+        guard isConfigured else {
+            return "This version of EconByte collects no analytics and no crash reports. Everything you save stays on your device."
+        }
+
+        var lines: [String] = []
+        if telemetry.isConfigured {
+            lines.append("""
+            Analytics are anonymous, bucketed counts of which topics and modes get used — \
+            never a card, a definition, a bookmark, or what you paid. Turn this off and \
+            EconByte stops sending straight away, clears the queue on this device and resets \
+            your ID; events already sent are kept for 90 days, and Dudley support can delete \
+            them if you send them the ID above first.
+            """)
+        }
+        if diagnostics.isConfigured {
+            lines.append("""
+            If EconByte crashes it also sends an anonymous crash report — the stack trace and \
+            your iOS version, nothing about you and nothing you were reading.
+            """)
+        }
+        return lines.joined(separator: "\n\n")
     }
 }

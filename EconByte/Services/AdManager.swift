@@ -68,6 +68,11 @@ final class AdManager: NSObject, ObservableObject {
     /// Synced from `PurchaseManager` via `setAdsDisabled(_:)`.
     @Published private(set) var adsDisabled = false
 
+    /// Interstitials actually presented this app run. Read by the card session
+    /// so it can report how many an individual session saw — a small bucketed
+    /// count, never an ad unit id and never an advertising identifier.
+    @Published private(set) var impressionCount = 0
+
     func setAdsDisabled(_ disabled: Bool) { adsDisabled = disabled }
 
     static let testDeviceIdentifiers = ["ef5558e3631904432fb53d8a5955da9d"]
@@ -77,6 +82,7 @@ final class AdManager: NSObject, ObservableObject {
         // the SDK starts or any ad is requested, which sidesteps GDPR/UMP.
         guard !AdRegion.isAdRestricted else {
             NSLog("[AdManager] EEA/UK region — ads disabled")
+            EconGrowth.adSuppressed(.regionRestricted)
             return
         }
         MobileAds.shared.requestConfiguration.testDeviceIdentifiers = Self.testDeviceIdentifiers
@@ -94,9 +100,13 @@ final class AdManager: NSObject, ObservableObject {
                 self.interstitial = ad
                 self.isLoading = false
                 NSLog("[AdManager] interstitial loaded")
+                EconGrowth.adLoadFinished(outcome: .filled)
             } catch {
                 self.isLoading = false
                 NSLog("[AdManager] load failed: \(error)")
+                // Outcome only. The SDK's error string is a third-party message
+                // and `sdk_error_description` is a prohibited property name.
+                EconGrowth.adLoadFinished(outcome: .noFill)
             }
         }
     }
@@ -110,15 +120,22 @@ final class AdManager: NSObject, ObservableObject {
     }
 
     func noteCardSwipe() async {
-        guard !adsDisabled else { return }
+        guard !adsDisabled else {
+            EconGrowth.adSuppressed(.adsRemoved)
+            return
+        }
         sessionCardCount += 1
         guard sessionCardCount % AdConfig.cardsPerAd == 0, canShow else { return }
+        EconGrowth.adEligibilityReached(depth: sessionCardCount)
         await presentInterstitial()
     }
 
     private func presentInterstitial() async {
         // DUD-224: no ads in the EEA/UK — also skip the ATT prompt there.
-        guard !AdRegion.isAdRestricted else { return }
+        guard !AdRegion.isAdRestricted else {
+            EconGrowth.adSuppressed(.regionRestricted)
+            return
+        }
         if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
             _ = await ATTrackingManager.requestTrackingAuthorization()
         }
@@ -128,9 +145,11 @@ final class AdManager: NSObject, ObservableObject {
             return
         }
         sessionAdCount += 1
+        impressionCount += 1
         lastShownAt = Date()
         interstitial = nil
         ad.present(from: presenter)
+        EconGrowth.adImpression(ordinal: sessionAdCount)
         loadAd()
     }
 
@@ -158,6 +177,7 @@ final class AdManager: NSObject, ObservableObject {
     private var lastShownAt: Date?
 
     @Published private(set) var adsDisabled = false
+    @Published private(set) var impressionCount = 0
     func setAdsDisabled(_ disabled: Bool) { adsDisabled = disabled }
 
     private var canShow: Bool {
@@ -166,18 +186,27 @@ final class AdManager: NSObject, ObservableObject {
         return true
     }
 
-    func start() { NSLog("[AdManager:MOCK] start()") }
+    func start() {
+        NSLog("[AdManager:MOCK] start()")
+        if AdRegion.isAdRestricted { EconGrowth.adSuppressed(.regionRestricted) }
+    }
 
     func noteCardSwipe() async {
-        guard !adsDisabled else { return }
+        guard !adsDisabled else {
+            EconGrowth.adSuppressed(.adsRemoved)
+            return
+        }
         sessionCardCount += 1
         guard sessionCardCount % AdConfig.cardsPerAd == 0, canShow else { return }
+        EconGrowth.adEligibilityReached(depth: sessionCardCount)
         if ATTrackingManager.trackingAuthorizationStatus == .notDetermined {
             _ = await ATTrackingManager.requestTrackingAuthorization()
         }
         sessionAdCount += 1
+        impressionCount += 1
         lastShownAt = Date()
         NSLog("[AdManager:MOCK] interstitial #\(sessionAdCount) at card \(sessionCardCount)")
+        EconGrowth.adImpression(ordinal: sessionAdCount)
         try? await Task.sleep(nanoseconds: 600_000_000)
     }
 }

@@ -1,0 +1,27 @@
+// Instrumentation.xcconfig — COMMITTED base configuration (contains NO secrets).
+//
+// This file is the target's base xcconfig. It declares the instrumentation
+// build settings with EMPTY defaults, then optionally pulls in a gitignored
+// secrets file that overrides them with the Owner's real values.
+//
+// Why a committed base + optional include (instead of referencing the gitignored
+// file directly): a fresh checkout has no Secrets.xcconfig, and a build must
+// still succeed with the SDKs dormant. Empty defaults here guarantee that; the
+// `#include?` (optional include — no error when the file is absent) lets a
+// developer/CI drop real values in without ever committing them.
+//
+// Precedence: values in the included Secrets.xcconfig REPLACE the empty defaults
+// below. Info.plist surfaces these as EBPostHogAPIKey / EBPostHogHost /
+// EBSentryDSN, which the app reads at runtime. An empty value == not configured
+// == the SDK never initializes (fail-soft). See README "Instrumentation".
+
+// ---- Empty defaults (dormant / fail-soft) ---------------------------------
+POSTHOG_API_KEY =
+POSTHOG_HOST =
+SENTRY_DSN =
+
+// ---- Owner secrets (gitignored; optional) ---------------------------------
+// Copy Config/Secrets.xcconfig.example to Config/Secrets.xcconfig and fill in
+// the real values out of band. That file is .gitignore'd and must never be
+// committed.
+#include? "Secrets.xcconfig"

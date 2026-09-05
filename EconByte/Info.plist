@@ -32,6 +32,17 @@
 	<false/>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-9950526548980224~6219329532</string>
+	<!-- Instrumentation credentials, injected at build time from the gitignored
+	     Config/Secrets.xcconfig via Config/Instrumentation.xcconfig. EMPTY here
+	     and in any checkout without that file, which keeps the SDKs inert (see
+	     EconTelemetry.swift / EconDiagnostics.swift). Never paste a real value
+	     into this file. -->
+	<key>EBPostHogAPIKey</key>
+	<string>$(POSTHOG_API_KEY)</string>
+	<key>EBPostHogHost</key>
+	<string>$(POSTHOG_HOST)</string>
+	<key>EBSentryDSN</key>
+	<string>$(SENTRY_DSN)</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>EconByte uses this to show relevant ads and measure ad performance.</string>
 	<key>SKAdNetworkItems</key>

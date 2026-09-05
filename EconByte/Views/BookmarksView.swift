@@ -64,7 +64,8 @@ struct BookmarksView: View {
                 }
             }
             .fullScreenCover(isPresented: $showReview) {
-                CardModeView(cards: content.bookmarkedCards, title: "Saved Cards")
+                CardModeView(cards: content.bookmarkedCards, title: "Saved Cards",
+                             mode: .bookmarks, entryPoint: .bookmarks)
                     .environmentObject(content)
                     .environmentObject(streak)
                     .environmentObject(ads)
