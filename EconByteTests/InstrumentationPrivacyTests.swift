@@ -374,6 +374,54 @@ final class InstrumentationPrivacyTests: XCTestCase {
                      "suppression must not invent a credential where there is none")
     }
 
+    // MARK: - Nor may a test run trigger the App Store review sheet
+    //
+    // Found the hard way on 2026-09-05: `testCardModeCloseReturnsHome` failed
+    // intermittently with "Start button should be tappable on Home". It was not
+    // a scroll bug — `SKStoreReviewController` puts a system sheet over Home two
+    // seconds after the 5th/20th/50th launch, a UI suite relaunches the app once
+    // per test, and so exactly one test lands on a milestone and fails. WHICH
+    // test depends on how many times that simulator has ever opened the app,
+    // which is why the suite passed on a freshly erased device and failed after
+    // the ingestion proof had launched the app a few more times.
+
+    func testARealUserIsStillAskedOnTheMilestoneLaunches() {
+        let user = context(debug: false)
+        for launch in ReviewPrompt.milestones.sorted() {
+            XCTAssertTrue(ReviewPrompt.shouldRequestReview(launchCount: launch, context: user),
+                          "launch \(launch) is a milestone and a real user should be asked")
+        }
+        for launch in [1, 4, 6, 19, 21, 49, 51] {
+            XCTAssertFalse(ReviewPrompt.shouldRequestReview(launchCount: launch, context: user))
+        }
+    }
+
+    func testAUITestLaunchIsNeverAskedToRateTheApp() {
+        for argument in InstrumentationContext.automationArguments.sorted() {
+            let automation = context(arguments: [argument], debug: false)
+            for launch in ReviewPrompt.milestones.sorted() {
+                XCTAssertFalse(
+                    ReviewPrompt.shouldRequestReview(launchCount: launch, context: automation),
+                    "\(argument): a review sheet over Home makes the suite depend on how many "
+                        + "times this simulator has ever launched the app")
+            }
+        }
+    }
+
+    func testAUnitTestRunIsNeverAskedToRateTheApp() {
+        let testRun = context(environment: [InstrumentationContext.xcTestEnvironmentKey: "/tmp/x"],
+                              debug: false)
+        for launch in ReviewPrompt.milestones.sorted() {
+            XCTAssertFalse(ReviewPrompt.shouldRequestReview(launchCount: launch, context: testRun))
+        }
+    }
+
+    /// A developer's Simulator run is not automation, and seeing the sheet is
+    /// the only way to check it. Debug alone must not suppress it.
+    func testAPlainDebugRunStillSeesTheSheet() {
+        XCTAssertTrue(ReviewPrompt.shouldRequestReview(launchCount: 5, context: context(debug: true)))
+    }
+
     // MARK: - Every reviewed switch is actually applied to the vendor object
     //
     // The real hole in this design: a configuration struct can assert a posture
