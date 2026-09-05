@@ -193,6 +193,15 @@ final class PostHogTelemetryTransport: TelemetryTransporting {
         config.maxBatchSize = configuration.maxBatchSize
         config.maxQueueSize = configuration.maxQueueSize
 
+        #if DEBUG
+        // DEBUG-ONLY, and only for a run that explicitly asked: the ingestion
+        // proof needs to name the events that actually left and the id they
+        // left under. Compiled out of Release entirely.
+        if ProcessInfo.processInfo.arguments.contains("-EBInstrumentationSmoke") {
+            config.debug = true
+        }
+        #endif
+
         PostHogSDK.shared.setup(config)
         #endif
         isStarted = true

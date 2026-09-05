@@ -197,6 +197,20 @@ final class SentryDiagnosticsTransport: DiagnosticsTransporting {
             options.beforeCaptureScreenshot = { _ in false }
             options.beforeCaptureViewHierarchy = { _ in false }
 
+            #if DEBUG
+            // DEBUG-ONLY, and only for a run that explicitly asked: the
+            // ingestion proof has to be able to say WHICH envelope left and
+            // under which event id, rather than asserting that one probably
+            // did. Compiled out of Release entirely, so no shipped build can
+            // turn the vendor's logging on.
+            let arguments = ProcessInfo.processInfo.arguments
+            if arguments.contains("-EBInstrumentationSmoke")
+                || arguments.contains("-EBInstrumentationCrash") {
+                options.debug = true
+                options.diagnosticLevel = .debug
+            }
+            #endif
+
             // Defence in depth at the SDK boundary.
             options.beforeBreadcrumb = { _ in nil }
             options.beforeSend = { event in
