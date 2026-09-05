@@ -148,6 +148,15 @@ final class InstrumentationPrivacyTests: XCTestCase {
         XCTAssertFalse(transport.isStarted, "no key → the PostHog SDK is never started")
         XCTAssertFalse(telemetry.isAnalyticsEnabled)
         XCTAssertNil(telemetry.analyticsIdentity)
+
+        // Fail-soft has a second half the facade cannot cover: the adapter must
+        // also refuse on its own. Without this, `send`'s `isStarted` guard is
+        // dead code as far as the suite is concerned — deleting it leaves every
+        // test green while an unstarted SDK is handed events.
+        let sent = await transport.send([TelemetryEvent("app_opened_v1",
+                                                        ["app_version": .string("1.1.2 (9)")])])
+        XCTAssertFalse(sent, "an unstarted transport must refuse the batch, not claim delivery")
+        XCTAssertFalse(transport.isStarted, "sending must not start the SDK as a side effect")
     }
 
     func testSentryAdapterIsFailSoftWithoutADSN() {
@@ -234,6 +243,39 @@ final class InstrumentationPrivacyTests: XCTestCase {
                             + "the SDK keeps its own default, which for several of these is ON")
         }
         XCTAssertEqual(TelemetryConfiguration().personProfiles, .never)
+    }
+
+    /// The comment stripper above is only sound because neither adapter hides a
+    /// `//` or `/*` inside a string literal, where stripping would eat real code.
+    /// Both files are URL-free by design (the host and DSN arrive as parameters),
+    /// so this holds today; if a literal URL ever lands in one, this fails and
+    /// the stripper has to grow a lexer before the scan can be trusted again.
+    func testAdaptersContainNoCommentMarkersInsideStringLiterals() throws {
+        for name in ["PostHogTelemetryTransport.swift", "SentryDiagnosticsTransport.swift"] {
+            let stripped = try adapterSource(name)
+            for line in stripped.split(separator: "\n") where line.contains("\"") {
+                XCTAssertFalse(line.contains("//") || line.contains("/*"),
+                               "\(name) has a comment marker inside code/string text: \(line)")
+            }
+        }
+    }
+
+    /// Proves the scan reads code, not prose: a commented-out application must
+    /// NOT satisfy it. Without this, `strippingComments` could regress to a raw
+    /// read and every field test would still pass.
+    func testACommentedOutApplicationDoesNotSatisfyTheScan() {
+        let source = """
+        // config.enableSwizzling = configuration.swizzling
+        /* config.sessionReplay = configuration.sessionReplay */
+        config.maxBatchSize = configuration.maxBatchSize
+        """
+        let stripped = Self.strippingComments(source)
+        XCTAssertFalse(stripped.contains("configuration.swizzling"),
+                       "a line comment must not count as applying the field")
+        XCTAssertFalse(stripped.contains("configuration.sessionReplay"),
+                       "a block comment must not count as applying the field")
+        XCTAssertTrue(stripped.contains("configuration.maxBatchSize"),
+                      "real code must survive the strip")
     }
 
     func testEveryDiagnosticsConfigurationFieldIsAppliedBySentryAdapter() throws {
@@ -390,10 +432,48 @@ final class InstrumentationPrivacyTests: XCTestCase {
         URL(fileURLWithPath: "\(file)").deletingLastPathComponent().deletingLastPathComponent()
     }
 
+    /// The adapter's source with every comment removed.
+    ///
+    /// Stripping comments is the whole point: these adapters are heavily
+    /// commented, and each comment names the very field the line below it
+    /// applies. A raw-text scan therefore passes on a field whose application
+    /// has been commented OUT — the mutation `// config.enableSwizzling =
+    /// configuration.swizzling` left the string in place, the scan found it, and
+    /// the guard reported an applied field that the SDK never receives. That is
+    /// exactly the failure this test exists to catch, so the scan must see code
+    /// only.
     private func adapterSource(_ name: String, file: StaticString = #filePath) throws -> String {
         let url = repoRoot(file: file)
             .appendingPathComponent("EconByte/Services").appendingPathComponent(name)
-        return try String(contentsOf: url, encoding: .utf8)
+        return Self.strippingComments(try String(contentsOf: url, encoding: .utf8))
+    }
+
+    /// Removes `//` line comments and `/* … */` block comments. Deliberately
+    /// simple: neither adapter contains a string literal holding `//` or `/*`
+    /// (`testAdaptersContainNoCommentMarkersInsideStringLiterals` keeps that
+    /// true), so a full Swift lexer would buy nothing here.
+    static func strippingComments(_ source: String) -> String {
+        var out = ""
+        var inBlockComment = false
+
+        for line in source.split(separator: "\n", omittingEmptySubsequences: false) {
+            var kept = ""
+            let characters = Array(line)
+            var i = 0
+            while i < characters.count {
+                let pair = i + 1 < characters.count ? String([characters[i], characters[i + 1]]) : ""
+                if inBlockComment {
+                    if pair == "*/" { inBlockComment = false; i += 2 } else { i += 1 }
+                    continue
+                }
+                if pair == "/*" { inBlockComment = true; i += 2; continue }
+                if pair == "//" { break }          // rest of the line is a comment
+                kept.append(characters[i])
+                i += 1
+            }
+            out += kept + "\n"
+        }
+        return out
     }
 
     private func privacyManifest(file: StaticString = #filePath) throws -> [String: Any] {
