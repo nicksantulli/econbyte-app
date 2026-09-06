@@ -319,8 +319,9 @@ final class EconTelemetryTests: XCTestCase {
         let spy = SpyTelemetryTransport()
         spy.sendSucceeds = false
         let telemetry = makeTelemetry(transport: spy)
+        telemetry.setAnalyticsConsent(true)
 
-        telemetry.capture(TelemetryEvent("app_opened_v1", ["app_version": .string("1.1.2 (9)")]))
+        telemetry.capture(TelemetryEvent("app_opened_v1", ["app_version": .string("1.1.2 (11)")]))
         await telemetry.flush()
 
         XCTAssertEqual(telemetry.queuedEventCount, 1, "an offline flush keeps the event")
