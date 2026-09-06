@@ -11,13 +11,44 @@ options:
 packages:
   # AdMob interstitials (see EconByte/Services/AdManager.swift). DEBUG uses
   # Google's TEST unit; RELEASE uses the Owner-provided unit.
+  # Pinned EXACTLY, like the other two: a `majorVersion` range let any 12.x
+  # resolve, so the ad SDK that shipped could differ from the one that was
+  # reviewed. The app declares NSPrivacyTracking = false and never prompts for
+  # ATT, so this SDK is pinned for reproducibility, not for a tracking claim.
+  # 12.14.0 is the reviewed version; Package.resolved is committed beside it.
   GoogleMobileAds:
     url: https://github.com/googleads/swift-package-manager-google-mobile-ads
-    majorVersion: 12.0.0
+    exactVersion: 12.14.0
+  # Product analytics. The vendor SDK is touched only by
+  # EconByte/Services/PostHogTelemetryTransport.swift, behind the
+  # TelemetryTransporting seam. It is inert unless Config/Secrets.xcconfig
+  # supplies POSTHOG_API_KEY (surfaced as Info.plist EBPostHogAPIKey) — a nil key
+  # means the SDK is never initialized. With a key it is OFF until the user
+  # opts in in Settings (RECONCILED 1.1.2 — version 1.1 told users on the App
+  # Store that analytics and diagnostics are opt-in and off by default).
+  # Project "econbyte" (NEVER reuse Table Talk's or VibeRater's PostHog project).
+  PostHog:
+    url: https://github.com/PostHog/posthog-ios
+    exactVersion: 3.71.4
+  # Crash diagnostics only. Touched only by
+  # EconByte/Services/SentryDiagnosticsTransport.swift, behind the
+  # DiagnosticsTransporting seam. Inert unless Config/Secrets.xcconfig supplies
+  # SENTRY_DSN (Info.plist EBSentryDSN); with a DSN it is still OFF until the
+  # user opts in to crash diagnostics in Settings (RECONCILED 1.1.2). No session
+  # replay, no tracing, crash-only. Project "econbyte".
+  Sentry:
+    url: https://github.com/getsentry/sentry-cocoa
+    exactVersion: 8.58.4
 settings:
   base:
-    MARKETING_VERSION: "1.1"
-    CURRENT_PROJECT_VERSION: "6"
+    # 1.1.2 / build 11. Builds 9 and 10 are already uploaded and neither carries
+    # the 1.1 curriculum, so 11 is the first free number for the reconciled
+    # binary. Keep these in step with EconByte.xcodeproj/project.pbxproj — the
+    # archived Info.plist is what App Store Connect reads, and this file only
+    # reproduces the project. EconByte is a COMMITTED-pbxproj app: this file is
+    # documentation, never a generator input (never run xcodegen here).
+    MARKETING_VERSION: "1.1.2"
+    CURRENT_PROJECT_VERSION: "11"
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO
@@ -30,10 +61,17 @@ targets:
   EconByte:
     type: application
     platform: iOS
+    # Committed base xcconfig with EMPTY instrumentation defaults; it optionally
+    # includes the gitignored Config/Secrets.xcconfig. Never commit real values.
+    configFiles:
+      Debug: Config/Instrumentation.xcconfig
+      Release: Config/Instrumentation.xcconfig
     sources:
       - path: EconByte
     dependencies:
       - package: GoogleMobileAds
+      - package: PostHog
+      - package: Sentry
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.nsantulli.econbyte
@@ -56,9 +94,9 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.nsantulli.econbyte.tests
         GENERATE_INFOPLIST_FILE: YES   # override the project-wide NO for the test bundle
         TARGETED_DEVICE_FAMILY: "1"
+        BUNDLE_LOADER: "$(TEST_HOST)"
         SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/EconByte.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EconByte"
-        BUNDLE_LOADER: "$(TEST_HOST)"
 
   EconByteUITests:
     type: bundle.ui-testing
@@ -76,6 +114,7 @@ targets:
 
 fileGroups:
   - EconByte.storekit   # local StoreKit config (dev/test only, not bundled into the app)
+  - Config/Instrumentation.xcconfig
 
 schemes:
   EconByte:

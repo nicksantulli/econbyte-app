@@ -25,6 +25,12 @@ struct HomeView: View {
         let id = UUID()
         let cards: [EconCard]
         let title: String
+        /// RECONCILED (1.1.2): the deck and the way it was entered travel with
+        /// the session payload for the same DUD-251 reason the cards do — a
+        /// separate `@State` races the cover's presentation, and then
+        /// `session_started_v1` reports the wrong entry point.
+        let mode: EBMode
+        let entryPoint: EBEntryPoint
     }
 
     /// Same atomic-payload pattern as `CardModeSession`, for the same DUD-251
@@ -77,7 +83,8 @@ struct HomeView: View {
                 paywallSession = PaywallSession(entryPoint: .settings)
             }
             .fullScreenCover(item: $cardModeSession) { session in
-                CardModeView(cards: session.cards, title: session.title)
+                CardModeView(cards: session.cards, title: session.title,
+                             mode: session.mode, entryPoint: session.entryPoint)
                     .environmentObject(content)
                     .environmentObject(streak)
                     .environmentObject(store)
@@ -101,12 +108,61 @@ struct HomeView: View {
         // explicit opt-in (design section 11.1, CONTENT-DECISIONS.md D8).
     }
 
-    private func startTodaysSet(_ daily: [EconCard]) {
-        growth.telemetry.capture(.dailySetStarted, properties: [
-            "set_id": .token(EconAdState.dayKey(for: Date())),
-            "eligible_card_count": .int(daily.count),
-        ])
-        cardModeSession = CardModeSession(cards: daily, title: "Today's Set")
+    /// RECONCILED (1.1.2): lineage A emitted `daily_set_started` carrying a
+    /// `set_id` and an exact `eligible_card_count`. The shipped 1.1.2 schema
+    /// prohibits both — a set id is a content identifier and an exact count has
+    /// a defined bucket — so this is `session_started_v1` with a bucketed deck
+    /// size. `CardModeView` emits it, once, when the deck actually appears.
+    private func startTodaysSet(_ daily: [EconCard], from entryPoint: EBEntryPoint) {
+        cardModeSession = CardModeSession(cards: daily, title: "Today's Set",
+                                          mode: .daily, entryPoint: entryPoint)
+    }
+
+    /// Test-only hook: exposes card `inf-001`'s full example as the grocery
+    /// line's accessibility value so a UI test can prove the visible line is a
+    /// verbatim slice of the card (never an invented figure). Off in production.
+    private var exposeGroceryBinding: Bool {
+        ProcessInfo.processInfo.arguments.contains("-exposeGroceryBinding")
+    }
+
+    /// One sourced line of copy under TODAY'S CARDS — the 1.1.1 hotfix, carried
+    /// forward. The text is a verbatim slice of bundled card `inf-001`, not
+    /// free-typed. Tapping it starts today's set through the same
+    /// `startTodaysSet` the Start/Review button calls — no new screen. Inert
+    /// when there is no daily set to start.
+    ///
+    /// RECONCILED (1.1.2): the source attribution shown here changes with the
+    /// catalog. On v1.0/1.1.1 content `inf-001` cited the Bureau of Labor
+    /// Statistics as free text; on the restored 1.1 catalog it cites
+    /// FRED/CPIAUCSL as a structured source, and `ContentStore` renders that as
+    /// "organization — document title". The line and the label are always the
+    /// card's own.
+    @ViewBuilder
+    private func groceryLine(_ daily: [EconCard]) -> some View {
+        if let g = content.groceryHighlight {
+            Button {
+                guard !daily.isEmpty else { return }
+                startTodaysSet(daily, from: .homeHighlight)
+            } label: {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(g.line)
+                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                        .foregroundColor(Econ.white.opacity(0.85))
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(g.source)
+                        .font(.system(size: 11, weight: .regular, design: .rounded))
+                        .foregroundColor(Econ.subtext)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            .disabled(daily.isEmpty)
+            .accessibilityIdentifier("homeGroceryLine")
+            .accessibilityLabel(Text(g.line))
+            .accessibilityValue(Text(exposeGroceryBinding ? g.exampleBody : g.source))
+            .accessibilityHint(Text("Starts today's set"))
+        }
     }
 
     private var todaysSetCard: some View {
@@ -136,12 +192,13 @@ struct HomeView: View {
                          total: completed ? 1 : Double(max(daily.count, 1)))
                 .tint(completed ? Econ.sky : Econ.amber)
                 .background(Econ.mist.opacity(0.2))
+            groceryLine(daily)
             Group {
                 if completed {
-                    Button("Review →") { startTodaysSet(daily) }
+                    Button("Review →") { startTodaysSet(daily, from: .home) }
                         .buttonStyle(SecondaryButton())
                 } else {
-                    Button("Start →") { startTodaysSet(daily) }
+                    Button("Start →") { startTodaysSet(daily, from: .home) }
                         .buttonStyle(PrimaryButton())
                 }
             }
@@ -181,21 +238,24 @@ struct HomeView: View {
                     let locked = !content.isTopicFree(topic.id) && !store.isUnlockAllPurchased
                     Button {
                         if locked {
-                            growth.telemetry.capture(.lockedTopicTapped, properties: [
-                                "topic_id": .token(topic.id),
-                                "entry_point": .token(EconEntryPoint.topicGrid.rawValue),
-                            ])
+                            // RECONCILED (1.1.2): `topic_id` was allowed by
+                            // lineage A's schema and is PROHIBITED by the
+                            // shipped one — a topic id is a content identifier.
+                            // The entry point and the access state carry the
+                            // funnel; the topic does not travel.
+                            EBEvents.lockedTopicTapped(entryPoint: .topicGrid)
                             paywallSession = PaywallSession(entryPoint: .topicGrid)
                         } else {
-                            growth.telemetry.capture(.topicOpened, properties: [
-                                "topic_id": .token(topic.id),
-                                "access_state": .token(content.accessState(
+                            EBEvents.topicOpened(
+                                entryPoint: .topicGrid,
+                                accessState: content.accessState(
                                     for: topic.id,
-                                    unlockedAll: store.isUnlockAllPurchased).rawValue),
-                            ])
+                                    unlockedAll: store.isUnlockAllPurchased))
                             cardModeSession = CardModeSession(
                                 cards: content.cards(for: topic.id, unlockedAll: store.isUnlockAllPurchased),
-                                title: topic.name)
+                                title: topic.name,
+                                mode: .topic,
+                                entryPoint: .topicGrid)
                         }
                     } label: {
                         TopicTile(topic: topic, locked: locked)

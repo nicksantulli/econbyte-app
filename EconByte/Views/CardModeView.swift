@@ -3,6 +3,10 @@ import SwiftUI
 struct CardModeView: View {
     let cards: [EconCard]
     let title: String
+    /// RECONCILED (1.1.2): which deck this is and how it was entered, so the
+    /// session events can be read without ever naming a topic or a card.
+    var mode: EBMode = .daily
+    var entryPoint: EBEntryPoint = .home
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var streak: StreakManager
@@ -10,6 +14,9 @@ struct CardModeView: View {
     @State private var currentIndex = 0
     @State private var dragOffset: CGFloat = 0
     @State private var sessionDone = false
+    @State private var startedAt = Date()
+    @State private var cardsAdvanced = 0
+    @State private var didEndSession = false
 
     var body: some View {
         ZStack {
@@ -64,7 +71,8 @@ struct CardModeView: View {
 
                     // Card
                     let card = cards[currentIndex]
-                    CardView(card: card, position: currentIndex, cardCount: cards.count)
+                    CardView(card: card, position: currentIndex, cardCount: cards.count,
+                             mode: mode)
                         .environmentObject(content)
                         .environmentObject(growth)
                         .padding(.horizontal, 20)
@@ -78,6 +86,8 @@ struct CardModeView: View {
                                     } else if value.translation.width > 60 && currentIndex > 0 {
                                         withAnimation(.easeOut(duration: 0.2)) { dragOffset = 0 }
                                         currentIndex -= 1
+                                        EBEvents.cardAdvanced(mode: mode, direction: .back,
+                                                              depth: currentIndex)
                                     } else {
                                         withAnimation(.spring()) { dragOffset = 0 }
                                     }
@@ -95,6 +105,33 @@ struct CardModeView: View {
                 }
             }
         }
+        .onAppear {
+            guard !didAppearOnce else { return }
+            didAppearOnce = true
+            startedAt = Date()
+            EBEvents.sessionStarted(mode: mode, entryPoint: entryPoint, deckSize: cards.count)
+        }
+        .onDisappear {
+            endSession(reason: sessionDone ? .completed : .userExit)
+        }
+    }
+
+    /// One `session_started_v1` per presentation. SwiftUI can call `onAppear`
+    /// again when the cover is re-composed.
+    @State private var didAppearOnce = false
+
+    /// Exactly one `session_ended_v1` per presentation, whether the deck was
+    /// finished or abandoned.
+    private func endSession(reason: EBEndReason) {
+        guard !didEndSession else { return }
+        didEndSession = true
+        EBEvents.sessionEnded(mode: mode,
+                              reason: reason,
+                              cardsViewed: cardsAdvanced,
+                              duration: Date().timeIntervalSince(startedAt),
+                              hadBookmark: cards.contains { content.isBookmarked($0.id) },
+                              adImpressions: AdManager.shared.impressionCount)
+        EBEvents.flush()
     }
 
     private func advance() {
@@ -103,12 +140,13 @@ struct CardModeView: View {
         streak.noteCardSeen()
         // No ad here. Version 1.1's only interstitial placement is the return
         // from a completed set to Home, never inside a card (design section 9.3).
-        growth.telemetry.capture(.cardViewed, properties: [
-            "card_id": .token(card.id),
-            "topic_id": .token(card.topicId),
-            "difficulty": .token(card.difficulty),
-            "position": .int(currentIndex),
-        ])
+        // RECONCILED (1.1.2): lineage A emitted `card_viewed` with the card id,
+        // the topic id and an exact position. All three are PROHIBITED by the
+        // shipped schema — two are content identifiers and the third has a
+        // defined bucket. `card_advanced_v1` carries direction and a bucketed
+        // depth, which answers the same question without naming the card.
+        cardsAdvanced += 1
+        EBEvents.cardAdvanced(mode: mode, direction: .forward, depth: cardsAdvanced)
         withAnimation(.easeOut(duration: 0.2)) { dragOffset = 0 }
         if currentIndex < cards.count - 1 {
             currentIndex += 1

@@ -128,29 +128,29 @@ struct SessionCompleteView: View {
     private func onAppearOnce() async {
         growth.monetization.noteSetCompleted(normally: true)
         growth.review.noteSetCompleted()
-        growth.telemetry.capture(.dailySetCompleted, properties: [
-            "set_id": .token(EconAdState.dayKey(for: Date())),
-            "card_count": .int(cardsCount),
-            "duration_bucket": .token(Self.durationBucket(cardsCount)),
-            "streak_day": .int(streak.currentStreak),
-        ])
+        // RECONCILED (1.1.2): lineage A's `daily_set_completed` carried a
+        // `set_id`, an exact `card_count` and an exact `streak_day`, all three
+        // prohibited by the shipped schema. The completion is now reported by
+        // `CardModeView`'s `session_ended_v1` (bucketed cards, bucketed
+        // duration), which fires for abandoned sessions too and therefore has a
+        // denominator this event never had.
 
         // The rating request comes after the completion acknowledgement. If it
         // fires, no ad may follow it at this exit. `review_prompt_eligible` is
         // raised by the coordinator before it calls the system API.
         let decision = growth.review.requestReviewIfEligible()
         if decision == .eligible {
-            growth.telemetry.capture(.reviewPromptRequested, properties: [
-                "completed_set_count": .int(growth.review.state.completedSetCount),
-                "streak_bucket": .token(ReviewRequestPolicy.streakBucket(streak.currentStreak)),
-            ])
+            // The attempt itself is emitted at the moment the system sheet is
+            // actually requested (`EconGrowth.requestSystemReview`), so a run
+            // that is suppressed for automation does not report an ask that
+            // never happened.
             growth.monetization.setBlocker(.review, active: true)
         }
 
         let completedSets = growth.review.state.completedSetCount
 
-        analyticsEnabled = growth.telemetry.isEnabled
-        diagnosticsEnabled = growth.diagnostics.isEnabled
+        analyticsEnabled = growth.telemetry.isAnalyticsEnabled
+        diagnosticsEnabled = growth.diagnostics.isDiagnosticsEnabled
         if ConsentPromptPolicy.eligible(completedSetCount: completedSets,
                                         alreadyShown: growth.consentPromptShown) {
             showConsentPrompt = true
@@ -166,8 +166,7 @@ struct SessionCompleteView: View {
             authorizationDenied: growth.notifications.authorization == .denied) {
             showPrimer = true
             growth.notifications.notePrimerShown()
-            growth.telemetry.capture(.notificationPrimerViewed,
-                                     properties: ["entry_point": .token(EconEntryPoint.sessionComplete.rawValue)])
+            growth.recordNotificationPrimerViewed(entryPoint: .sessionComplete)
         }
     }
 
@@ -192,8 +191,9 @@ struct SessionCompleteView: View {
             switch outcome {
             case .presented:
                 growth.review.noteNegativeSessionEvent(.ad)
-                growth.telemetry.capture(.adImpression,
-                                         properties: ["placement": .token(EconAdPlacement.dailySetExit.rawValue)])
+                // `ad_impression_v1` is emitted by the adapter at the moment the
+                // interstitial is actually presented, so it cannot report an
+                // impression the provider declined to show.
             case .notEligible, .noAdAvailable, .presentationFailed:
                 break
             }
@@ -201,14 +201,6 @@ struct SessionCompleteView: View {
             growth.monetization.setBlocker(.notification, active: false)
             growth.monetization.setBlocker(.consent, active: false)
             onDone()
-        }
-    }
-
-    private static func durationBucket(_ cardsCount: Int) -> String {
-        switch cardsCount {
-        case ..<4: return "short"
-        case 4..<9: return "medium"
-        default: return "long"
         }
     }
 

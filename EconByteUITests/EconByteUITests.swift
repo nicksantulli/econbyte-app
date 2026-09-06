@@ -144,10 +144,41 @@ final class EconByteUITests: XCTestCase {
         XCTAssertTrue(gear.waitForExistence(timeout: 5), "Settings gear should render in the nav bar")
         gear.tap()
 
-        // Privacy Policy link (§5.1).
+        // The privacy section, in whichever of its two honest shapes this build
+        // has (1.1.2). The PostHog key and Sentry DSN come from a gitignored
+        // xcconfig, so the same source tree builds an unconfigured app (a fresh
+        // checkout, CI without secrets) and a configured one (the shipping
+        // archive) — and the assertion is that the screen matches the app:
+        //
+        //  * unconfigured → says nothing is collected, and offers no toggle;
+        //  * configured   → offers the analytics opt-out, already ON, and does
+        //    not claim nothing is collected. There is deliberately no
+        //    crash-report toggle in either shape — crash reporting has no
+        //    consent gate, and the footer says so instead.
+        let noCollection = app.descendants(matching: .any)["privacyCollectionDisabled"]
+        let analyticsToggle = app.switches["analyticsConsentToggle"]
+        XCTAssertTrue(noCollection.waitForExistence(timeout: 4)
+                        || analyticsToggle.waitForExistence(timeout: 4),
+                      "the privacy section must either say nothing is collected or offer the opt-out")
+        if noCollection.exists {
+            XCTAssertFalse(analyticsToggle.exists,
+                           "no analytics toggle may be offered when there is nowhere to send")
+        } else {
+            XCTAssertEqual(analyticsToggle.value as? String, "1",
+                           "analytics ship ON; the toggle is the opt-out, not an opt-in")
+        }
+        XCTAssertFalse(app.switches["diagnosticsConsentToggle"].exists,
+                       "crash reporting has no consent gate — there is no toggle to offer")
+
+        // Privacy Policy link (§5.1). It sits in the About section at the foot
+        // of the list, below the privacy section added in 1.1.2, so it may need
+        // scrolling into view before SwiftUI's List has rendered the row.
         let privacy = app.buttons.containing(
-            NSPredicate(format: "label CONTAINS 'Privacy'")
+            NSPredicate(format: "label CONTAINS 'Privacy Policy'")
         ).firstMatch
+        for _ in 0..<4 where !privacy.exists {
+            app.swipeUp()
+        }
         XCTAssertTrue(privacy.waitForExistence(timeout: 4),
                       "Privacy Policy link should appear in Settings")
         XCTAssertTrue(privacy.isEnabled,
@@ -225,5 +256,81 @@ final class EconByteUITests: XCTestCase {
         let removeAds = app.buttons["settingsRemoveAdsButton"]
         XCTAssertTrue(removeAds.waitForExistence(timeout: 5),
                       "Remove Ads purchase row should render in Settings")
+    }
+
+    // MARK: - Grocery highlight (v1.1.1)
+
+    /// Success criterion: the sourced grocery line renders on Home immediately
+    /// after launch — the reviewer can see it WITHOUT opening a card.
+    func testGroceryLineRendersOnHomeWithoutOpeningCard() {
+        let app = launchApp()
+
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+
+        let grocery = app.buttons["homeGroceryLine"]
+        XCTAssertTrue(grocery.waitForExistence(timeout: 5),
+                      "Grocery line should render on Home without opening any card")
+
+        // No card mode has been entered: CardModeView's close button (which only
+        // exists once a card set is open) must be absent, proving the grocery
+        // line is seen on Home itself, not after opening a card.
+        XCTAssertFalse(app.buttons["cardModeCloseButton"].exists,
+                       "Grocery line must be visible on Home before any card is opened")
+
+        // The visible line carries the card's real, sourced grocery figure.
+        //
+        // RECONCILED (1.1.2): this asserted "$117", which is v1.0/1.1.1 content.
+        // The restored 1.1 catalog re-sourced `inf-001` from BLS free text to
+        // FRED/CPIAUCSL and its example now reads "…paid roughly 9 percent more
+        // for it." The figure is asserted against the catalog's own wording
+        // rather than a literal from a superseded card, and
+        // `testGroceryLineIsBoundToInf001CardContent` is the test that proves
+        // the line is a verbatim slice whatever the catalog says.
+        XCTAssertTrue(grocery.label.contains("grocery cart")
+                        && grocery.label.contains("9 percent"),
+                      "Grocery line should show the card's real figure. Saw: \(grocery.label)")
+    }
+
+    /// Binding proof (scope 1): the displayed grocery line is a verbatim slice of
+    /// card inf-001's `exampleBody`, never an invented number. Under
+    /// `-exposeGroceryBinding` the app exposes the card's full example as the
+    /// element's accessibility value; the visible label must be contained in it.
+    func testGroceryLineIsBoundToInf001CardContent() {
+        let app = XCUIApplication()
+        app.launchArguments += ["-skipStudioIntro", "-exposeGroceryBinding"]
+        app.launch()
+
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        let grocery = app.buttons["homeGroceryLine"]
+        XCTAssertTrue(grocery.waitForExistence(timeout: 5))
+
+        let displayed = grocery.label
+        let cardExample = (grocery.value as? String) ?? ""
+        XCTAssertFalse(cardExample.isEmpty,
+                       "inf-001 exampleBody should be exposed under -exposeGroceryBinding")
+        XCTAssertTrue(cardExample.contains(displayed),
+                      "Displayed grocery line must be verbatim inf-001 content. "
+                      + "displayed=[\(displayed)] example=[\(cardExample)]")
+    }
+
+    /// Behaviour (scope 2): tapping the grocery line starts today's set — the
+    /// same flow as Start/Review, no new screen.
+    func testGroceryLineTapStartsTodaysSet() {
+        let app = launchApp()
+
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        let grocery = app.buttons["homeGroceryLine"]
+        XCTAssertTrue(grocery.waitForExistence(timeout: 5))
+        for _ in 0..<3 where !grocery.isHittable { app.swipeUp() }
+        XCTAssertTrue(grocery.isHittable, "Grocery line should be tappable on Home")
+        grocery.tap()
+
+        // Same destination as Start/Review: CardModeView, identified by its close
+        // button (which does not exist on Home). Using the close button — not the
+        // "N / 8" counter — avoids a false pass, since Home's topic tiles already
+        // show "seen/total" text containing "/".
+        let close = app.buttons["cardModeCloseButton"]
+        XCTAssertTrue(close.waitForExistence(timeout: 5),
+                      "Tapping the grocery line should open today's set (CardModeView)")
     }
 }

@@ -6,6 +6,13 @@
 *.cer
 *.certSigningRequest
 
+# Instrumentation secrets (PostHog API key/host, Sentry DSN). The gitignored
+# Config/Secrets.xcconfig holds the real values; Config/Instrumentation.xcconfig
+# (committed, empty defaults) and Config/Secrets.xcconfig.example (committed
+# template) are safe to track.
+Config/Secrets.xcconfig
+Config/Secrets.local.xcconfig
+
 # Xcode / build
 DerivedData/
 build/

@@ -7,6 +7,8 @@ struct CardView: View {
     var position: Int = 0
     /// Number of cards in the current set, announced with `position`.
     var cardCount: Int = 0
+    /// Which deck this card is being read in, for `card_flipped_v1`.
+    var mode: EBMode = .daily
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var growth: EconGrowth
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -73,11 +75,11 @@ struct CardView: View {
 
     private func noteFlipped() {
         content.markFlipped(card.id)
-        growth.telemetry.capture(.cardFlipped, properties: [
-            "card_id": .token(card.id),
-            "topic_id": .token(card.topicId),
-            "position": .int(position),
-        ])
+        // RECONCILED (1.1.2): the card id, the topic id and the exact position
+        // are all prohibited by the shipped schema. The difficulty tier is the
+        // one property that says something about the card without identifying
+        // it, and it comes from the bundled catalog rather than a literal.
+        EBEvents.cardFlipped(mode: mode, difficulty: card.difficulty)
     }
 
     private var frontFace: some View {
@@ -173,11 +175,9 @@ struct CardView: View {
     private var bookmarkButton: some View {
         Button {
             content.toggleBookmark(card.id)
-            growth.telemetry.capture(.cardBookmarkChanged, properties: [
-                "card_id": .token(card.id),
-                "topic_id": .token(card.topicId),
-                "is_bookmarked": .bool(content.isBookmarked(card.id)),
-            ])
+            EBEvents.bookmarkChanged(
+                action: content.isBookmarked(card.id) ? .added : .removed,
+                bookmarkCount: content.bookmarkedCards.count)
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         } label: {
             Image(systemName: content.isBookmarked(card.id) ? "bookmark.fill" : "bookmark")

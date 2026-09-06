@@ -429,8 +429,16 @@ final class EconGrowth: ObservableObject {
     static let shared = EconGrowth()
 
     let environment: EconTelemetryEnvironment
+    /// RECONCILED (1.1.2): the transport-backed telemetry facade from the 1.1.2
+    /// instrumentation lineage. It is a shared singleton because the vendor SDK
+    /// behind it is one per process; the growth systems below still hand it
+    /// nothing but validated, allowlisted events through `EBEvents`.
     let telemetry: EconTelemetry
+    /// Crash reporting (Sentry, crash-only, opt-in). Distinct from
+    /// `diagnosticLog` below, which is this app's own bounded failure codes and
+    /// never leaves the device.
     let diagnostics: EconDiagnostics
+    let diagnosticLog: EconDiagnosticLog
     let monetization: EconMonetization
     let review: ReviewRequestCoordinator
     let notifications: NotificationCoordinator
@@ -449,8 +457,9 @@ final class EconGrowth: ObservableObject {
 
         let environment = EconTelemetryEnvironment.current
         self.environment = environment
-        self.telemetry = EconTelemetry(defaults: defaults, environment: environment)
-        self.diagnostics = EconDiagnostics(defaults: defaults, environment: environment)
+        self.telemetry = EconTelemetry.shared
+        self.diagnostics = EconDiagnostics.shared
+        self.diagnosticLog = EconDiagnosticLog(defaults: defaults, environment: environment)
         self.monetization = EconMonetization(adapter: AdManager.shared,
                                              defaults: defaults,
                                              region: EconGrowth.regionSource())
@@ -460,49 +469,42 @@ final class EconGrowth: ObservableObject {
         self.notifications = NotificationCoordinator(defaults: defaults)
 
         AdManager.shared.onFailure = { [weak self] code, error in
-            self?.diagnostics.capture(code, detail: error.map(EconDiagnosticDetail.init))
+            self?.diagnosticLog.capture(code, detail: error.map(EconDiagnosticDetail.init))
         }
         PurchaseManager.shared.onDiagnostic = { [weak self] code in
-            self?.diagnostics.capture(code)
+            self?.diagnosticLog.capture(code)
         }
 
-        monetization.onAdEligible = { [weak self] placement, setsSinceLastAd in
-            self?.telemetry.capture(.adEligible, properties: [
-                "placement": .token(placement.rawValue),
-                "sets_since_last_ad": .int(setsSinceLastAd),
-            ])
+        monetization.onAdEligible = { _, setsSinceLastAd in
+            EBEvents.adEligibilityReached(depth: setsSinceLastAd)
         }
-        monetization.onAdDismissed = { [weak self] placement, resultClass in
-            self?.telemetry.capture(.adDismissed, properties: [
-                "placement": .token(placement.rawValue),
-                "result_class": .token(resultClass.rawValue),
-            ])
+        monetization.onAdDismissed = { _, resultClass in
+            EBEvents.adDismissed(placement: .dailySetExit,
+                                 outcome: resultClass == .success ? .completed : .failed)
         }
-        review.onEligible = { [weak self] in
-            guard let self else { return }
-            self.telemetry.capture(.reviewPromptEligible, properties: [
-                "completed_set_count": .int(self.review.state.completedSetCount),
-                "streak_bucket": .token(
-                    ReviewRequestPolicy.streakBucket(StreakManager.shared.currentStreak)),
-            ])
+        review.onEligible = {
+            EBEvents.reviewPromptEligible(streak: StreakManager.shared.currentStreak)
         }
         notifications.onScheduleFailure = { [weak self] error in
-            self?.diagnostics.capture(.notificationScheduleFailed,
-                                      detail: EconDiagnosticDetail(error))
+            self?.diagnosticLog.capture(.notificationScheduleFailed,
+                                        detail: EconDiagnosticDetail(error))
         }
     }
 
     // MARK: Lifecycle
 
     func applicationDidBecomeActive() {
-        let launchType: EconLaunchType = didStartFirstSession ? .warm : .cold
+        let isColdLaunch = !didStartFirstSession
         didStartFirstSession = true
 
         monetization.noteForegroundSessionBegan()
         review.noteForegroundSessionBegan()
         notifications.reconcileOnForeground()
         monetization.startAdsIfPermitted()
-        telemetry.capture(.appOpened, properties: ["launch_type": .token(launchType.rawValue)])
+        // Cold launches only: `app_opened_v1` carries the install-age and
+        // launch-count buckets that `EBEvents.recordLaunch` maintains, and a
+        // warm foreground is not a launch.
+        if isColdLaunch { EBEvents.recordLaunch() }
     }
 
     /// Entitlement changes must reach ad behaviour and content access on the same
@@ -515,20 +517,29 @@ final class EconGrowth: ObservableObject {
 
     func reportContentLoadFailureIfNeeded(_ store: ContentStore) {
         guard let error = store.loadError else { return }
-        diagnostics.capture(.contentCatalogInvalid, detail: EconDiagnosticDetail(error))
+        diagnosticLog.capture(.contentCatalogInvalid, detail: EconDiagnosticDetail(error))
     }
 
     // MARK: Consent
 
     func setAnalyticsEnabled(_ enabled: Bool, entryPoint: EconEntryPoint) {
-        telemetry.setEnabled(enabled, entryPoint: entryPoint)
+        // Order matters on the way IN and on the way OUT. Turning analytics ON
+        // starts the transport first, so the consent event itself is captured;
+        // turning it OFF captures the event first, because `setAnalyticsConsent`
+        // clears the queue and the vendor's local state on the same turn.
+        if enabled {
+            telemetry.setAnalyticsConsent(true)
+            EBEvents.analyticsConsentChanged(enabled: true, entryPoint: entryPoint.ebEntryPoint)
+        } else {
+            EBEvents.analyticsConsentChanged(enabled: false, entryPoint: entryPoint.ebEntryPoint)
+            telemetry.setAnalyticsConsent(false)
+        }
     }
 
     func setDiagnosticsEnabled(_ enabled: Bool, entryPoint: EconEntryPoint) {
-        diagnostics.setEnabled(enabled)
-        telemetry.capture(.diagnosticsConsentChanged,
-                          properties: ["enabled": .bool(enabled),
-                                       "entry_point": .token(entryPoint.rawValue)])
+        diagnostics.setDiagnosticsConsent(enabled)
+        diagnosticLog.setEnabled(enabled)
+        EBEvents.diagnosticsConsentChanged(enabled: enabled, entryPoint: entryPoint.ebEntryPoint)
     }
 
     // MARK: Review
@@ -551,9 +562,14 @@ final class EconGrowth: ObservableObject {
     }
 
     private static func requestSystemReview() {
+        // A review prompt is a production side-effect, and a robot should not be
+        // asked to rate the app — the same reason a test run may not reach the
+        // live analytics projects. See `ReviewRequestPolicy`.
+        guard ReviewRequestPolicy.mayShowSystemReviewSheet() else { return }
         guard let scene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
         else { return }
+        EBEvents.reviewRequestAttempted(launchCount: EBEvents.recordedLaunchCount())
         if #available(iOS 16, *) {
             SKStoreReviewController.requestReview(in: scene)
         }
@@ -570,17 +586,23 @@ final class EconGrowth: ObservableObject {
     /// Records the outcome of the *system* authorization dialog. Callers pass
     /// what the dialog actually returned, never the toggle's intent.
     func recordNotificationAuthorizationResult(granted: Bool) {
-        telemetry.capture(.notificationPermissionResult, properties: [
-            "result_class": .token(granted ? EconResultClass.success.rawValue
-                                           : EconResultClass.cancelled.rawValue),
-        ])
+        EBEvents.notificationPermissionResult(granted: granted)
+    }
+
+    /// The contextual consent primer became visible. Separate from the
+    /// authorization result above: one is what the app showed, the other is
+    /// what the system dialog returned.
+    func recordNotificationPrimerViewed(entryPoint: EconEntryPoint) {
+        EBEvents.notificationPrimerViewed(entryPoint: entryPoint.ebEntryPoint)
     }
 
     #if DEBUG
     static func resetPersistedState(in defaults: UserDefaults) {
         EconMonetization.resetPersistedState(in: defaults)
-        EconTelemetry.resetPersistedState(in: defaults)
-        EconDiagnostics.resetPersistedState(in: defaults)
+        defaults.removeObject(forKey: EconTelemetry.Key.consent)
+        defaults.removeObject(forKey: EconDiagnostics.consentDefaultsKey)
+        defaults.removeObject(forKey: ConsentPromptPolicy.shownDefaultsKey)
+        EconDiagnosticLog.resetPersistedState(in: defaults)
         ReviewRequestCoordinator.resetPersistedState(in: defaults)
         NotificationCoordinator.resetPersistedState(in: defaults)
         defaults.removeObject(forKey: ContentStore.cardStatesDefaultsKey)

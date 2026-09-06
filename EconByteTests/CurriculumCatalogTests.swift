@@ -645,4 +645,66 @@ final class CurriculumCatalogTests: XCTestCase {
             }
         }
     }
+
+    // MARK: - The Home highlight survives the catalog swap (RECONCILED 1.1.2)
+    //
+    // The 1.1.1 hotfix put one sourced line on Home by finding card `inf-001`
+    // and string-searching its example prose for the literal "A grocery run",
+    // then slicing to the next period. That worked on the v1.0 content it was
+    // written against. The 1.1 catalog re-sourced `inf-001` — BLS free text to
+    // FRED/CPIAUCSL, new wording — and the phrase is simply not there, so the
+    // search returns nil, `groceryHighlight` is nil, and the Home line renders
+    // NOTHING. No crash, no log, no failing unit test: the feature would have
+    // disappeared silently the moment the content came back.
+    //
+    // The dependency is now on the card ID, which the catalog pins
+    // (`supersedes: econbyte-1.0:inf-001`). These tests are what stop it
+    // regressing to a phrase again.
+
+    @MainActor
+    func testTheHomeHighlightResolvesOnTheRestoredCatalog() {
+        let highlight = ContentStore.shared.groceryHighlight
+        XCTAssertNotNil(highlight,
+                        "the Home highlight must resolve against the 1.1 catalog — a nil here is "
+                            + "the silent-disappearance defect the 1.1.1 phrase search would cause")
+    }
+
+    @MainActor
+    func testTheHomeHighlightIsAVerbatimSliceOfTheCardItNames() throws {
+        let store = ContentStore.shared
+        let card = try XCTUnwrap(store.allCards.first { $0.id == ContentStore.homeHighlightCardID },
+                                 "card \(ContentStore.homeHighlightCardID) must exist in the catalog")
+        let highlight = try XCTUnwrap(store.groceryHighlight)
+
+        XCTAssertTrue(card.exampleBody.contains(highlight.line),
+                      "the displayed line must be a verbatim slice of the card's own example, "
+                        + "never an invented figure. line=[\(highlight.line)]")
+        XCTAssertEqual(highlight.exampleBody, card.exampleBody)
+        XCTAssertEqual(highlight.source, card.source,
+                       "the visible attribution is the card's own source, which changed with the "
+                        + "catalog (BLS free text -> FRED/CPIAUCSL structured)")
+        XCTAssertTrue(highlight.line.hasSuffix("."), "the slice ends at its own sentence")
+    }
+
+    /// The specific trap, named: the phrase the 1.1.1 implementation keyed on is
+    /// GONE from the restored catalog. If this ever passes, someone has put v1.0
+    /// content back.
+    @MainActor
+    func testTheOneOneOnePhraseIsAbsentFromTheRestoredCatalog() throws {
+        let card = try XCTUnwrap(ContentStore.shared.allCards
+            .first { $0.id == ContentStore.homeHighlightCardID })
+        XCTAssertFalse(card.exampleBody.contains("A grocery run"),
+                       "the 1.1 catalog re-sourced inf-001; any implementation that keys on this "
+                        + "phrase silently renders nothing")
+    }
+
+    /// And the restoration itself, asserted at the runtime store rather than at
+    /// the JSON: 15 topics, 120 cards, on the screen the user actually sees.
+    @MainActor
+    func testTheRuntimeStoreServesTheFullFifteenTopicCatalog() {
+        let store = ContentStore.shared
+        XCTAssertNil(store.loadError)
+        XCTAssertEqual(store.topics.count, 15)
+        XCTAssertEqual(store.allCards.count, 120)
+    }
 }

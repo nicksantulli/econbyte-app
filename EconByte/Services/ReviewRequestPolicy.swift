@@ -58,6 +58,29 @@ public enum ReviewRequestPolicy {
 
     public static var thresholds: ReviewRequestThresholds { ReviewRequestThresholds() }
 
+    /// May this *process* put the system review sheet on screen at all?
+    ///
+    /// RECONCILED (1.1.2): ported from lineage C's `bea7834`, which found the
+    /// real cause of an intermittent UI failure — `SKStoreReviewController`
+    /// covers Home about two seconds after launch, a UI suite relaunches the
+    /// app once per test, so one test lands under the sheet and fails, and
+    /// *which* test depends on how many times that simulator has ever opened
+    /// the app. C fixed it inside v1.0's launch-milestone `ReviewPrompt`, which
+    /// version 1.1 had already deleted; the guard belongs here instead.
+    ///
+    /// It is deliberately about the *process*, not the policy: `decide` stays a
+    /// pure function of the user's progress, so the eligibility tests keep
+    /// running inside XCTest. Only the moment of actually showing Apple's sheet
+    /// is suppressed. A plain Debug run still sees it — a developer in the
+    /// Simulator needs to be able to check the thing works.
+    /// Internal rather than `public` like its neighbours: `InstrumentationContext`
+    /// is internal, and widening it merely to widen this would be the tail
+    /// wagging the dog. Nothing outside the module consumes any of this.
+    static func mayShowSystemReviewSheet(
+        in context: InstrumentationContext = .current) -> Bool {
+        !context.isUnitTestRun && !context.isAutomationRun
+    }
+
     /// Coarse streak bucket. Telemetry never carries the raw streak length as a
     /// free value; this is the closed vocabulary both emission sites use.
     public static func streakBucket(_ streak: Int) -> String {

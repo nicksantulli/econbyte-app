@@ -40,8 +40,8 @@ struct SettingsView: View {
                 .foregroundColor(Econ.white)
             }
             .task {
-                analyticsEnabled = growth.telemetry.isEnabled
-                diagnosticsEnabled = growth.diagnostics.isEnabled
+                analyticsEnabled = growth.telemetry.isAnalyticsEnabled
+                diagnosticsEnabled = growth.diagnostics.isDiagnosticsEnabled
                 growth.notifications.refreshAuthorization()
                 await store.loadProducts()
             }
@@ -119,7 +119,7 @@ struct SettingsView: View {
                         if workingRemoveAds {
                             ProgressView()
                         } else {
-                            Text(removeAdsProduct?.displayPrice ?? "$0.99")
+                            Text(PurchasePresentation.priceText(removeAdsProduct?.displayPrice))
                                 .foregroundColor(Econ.amber)
                         }
                     }
@@ -130,17 +130,14 @@ struct SettingsView: View {
 
             if !store.isUnlockAllPurchased {
                 Button {
-                    growth.telemetry.capture(.lockedTopicTapped, properties: [
-                        "topic_id": .token("all"),
-                        "entry_point": .token(EconEntryPoint.settings.rawValue),
-                    ])
+                    EBEvents.lockedTopicTapped(entryPoint: .settings)
                     onRequestPaywall?()
                     dismiss()
                 } label: {
                     HStack {
                         Text("Unlock All Topics")
                         Spacer()
-                        Text(unlockAllProduct?.displayPrice ?? "$0.99")
+                        Text(PurchasePresentation.priceText(unlockAllProduct?.displayPrice))
                             .foregroundColor(Econ.amber)
                     }
                 }
@@ -237,12 +234,8 @@ struct SettingsView: View {
     private func purchaseRemoveAds() {
         workingRemoveAds = true
         growth.monetization.setBlocker(.purchase, active: true)
-        growth.telemetry.capture(.purchaseStarted, properties: [
-            "product_id": .token(PurchaseManager.ProductID.removeAds.rawValue),
-            "entry_point": .token(EconEntryPoint.settings.rawValue),
-        ])
         Task {
-            let result = await store.purchase(.removeAds)
+            let result = await store.purchase(.removeAds, from: .settings)
             workingRemoveAds = false
             growth.monetization.setBlocker(.purchase, active: false)
             growth.syncEntitlements(from: store)
@@ -254,41 +247,30 @@ struct SettingsView: View {
     private func restorePurchases() {
         workingRestore = true
         growth.monetization.setBlocker(.restore, active: true)
-        growth.telemetry.capture(.restoreStarted,
-                                 properties: ["entry_point": .token(EconEntryPoint.settings.rawValue)])
         Task {
-            let result = await store.restorePurchases()
+            let result = await store.restorePurchases(from: .settings)
             workingRestore = false
             growth.monetization.setBlocker(.restore, active: false)
             growth.syncEntitlements(from: store)
             if case .failed = result {
                 growth.review.noteNegativeSessionEvent(.restoreFailure)
-                growth.diagnostics.capture(.restoreFailed)
-                growth.telemetry.capture(.restoreFailed,
-                                         properties: ["result_class": .token(EconResultClass.unavailable.rawValue)])
-            } else {
-                let restored = (store.isUnlockAllPurchased ? 1 : 0) + (store.isRemoveAdsPurchased ? 1 : 0)
-                growth.telemetry.capture(.restoreCompleted,
-                                         properties: ["restored_product_count": .int(restored)])
+                growth.diagnosticLog.capture(.restoreFailed)
             }
             handlePurchaseResult(result, purchased: store.isUnlockAllPurchased || store.isRemoveAdsPurchased)
         }
     }
 
+    /// RECONCILED (1.1.2): the purchase events themselves are emitted inside
+    /// `PurchaseManager`, where the StoreKit id is reduced to its family before
+    /// anything leaves. What stays here is the part that is not telemetry — a
+    /// failed purchase is a bad moment to ask for a rating.
     private func recordPurchaseTelemetry(_ result: PurchaseManager.PurchaseResult,
                                          productID: PurchaseManager.ProductID) {
         switch result {
         case .success:
-            growth.telemetry.capture(.purchaseCompleted, properties: [
-                "product_id": .token(productID.rawValue),
-                "entry_point": .token(EconEntryPoint.settings.rawValue),
-            ])
+            break
         case .cancelled, .pending, .productUnavailable, .failed:
             growth.review.noteNegativeSessionEvent(.purchaseFailure)
-            growth.telemetry.capture(.purchaseFailed, properties: [
-                "product_id": .token(productID.rawValue),
-                "result_class": .token(result.econResultClass.rawValue),
-            ])
         }
     }
 
@@ -309,7 +291,7 @@ struct SettingsView: View {
                 title: "Purchase Unavailable",
                 message: store.productsLoadError ?? "We couldn't reach the App Store. Check your connection and try again."
             )
-            growth.diagnostics.capture(.storeProductsUnavailable)
+            growth.diagnosticLog.capture(.storeProductsUnavailable)
             Task { await store.loadProducts() }
         case .failed(let message):
             presentAlert(title: "Something Went Wrong", message: message)

@@ -12,6 +12,32 @@ import SwiftUI
 /// truth, restored automatically across devices via the Apple ID) and mirrored
 /// into UserDefaults so gating decisions are synchronous on cold launch before
 /// StoreKit finishes its async refresh.
+/// How a purchase control reads while StoreKit has not delivered a price.
+///
+/// There is no fallback price literal anywhere in the UI. A hardcoded "$0.99" is
+/// wrong in every non-US storefront, wrong the moment the tier changes, and
+/// wrong when the product is simply unavailable — and it is exactly the shape
+/// App Review has objected to on a Dudley build before. When there is no price
+/// there is no price shown, and the control that would spend money is disabled.
+enum PurchasePresentation {
+
+    /// Shown in place of a price that StoreKit has not supplied. Deliberately
+    /// not a currency string: it must be impossible to read as an amount.
+    static let unavailablePrice = "—"
+
+    static func priceText(_ displayPrice: String?) -> String {
+        guard let displayPrice, !displayPrice.isEmpty else { return unavailablePrice }
+        return displayPrice
+    }
+
+    /// A buy control may only be live when there is a real, StoreKit-formatted
+    /// price to charge and nothing else is in flight.
+    static func canPurchase(displayPrice: String?, isWorking: Bool, isLoading: Bool) -> Bool {
+        guard let displayPrice, !displayPrice.isEmpty else { return false }
+        return !isWorking && !isLoading
+    }
+}
+
 @MainActor
 final class PurchaseManager: ObservableObject {
     static let shared = PurchaseManager()
@@ -19,6 +45,15 @@ final class PurchaseManager: ObservableObject {
     enum ProductID: String, CaseIterable {
         case unlockAll = "com.nsantulli.econbyte.unlockall"
         case removeAds  = "com.nsantulli.econbyte.removeads"
+
+        /// The bucketed family name analytics is allowed to see. The product id
+        /// itself is a prohibited property — a StoreKit identifier never leaves.
+        var family: EBProductFamily {
+            switch self {
+            case .unlockAll: return .unlockAll
+            case .removeAds: return .removeAds
+            }
+        }
     }
 
     enum PurchaseResult: Equatable {
@@ -79,23 +114,34 @@ final class PurchaseManager: ObservableObject {
             if loaded.isEmpty {
                 productsLoadError = "Store products are not available right now. Check your connection and try again."
                 NSLog("[PurchaseManager] product load returned empty set")
+                EBEvents.productsLoaded(outcome: .unavailable)
             } else {
                 NSLog("[PurchaseManager] loaded \(loaded.count) product(s): \(loaded.map(\.id).joined(separator: ", "))")
+                EBEvents.productsLoaded(outcome: .loaded)
             }
         } catch {
             products = []
             productsLoadError = error.localizedDescription
             NSLog("[PurchaseManager] product load failed: \(error)")
+            // Outcome only — never `error.localizedDescription`, which is a
+            // third-party string and a prohibited property.
+            EBEvents.productsLoaded(outcome: .failed)
         }
     }
 
     // MARK: - Purchase
 
+    /// `entryPoint` is where the user tapped buy, so the funnel can be read
+    /// without ever learning what they bought beyond its family. Emission lives
+    /// here rather than at the two call sites so a future third buy button
+    /// cannot ship unmeasured.
     @discardableResult
-    func purchase(_ id: ProductID) async -> PurchaseResult {
+    func purchase(_ id: ProductID, from entryPoint: EBEntryPoint) async -> PurchaseResult {
+        EBEvents.purchaseStarted(family: id.family, entryPoint: entryPoint)
         if products.isEmpty { await loadProducts() }
         guard let product = product(for: id) else {
             NSLog("[PurchaseManager] no product for \(id.rawValue)")
+            EBEvents.purchaseFinished(family: id.family, outcome: .unavailable)
             return .productUnavailable
         }
         do {
@@ -105,35 +151,49 @@ final class PurchaseManager: ObservableObject {
                 let transaction = try checkVerified(verification)
                 await updatePurchasedProducts()
                 await transaction.finish()
+                EBEvents.purchaseFinished(family: id.family, outcome: .completed)
                 return .success
             case .userCancelled:
+                EBEvents.purchaseFinished(family: id.family, outcome: .cancelled)
                 return .cancelled
             case .pending:
+                EBEvents.purchaseFinished(family: id.family, outcome: .pending)
                 return .pending
             @unknown default:
+                EBEvents.purchaseFinished(family: id.family, outcome: .failed)
                 return .failed("Purchase could not be completed.")
             }
         } catch {
             NSLog("[PurchaseManager] purchase failed: \(error)")
+            EBEvents.purchaseFinished(family: id.family, outcome: .failed)
             return .failed(error.localizedDescription)
         }
     }
 
     // MARK: - Restore
 
-    func restorePurchases() async -> PurchaseResult {
+    /// The three restore outcomes are distinguished HERE, where the branch is
+    /// known, rather than by matching on a user-facing message at the call site.
+    /// Restore stays single-flight (lineage A, design section 8): `AppStore.sync()`
+    /// is only ever called from an explicit user action and never twice
+    /// concurrently, so a second tap joins the first rather than starting a
+    /// second sync — and therefore does not emit a second outcome either.
+    func restorePurchases(from entryPoint: EBEntryPoint) async -> PurchaseResult {
         if let inFlight = restoreTask { return await inFlight.value }
         let task = Task { () -> PurchaseResult in
             do {
                 try await AppStore.sync()
                 await updatePurchasedProducts()
                 if isUnlockAllPurchased || isRemoveAdsPurchased {
+                    EBEvents.restoreFinished(outcome: .completed, entryPoint: entryPoint)
                     return .success
                 }
+                EBEvents.restoreFinished(outcome: .nothingToRestore, entryPoint: entryPoint)
                 return .failed("No previous purchases were found for this Apple ID.")
             } catch {
                 NSLog("[PurchaseManager] restore failed: \(error)")
                 onDiagnostic?(.restoreFailed)
+                EBEvents.restoreFinished(outcome: .failed, entryPoint: entryPoint)
                 return .failed(error.localizedDescription)
             }
         }

@@ -152,4 +152,37 @@ final class ContentStore: ObservableObject {
         if isTopicFree(topicId) { return .free }
         return unlockedAll ? .unlocked : .locked
     }
+
+    /// The id of the card whose example is surfaced as the Home highlight.
+    ///
+    /// The 1.1.1 implementation string-searched the example prose for the
+    /// literal `"A grocery run"`. The 1.1 catalog re-sourced `inf-001` (BLS
+    /// free-text → FRED/CPIAUCSL structured source) and the phrase is gone, so
+    /// that search returns `nil` on this catalog and the Home line silently
+    /// disappears. The dependency is now on the **card id**, which the catalog
+    /// pins (`supersedes: econbyte-1.0:inf-001`), not on a sentence fragment.
+    static let homeHighlightCardID = "inf-001"
+
+    /// The grocery-inflation highlight surfaced on Home (introduced in 1.1.1,
+    /// re-expressed here against the 1.1 catalog).
+    ///
+    /// The `line` is *extracted verbatim* from card `inf-001`'s example — never
+    /// hand-typed into the view — so the figure shown on Home is provably the
+    /// card's own sourced content and cannot silently drift from the catalog.
+    /// The full `exampleBody` is returned too so a test can prove the displayed
+    /// line is contained within it. `nil` only if the card is missing, which on
+    /// a validated catalog cannot happen (the catalog test fails first).
+    var groceryHighlight: (line: String, source: String, exampleBody: String)? {
+        guard let card = allCards.first(where: { $0.id == Self.homeHighlightCardID })
+        else { return nil }
+        let body = card.exampleBody
+        // First sentence, inclusive of its terminating period.
+        let line: String
+        if let dot = body.firstIndex(of: ".") {
+            line = String(body[...dot])
+        } else {
+            line = body
+        }
+        return (line: line, source: card.source, exampleBody: body)
+    }
 }

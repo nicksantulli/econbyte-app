@@ -28,9 +28,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A0000000000000000000006"
-               BuildableName = "EconByteTests.xctest"
-               BlueprintName = "EconByteTests"
+               BlueprintIdentifier = "F7A8B9C0D1E2F3A4B5C6D7E8"
+               BuildableName = "EconByteUITests.xctest"
+               BlueprintName = "EconByteUITests"
                ReferencedContainer = "container:EconByte.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -42,9 +42,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F7A8B9C0D1E2F3A4B5C6D7E8"
-               BuildableName = "EconByteUITests.xctest"
-               BlueprintName = "EconByteUITests"
+               BlueprintIdentifier = "UT0000000000000000000006"
+               BuildableName = "EconByteTests.xctest"
+               BlueprintName = "EconByteTests"
                ReferencedContainer = "container:EconByte.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -60,7 +60,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1A0000000000000000000006"
+               BlueprintIdentifier = "UT0000000000000000000006"
                BuildableName = "EconByteTests.xctest"
                BlueprintName = "EconByteTests"
                ReferencedContainer = "container:EconByte.xcodeproj">

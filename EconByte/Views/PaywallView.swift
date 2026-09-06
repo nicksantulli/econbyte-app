@@ -2,8 +2,10 @@ import SwiftUI
 import StoreKit
 
 /// Paywall shown when a free user taps a locked topic. Sells the
-/// `com.nsantulli.econbyte.unlockall` non-consumable ($0.99). Price is read
-/// from StoreKit (`product.displayPrice`) — never hardcoded — per DUD-186.
+/// `com.nsantulli.econbyte.unlockall` non-consumable. Price is read from
+/// StoreKit (`product.displayPrice`) — never hardcoded — per DUD-186, and when
+/// StoreKit has not supplied one there is no price shown and no buy control to
+/// tap (`PurchasePresentation`).
 struct PaywallView: View {
     /// Where the reader came from, so `paywall_viewed` and the purchase events
     /// carry a real entry point rather than an assumed one.
@@ -90,7 +92,7 @@ struct PaywallView: View {
                                 if working {
                                     ProgressView().tint(Econ.ink)
                                 } else {
-                                    Text("Unlock All — \(product?.displayPrice ?? "$0.99")")
+                                    Text("Unlock All — \(PurchasePresentation.priceText(product?.displayPrice))")
                                 }
                             }
                             .buttonStyle(PrimaryButton())
@@ -133,10 +135,8 @@ struct PaywallView: View {
             growth.monetization.setBlocker(.paywall, active: true)
             growth.review.noteNegativeSessionEvent(.paywall)
             await store.loadProducts()
-            growth.telemetry.capture(.paywallViewed, properties: [
-                "entry_point": .token(entryPoint.rawValue),
-                "products_available": .bool(store.productsReady),
-            ])
+            EBEvents.paywallViewed(entryPoint: entryPoint.ebEntryPoint,
+                                   productsReady: store.productsReady)
         }
         .onDisappear { growth.monetization.setBlocker(.paywall, active: false) }
     }
@@ -157,26 +157,19 @@ struct PaywallView: View {
     private func buy() {
         working = true
         growth.monetization.setBlocker(.purchase, active: true)
-        growth.telemetry.capture(.purchaseStarted, properties: [
-            "product_id": .token(PurchaseManager.ProductID.unlockAll.rawValue),
-            "entry_point": .token(entryPoint.rawValue),
-        ])
+        // RECONCILED (1.1.2): purchase telemetry moved INTO `PurchaseManager`,
+        // where the branch is known and the StoreKit product id can be reduced
+        // to its family before anything leaves — the id itself is a prohibited
+        // property. The view passes only where the tap happened.
         Task {
-            let result = await store.purchase(.unlockAll)
+            let result = await store.purchase(.unlockAll, from: entryPoint.ebEntryPoint)
             working = false
             growth.monetization.setBlocker(.purchase, active: false)
             growth.syncEntitlements(from: store)
             if case .success = result {
-                growth.telemetry.capture(.purchaseCompleted, properties: [
-                    "product_id": .token(PurchaseManager.ProductID.unlockAll.rawValue),
-                    "entry_point": .token(entryPoint.rawValue),
-                ])
+                // Nothing to record here: `purchase_finished_v1` already did.
             } else {
                 growth.review.noteNegativeSessionEvent(.purchaseFailure)
-                growth.telemetry.capture(.purchaseFailed, properties: [
-                    "product_id": .token(PurchaseManager.ProductID.unlockAll.rawValue),
-                    "result_class": .token(result.econResultClass.rawValue),
-                ])
             }
             handlePurchaseResult(result, successTitle: "Unlocked")
         }
@@ -185,22 +178,14 @@ struct PaywallView: View {
     private func restore() {
         working = true
         growth.monetization.setBlocker(.restore, active: true)
-        growth.telemetry.capture(.restoreStarted,
-                                 properties: ["entry_point": .token(entryPoint.rawValue)])
         Task {
-            let result = await store.restorePurchases()
+            let result = await store.restorePurchases(from: entryPoint.ebEntryPoint)
             working = false
             growth.monetization.setBlocker(.restore, active: false)
             growth.syncEntitlements(from: store)
             if case .failed = result {
                 growth.review.noteNegativeSessionEvent(.restoreFailure)
-                growth.diagnostics.capture(.restoreFailed)
-                growth.telemetry.capture(.restoreFailed,
-                                         properties: ["result_class": .token(EconResultClass.unavailable.rawValue)])
-            } else {
-                let restored = (store.isUnlockAllPurchased ? 1 : 0) + (store.isRemoveAdsPurchased ? 1 : 0)
-                growth.telemetry.capture(.restoreCompleted,
-                                         properties: ["restored_product_count": .int(restored)])
+                growth.diagnosticLog.capture(.restoreFailed)
             }
             handlePurchaseResult(result, successTitle: "Restored")
         }

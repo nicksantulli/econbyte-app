@@ -515,175 +515,21 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(eligible, 0)
     }
 
-    // MARK: - 6. Telemetry schema (spec section 10.2)
-
-    func testEventAllowlistMatchesTheSpecificationExactly() {
-        let expected: Set<String> = [
-            "app_opened", "daily_set_started", "card_viewed", "card_flipped",
-            "card_bookmark_changed", "daily_set_completed", "topic_opened",
-            "locked_topic_tapped", "paywall_viewed", "purchase_started",
-            "purchase_completed", "purchase_failed", "restore_started",
-            "restore_completed", "restore_failed", "ad_eligible", "ad_impression",
-            "ad_dismissed", "notification_primer_viewed",
-            "notification_permission_result", "review_prompt_eligible",
-            "review_prompt_requested", "analytics_consent_changed",
-            "diagnostics_consent_changed",
-        ]
-        XCTAssertEqual(Set(EconEvent.allCases.map(\.rawValue)), expected)
-        XCTAssertEqual(EconEventSchema.schemaVersion, 1)
-    }
-
-    func testResultClassIsAClosedEnum() {
-        XCTAssertEqual(Set(EconResultClass.allCases.map(\.rawValue)),
-                       ["success", "cancelled", "pending", "unavailable",
-                        "network", "provider", "unverified", "revoked"])
-    }
-
-    func testCommonPropertiesAreAttachedToEveryEvent() {
-        XCTAssertEqual(Set(EconEventSchema.commonProperties),
-                       ["app_version", "build_number", "os_major",
-                        "locale_language", "session_source", "day"])
-
-        let telemetry = EconTelemetry(
-            defaults: defaults,
-            environment: EconTelemetryEnvironment(appVersion: "1.1",
-                                                  buildNumber: "6",
-                                                  osMajor: 26,
-                                                  localeLanguage: "en",
-                                                  sessionSource: .direct))
-        telemetry.setEnabled(true, entryPoint: .settings)
-        telemetry.capture(.appOpened, properties: ["launch_type": .token("cold")])
-
-        guard let recorded = telemetry.queue.first(where: { $0.name == "app_opened" }) else {
-            return XCTFail("app_opened should be queued once analytics consent is on")
-        }
-        for common in EconEventSchema.commonProperties {
-            XCTAssertNotNil(recorded.properties[common],
-                            "\(common) must be attached automatically")
-        }
-        XCTAssertEqual(recorded.properties["app_version"], .token("1.1"))
-        XCTAssertEqual(recorded.properties["os_major"], .int(26))
-    }
-
-    func testUndeclaredPropertyIsRejected() {
-        let telemetry = EconTelemetry(defaults: defaults)
-        telemetry.setEnabled(true, entryPoint: .settings)
-        let result = telemetry.capture(.cardViewed, properties: [
-            "card_id": .token("inf-001"),
-            "topic_name": .token("Inflation"),
-        ])
-        XCTAssertEqual(result, .rejectedUndeclaredProperty("topic_name"))
-        XCTAssertFalse(telemetry.queue.contains { $0.name == "card_viewed" },
-                       "a rejected event is never queued")
-    }
-
-    func testProhibitedPropertiesAreRejectedEvenIfSomeoneDeclaresThem() {
-        XCTAssertTrue(EconEventSchema.prohibitedProperties.isSuperset(of: [
-            "card_text", "definition", "example", "source_url", "price",
-            "transaction_id", "advertising_id", "idfa", "ip", "email", "user_text",
-        ]))
-        let telemetry = EconTelemetry(defaults: defaults)
-        telemetry.setEnabled(true, entryPoint: .settings)
-        XCTAssertEqual(telemetry.capture(.purchaseCompleted, properties: [
-            "product_id": .token("com.nsantulli.econbyte.unlockall"),
-            "price": .token("0.99"),
-        ]), .rejectedProhibitedProperty("price"))
-    }
-
-    func testOversizedFreeTextValueIsRejected() {
-        let telemetry = EconTelemetry(defaults: defaults)
-        telemetry.setEnabled(true, entryPoint: .settings)
-        let essay = String(repeating: "a", count: EconEventSchema.maximumTokenLength + 1)
-        XCTAssertEqual(telemetry.capture(.topicOpened, properties: [
-            "topic_id": .token(essay),
-            "access_state": .token("free"),
-        ]), .rejectedOversizedValue("topic_id"))
-    }
-
-    func testPerEventPropertyAllowlists() {
-        XCTAssertEqual(EconEventSchema.allowedProperties(for: .cardViewed),
-                       ["card_id", "topic_id", "difficulty", "position"])
-        XCTAssertEqual(EconEventSchema.allowedProperties(for: .adEligible),
-                       ["placement", "sets_since_last_ad"])
-        XCTAssertEqual(EconEventSchema.allowedProperties(for: .dailySetCompleted),
-                       ["set_id", "card_count", "duration_bucket", "streak_day"])
-        XCTAssertEqual(EconEventSchema.allowedProperties(for: .restoreCompleted),
-                       ["restored_product_count"])
-    }
-
-    // MARK: - 7. Telemetry consent and provider posture (spec section 10.1)
-
-    func testAnalyticsConsentDefaultsOffAndCapturesNothing() {
-        let telemetry = EconTelemetry(defaults: defaults)
-        XCTAssertFalse(telemetry.isEnabled, "analytics consent defaults off")
-        telemetry.capture(.appOpened, properties: ["launch_type": .token("cold")])
-        XCTAssertTrue(telemetry.queue.isEmpty,
-                      "nothing is captured before consent")
-        XCTAssertNil(telemetry.installationID,
-                     "no installation identifier exists before consent")
-    }
-
-    func testDisablingAnalyticsClearsTheQueueAndRotatesTheInstallationID() {
-        let telemetry = EconTelemetry(defaults: defaults)
-        telemetry.setEnabled(true, entryPoint: .settings)
-        let firstID = telemetry.installationID
-        XCTAssertNotNil(firstID)
-        telemetry.capture(.dailySetStarted, properties: [
-            "set_id": .token("2026-09-01"), "eligible_card_count": .int(8),
-        ])
-        XCTAssertFalse(telemetry.queue.isEmpty)
-
-        telemetry.setEnabled(false, entryPoint: .settings)
-        XCTAssertTrue(telemetry.queue.isEmpty, "opt-out clears queued events")
-        XCTAssertNil(telemetry.installationID, "opt-out removes the identifier")
-
-        telemetry.setEnabled(true, entryPoint: .settings)
-        XCTAssertNotNil(telemetry.installationID)
-        XCTAssertNotEqual(telemetry.installationID, firstID,
-                          "re-enabling rotates to a fresh random identifier")
-    }
-
-    func testInstallationIdentifierIsRandomAndNotDeviceDerived() {
-        let a = EconTelemetry.makeInstallationID()
-        let b = EconTelemetry.makeInstallationID()
-        XCTAssertNotEqual(a, b)
-        XCTAssertFalse(a.isEmpty)
-        XCTAssertNotEqual(a, EconDiagnostics.makeInstallationID())
-    }
-
-    func testQueueIsBoundedSoAnOfflineInstallCannotGrowWithoutLimit() {
-        XCTAssertEqual(EconTelemetry.maximumQueuedEvents, 200)
-        let telemetry = EconTelemetry(defaults: defaults)
-        telemetry.setEnabled(true, entryPoint: .settings)
-        for index in 0..<(EconTelemetry.maximumQueuedEvents + 50) {
-            telemetry.capture(.cardViewed, properties: [
-                "card_id": .token("inf-001"),
-                "topic_id": .token("inflation"),
-                "difficulty": .token("intro"),
-                "position": .int(index),
-            ])
-        }
-        XCTAssertEqual(telemetry.queue.count, EconTelemetry.maximumQueuedEvents)
-    }
-
-    /// No app-specific PostHog project exists yet. The build must be safe with no
-    /// token and must never embed one.
-    func testNoProviderTokenIsConfiguredAndNothingIsTransmitted() {
-        XCTAssertNil(EconTelemetryConfiguration.postHogAPIKey,
-                     "no analytics token is embedded in the repository")
-        let telemetry = EconTelemetry(defaults: defaults)
-        XCTAssertFalse(telemetry.isProviderConfigured)
-    }
-
-    func testProhibitedProviderFeaturesAreDisabled() {
-        let options = EconTelemetryConfiguration.providerOptions
-        XCTAssertFalse(options.autocaptureEnabled)
-        XCTAssertFalse(options.sessionReplayEnabled)
-        XCTAssertFalse(options.personProfilesEnabled)
-        XCTAssertFalse(options.heatmapsEnabled)
-        XCTAssertFalse(options.surveysEnabled)
-        XCTAssertFalse(options.featureFlagsEnabled)
-    }
+    // MARK: - 6/7. Telemetry schema and consent — MOVED, not dropped
+    //
+    // RECONCILED (1.1.2): sections 6 and 7 tested lineage A's `EconTelemetry` —
+    // an allowlisted event vocabulary with a queue and a no-op sink that never
+    // transmitted anything, because no provider token existed when 1.1 shipped.
+    // The reconciled app has exactly one telemetry pipeline, the transport-backed
+    // one from the 1.1.2 instrumentation lineage, so the type these tests
+    // exercised no longer exists. Their subject matter did not disappear with
+    // them: `EconTelemetryTests` and `InstrumentationPrivacyTests` cover the
+    // same ground against the pipeline that actually ships — the closed event
+    // allowlist, the prohibited-property list (which is strictly larger: it
+    // rejects `card_id`, `topic_id` and `set_id`, which lineage A's schema
+    // ALLOWED), oversized values, bounded queue, consent default, opt-out
+    // deletion, and the provider posture switches, each now asserted against the
+    // vendor object rather than against a struct.
 
     // MARK: - 8. Diagnostics (spec section 10.3)
 
@@ -696,39 +542,47 @@ final class GrowthSystemsTests: XCTestCase {
     }
 
     func testDiagnosticsConsentDefaultsOffAndIsSeparateFromAnalytics() {
-        let diagnostics = EconDiagnostics(defaults: defaults)
-        XCTAssertFalse(diagnostics.isEnabled)
-        XCTAssertFalse(diagnostics.capture(.adLoadFailed))
-        XCTAssertTrue(diagnostics.queue.isEmpty)
-        XCTAssertNil(diagnostics.installationID)
+        let log = EconDiagnosticLog(defaults: defaults)
+        XCTAssertFalse(log.isEnabled)
+        XCTAssertFalse(log.capture(.adLoadFailed))
+        XCTAssertTrue(log.queue.isEmpty)
+        XCTAssertNil(log.installationID)
 
-        let telemetry = EconTelemetry(defaults: defaults)
-        telemetry.setEnabled(true, entryPoint: .settings)
-        XCTAssertFalse(EconDiagnostics(defaults: defaults).isEnabled,
+        // RECONCILED (1.1.2): analytics consent now lives on the shipped
+        // telemetry facade's key. Granting it must still leave diagnostics off —
+        // the two choices are separate, which is what the App Store notes say.
+        defaults.set(true, forKey: EconTelemetry.Key.consent)
+        XCTAssertFalse(EconDiagnosticLog(defaults: defaults).isEnabled,
                        "analytics consent must not enable diagnostics")
+        XCTAssertFalse(defaults.bool(forKey: EconDiagnostics.consentDefaultsKey),
+                       "analytics consent must not enable crash reporting either")
     }
 
-    func testDiagnosticsUsesADistinctInstallationIdentifier() {
-        let telemetry = EconTelemetry(defaults: defaults)
-        telemetry.setEnabled(true, entryPoint: .settings)
-        let diagnostics = EconDiagnostics(defaults: defaults)
-        diagnostics.setEnabled(true)
-        XCTAssertNotNil(diagnostics.installationID)
-        XCTAssertNotEqual(diagnostics.installationID, telemetry.installationID)
+    func testDiagnosticsUsesAFreshInstallationIdentifierOnEveryOptIn() {
+        let log = EconDiagnosticLog(defaults: defaults)
+        log.setEnabled(true)
+        let first = log.installationID
+        XCTAssertNotNil(first)
+        log.setEnabled(false)
+        XCTAssertNil(log.installationID)
+        log.setEnabled(true)
+        XCTAssertNotNil(log.installationID)
+        XCTAssertNotEqual(log.installationID, first,
+                          "opting out deletes the identifier; opting back in must not resurrect it")
     }
 
     func testDisablingDiagnosticsClearsQueuedReports() {
-        let diagnostics = EconDiagnostics(defaults: defaults)
-        diagnostics.setEnabled(true)
-        XCTAssertTrue(diagnostics.capture(.restoreFailed))
-        XCTAssertFalse(diagnostics.queue.isEmpty)
-        diagnostics.setEnabled(false)
-        XCTAssertTrue(diagnostics.queue.isEmpty)
-        XCTAssertNil(diagnostics.installationID)
+        let log = EconDiagnosticLog(defaults: defaults)
+        log.setEnabled(true)
+        XCTAssertTrue(log.capture(.restoreFailed))
+        XCTAssertFalse(log.queue.isEmpty)
+        log.setEnabled(false)
+        XCTAssertTrue(log.queue.isEmpty)
+        XCTAssertNil(log.installationID)
     }
 
     func testDiagnosticsOptionsExcludePIIReplayAndAttachments() {
-        let options = EconDiagnosticsConfiguration.options
+        let options = EconDiagnosticLogConfiguration.options
         XCTAssertFalse(options.sendDefaultPII)
         XCTAssertFalse(options.attachScreenshots)
         XCTAssertFalse(options.attachViewHierarchy)
@@ -737,7 +591,7 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(options.tracesSampleRate, 0)
         XCTAssertEqual(options.maximumBreadcrumbs, 0,
                        "no navigation breadcrumbs, which could carry card content")
-        XCTAssertNil(EconDiagnosticsConfiguration.sentryDSN,
+        XCTAssertNil(EconDiagnosticLogConfiguration.sentryDSN,
                      "no diagnostics DSN is embedded in the repository")
     }
 
@@ -766,13 +620,13 @@ final class GrowthSystemsTests: XCTestCase {
     }
 
     func testDiagnosticsQueueIsBounded() {
-        XCTAssertEqual(EconDiagnostics.maximumQueuedReports, 50)
-        let diagnostics = EconDiagnostics(defaults: defaults)
+        XCTAssertEqual(EconDiagnosticLog.maximumQueuedReports, 50)
+        let diagnostics = EconDiagnosticLog(defaults: defaults)
         diagnostics.setEnabled(true)
-        for _ in 0..<(EconDiagnostics.maximumQueuedReports + 10) {
+        for _ in 0..<(EconDiagnosticLog.maximumQueuedReports + 10) {
             diagnostics.capture(.adLoadFailed)
         }
-        XCTAssertEqual(diagnostics.queue.count, EconDiagnostics.maximumQueuedReports)
+        XCTAssertEqual(diagnostics.queue.count, EconDiagnosticLog.maximumQueuedReports)
     }
 
     // MARK: - 9. Review requests (spec section 11.2)

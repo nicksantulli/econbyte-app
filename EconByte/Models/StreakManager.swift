@@ -63,6 +63,8 @@ final class StreakManager: ObservableObject {
         UserDefaults.standard.set(currentStreak, forKey: streakKey)
         let iso = ISO8601DateFormatter().string(from: Date())
         UserDefaults.standard.set(iso, forKey: lastDateKey)
+        // Bucketed streak length only — never the exact day count, never a date.
+        EBEvents.streakDayCredited(streak: currentStreak)
     }
 
     // Notification authorization and scheduling moved to `NotificationPolicy` /

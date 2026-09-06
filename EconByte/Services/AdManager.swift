@@ -7,7 +7,10 @@ import UIKit
 // region, placement, blockers, and caps — lives in `EconMonetization`, so ad
 // policy is testable without the SDK.
 //
-// Version 1.1 removed the AppTrackingTransparency pathway that 1.0 used here.
+// Version 1.1 removed the AppTrackingTransparency pathway that 1.0 used here,
+// and 1.1.2 keeps it removed — `InstrumentationPrivacyTests` fails the build if
+// this file, any other app source, either Info.plist, or the shipped Mach-O
+// re-acquires it.
 // See `CONTENT-DECISIONS.md` D2 for what 1.0 actually did, why it went, and the
 // Info.plist / privacy-manifest work that is sequenced after the archive privacy
 // report. Requests are non-personalized (`npa=1`, `rdp=1`) and capped at a `G`
@@ -29,6 +32,10 @@ final class AdManager: NSObject, EconInterstitialAdapting {
     private var isLoading = false
     private var didStart = false
     private var pendingPolicy = EconAdRequestPolicy()
+
+    /// Interstitials actually presented this app run. Reported as a bucketed
+    /// ordinal only — never an ad unit id, never an advertising identifier.
+    private(set) var impressionCount = 0
 
     var isAdLoaded: Bool { interstitial != nil }
 
@@ -58,9 +65,13 @@ final class AdManager: NSObject, EconInterstitialAdapting {
                                                        request: Self.makeRequest(policy: policy))
                 self.interstitial = ad
                 self.isLoading = false
+                EBEvents.adLoadFinished(outcome: .filled)
             } catch {
                 self.isLoading = false
                 self.onFailure?(.adLoadFailed, error)
+                // Outcome only. The SDK's error string is a third-party message
+                // and `sdk_error_description` is a prohibited property name.
+                EBEvents.adLoadFinished(outcome: .noFill)
             }
         }
     }
@@ -83,6 +94,8 @@ final class AdManager: NSObject, EconInterstitialAdapting {
         interstitial = nil
         ad.fullScreenContentDelegate = self
         ad.present(from: presenter)
+        impressionCount += 1
+        EBEvents.adImpression(ordinal: impressionCount)
         return true
     }
 
@@ -132,6 +145,8 @@ final class AdManager: NSObject, EconInterstitialAdapting {
 
     var onFailure: ((EconDiagnosticCode, Error?) -> Void)?
     var onAdDismissed: ((Bool) -> Void)?
+
+    private(set) var impressionCount = 0
 
     var isAdLoaded: Bool { false }
     func startSDK(policy: EconAdRequestPolicy) {}
