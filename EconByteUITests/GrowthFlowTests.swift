@@ -103,6 +103,57 @@ final class GrowthFlowTests: XCTestCase {
             .firstMatch.waitForExistence(timeout: 8))
     }
 
+    /// The deletion handle, asserted on screen.
+    ///
+    /// `AppStore/1.1.2/app-privacy-answers.md` §1 tells App Review that the
+    /// anonymous analytics identifier "is shown to the user in Settings so they
+    /// can quote it in a deletion request". The reconciliation merge dropped the
+    /// row while leaving that sentence in the answers, which is a privacy
+    /// promise the build did not keep. This test is what stops it happening
+    /// twice.
+    ///
+    /// A UI-test launch resolves no PostHog key (`InstrumentationContext`), so
+    /// there is no id on the wire — and the row must SAY so rather than show an
+    /// id no deletion request could match.
+    func testAnalyticsIdentityRowIsOfferedWithConsentAndWithdrawnWithIt() {
+        let app = launchApp()
+        openSettings(app)
+
+        let analytics = app.switches["settingsAnalyticsToggle"]
+        XCTAssertTrue(analytics.waitForExistence(timeout: 8))
+        XCTAssertTrue(scrollTo(analytics, in: app),
+                      "the analytics switch should be reachable in Settings")
+
+        // The identifier is on the row's VALUE, which is the thing the promise is
+        // about: what the user can actually quote to support.
+        let row = app.staticTexts["analyticsIdentityRow"]
+        XCTAssertFalse(row.exists,
+                       "before consent there is no analytics id, so there must be no row")
+
+        XCTAssertTrue(setSwitch(analytics, to: true),
+                      "turning analytics on should stick")
+        XCTAssertTrue(row.waitForExistence(timeout: 8),
+                      "opting in must reveal the Analytics ID row — it is the only handle a user "
+                        + "has on data they cannot otherwise name in a deletion request")
+        XCTAssertTrue(app.staticTexts["Analytics ID"].waitForExistence(timeout: 8),
+                      "the value needs its own visible title, or it is an unexplained string")
+        XCTAssertEqual(row.label, "not available",
+                       "a UI-test launch resolves no analytics credentials, so nothing is on the "
+                        + "wire and the row says so instead of inventing an id")
+
+        let copy = app.buttons["analyticsIdentityCopyButton"]
+        XCTAssertTrue(copy.waitForExistence(timeout: 8),
+                      "an id a user cannot copy is not a usable deletion handle")
+        XCTAssertFalse(copy.isEnabled,
+                       "with no id to copy the control must be disabled rather than silently "
+                        + "putting an empty string on the pasteboard")
+
+        XCTAssertTrue(setSwitch(analytics, to: false),
+                      "turning analytics back off should stick")
+        XCTAssertFalse(row.waitForExistence(timeout: 3),
+                       "withdrawing consent resets the id, so the row must go with it")
+    }
+
     /// Reminders default off and the system dialog never appears on launch.
     func testRemindersDefaultOffAndNoPermissionDialogOnLaunch() {
         let app = launchApp()

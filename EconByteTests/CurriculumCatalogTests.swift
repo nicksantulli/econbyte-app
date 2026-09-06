@@ -686,6 +686,47 @@ final class CurriculumCatalogTests: XCTestCase {
         XCTAssertTrue(highlight.line.hasSuffix("."), "the slice ends at its own sentence")
     }
 
+    /// M-4. The slice used to be `body.firstIndex(of: ".")`, which is correct
+    /// only for as long as the sourced prose happens to carry no decimal. The
+    /// catalog re-sources these examples every cycle; the first CPI print
+    /// written as "9.1 percent" would have put "…rose 9." on the home screen —
+    /// a *different figure* than the card's, presented as the card's own.
+    @MainActor
+    func testTheHighlightSliceSurvivesADecimalInTheProse() {
+        let prose = "Grocery prices rose 9.1 percent over the year to June 2022. "
+            + "Nothing in the cart had changed; the money had."
+        XCTAssertEqual(ContentStore.firstSentence(of: prose),
+                       "Grocery prices rose 9.1 percent over the year to June 2022.",
+                       "a period between two digits is a decimal point, not a sentence end")
+    }
+
+    /// The companion rule: a period inside a token is not a terminator either,
+    /// so a bare source URL in the prose cannot truncate the line.
+    @MainActor
+    func testTheHighlightSliceDoesNotEndInsideADottedToken() {
+        let prose = "The series lives at fred.stlouisfed.org and updates monthly. Then this."
+        XCTAssertEqual(ContentStore.firstSentence(of: prose),
+                       "The series lives at fred.stlouisfed.org and updates monthly.")
+    }
+
+    /// And prose with no terminator at all returns whole, never empty — showing
+    /// too much of the card's own sourced text is the safe failure direction.
+    @MainActor
+    func testTheHighlightSliceFallsBackToTheWholeBodyWithNoTerminator() {
+        XCTAssertEqual(ContentStore.firstSentence(of: "A sentence with no period"),
+                       "A sentence with no period")
+    }
+
+    /// The shipped catalog, through the same door the view uses.
+    @MainActor
+    func testTheShippedHighlightIsTheCardsWholeFirstSentence() throws {
+        let highlight = try XCTUnwrap(ContentStore.shared.groceryHighlight)
+        XCTAssertTrue(highlight.line.hasSuffix("."))
+        XCTAssertFalse(highlight.line.hasSuffix(" ."))
+        XCTAssertTrue(highlight.exampleBody.hasPrefix(highlight.line),
+                      "the line is the body's own opening, not a slice from its middle")
+    }
+
     /// The specific trap, named: the phrase the 1.1.1 implementation keyed on is
     /// GONE from the restored catalog. If this ever passes, someone has put v1.0
     /// content back.

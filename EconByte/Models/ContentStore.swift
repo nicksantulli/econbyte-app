@@ -176,13 +176,35 @@ final class ContentStore: ObservableObject {
         guard let card = allCards.first(where: { $0.id == Self.homeHighlightCardID })
         else { return nil }
         let body = card.exampleBody
-        // First sentence, inclusive of its terminating period.
-        let line: String
-        if let dot = body.firstIndex(of: ".") {
-            line = String(body[...dot])
-        } else {
-            line = body
+        return (line: Self.firstSentence(of: body), source: card.source, exampleBody: body)
+    }
+
+    /// The first sentence of `body`, inclusive of its terminating period.
+    ///
+    /// M-4: the naive version took `body.firstIndex(of: ".")`, which is wrong the
+    /// moment the sourced prose carries a decimal. "…rose 9.1 percent in June."
+    /// would have been sliced to "…rose 9." — a *different number*, rendered on
+    /// Home as if it were the card's own figure. The catalog re-sources these
+    /// examples, so a decimal appearing here is a matter of when, not whether.
+    ///
+    /// Two rules, both conservative:
+    ///  * a period between two digits is a decimal point, never a terminator;
+    ///  * a terminator is followed by whitespace or by nothing at all, so
+    ///    periods inside a token ("fred.stlouisfed.org") do not end a sentence.
+    ///
+    /// Anything unmatched falls back to the whole body, which is the safe
+    /// direction: showing too much of the card's own sourced prose, never a
+    /// truncated number. (Sentence-medial abbreviations such as "U.S. city" are
+    /// out of scope; the editorial policy spells such terms out.)
+    static func firstSentence(of body: String) -> String {
+        let characters = Array(body)
+        for (index, character) in characters.enumerated() where character == "." {
+            let previous = index > 0 ? characters[index - 1] : nil
+            let next = index + 1 < characters.count ? characters[index + 1] : nil
+            if let previous, let next, previous.isNumber, next.isNumber { continue }
+            if let next, !next.isWhitespace { continue }
+            return String(characters[...index])
         }
-        return (line: line, source: card.source, exampleBody: body)
+        return body
     }
 }

@@ -153,6 +153,13 @@ struct HomeView: View {
                     Text(g.source)
                         .font(.system(size: 11, weight: .regular, design: .rounded))
                         .foregroundColor(Econ.subtext)
+                        // M-5: the restored catalog's structured source renders
+                        // as "organization — document title", which for
+                        // FRED/CPIAUCSL is long enough to run to three or four
+                        // lines at large text sizes and push the highlight's own
+                        // line off the card. Two lines is the attribution's
+                        // budget; the full source is on the card itself.
+                        .lineLimit(2)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }

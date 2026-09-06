@@ -41,14 +41,15 @@ packages:
     exactVersion: 8.58.4
 settings:
   base:
-    # 1.1.2 / build 11. Builds 9 and 10 are already uploaded and neither carries
-    # the 1.1 curriculum, so 11 is the first free number for the reconciled
-    # binary. Keep these in step with EconByte.xcodeproj/project.pbxproj — the
+    # 1.1.2 / build 12. Builds 9 and 10 are already uploaded and neither carries
+    # the 1.1 curriculum; build 11 carried it but dropped the Settings
+    # "Analytics ID" row the App Privacy answers promise, so 12 is the build
+    # that restores it. Keep these in step with EconByte.xcodeproj/project.pbxproj — the
     # archived Info.plist is what App Store Connect reads, and this file only
     # reproduces the project. EconByte is a COMMITTED-pbxproj app: this file is
     # documentation, never a generator input (never run xcodegen here).
     MARKETING_VERSION: "1.1.2"
-    CURRENT_PROJECT_VERSION: "11"
+    CURRENT_PROJECT_VERSION: "12"
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO

@@ -1,5 +1,6 @@
 import SwiftUI
 import StoreKit
+import UIKit
 
 struct SettingsView: View {
     /// Called when the user taps Unlock All; Settings dismisses first so the
@@ -18,6 +19,11 @@ struct SettingsView: View {
     @State private var showAlert = false
     @State private var analyticsEnabled = false
     @State private var diagnosticsEnabled = false
+    /// The anonymous analytics id the transport is actually stamping on events,
+    /// read back from `EconTelemetry` rather than minted here. Refreshed on
+    /// appear and whenever the consent switch moves, so the row can never show
+    /// an id the SDK is not using. `nil` renders as "not available".
+    @State private var analyticsIdentity: String?
 
     private var removeAdsProduct: Product? { store.product(for: .removeAds) }
     private var unlockAllProduct: Product? { store.product(for: .unlockAll) }
@@ -42,6 +48,7 @@ struct SettingsView: View {
             .task {
                 analyticsEnabled = growth.telemetry.isAnalyticsEnabled
                 diagnosticsEnabled = growth.diagnostics.isDiagnosticsEnabled
+                analyticsIdentity = growth.telemetry.analyticsIdentity
                 growth.notifications.refreshAuthorization()
                 await store.loadProducts()
             }
@@ -176,9 +183,47 @@ struct SettingsView: View {
                 set: { value in
                     analyticsEnabled = value
                     growth.setAnalyticsEnabled(value, entryPoint: .settings)
+                    // Read back AFTER the transport has been told, so the row
+                    // shows the id the SDK will really send (or nothing at all
+                    // once consent is withdrawn).
+                    analyticsIdentity = growth.telemetry.analyticsIdentity
                 }))
                 .tint(Econ.amber)
                 .accessibilityIdentifier("settingsAnalyticsToggle")
+
+            // The deletion handle. `AppStore/1.1.2/app-privacy-answers.md` §1
+            // tells App Review that the analytics identifier "is shown to the
+            // user in Settings so they can quote it in a deletion request" —
+            // this row is that promise. It is only meaningful while analytics
+            // is on, so it appears with the opt-in and leaves with it.
+            if analyticsEnabled {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Analytics ID")
+                        .foregroundColor(Econ.white)
+                    Spacer(minLength: 12)
+                    // The identifier sits on the VALUE, not on the enclosing
+                    // HStack: SwiftUI propagates a container's identifier down
+                    // onto its children and it wins over theirs, so an id on the
+                    // stack would make every element in the row answer to the
+                    // same name and no test could assert what is displayed.
+                    Text(analyticsIdentity ?? "not available")
+                        .font(.system(.footnote, design: .monospaced))
+                        .foregroundColor(Econ.subtext)
+                        .multilineTextAlignment(.trailing)
+                        .textSelection(.enabled)
+                        .accessibilityIdentifier("analyticsIdentityRow")
+                    Button {
+                        UIPasteboard.general.string = analyticsIdentity ?? ""
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                            .foregroundColor(Econ.sky)
+                    }
+                    .buttonStyle(.borderless)
+                    .disabled(analyticsIdentity == nil)
+                    .accessibilityLabel(Text("Copy analytics ID"))
+                    .accessibilityIdentifier("analyticsIdentityCopyButton")
+                }
+            }
 
             Toggle("Share Crash Diagnostics", isOn: Binding(
                 get: { diagnosticsEnabled },
@@ -194,7 +239,7 @@ struct SettingsView: View {
         } header: {
             Text("Privacy & Data")
         } footer: {
-            Text("Both are off unless you turn them on, and they are separate choices. Neither affects your cards, streak, bookmarks, purchases, or ads. What you read or save is never shared.")
+            Text("Both are off unless you turn them on, and they are separate choices. Neither affects your cards, streak, bookmarks, purchases, or ads. What you read or save is never shared. While usage analytics is on, the anonymous ID above is the only handle we have on your data — quote it to support to have it deleted.")
         }
     }
 

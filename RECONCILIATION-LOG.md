@@ -60,6 +60,25 @@ crash, no log, no failing test. It now keys on `ContentStore.homeHighlightCardID
 slices the first sentence. Four unit tests in `CurriculumCatalogTests` and the
 existing `-exposeGroceryBinding` UI test hold it there.
 
+**M-4, fixed in build 12.** That first-sentence slice was `body.firstIndex(of: ".")`
+— correct only for as long as the sourced prose happens to carry no decimal. The
+catalog re-sources these examples every cycle, and the first CPI print written as
+"9.1 percent" would have rendered "…rose 9." on Home: a *different figure* than the
+card's, shown as if it were the card's own. It is now
+`ContentStore.firstSentence(of:)`, which treats a period between two digits as a
+decimal point and requires a terminator to be followed by whitespace or nothing (so
+`fred.stlouisfed.org` cannot truncate the line either), falling back to the whole
+body when it finds no terminator at all. Three new unit tests, one of them with
+"9.1 percent" in the prose.
+
+**M-5, fixed in build 12.** `HomeView`'s source label now carries `.lineLimit(2)`.
+The restored catalog's structured attribution renders as "organization — document
+title", and FRED/CPIAUCSL's is long enough to run to three or four lines at large
+text sizes and push the highlight's own line off the card. The accessibility audit
+stays green: `AccessibilityTests.testAccessibilityAuditOnCoreScreens` treats
+`.textClipped` as a recorded judgement call rather than a blocking class, and the
+full source remains on the card itself.
+
 The visible **source label changes with the content**, from "Bureau of Labor
 Statistics" to "Federal Reserve Bank of St. Louis (FRED) — Consumer Price Index…".
 That is correct: the line is a verbatim slice of the card, so the attribution has to
@@ -203,6 +222,42 @@ list is strictly stricter than A's schema**: `card_id`, `topic_id`, `set_id`,
 are *rejected* by the shipped one. Nothing that identifies content or a transaction
 travels any more.
 
+#### 14a. The Settings "Analytics ID" row — LOST IN THE MERGE, restored in build 12
+
+**This was a real defect in build 11 and it is recorded here in full rather than
+quietly fixed.** Lineage C's `PrivacyControlsSection` carried an
+`analyticsIdentityRow` (`git show 857f043:EconByte/Views/SettingsView.swift`,
+lines 229–238): while analytics was on, Settings displayed
+`telemetry.analyticsIdentity ?? "not available"` in a selectable monospaced row.
+
+Taking **A**'s `SettingsView` wholesale — the resolution recorded above — dropped
+that row, because A had no transport and therefore no id to show. Nothing failed:
+no test asserted the row, so the loss was silent.
+
+It was not cosmetic. `AppStore/1.1.2/app-privacy-answers.md` §1 tells App Review,
+in the justification for declaring **Identifiers → User ID**, that the id "is
+shown to the user in Settings so they can quote it in a deletion request". Build
+11 shipped that sentence with no such row: the app offered no way to name the
+data a deletion request would be about. A privacy answer that describes a control
+the binary does not have is the kind of mismatch that a label review is for.
+
+Build 12 restores the row into `privacySection` — same identifier
+(`analyticsIdentityRow`), same "not available" fallback, still selectable, plus
+an explicit copy button (`analyticsIdentityCopyButton`), disabled when there is
+nothing to copy. Two differences from lineage C, both deliberate:
+
+* it is gated on the **consent switch's own state**, not on
+  `telemetry.isConfigured`, matching the reconciled posture that both switches
+  are always offered whichever secrets the archive carries;
+* the displayed value is refreshed into view state on appear and after every
+  consent change, read back **from the transport**, so the row can never show an
+  id the SDK is not stamping on events.
+
+The gap is now closed by a test rather than by attention:
+`GrowthFlowTests.testAnalyticsIdentityRowIsOfferedWithConsentAndWithdrawnWithIt`
+asserts the row is absent before consent, present with a value after it, carries
+a copy control, and disappears again when consent is withdrawn.
+
 ### 15. `EconByte.xcodeproj/project.pbxproj` — **C**, hand-merged additively
 Both lineages independently created an `EconByteTests` target with different UUIDs.
 C's target is the base (it also carries the two SPM dependencies, the
@@ -236,7 +291,8 @@ precisely the defect that file exists to prevent.
 ## Tests
 
 * `EconByteTests/GrowthSystemsTests.swift` — sections 6 and 7 (lineage A's telemetry
-  schema and consent, ~20 tests) were **removed, not lost**: they exercised a type
+  schema and consent, **13 tests** — 7 in section 6, 6 in section 7, counted at
+  `3ff4f83`, lineage A's side of the merge) were **removed, not lost**: they exercised a type
   that no longer exists, and `EconTelemetryTests` / `InstrumentationPrivacyTests`
   cover the same ground against the pipeline that actually ships, with a stricter
   prohibited list. A comment at the seam records exactly that. Section 8's
@@ -245,6 +301,10 @@ precisely the defect that file exists to prevent.
   highlight and the restored 15/120 catalog at the runtime store.
 * `EconByteUITests/EconByteUITests.swift` — the grocery assertion no longer looks for
   `"$117"`, which is superseded v1.0 content.
+* Build 12 adds four unit tests (`CurriculumCatalogTests`: the decimal-safe slice,
+  the dotted-token case, the no-terminator fallback, and the shipped catalog through
+  the same door the view uses) and one UI test (`GrowthFlowTests`: the Analytics ID
+  row, §14a).
 
 ## Not done here, by design
 
