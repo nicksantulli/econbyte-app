@@ -177,12 +177,22 @@ final class AccessibilityTests: XCTestCase {
         XCTAssertTrue(gear.waitForExistence(timeout: 10))
         gear.tap()
 
+        // At AccessibilityXXXL the Notifications section alone — header, toggle
+        // and a three-line footer — fills the sheet on a 402pt-wide phone, so
+        // the Purchases rows start below the fold and SwiftUI's List has not
+        // built them yet. That is the text size doing its job, not a defect:
+        // the release condition is that the controls stay *reachable and
+        // operable*, which is what Restore is already asserted the same way.
+        // Scroll first, then assert, or this passes only on the widest
+        // simulator that happens to be on the bench.
         let removeAds = app.buttons["settingsRemoveAdsButton"]
-        XCTAssertTrue(removeAds.waitForExistence(timeout: 10))
+        for _ in 0..<6 where !removeAds.exists || !removeAds.isHittable { app.swipeUp() }
+        XCTAssertTrue(removeAds.waitForExistence(timeout: 10),
+                      "Remove Ads must remain reachable at AccessibilityXXXL")
         XCTAssertTrue(removeAds.isHittable, "Remove Ads must stay operable at AccessibilityXXXL")
 
         let restore = app.buttons["settingsRestoreButton"]
-        for _ in 0..<4 where !restore.exists || !restore.isHittable { app.swipeUp() }
+        for _ in 0..<6 where !restore.exists || !restore.isHittable { app.swipeUp() }
         XCTAssertTrue(restore.exists, "Restore Purchases must remain reachable at AccessibilityXXXL")
     }
 }
