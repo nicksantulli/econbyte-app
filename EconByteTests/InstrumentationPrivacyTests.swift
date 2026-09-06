@@ -690,13 +690,13 @@ final class InstrumentationPrivacyTests: XCTestCase {
     func testPrivacyManifestDeclaresCrashDataProductInteractionAndTheAnalyticsIdentifier() throws {
         let manifest = try privacyManifest()
 
-        // UNCHANGED from 1.1.1, and deliberately so: EconByte serves AdMob
-        // interstitials and prompts for ATT, so the app as a whole DOES track.
-        // The analytics added in 1.1.2 are not what makes this true.
-        XCTAssertEqual(manifest["NSPrivacyTracking"] as? Bool, true,
-                       "the AdMob declaration from 1.1.1 must survive this release")
-        XCTAssertEqual(manifest["NSPrivacyTrackingDomains"] as? [String],
-                       ["googleads.g.doubleclick.net"])
+        // CHANGED from 1.1.1, deliberately: build 8 declared tracking and named
+        // a tracking domain while its published label answered "Tracking: No" on
+        // every row. The label was the correct half. Asserted in full by
+        // `testThePrivacyManifestDeclaresTheAppDoesNotTrack`; repeated here so
+        // this test cannot pass against the incoherent shape either.
+        XCTAssertEqual(manifest["NSPrivacyTracking"] as? Bool, false)
+        XCTAssertEqual(manifest["NSPrivacyTrackingDomains"] as? [String], [])
 
         let declared = manifest["NSPrivacyCollectedDataTypes"] as? [[String: Any]] ?? []
         let byType = Dictionary(uniqueKeysWithValues: declared.compactMap { entry -> (String, [String: Any])? in
@@ -738,13 +738,13 @@ final class InstrumentationPrivacyTests: XCTestCase {
             "NSPrivacyCollectedDataTypePurposes"] as? [String] ?? []
         XCTAssertEqual(userIDPurposes, ["NSPrivacyCollectedDataTypePurposeAnalytics"])
 
-        // The ad SDK's device identifier, untouched by 1.1.2 and still the one
-        // entry that IS tracking. Asserted so this release cannot silently widen
-        // or narrow a published answer.
+        // The ad SDK's device identifier. Still declared as collected — AdMob
+        // reads it — but no longer declared as used for tracking, because with
+        // no ATT prompt and npa=1 on every request it is not.
         guard let deviceID = byType["NSPrivacyCollectedDataTypeDeviceID"] else {
             return XCTFail("the AdMob Device ID declaration from 1.1.1 is missing")
         }
-        XCTAssertEqual(deviceID["NSPrivacyCollectedDataTypeTracking"] as? Bool, true)
+        XCTAssertEqual(deviceID["NSPrivacyCollectedDataTypeTracking"] as? Bool, false)
         XCTAssertEqual(deviceID["NSPrivacyCollectedDataTypePurposes"] as? [String],
                        ["NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising"])
     }
@@ -803,6 +803,132 @@ final class InstrumentationPrivacyTests: XCTestCase {
         XCTAssertEqual(versions["swift-package-manager-google-mobile-ads"], "12.14.0")
     }
 
+    // MARK: - The app does not track, and every artefact says so
+    //
+    // 1.1.1 (build 8, live on the App Store) shipped an incoherent pair: the
+    // published App Privacy label answers "used to track you: No" for every row,
+    // while the binary declares `NSPrivacyTracking = true`, names
+    // `googleads.g.doubleclick.net` as a tracking domain, carries
+    // `NSUserTrackingUsageDescription`, and calls
+    // `ATTrackingManager.requestTrackingAuthorization()` before the first
+    // interstitial. 1.1.2's build 9 inherited all four from that lineage.
+    //
+    // The label is the correct half. Portfolio doctrine is no ATT prompt, ever,
+    // and the ad request is non-personalized regardless of ATT state — so the
+    // prompt buys nothing and costs a great deal: a user who taps "Ask App Not
+    // to Track" makes iOS enforce `NSPrivacyTrackingDomains` at the network
+    // layer and block every request to the GoogleMobileAds SDK's own primary
+    // ad-serving domain, for that install, silently and permanently.
+    //
+    // So the binary is what changes. These tests are the contract that keeps the
+    // two halves from drifting apart a third time — each one asserts a different
+    // artefact (manifest, source, source plist, built plist, Mach-O image), so no
+    // single edit can put the app back into the incoherent shape unnoticed.
+
+    /// The manifest baked into the archive: the app does not track, and there is
+    /// no tracking domain for iOS to block.
+    func testThePrivacyManifestDeclaresTheAppDoesNotTrack() throws {
+        let manifest = try privacyManifest()
+
+        XCTAssertEqual(manifest["NSPrivacyTracking"] as? Bool, false,
+                       "EconByte does not track: no ATT prompt, no cross-app identity, "
+                        + "non-personalized ads only")
+        XCTAssertEqual(manifest["NSPrivacyTrackingDomains"] as? [String], [],
+                       "a declared tracking domain is blocked at the network layer for every "
+                        + "user who declines ATT — and with no ATT prompt there is nothing to decline")
+
+        let declared = manifest["NSPrivacyCollectedDataTypes"] as? [[String: Any]] ?? []
+        for entry in declared {
+            let type = entry["NSPrivacyCollectedDataType"] as? String ?? "(unnamed)"
+            XCTAssertEqual(entry["NSPrivacyCollectedDataTypeTracking"] as? Bool, false,
+                           "\(type) must not be declared as used for tracking while the app "
+                            + "declares NSPrivacyTracking = false")
+        }
+    }
+
+    /// No source file imports the framework or names the class. The two call
+    /// sites were inside `presentInterstitial()` and the mock `noteCardSwipe()`,
+    /// so both the GoogleMobileAds and the no-SDK compilation paths are covered
+    /// by scanning every file rather than just `AdManager.swift`.
+    func testNoAppSourceImportsOrCallsAppTrackingTransparency() throws {
+        for url in try appSourceFiles() {
+            let code = Self.strippingComments(try String(contentsOf: url, encoding: .utf8))
+            for needle in ["AppTrackingTransparency", "ATTrackingManager"] {
+                XCTAssertFalse(code.contains(needle),
+                               "\(url.lastPathComponent) still references \(needle)")
+            }
+        }
+    }
+
+    /// An app with no ATT call site must not carry the usage-description string.
+    /// A stray purpose string with no prompt behind it is its own inconsistency,
+    /// and it is the one artefact a reviewer can read without running anything.
+    func testNeitherInfoPlistCarriesATrackingUsageDescription() throws {
+        XCTAssertNil(try sourceInfoPlist()["NSUserTrackingUsageDescription"],
+                     "EconByte/Info.plist still declares why it would prompt for tracking")
+        XCTAssertNil(Bundle.main.infoDictionary?["NSUserTrackingUsageDescription"],
+                     "the built Info.plist still declares why it would prompt for tracking")
+    }
+
+    /// The strongest form of the claim: the app target's own compiled image
+    /// holds no reference to the class and no load command for the framework,
+    /// so the prompt cannot be reached by any path — including one added by a
+    /// future edit that the source scan above happens to word-match around.
+    ///
+    /// Both of the app's own Mach-O images are scanned. A Debug build puts
+    /// essentially all of the app's code in `EconByte.debug.dylib` and leaves a
+    /// ~58 KB launcher as `Bundle.main.executableURL`, so a test that reads only
+    /// the main executable passes under `xcodebuild test` for the wrong reason —
+    /// it did, on the first run of this file, against a source tree that was
+    /// still importing the framework. `Frameworks/` is deliberately NOT scanned:
+    /// GoogleMobileAds weak-links AppTrackingTransparency itself, and vendor
+    /// linkage is not this app's claim to make.
+    ///
+    /// What is asserted is the LC_LOAD_DYLIB path, not the bare class name. The
+    /// statically-linked GoogleMobileAds archive carries the literal
+    /// "ATTrackingManager" as one of its own C strings (it looks the class up by
+    /// name at runtime, next to "com.google.admob.n.device"), so that substring
+    /// survives in the app image no matter what EconByte does and asserting on
+    /// it would be asserting about the vendor. The load command is EconByte's
+    /// own: it appears when this target imports the framework and disappears
+    /// when it stops — and with no framework linked, no code here can reach the
+    /// prompt.
+    func testTheAppBinaryCarriesNoATTrackingManagerSymbol() throws {
+        let bundle = Bundle.main.bundleURL
+        let executable = try XCTUnwrap(Bundle.main.executableURL,
+                                       "the test host has no executable to inspect")
+        let images = [executable, bundle.appendingPathComponent("EconByte.debug.dylib")]
+            .filter { FileManager.default.fileExists(atPath: $0.path) }
+        XCTAssertFalse(images.isEmpty, "no app image to inspect")
+
+        for url in images {
+            let image = try Data(contentsOf: url)
+            let load = "AppTrackingTransparency.framework/AppTrackingTransparency"
+            XCTAssertNil(image.range(of: Data(load.utf8)),
+                         "\(url.lastPathComponent) still links AppTrackingTransparency — "
+                          + "a linked framework is a reachable prompt")
+        }
+    }
+
+    /// Removing ATT is only coherent if the ads were never personalized to begin
+    /// with. `config/app-factory/monetization-policy.json` sets
+    /// `adsPolicy.personalizedAdsMode = "disabled"` portfolio-wide; this asserts
+    /// that policy is expressed in the app both ways Google offers it — the
+    /// SDK-level switch and the per-request extra — so dropping one cannot
+    /// silently re-enable personalization. Scanned with comments stripped, for
+    /// the same reason `adapterSource` is: a commented-out line must not count.
+    func testEveryAdRequestIsNonPersonalized() throws {
+        let source = Self.strippingComments(
+            try String(contentsOf: repoRoot().appendingPathComponent("EconByte/Services/AdManager.swift"),
+                       encoding: .utf8))
+        XCTAssertTrue(source.contains("publisherPrivacyPersonalizationState = .disabled"),
+                      "the SDK-level personalization switch must be set before the SDK starts")
+        XCTAssertTrue(source.contains("\"npa\": \"1\""),
+                      "every ad request must carry the npa=1 extra")
+        XCTAssertTrue(source.contains("request.register(extras)"),
+                      "the npa extra must actually be registered on the request")
+    }
+
     // MARK: - Source helpers
 
     private func fieldNames<T>(of value: T) -> [String] {
@@ -855,6 +981,26 @@ final class InstrumentationPrivacyTests: XCTestCase {
             out += kept + "\n"
         }
         return out
+    }
+
+    /// Every Swift file in the app target's source tree.
+    private func appSourceFiles(file: StaticString = #filePath) throws -> [URL] {
+        let root = repoRoot(file: file).appendingPathComponent("EconByte")
+        let walker = try XCTUnwrap(FileManager.default.enumerator(at: root,
+                                                                  includingPropertiesForKeys: nil))
+        let files = walker.compactMap { $0 as? URL }.filter { $0.pathExtension == "swift" }
+        XCTAssertFalse(files.isEmpty, "no Swift sources found under \(root.path)")
+        return files
+    }
+
+    /// The Info.plist as committed, before the build substitutes its variables.
+    /// Asserted alongside `Bundle.main` because the built copy is the one the
+    /// reviewer sees and the source copy is the one the next edit starts from.
+    private func sourceInfoPlist(file: StaticString = #filePath) throws -> [String: Any] {
+        let url = repoRoot(file: file).appendingPathComponent("EconByte/Info.plist")
+        let parsed = try PropertyListSerialization.propertyList(from: try Data(contentsOf: url),
+                                                               format: nil)
+        return try XCTUnwrap(parsed as? [String: Any], "Info.plist is not a plist dictionary")
     }
 
     private func privacyManifest(file: StaticString = #filePath) throws -> [String: Any] {

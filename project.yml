@@ -13,7 +13,8 @@ packages:
   # Google's TEST unit; RELEASE uses the Owner-provided unit.
   # Pinned EXACTLY, like the other two: a `majorVersion` range let any 12.x
   # resolve, so the ad SDK that shipped could differ from the one that was
-  # reviewed — and this is the SDK carrying the app's only tracking declaration.
+  # reviewed. The app declares NSPrivacyTracking = false and never prompts for
+  # ATT, so this SDK is pinned for reproducibility, not for a tracking claim.
   # 12.14.0 is the reviewed version; Package.resolved is committed beside it.
   GoogleMobileAds:
     url: https://github.com/googleads/swift-package-manager-google-mobile-ads
@@ -43,7 +44,7 @@ settings:
     # in step with EconByte.xcodeproj/project.pbxproj — the archived Info.plist
     # is what App Store Connect reads, and this file only reproduces the project.
     MARKETING_VERSION: "1.1.2"
-    CURRENT_PROJECT_VERSION: "9"
+    CURRENT_PROJECT_VERSION: "10"
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO
