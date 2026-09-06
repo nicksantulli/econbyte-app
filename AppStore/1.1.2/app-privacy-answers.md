@@ -6,8 +6,10 @@ section **cannot be edited through the ASC API** — it is web-UI only, so no la
 can do this for you.
 
 - App: `com.nsantulli.econbyte` (ASC app id `6780714383`)
-- Version: **1.1.2** (build **9** — ASC's highest existing build is 8, read back
-  from `/v1/apps/6780714383/builds` on 2026-09-05)
+- Version: **1.1.2** (build **10**. Build 9 was uploaded first and must not
+  ship: it carried the ATT prompt and an `NSPrivacyTracking = true` manifest
+  that contradict every row below. Build 10 removes them — see "The binary was
+  fixed" further down.)
 - Prepared: 2026-09-05, from the `feat/econbyte-instrumentation` source tree
 - Prepared by reading: the app's own `EconByte/Resources/PrivacyInfo.xcprivacy`,
   the pinned SDK versions (posthog-ios 3.71.4, sentry-cocoa 8.58.4), the typed
@@ -286,48 +288,73 @@ any event.** Both are now declared rather than argued about.
 - **Ad-side declarations stay exactly as they are.** Device ID and Advertising
   Data keep their purposes (Third-Party Advertising) and their answers. Nine
   types total = these two, untouched, plus the seven above.
-- **The binary's tracking posture is unchanged.** `PrivacyInfo.xcprivacy` still
-  carries `NSPrivacyTracking = true`, `NSPrivacyTrackingDomains =
-  [googleads.g.doubleclick.net]`, and Info.plist still carries
-  `NSUserTrackingUsageDescription` (the ATT prompt at first ad load). None of
-  the seven types added above touches any of that.
+- **The label rows are unchanged by the binary fix.** Every answer in this file
+  — all seven new rows and the two pre-existing ad rows — is exactly what it was
+  when this file was written. Build 10 changed the *binary* so it stops
+  contradicting them; it did not change a single answer. See the next section.
 - No new permission, no new prompt, no new user-facing consent sheet. In
   particular **row 7 adds no location permission** — nothing about the app's
   runtime behaviour changes.
 
 ---
 
-## Owner follow-up, carried to 1.1.3 — the tracking-manifest vs label mismatch
+## The binary was fixed — this label is now the truthful one (build 10)
 
-**This does not block 1.1.2** and no lane should treat it as a blocker for this
-submission. It is pre-existing, it predates the instrumentation work, and 1.1.2
-neither creates nor worsens it. It is recorded here so it is not lost.
+This section replaced an open "Owner follow-up, carried to 1.1.3" question:
+the binary and the label disagreed about tracking, and the question was which
+one to move. **Option A was taken — the manifest was aligned to the label.** No
+answer in this file changed.
 
-- The **binary** says the app tracks: `NSPrivacyTracking = true`, a tracking
-  domain of `googleads.g.doubleclick.net`, and an ATT usage string.
-- The **App Store label** says it does not: since the 2026-09-01 flip, every row
-  reads **Used to Track You = No** — and the seven additions above keep it that
-  way.
+What was wrong, and where it came from:
 
-Those two artifacts disagree, and Apple reads both. Either the label understates
-what the ad SDK does post-ATT consent, or the manifest overstates it while the
-app is geo-restricted away from consent-gated regions.
+- The **binary** said the app tracks. `PrivacyInfo.xcprivacy` carried
+  `NSPrivacyTracking = true` and `NSPrivacyTrackingDomains =
+  [googleads.g.doubleclick.net]`; `Info.plist` carried
+  `NSUserTrackingUsageDescription`; `AdManager` called
+  `ATTrackingManager.requestTrackingAuthorization()` before the first
+  interstitial.
+- The **label** says it does not — every row reads **Used to Track You: No**.
+- This is not new to 1.1.2 and 1.1.2 did not cause it. The **live 1.1.1 binary
+  (build 8) has exactly the same shape**, published against exactly the same
+  label. It is already in the App Store. The coherent shape did exist — the
+  build-6 lineage that shipped as 1.1 removed the ATT pathway — but 1.1.1 was
+  cut from a different, pre-removal lineage and the removal was lost.
 
-**Owner decision required, targeted at 1.1.3:**
+Why the label was the correct half to keep:
 
-- **Option A — align the manifest to the label.** If the ad configuration
-  genuinely does not track (non-personalised ads, geo-restricted, no ATT-gated
-  data flow in practice), set `NSPrivacyTracking = false`, drop
-  `NSPrivacyTrackingDomains`, and remove `NSUserTrackingUsageDescription` so the
-  ATT prompt stops appearing. Requires a code change and a build.
-- **Option B — align the label to the manifest.** Flip the Advertising Data /
-  Device ID rows back to **Used to Track You = Yes**. Costs the "Data Not Linked
-  to You"-only public summary and re-introduces the tracking disclosure.
+- **Non-personalized ads do not need the IDFA.** The portfolio policy
+  (`config/app-factory/monetization-policy.json`,
+  `adsPolicy.personalizedAdsMode: "disabled"`) is non-personalized everywhere,
+  so ATT authorization buys no additional fill. Build 10 now states that in code
+  too — the SDK-level personalization switch plus `npa=1` on every request,
+  matching Table Talk.
+- **A declared tracking domain is enforced, not decorative.** When a user taps
+  "Ask App Not to Track", iOS blocks network requests to every domain in
+  `NSPrivacyTrackingDomains` for that install. That list named
+  `googleads.g.doubleclick.net` — the ad SDK's own primary serving domain. The
+  majority outcome of an ATT prompt is a decline, so the prompt's most likely
+  effect was silently killing ad fill in a way indistinguishable from "no ad
+  available".
 
-Bring the 1.1 release record with it: the 2026-09-01 flip to No was made
-deliberately, on the Owner's instruction, after ASC blocked the change while the
-1.0 binary was live. **This lane has not changed either artifact and is not the
-right place to decide.**
+What build 10 changes in the binary (and nothing else):
+
+| Artefact | Build 9 / live build 8 | Build 10 |
+|---|---|---|
+| `NSPrivacyTracking` | `true` | `false` |
+| `NSPrivacyTrackingDomains` | `[googleads.g.doubleclick.net]` | `[]` |
+| Device ID → `NSPrivacyCollectedDataTypeTracking` | `true` | `false` |
+| `NSUserTrackingUsageDescription` | present | removed |
+| `AdManager` ATT import + 2 call sites | present | removed |
+| Non-personalized ads | policy only | policy **and** code (`publisherPrivacyPersonalizationState = .disabled`, `npa=1`) |
+
+Five contract tests in `EconByteTests/InstrumentationPrivacyTests.swift` hold
+this shape — one per artefact (privacy manifest, app source, source `Info.plist`,
+built `Info.plist`, Mach-O load commands), so no single edit can restore the
+incoherent shape unnoticed.
+
+**Still open, and not this file's to decide:** the live 1.1.1 binary keeps
+prompting for ATT and keeps declaring the tracking domain until 1.1.2 replaces
+it. That is an argument for shipping 1.1.2 sooner, not later.
 
 ---
 

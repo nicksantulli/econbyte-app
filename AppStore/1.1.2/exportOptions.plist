@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  EconByte 1.1.2 (build 10) — App Store export options.
+
+    xcodebuild -exportArchive \
+      -archivePath <retention>/EconByte-1.1.2-build10.xcarchive \
+      -exportOptionsPlist AppStore/1.1.2/exportOptions.plist \
+      -exportPath <export-dir> \
+      -authenticationKeyPath <p8> -authenticationKeyID <id> -authenticationKeyIssuerID <id>
+
+  The archive is development-signed; export applies distribution signing.
+  destination=upload streams the package straight to App Store Connect, so no
+  .ipa is written locally — the same shape build 9 used.
+
+  No credentials appear in this file. The API key is passed by path and id on
+  the command line and lives outside the repository.
+-->
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>app-store-connect</string>
+
+	<key>teamID</key>
+	<string>Q2DM9FSRL4</string>
+
+	<key>destination</key>
+	<string>upload</string>
+
+	<key>uploadSymbols</key>
+	<true/>
+
+	<!-- The version and build number are set in the project (1.1.2 / 10).
+	     Nothing may renumber them at export. -->
+	<key>manageAppVersionAndBuildNumber</key>
+	<false/>
+
+	<key>stripSwiftSymbols</key>
+	<true/>
+</dict>
+</plist>
