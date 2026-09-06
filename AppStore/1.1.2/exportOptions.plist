@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <!--
-  EconByte 1.1.2 (build 11) — App Store export options.
+  EconByte 1.1.2 (build 12) — App Store export options.
 
     xcodebuild -exportArchive \
-      -archivePath <scratch>/EconByte-1.1.2-build11.xcarchive \
+      -archivePath <scratch>/EconByte-1.1.2-build12.xcarchive \
       -exportOptionsPlist AppStore/1.1.2/exportOptions.plist \
       -exportPath <export-dir> \
       -authenticationKeyPath <p8> -authenticationKeyID <id> -authenticationKeyIssuerID <id>
@@ -30,7 +30,7 @@
 	<key>uploadSymbols</key>
 	<true/>
 
-	<!-- The version and build number are set in the project (1.1.2 / 11).
+	<!-- The version and build number are set in the project (1.1.2 / 12).
 	     Nothing may renumber them at export. -->
 	<key>manageAppVersionAndBuildNumber</key>
 	<false/>

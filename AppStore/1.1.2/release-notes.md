@@ -1,6 +1,6 @@
 # EconByte 1.1.2 — release notes
 
-## Shipped copy (What's New, en-US) — REWRITTEN for build 11
+## Shipped copy (What's New, en-US) — REWRITTEN for build 11, unchanged for build 12
 
 Set on App Store Connect (`appStoreVersionLocalization
 74dcd360-68af-4d27-b225-e6fda92406f5`, en-US) and read back on 2026-09-06:
@@ -51,11 +51,22 @@ string quoted above. Nothing was submitted, so a revert costs nothing.
 |---|---|---|
 | 9 (`d388298c-2a63-47b2-a1c5-4c174ccac9e2`) | VALID, uploaded 2026-09-05 14:59 PT | **No.** Declared `NSPrivacyTracking = true`, named `googleads.g.doubleclick.net` as a tracking domain, carried `NSUserTrackingUsageDescription`, and called `ATTrackingManager.requestTrackingAuthorization()` — all four contradict the App Privacy label staged for this version. |
 | 10 (`ec3f55b9-1f86-4511-9ecb-08c22bbeeaca`) | VALID, uploaded 2026-09-05 21:03 PT | **No** — superseded. Tracking coherence fixed, but it still carried the stale lineage's product: 10 topics / 80 cards, no growth stack, no VoiceOver card flip. |
-| **11** (`12c220ef-f9b5-4577-a000-830e130bda68`) | VALID, uploaded 2026-09-06 | **Yes.** Build 10's instrumentation and tracking posture on top of the real 1.1 product (15 topics / 120 cards, growth stack, VoiceOver, Reduce Motion), consent restored to opt-in. |
+| 11 (`12c220ef-f9b5-4577-a000-830e130bda68`) | VALID, uploaded 2026-09-06 | **No** — superseded. Build 10's instrumentation and tracking posture on top of the real 1.1 product (15 topics / 120 cards, growth stack, VoiceOver, Reduce Motion), consent restored to opt-in — but the reconciliation merge dropped the Settings "Analytics ID" row that `app-privacy-answers.md` §1 tells App Review is there. Failed review on that one Important. |
 
-Build 11 is attached to appStoreVersion `3efb2d70-c6f8-4bbc-95c4-fcbc18f75f72`
-(read back at `/v1/appStoreVersions/3efb2d70-…/build` → build 11, VALID). The
+| **12** (`ae5bb802-5e8f-4076-9f20-0c706bb80645`) | VALID, uploaded 2026-09-06 | **Yes.** Build 11 plus the Settings "Analytics ID" row the App Privacy answers promise (dropped in the reconciliation merge), a decimal-safe first-sentence slice for the Home highlight, and a two-line cap on its source label. |
+
+Build 12 is attached to appStoreVersion `3efb2d70-c6f8-4bbc-95c4-fcbc18f75f72`
+(read back at `/v1/appStoreVersions/3efb2d70-…/build` → build 12, VALID). The
 version remains `PREPARE_FOR_SUBMISSION`.
+
+### Does the What's New copy still hold for build 12?
+
+Yes, unchanged, and it was re-read rather than assumed. Build 12 changes nothing
+the notes describe: the catalog is the same 15 topics / 120 cards, both consent
+switches are still separate and still off by default, there is still no
+tracking-permission prompt, and VoiceOver and Reduce Motion behave as before. The
+restored Analytics ID row is *inside* the consent posture the notes already
+describe, not a new user-facing feature, so no line was added for it.
 
 ## Submission is still gated, for an unchanged reason
 

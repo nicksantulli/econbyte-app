@@ -6,14 +6,16 @@ section **cannot be edited through the ASC API** — it is web-UI only, so no la
 can do this for you.
 
 - App: `com.nsantulli.econbyte` (ASC app id `6780714383`)
-- Version: **1.1.2** (build **11**, the build now attached to the version.
-  Builds 9 and 10 must not ship: 9 carried the ATT prompt and an
-  `NSPrivacyTracking = true` manifest that contradict every row below, and 10 —
-  which fixed exactly that — still carried the stale lineage's product. Build 11
-  keeps 10's tracking posture; see "The binary was fixed" further down, which is
-  true of 11 unchanged.)
+- Version: **1.1.2** (build **12**, the build now attached to the version.
+  Builds 9, 10 and 11 must not ship: 9 carried the ATT prompt and an
+  `NSPrivacyTracking = true` manifest that contradict every row below; 10 —
+  which fixed exactly that — still carried the stale lineage's product; and 11,
+  which carried the right product, had no Settings row showing the analytics
+  identifier, so §1 below described a control the binary did not have. Build 12
+  restores that row and keeps 10's tracking posture; see "The binary was fixed"
+  further down, which is true of 12 unchanged.)
 - Prepared: 2026-09-05, from the `feat/econbyte-instrumentation` source tree;
-  re-checked 2026-09-06 against `release/econbyte-1.1.2` (build 11)
+  re-checked 2026-09-06 against `release/econbyte-1.1.2` (build 12)
 - Prepared by reading: the app's own `EconByte/Resources/PrivacyInfo.xcprivacy`,
   the pinned SDK versions (posthog-ios 3.71.4, sentry-cocoa 8.58.4), the typed
   event schema in `EconByte/Services/EconTelemetry.swift`, and the live-label
@@ -91,6 +93,13 @@ this edit the instrumented apps in the portfolio declare the same shape.
   mints and stores under the app's Application Support container). It is the
   `distinct_id` on every analytics event, and it is shown to the user in
   Settings so they can quote it in a deletion request.
+- **Where, exactly:** Settings → "Privacy & Data" → the "Analytics ID" row
+  (`analyticsIdentityRow`), visible while "Share Usage Analytics" is on, with a
+  copy button beside it. It reads "not available" in any build with no analytics
+  destination, rather than showing an id nothing is sending. Build 11 shipped
+  this bullet with no such row — the defect that held 1.1.2 — and build 12 puts
+  it back under a UI test
+  (`GrowthFlowTests.testAnalyticsIdentityRowIsOfferedWithConsentAndWithdrawnWithIt`).
 - **Corrected 2026-09-05:** this used to be described as an app-minted UUID in
   `UserDefaults` (`ebAnalyticsIdentity`). The app no longer mints one — under
   `personProfiles = .never` posthog-ios ignores `identify`, so that UUID was
