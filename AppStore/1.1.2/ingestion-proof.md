@@ -134,3 +134,64 @@ in `app-privacy-answers.md` for the labels pass.
 App uninstalled, simulator erased and shut down, DerivedData removed. No
 credential appears in any sealed log (checked for `phc_`, the DSN host and any
 `projectToken`/`apiKey` echo).
+
+---
+
+# Addendum — build 11 re-proof (2026-09-06)
+
+The proof above was run from `feat/econbyte-instrumentation`, where analytics
+shipped **on**. The reconciled build is **opt-in**, so the smoke hook was
+changed to force consent on rather than merely clear a stored opt-out
+(`EconByteApp.applyInstrumentationSmokeIfRequested`) — which means the proof had
+to be re-run, or it would have been proving a code path that no longer exists.
+
+- Build under test: `EconByte.app`, `1.1.2` / **build 11**, **Debug**, iOS
+  Simulator, from `release/econbyte-1.1.2`
+- Simulator: `EB11-smoke`, iPhone 17, iOS 26.5 — created for this run and
+  deleted immediately after
+- Launch arguments: `-skipStudioIntro -EBInstrumentationSmoke YES
+  -AllowAnalyticsInDebug YES` (plus `-EBInstrumentationCrash YES` for run 2)
+
+## Run 1 — consent forced on, transports live
+
+The app's own resolved-state line, from `log stream` on the simulator:
+
+```
+[EB][smoke] instrumentation smoke: forcing analytics on for this run
+[EB][smoke] context: allowFlag=true unitTest=false automation=true debugBuild=true suppressed=false
+[EB][smoke] analytics configured=true enabled=true distinctId=<redacted>; diagnostics configured=true enabled=true
+```
+
+`automation=true` (from `-skipStudioIntro`) with `suppressed=false` is the
+important pair: the explicit allow flag is the only thing lifting suppression,
+exactly as `InstrumentationContext` documents.
+
+The app then opened an HTTPS connection to `us.i.posthog.com` and issued
+`POST /batch`, observed at the network layer in the same log.
+
+**What this does not prove:** that PostHog *stored* the batch. The earlier proof
+read PostHog's own `batch sent successfully` line out of the Xcode console; that
+line is `print`ed by the SDK and does not reach `log stream`, and **no PostHog
+MCP server is available in this session**, so the vendor side could not be read
+back. The Sentry half below was read back through the vendor's own API.
+
+## Run 2 — deliberate crash, ingested and read back through Sentry
+
+```
+[EB][smoke] deliberate test crash in 3s (DEBUG only)
+[EB][smoke] crashing now
+```
+
+The process died; the next launch uploaded the report to
+`o4511700939833344.ingest.us.sentry.io`. Read back through the Sentry MCP
+against org `dudley-development`, project `econbyte`:
+
+- Issue **ECONBYTE-1** — `EXC_BREAKPOINT: EconByteApp.swift:113: Fatal error:
+  EBInstrumentationCrash: deliberate crash to verify Sentry ingestion`
+- 2 events (the build-10 lane's, and this one), last seen at the moment of the
+  run
+
+The issue was then **resolved** through the same MCP, with the reason recorded
+on its activity feed, so the project's unresolved queue means real user impact
+again. The crash path is `#if DEBUG` only and is compiled out of the shipped
+archive.

@@ -6,11 +6,14 @@ section **cannot be edited through the ASC API** — it is web-UI only, so no la
 can do this for you.
 
 - App: `com.nsantulli.econbyte` (ASC app id `6780714383`)
-- Version: **1.1.2** (build **10**. Build 9 was uploaded first and must not
-  ship: it carried the ATT prompt and an `NSPrivacyTracking = true` manifest
-  that contradict every row below. Build 10 removes them — see "The binary was
-  fixed" further down.)
-- Prepared: 2026-09-05, from the `feat/econbyte-instrumentation` source tree
+- Version: **1.1.2** (build **11**, the build now attached to the version.
+  Builds 9 and 10 must not ship: 9 carried the ATT prompt and an
+  `NSPrivacyTracking = true` manifest that contradict every row below, and 10 —
+  which fixed exactly that — still carried the stale lineage's product. Build 11
+  keeps 10's tracking posture; see "The binary was fixed" further down, which is
+  true of 11 unchanged.)
+- Prepared: 2026-09-05, from the `feat/econbyte-instrumentation` source tree;
+  re-checked 2026-09-06 against `release/econbyte-1.1.2` (build 11)
 - Prepared by reading: the app's own `EconByte/Resources/PrivacyInfo.xcprivacy`,
   the pinned SDK versions (posthog-ios 3.71.4, sentry-cocoa 8.58.4), the typed
   event schema in `EconByte/Services/EconTelemetry.swift`, and the live-label
@@ -355,6 +358,30 @@ incoherent shape unnoticed.
 **Still open, and not this file's to decide:** the live 1.1.1 binary keeps
 prompting for ATT and keeps declaring the tracking domain until 1.1.2 replaces
 it. That is an argument for shipping 1.1.2 sooner, not later.
+
+---
+
+## Build 11 changes consent, not the answers (2026-09-06)
+
+Build 11 restores version 1.1's consent posture: usage analytics and crash
+diagnostics are **two separate switches, both off until the user turns them
+on**, instead of build 10's single opt-out that shipped on. **Not one row above
+changes**, and that is deliberate, not an oversight:
+
+* App Privacy asks what the app **collects when it collects**, not how many
+  users consented. A type that is collected from consenting users is collected,
+  and declaring less than the app can collect is the understatement this file
+  exists to prevent.
+* The seven rows already read **Collected: Yes · Linked: No · Tracking: No**,
+  which stays exactly true under an opt-in.
+* Under-declaring would also be the harder error to fix later: turning consent
+  back on would silently make a published label false, with no code change to
+  notice.
+
+What does change is **volume**: PostHog and Sentry will see a fraction of an
+opt-out build's traffic. That is the cost of keeping the promise version 1.1's
+published release notes made, and it is recorded in `RECONCILIATION-LOG.md` §5
+as an Owner-reversible decision.
 
 ---
 
