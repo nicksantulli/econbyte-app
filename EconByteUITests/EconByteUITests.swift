@@ -144,35 +144,30 @@ final class EconByteUITests: XCTestCase {
         XCTAssertTrue(gear.waitForExistence(timeout: 5), "Settings gear should render in the nav bar")
         gear.tap()
 
-        // The privacy section, in whichever of its two honest shapes this build
-        // has (1.1.2). The PostHog key and Sentry DSN come from a gitignored
-        // xcconfig, so the same source tree builds an unconfigured app (a fresh
-        // checkout, CI without secrets) and a configured one (the shipping
-        // archive) — and the assertion is that the screen matches the app:
+        // RECONCILED (1.1.2): this asserted the instrumentation lineage's shape —
+        // ONE analytics toggle, already ON (an opt-out), and no crash-report
+        // toggle at all because crash reporting had no consent gate there.
         //
-        //  * unconfigured → says nothing is collected, and offers no toggle;
-        //  * configured   → offers the analytics opt-out, already ON, and does
-        //    not claim nothing is collected. There is deliberately no
-        //    crash-report toggle in either shape — crash reporting has no
-        //    consent gate, and the footer says so instead.
-        let noCollection = app.descendants(matching: .any)["privacyCollectionDisabled"]
-        let analyticsToggle = app.switches["analyticsConsentToggle"]
-        XCTAssertTrue(noCollection.waitForExistence(timeout: 4)
-                        || analyticsToggle.waitForExistence(timeout: 4),
-                      "the privacy section must either say nothing is collected or offer the opt-out")
-        if noCollection.exists {
-            XCTAssertFalse(analyticsToggle.exists,
-                           "no analytics toggle may be offered when there is nowhere to send")
-        } else {
-            XCTAssertEqual(analyticsToggle.value as? String, "1",
-                           "analytics ship ON; the toggle is the opt-out, not an opt-in")
-        }
-        XCTAssertFalse(app.switches["diagnosticsConsentToggle"].exists,
-                       "crash reporting has no consent gate — there is no toggle to offer")
+        // The reconciled build keeps version 1.1's posture, which is what the
+        // live App Store notes describe: TWO separate switches, both OFF until
+        // the user turns them on. Both are always offered, whether or not this
+        // particular build has a PostHog key or a Sentry DSN, because the
+        // promise the user is being shown is about the app, not about which
+        // secrets the archive happened to carry.
+        let analyticsToggle = app.switches["settingsAnalyticsToggle"]
+        let diagnosticsToggle = app.switches["settingsDiagnosticsToggle"]
+        XCTAssertTrue(analyticsToggle.waitForExistence(timeout: 5),
+                      "the privacy section must offer the analytics opt-in")
+        XCTAssertTrue(diagnosticsToggle.waitForExistence(timeout: 5),
+                      "crash diagnostics is a SEPARATE choice, so it needs its own switch")
+        XCTAssertEqual(analyticsToggle.value as? String, "0",
+                       "usage analytics is off until the user turns it on")
+        XCTAssertEqual(diagnosticsToggle.value as? String, "0",
+                       "crash diagnostics is off until the user turns it on")
 
-        // Privacy Policy link (§5.1). It sits in the About section at the foot
-        // of the list, below the privacy section added in 1.1.2, so it may need
-        // scrolling into view before SwiftUI's List has rendered the row.
+        // Privacy Policy link (§5.1). It sits at the foot of the Privacy & Data
+        // section, below the two consent switches, so it may need scrolling into
+        // view before SwiftUI's List has rendered the row.
         let privacy = app.buttons.containing(
             NSPredicate(format: "label CONTAINS 'Privacy Policy'")
         ).firstMatch
