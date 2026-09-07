@@ -1,34 +1,6 @@
 {
-  "$comment": [
-    "Three custom product pages for EconByte 1.1, per design section 13.4. Authored in",
-    "plan Task 6a; created in App Store Connect 2026-09-01, which owns every ASC write.",
-    "Design section 13.4 requires each page to use only its matching screenshots and",
-    "claims, and Apple's rules cap a version at 35 custom product pages with up to 3",
-    "localizations each — these are en-US only.",
-    "CAMPAIGN TOKENS MINTED 2026-09-07 (Owner decision #25). Each page's campaign",
-    "block below is now non-null. Two corrections to what the old null-state note",
-    "in sharedRules asserted, both confirmed against Apple's own documentation and",
-    "against the live ASC API on 2026-09-07:",
-    "(1) Only 'pt' is an Apple-issued numeric. 'ct' is NOT issued by Apple — it is",
-    "the campaign NAME the marketer chooses, up to 30 characters from Apple's",
-    "allowed set, and Apple's guidance is to reuse the one account-wide 'pt' and",
-    "vary only 'ct'. There is no Apple-issued numeric campaign token to wait for.",
-    "(2) A campaign link is not a stored ASC object, so there was no ASC write to",
-    "make here. The App Store Connect API exposes no campaign resource at all",
-    "(probed 2026-09-07: /v1/campaigns, /v1/campaignLinks, /v1/appCampaigns and the",
-    "apps/{id} relationships of the same names all 404; 'campaign' is rejected as a",
-    "field name on appCustomProductPages). Apple's own engineer states campaign",
-    "links cannot be created via the API and that a link is made valid simply by",
-    "substituting 'ct'. A campaign materialises in Analytics only once its link has",
-    "produced first-time downloads from at least five distinct Apple IDs.",
-    "The one genuinely web-only prerequisite — generating a first campaign link to",
-    "obtain 'pt' — was already completed 2026-08-31 in the Owner's ASC session and",
-    "is recorded in vault/growth/apple-provider-token.md. Nothing about these three",
-    "pages is blocked on the browser."
-  ],
+  "$comment": "Three custom product pages for EconByte 1.1, text only. Prepared locally in plan Task 6a; no App Store Connect call was made. Design section 13.4 requires each page to use only its matching screenshots and claims, and Apple's rules cap a version at 35 custom product pages with up to 3 localizations each - these are en-US only.",
   "createAfter": "version 1.1 is APPROVED (design section 13.4). Creating them earlier would point campaigns at a page whose build does not exist yet.",
-  "appleID": "6780714383",
-  "status": "LIVE — three pages created in ASC 2026-09-01, all three APPROVED (ASC API readback 2026-09-07); campaign tokens minted 2026-09-07",
   "sharedRules": {
     "claimsAllowed": [
       "120 cards across 15 topics, eight cards per topic",
@@ -45,7 +17,7 @@
       "any topic count, card count or screen that does not exist in build 6"
     ],
     "attribution": "Campaign links must carry a unique ct value per page and the numeric Apple provider token pt. A download without the numeric provider token is unattributed; campaign lift is never claimed from impressions or downloads alone (design section 13.4).",
-    "providerToken": "128970277 — account-wide numeric pt verified 2026-08-31; recorded in vault/growth/apple-provider-token.md"
+    "providerToken": "OWNER ITEM - the numeric pt value comes from the Apple Search Ads / provider record and is not stored in this repository."
   },
   "pages": [
     {
@@ -62,11 +34,7 @@
         "06-home-streak.png"
       ],
       "campaign": {
-        "ascCampaignLink": "https://apps.apple.com/app/apple-store/id6780714383?pt=128970277&ct=econbyte-core-5min&mt=8&ppid=35377cee-23a2-4fda-b216-b898d31b8b14",
-        "providerToken": "128970277",
-        "campaignToken": "econbyte-core-5min",
-        "ppid": "35377cee-23a2-4fda-b216-b898d31b8b14",
-        "note": "Design section 13.4 still holds: traffic arriving without a valid provider token is reported as UNATTRIBUTED, never as campaign lift. That is why 'pt' must be the account's real issued numeric (128970277, verified 2026-08-31) and not a placeholder. The 'ct' is a chosen campaign name, not an Apple-issued value — see the file header. The ct value above was authored in this file before minting; do not reuse it on the default product page."
+        "ct": "econbyte-core-5min"
       },
       "screenshotNote": "05-session-complete.png is deliberately excluded, reconciling this page with the hold recorded in AppStore/1.1/screenshots/manifest.json (storefrontRecommendation.hold). The capture is dominated by the one-time analytics/diagnostics consent offer. The hold stands; the page uses the plain completion value carried by 06-home-streak.png instead."
     },
@@ -83,11 +51,7 @@
         "01-home.png"
       ],
       "campaign": {
-        "ascCampaignLink": "https://apps.apple.com/app/apple-store/id6780714383?pt=128970277&ct=econbyte-inflation&mt=8&ppid=e2396dea-842c-4bae-b522-27a3427c7c90",
-        "providerToken": "128970277",
-        "campaignToken": "econbyte-inflation",
-        "ppid": "e2396dea-842c-4bae-b522-27a3427c7c90",
-        "note": "See cpp-core-five-minutes."
+        "ct": "econbyte-inflation"
       }
     },
     {
@@ -103,11 +67,7 @@
         "06-home-streak.png"
       ],
       "campaign": {
-        "ascCampaignLink": "https://apps.apple.com/app/apple-store/id6780714383?pt=128970277&ct=econbyte-rates-policy&mt=8&ppid=5906a228-36a3-4041-84f8-e2b9d0ee4c4d",
-        "providerToken": "128970277",
-        "campaignToken": "econbyte-rates-policy",
-        "ppid": "5906a228-36a3-4041-84f8-e2b9d0ee4c4d",
-        "note": "See cpp-core-five-minutes."
+        "ct": "econbyte-rates-policy"
       }
     }
   ],

@@ -1198,14 +1198,16 @@ final class GrowthSystemsTests: XCTestCase {
 /// instead of catching it.
 final class DudleyCrossPromoLiveIDTests: XCTestCase {
 
-    /// The studio portfolio as the Owner set it: portfolio key → App Store id.
+    /// Apps that must carry a live App Store id today (decision #26: Last Human
+    /// stays in `all` with nil until the storefront resolves).
     private static let liveIDs: [String: String] = [
         "powellprowl": "6775539250",
         "viberater": "6780704282",
         "tabletalk": "6780714565",
         "econbyte": "6780714383",
-        "lasthuman": "6808782611",
     ]
+
+    private static let pendingStorefrontKey = "lasthuman"
 
     /// `crossPromo` excludes this app by matching `current` against a row id.
     /// If `current` names no row the filter quietly matches nothing — which is
@@ -1219,12 +1221,12 @@ final class DudleyCrossPromoLiveIDTests: XCTestCase {
                         "DudleyApps.current is \"\(DudleyApps.current)\", not a known studio app")
     }
 
-    /// Every money app appears exactly once and carries its live id. A row that
-    /// regresses to `nil` disappears from every other app's sheet silently, so
-    /// the nil case is asserted separately from the value.
+    /// Every live money app appears once with its id; Last Human stays nil (#26).
     func testEveryMoneyAppIsPresentOnceWithItsLiveAppStoreID() {
         XCTAssertEqual(Set(DudleyApps.all.map(\.id)).count, DudleyApps.all.count,
                        "a duplicate row lists the same app twice in the sheet")
+        XCTAssertEqual(DudleyApps.all.count, Self.liveIDs.count + 1,
+                       "portfolio should be the live apps plus pending Last Human")
 
         for (key, expected) in Self.liveIDs.sorted(by: { $0.key < $1.key }) {
             guard let row = DudleyApps.all.first(where: { $0.id == key }) else {
@@ -1234,17 +1236,26 @@ final class DudleyCrossPromoLiveIDTests: XCTestCase {
             XCTAssertNotNil(row.appStoreID, "\"\(key)\" is back to appStoreID: nil")
             XCTAssertEqual(row.appStoreID, expected, "\"\(key)\" carries the wrong App Store id")
         }
+
+        guard let lh = DudleyApps.all.first(where: { $0.id == Self.pendingStorefrontKey }) else {
+            return XCTFail("the portfolio has no row for \"\(Self.pendingStorefrontKey)\"")
+        }
+        XCTAssertNil(lh.appStoreID,
+                     "Last Human must stay appStoreID: nil until the storefront is live (#26)")
     }
 
-    /// What the user actually sees: the other four, never this one.
+    /// What the user actually sees: every other *live* app, never this one, never LH.
     func testCrossPromoOffersEveryOtherMoneyAppAndNeverThisOne() {
         let promoted = Set(DudleyApps.crossPromo.map(\.id))
 
         XCTAssertFalse(promoted.contains(DudleyApps.current),
                        "\"\(DudleyApps.current)\" promotes itself")
+        XCTAssertFalse(promoted.contains(Self.pendingStorefrontKey),
+                       "Last Human must stay hidden until live (#26)")
         XCTAssertEqual(promoted, Set(Self.liveIDs.keys).subtracting([DudleyApps.current]),
-                       "the cross-promo list is not the rest of the portfolio")
-        XCTAssertEqual(DudleyApps.crossPromo.count, Self.liveIDs.count - 1)
+                       "the cross-promo list is not the rest of the live portfolio")
+        XCTAssertEqual(DudleyApps.crossPromo.count,
+                       Self.liveIDs.keys.filter { $0 != DudleyApps.current }.count)
     }
 
     /// A promoted row whose `storeURL` is nil is a dead tile: `DudleyAboutSheet`

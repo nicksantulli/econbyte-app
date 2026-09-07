@@ -28,9 +28,9 @@ enum DudleyApps {
     /// The full portfolio. Append new apps here as they ship.
     ///
     /// Owner decision #25 (2026-09-07) filled the live App Store ids so every
-    /// app refers users to the others. Last Human 1.0 is still in App Review:
-    /// its id is assigned and permanent, but the store page only resolves once
-    /// that release goes live.
+    /// app refers users to the others. Owner decision #26: Last Human stays in
+    /// the portfolio (so `current` self-exclusion works) but `appStoreID` is
+    /// nil until 1.0 is Ready for Sale — then set `6808782611` again.
     static let all: [DudleyApp] = [
         DudleyApp(id: "powellprowl", name: "Powell Prowl: Rate Chase",
                   tileColor: Color(red: 0.04, green: 0.09, blue: 0.20),
@@ -46,7 +46,7 @@ enum DudleyApps {
                   appStoreID: "6780714383"),
         DudleyApp(id: "lasthuman", name: "Last Human",
                   tileColor: Color(red: 0.09, green: 0.40, blue: 0.15),
-                  appStoreID: "6808782611"),
+                  appStoreID: nil),
     ]
 
     /// Apps to cross-promote: everything except the one currently running, and
