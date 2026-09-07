@@ -7,14 +7,22 @@ import UIKit
 // region, placement, blockers, and caps — lives in `EconMonetization`, so ad
 // policy is testable without the SDK.
 //
-// Version 1.1 removed the AppTrackingTransparency pathway that 1.0 used here,
-// and 1.1.2 keeps it removed — `InstrumentationPrivacyTests` fails the build if
-// this file, any other app source, either Info.plist, or the shipped Mach-O
-// re-acquires it.
-// See `CONTENT-DECISIONS.md` D2 for what 1.0 actually did, why it went, and the
-// Info.plist / privacy-manifest work that is sequenced after the archive privacy
-// report. Requests are non-personalized (`npa=1`, `rdp=1`) and capped at a `G`
-// content rating.
+// ATT does NOT live here. Version 1.1 removed the pathway 1.0 had in this file;
+// 1.1.2 build 13 restores the prompt after App Review's 5.1.2(i) rejection of
+// build 12, but as an ordering rule in `EconMonetization` rather than a call
+// buried in the presentation path — build 8 (live 1.1.1) asked from
+// `presentInterstitial()`, which is *after* the first ad request and therefore
+// after the thing the guideline is about. The only file that may import the
+// framework is `EconTrackingAuthorization.swift`, and
+// `InstrumentationPrivacyTests` fails the build if any other one does.
+//
+// This adapter is a *provider adapter only* and it stays that way: it never
+// asks, never decides, and never requests unless `EconMonetization` calls it —
+// which that type will not do before the tracking decision.
+//
+// See `CONTENT-DECISIONS.md` D2 for what 1.0 did. Requests remain
+// non-personalized (`npa=1`, `rdp=1`) for every ATT outcome, authorized
+// included, and capped at a `G` content rating.
 
 #if canImport(GoogleMobileAds)
 import GoogleMobileAds

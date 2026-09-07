@@ -183,10 +183,33 @@ struct SessionCompleteView: View {
 
     /// The one 1.1 interstitial placement: after the session-complete state and
     /// before returning to Home.
+    ///
+    /// This is also where the ATT prompt lives (1.1.2 build 13, App Review
+    /// 5.1.2(i)). The ordering below is the requirement, not an implementation
+    /// detail:
+    ///
+    ///  1. The card session has completed — this screen only exists after one.
+    ///  2. The app's own privacy/consent card and the reminder primer are
+    ///     dismissed first, so the system dialog never lands on top of them.
+    ///     Both are non-blocking, so a reader can tap Done with either still on
+    ///     screen; leaving them up would put the ATT prompt over a consent
+    ///     screen, which it must never be.
+    ///  3. The ATT prompt is presented — once per install, and only if ads are
+    ///     actually reachable for this reader.
+    ///  4. Only then may an ad be requested. `resolveTrackingAuthorizationIfNeeded`
+    ///     raises the `.systemPrompt` blocker when it asks, so the exit that
+    ///     carries the dialog never also carries an interstitial.
+    ///
+    /// Nothing here animates, and the dialog is the system's own, so Reduce
+    /// Motion and VoiceOver are unaffected: the cards are removed before the
+    /// prompt takes focus rather than sliding out from under it.
     private func finish() {
         guard !exiting else { return }
         exiting = true
+        showConsentPrompt = false
+        showPrimer = false
         Task {
+            await growth.monetization.resolveTrackingAuthorizationIfNeeded()
             let outcome = await growth.monetization.presentIfEligibleAtSetExit()
             switch outcome {
             case .presented:
@@ -200,6 +223,7 @@ struct SessionCompleteView: View {
             growth.monetization.setBlocker(.review, active: false)
             growth.monetization.setBlocker(.notification, active: false)
             growth.monetization.setBlocker(.consent, active: false)
+            growth.monetization.setBlocker(.systemPrompt, active: false)
             onDone()
         }
     }

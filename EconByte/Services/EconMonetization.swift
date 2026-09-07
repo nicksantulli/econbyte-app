@@ -50,12 +50,18 @@ public enum EconAdRegion {
 
 // MARK: - Request configuration
 
-/// Every 1.1 ad request is contextual. No ATT prompt, no IDFA, no advertising
-/// profile — see `CONTENT-DECISIONS.md` D2 for what 1.0 actually did and why the
-/// tracking pathway was removed.
+/// Every ad request is contextual. 1.1.2 build 13 restores the ATT prompt (App
+/// Review 5.1.2(i); see `EconTrackingAuthorization.swift` for why), but the
+/// *request* is unchanged: `npa=1` and `rdp=1` on every one of them, whatever
+/// the reader answered. Personalizing for authorized readers is a portfolio
+/// policy revision, not an EconByte edit — see
+/// `EconTrackingStatus.providerWouldPermitPersonalizedAds`.
 public struct EconAdRequestPolicy: Equatable {
+    /// What the reader answered, carried so the request is a function of the
+    /// decision rather than of when it happened to be built.
+    public var trackingStatus: EconTrackingStatus = .notDetermined
     public var usesPersonalizedAds = false
-    public var requestsAppTrackingAuthorization = false
+    public var requestsAppTrackingAuthorization = true
     public var maxAdContentRating = "G"
 
     /// Declared deny-list for a finance-education audience. AdMob enforces
@@ -72,10 +78,16 @@ public struct EconAdRequestPolicy: Equatable {
         "get-rich-quick",
     ]
 
-    /// `npa` requests non-personalized delivery; `rdp` restricts data processing.
+    /// `npa` requests non-personalized delivery; `rdp` restricts data
+    /// processing. Both are set on EVERY request, including an ATT-authorized
+    /// one — the portfolio invariant is non-personalized everywhere, and it is
+    /// gate-enforced outside this repo. Asserted for all four statuses in
+    /// `TrackingAuthorizationTests`, so relaxing it here cannot pass unnoticed.
     public var extras: [String: String] { ["npa": "1", "rdp": "1"] }
 
-    public init() {}
+    public init(trackingStatus: EconTrackingStatus = .notDetermined) {
+        self.trackingStatus = trackingStatus
+    }
 }
 
 public enum EconAdUnit {
@@ -247,6 +259,12 @@ public final class EconMonetization: ObservableObject {
         static let lastShownAt = "econ.ads.lastShownAt"
         static let dayKey = "econ.ads.dayKey"
         static let shownToday = "econ.ads.shownToday"
+        /// Set the moment the ATT prompt is asked for, so "once per install"
+        /// survives a relaunch even in the states where iOS leaves the status
+        /// `.notDetermined` (it declines to present the prompt when the app is
+        /// not active). Without it, a prompt that could not be shown would be
+        /// re-attempted at every session exit forever.
+        static let trackingPromptRequested = "econ.ads.trackingPromptRequested"
     }
 
     @Published public private(set) var entitlements = EconEntitlements()
@@ -254,6 +272,10 @@ public final class EconMonetization: ObservableObject {
     public private(set) var state = EconAdState()
     public var policy: EconAdPolicy
     public private(set) var didStartSDK = false
+
+    /// Whether this install has already been shown (or been offered) the ATT
+    /// prompt. Persisted, because "once per install" outlives the process.
+    public private(set) var didRequestTrackingPrompt: Bool
 
     /// Raised once per exit when every local eligibility rule passes, before any
     /// provider call. Carries the set counter as it stood *before* the reset.
@@ -267,22 +289,32 @@ public final class EconMonetization: ObservableObject {
     private let calendar: Calendar
     private let now: () -> Date
     private let region: () -> EconAdRegionState
-    private let requestPolicy = EconAdRequestPolicy()
+    private let tracking: EconTrackingAuthorizing
     private var blockers: Set<EconAdBlocker> = []
     private var setCompletedNormally = false
+
+    /// The request configuration as it stands right now. Rebuilt per call so it
+    /// always carries the *current* tracking decision rather than the one that
+    /// held when the coordinator was constructed.
+    private var requestPolicy: EconAdRequestPolicy {
+        EconAdRequestPolicy(trackingStatus: tracking.status)
+    }
 
     public init(adapter: EconInterstitialAdapting,
                 defaults: UserDefaults = .standard,
                 calendar: Calendar = .current,
                 now: @escaping () -> Date = Date.init,
                 region: @escaping () -> EconAdRegionState = { EconAdRegion.current },
+                tracking: EconTrackingAuthorizing = EconTrackingAuthorization.shared,
                 thresholds: EconAdThresholds = EconAdThresholds()) {
         self.adapter = adapter
         self.defaults = defaults
         self.calendar = calendar
         self.now = now
         self.region = region
+        self.tracking = tracking
         self.policy = EconAdPolicy(thresholds: thresholds)
+        self.didRequestTrackingPrompt = defaults.bool(forKey: Key.trackingPromptRequested)
 
         state.completedSetsLifetime = defaults.integer(forKey: Key.completedSets)
         state.setsSinceLastAd = defaults.integer(forKey: Key.setsSinceLastAd)
@@ -310,14 +342,76 @@ public final class EconMonetization: ObservableObject {
 
     // MARK: SDK lifecycle
 
-    /// Initializes the ad SDK at most once, and only when both the entitlement
-    /// and the region gate permit an ad request.
+    /// Whether a request may reach the provider at all.
+    ///
+    /// This is the 5.1.2(i) gate, and it is deliberately upstream of every
+    /// provider call — SDK start, preload, and re-preload alike. An app whose
+    /// label says it tracks may not touch the ad network before the reader has
+    /// answered ATT. Build 8 (live 1.1.1) preloaded at launch and prompted at
+    /// the first interstitial, which is exactly the ordering the guideline is
+    /// about.
+    ///
+    /// `didRequestTrackingPrompt` is part of the condition on purpose: if iOS
+    /// declines to present the prompt (the app was not active), the status stays
+    /// `.notDetermined` forever and a status-only gate would silence ads for
+    /// that install permanently. The reader still gets `npa=1` in that state,
+    /// which is what an unanswered prompt means.
+    public var adRequestsPermitted: Bool {
+        tracking.status.isDecided || didRequestTrackingPrompt
+    }
+
+    /// Whether the ATT prompt is still owed to this reader.
+    ///
+    /// No prompt when ads are off for this install: a Remove Ads owner and a
+    /// reader in the EEA/UK (DUD-224) will never see an ad, so asking them for
+    /// tracking permission would be asking for something the app does not use.
+    public var shouldRequestTrackingAuthorization: Bool {
+        guard !didRequestTrackingPrompt else { return false }
+        guard !entitlements.adsSuppressed else { return false }
+        guard region().permitsAdRequests else { return false }
+        return tracking.status == .notDetermined
+    }
+
+    /// Presents the ATT prompt if it is still owed, then lets the ad SDK start.
+    ///
+    /// Called from the session-complete screen's exit path — i.e. after a card
+    /// session has actually been completed, and before the ad decision for that
+    /// exit. It marks `.systemPrompt` for the caller to clear, so no
+    /// interstitial follows a system dialog at the same exit; that is the same
+    /// house rule the notification prompt already follows.
+    @discardableResult
+    public func resolveTrackingAuthorizationIfNeeded() async -> EconTrackingStatus {
+        guard shouldRequestTrackingAuthorization else {
+            startAdsIfPermitted()
+            return tracking.status
+        }
+        setBlocker(.systemPrompt, active: true)
+        // Recorded before awaiting: a prompt interrupted by a crash or a
+        // backgrounding has still been spent, and iOS will not offer a second.
+        didRequestTrackingPrompt = true
+        defaults.set(true, forKey: Key.trackingPromptRequested)
+        let resolved = await tracking.requestAuthorization()
+        startAdsIfPermitted()
+        return resolved
+    }
+
+    /// Initializes the ad SDK at most once, and only when the entitlement, the
+    /// region gate, and the tracking decision all permit an ad request.
     public func startAdsIfPermitted() {
         guard !didStartSDK else { return }
         guard !entitlements.adsSuppressed else { return }
         guard region().permitsAdRequests else { return }
+        guard adRequestsPermitted else { return }
         didStartSDK = true
-        adapter.startSDK(policy: requestPolicy)
+        let policy = requestPolicy
+        adapter.startSDK(policy: policy)
+        adapter.preload(policy: policy)
+    }
+
+    /// Every re-preload in this type goes through here, so the gate cannot be
+    /// bypassed by a path that only wants "one more" request.
+    private func preloadIfPermitted() {
+        guard didStartSDK, adRequestsPermitted else { return }
         adapter.preload(policy: requestPolicy)
     }
 
@@ -366,11 +460,11 @@ public final class EconMonetization: ObservableObject {
         // (design section 15.2).
         onAdEligible?(.dailySetExit, state.setsSinceLastAd)
         guard adapter.isAdLoaded else {
-            adapter.preload(policy: requestPolicy)
+            preloadIfPermitted()
             return .noAdAvailable
         }
         guard await adapter.present() else {
-            adapter.preload(policy: requestPolicy)
+            preloadIfPermitted()
             return .presentationFailed
         }
         let moment = now()
@@ -380,7 +474,7 @@ public final class EconMonetization: ObservableObject {
         state.lastShownAt = moment
         state.setsSinceLastAd = 0
         persist()
-        adapter.preload(policy: requestPolicy)
+        preloadIfPermitted()
         return .presented
     }
 
@@ -411,7 +505,7 @@ public final class EconMonetization: ObservableObject {
     #if DEBUG
     public static func resetPersistedState(in defaults: UserDefaults = .standard) {
         for key in [Key.completedSets, Key.setsSinceLastAd, Key.lastShownAt,
-                    Key.dayKey, Key.shownToday] {
+                    Key.dayKey, Key.shownToday, Key.trackingPromptRequested] {
             defaults.removeObject(forKey: key)
         }
     }
