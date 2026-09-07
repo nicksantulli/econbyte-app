@@ -17,6 +17,7 @@
 		1A0000000000000000000004 /* CurriculumCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000002 /* CurriculumCatalogTests.swift */; };
 		1A0000000000000000000014 /* GrowthSystemsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000012 /* GrowthSystemsTests.swift */; };
 		UT0000000000000000000011 /* InstrumentationPrivacyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */; };
+		UT00000000000000000000A1 /* TrackingAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */; };
 		UT0000000000000000000021 /* EconTelemetryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000020 /* EconTelemetryTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		CF0000000000000000000001 /* Instrumentation.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Instrumentation.xcconfig; path = Config/Instrumentation.xcconfig; sourceTree = "<group>"; };
 		UT0000000000000000000002 /* EconByteTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = EconByteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentationPrivacyTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingAuthorizationTests.swift; sourceTree = "<group>"; };
 		UT0000000000000000000020 /* EconTelemetryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EconTelemetryTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4C6 /* GrowthFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthFlowTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4D7 /* AccessibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityTests.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 			children = (
 				UT0000000000000000000020 /* EconTelemetryTests.swift */,
 				UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */,
+				UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */,
 				1A0000000000000000000002 /* CurriculumCatalogTests.swift */,
 				1A0000000000000000000012 /* GrowthSystemsTests.swift */,
 			);
@@ -279,6 +282,7 @@
 			files = (
 				UT0000000000000000000021 /* EconTelemetryTests.swift in Sources */,
 				UT0000000000000000000011 /* InstrumentationPrivacyTests.swift in Sources */,
+				UT00000000000000000000A1 /* TrackingAuthorizationTests.swift in Sources */,
 				1A0000000000000000000004 /* CurriculumCatalogTests.swift in Sources */,
 				1A0000000000000000000014 /* GrowthSystemsTests.swift in Sources */,
 			);
