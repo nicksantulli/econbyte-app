@@ -26,19 +26,27 @@ enum DudleyApps {
     static let current = "econbyte"
 
     /// The full portfolio. Append new apps here as they ship.
+    ///
+    /// Owner decision #25 (2026-09-07) filled the live App Store ids so every
+    /// app refers users to the others. Last Human 1.0 is still in App Review:
+    /// its id is assigned and permanent, but the store page only resolves once
+    /// that release goes live.
     static let all: [DudleyApp] = [
         DudleyApp(id: "powellprowl", name: "Powell Prowl: Rate Chase",
                   tileColor: Color(red: 0.04, green: 0.09, blue: 0.20),
                   appStoreID: "6775539250"),
         DudleyApp(id: "viberater", name: "Vibe Rater",
                   tileColor: Color(red: 0.48, green: 0.18, blue: 0.97),
-                  appStoreID: nil),
+                  appStoreID: "6780704282"),
         DudleyApp(id: "tabletalk", name: "Table Talk",
                   tileColor: Color(red: 0.165, green: 0.608, blue: 0.529),
-                  appStoreID: nil),
+                  appStoreID: "6780714565"),
         DudleyApp(id: "econbyte", name: "EconByte: Daily Economics",
                   tileColor: Color(red: 0.059, green: 0.239, blue: 0.322),
-                  appStoreID: nil),
+                  appStoreID: "6780714383"),
+        DudleyApp(id: "lasthuman", name: "Last Human",
+                  tileColor: Color(red: 0.09, green: 0.40, blue: 0.15),
+                  appStoreID: "6808782611"),
     ]
 
     /// Apps to cross-promote: everything except the one currently running, and

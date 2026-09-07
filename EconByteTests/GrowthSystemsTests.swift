@@ -1185,3 +1185,80 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(runtime.difficulty, first.difficulty.rawValue)
     }
 }
+
+/// Owner decision #25 — the About sheet refers users to every other money app.
+///
+/// The defect this closes: `DudleyApps.all` left Table Talk, EconByte and Last
+/// Human at `appStoreID: nil`, and carried no row at all for Last Human, so
+/// `DudleyApps.crossPromo` — which drops any row without an id — collapsed to
+/// Powell Prowl in every app. "More by Dudley" listed one app.
+///
+/// The ids are written out in full rather than read back from `DudleyApps`: a
+/// test that rebuilds its expectation from the value under test follows a typo
+/// instead of catching it.
+final class DudleyCrossPromoLiveIDTests: XCTestCase {
+
+    /// The studio portfolio as the Owner set it: portfolio key → App Store id.
+    private static let liveIDs: [String: String] = [
+        "powellprowl": "6775539250",
+        "viberater": "6780704282",
+        "tabletalk": "6780714565",
+        "econbyte": "6780714383",
+        "lasthuman": "6808782611",
+    ]
+
+    /// `crossPromo` excludes this app by matching `current` against a row id.
+    /// If `current` names no row the filter quietly matches nothing — which is
+    /// the shape Last Human shipped, with `current` "lasthuman" and no
+    /// "lasthuman" row — so the app would have promoted itself the moment one
+    /// was added.
+    func testThisAppsCurrentIdNamesARealPortfolioRow() {
+        XCTAssertTrue(DudleyApps.all.contains { $0.id == DudleyApps.current },
+                      "DudleyApps.current is \"\(DudleyApps.current)\" but no row carries that id")
+        XCTAssertNotNil(Self.liveIDs[DudleyApps.current],
+                        "DudleyApps.current is \"\(DudleyApps.current)\", not a known studio app")
+    }
+
+    /// Every money app appears exactly once and carries its live id. A row that
+    /// regresses to `nil` disappears from every other app's sheet silently, so
+    /// the nil case is asserted separately from the value.
+    func testEveryMoneyAppIsPresentOnceWithItsLiveAppStoreID() {
+        XCTAssertEqual(Set(DudleyApps.all.map(\.id)).count, DudleyApps.all.count,
+                       "a duplicate row lists the same app twice in the sheet")
+
+        for (key, expected) in Self.liveIDs.sorted(by: { $0.key < $1.key }) {
+            guard let row = DudleyApps.all.first(where: { $0.id == key }) else {
+                XCTFail("the portfolio has no row for \"\(key)\"")
+                continue
+            }
+            XCTAssertNotNil(row.appStoreID, "\"\(key)\" is back to appStoreID: nil")
+            XCTAssertEqual(row.appStoreID, expected, "\"\(key)\" carries the wrong App Store id")
+        }
+    }
+
+    /// What the user actually sees: the other four, never this one.
+    func testCrossPromoOffersEveryOtherMoneyAppAndNeverThisOne() {
+        let promoted = Set(DudleyApps.crossPromo.map(\.id))
+
+        XCTAssertFalse(promoted.contains(DudleyApps.current),
+                       "\"\(DudleyApps.current)\" promotes itself")
+        XCTAssertEqual(promoted, Set(Self.liveIDs.keys).subtracting([DudleyApps.current]),
+                       "the cross-promo list is not the rest of the portfolio")
+        XCTAssertEqual(DudleyApps.crossPromo.count, Self.liveIDs.count - 1)
+    }
+
+    /// A promoted row whose `storeURL` is nil is a dead tile: `DudleyAboutSheet`
+    /// falls back to dudleyapps.com, so the tap leaves the App Store entirely
+    /// and the referral the Owner asked for never happens.
+    func testEveryPromotedAppOpensItsOwnStorePage() {
+        for app in DudleyApps.crossPromo {
+            guard let id = app.appStoreID else {
+                XCTFail("\"\(app.id)\" is promoted with a nil appStoreID")
+                continue
+            }
+            XCTAssertEqual(app.storeURL?.absoluteString,
+                           "itms-apps://apps.apple.com/app/id\(id)",
+                           "\"\(app.id)\" does not open its own store page")
+        }
+    }
+}
