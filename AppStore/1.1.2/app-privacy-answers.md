@@ -54,10 +54,11 @@
 > * The seven rows added for 1.1.2 are **unchanged**: all seven stay
 >   Collected: Yes · Linked: No · **Tracking: No**. Do not touch them.
 > * The public summary will therefore gain a **"Data Used to Track You:
->   Identifiers, Usage Data"** section. That is expected for build 13 and is the
->   opposite of what step 3 of "How to verify after entering" says at the very
->   bottom of this file — that step was written for build 12 and no longer
->   applies to the two ad rows. It still applies to the seven additions.
+>   Identifiers, Usage Data"** section. That is expected for build 13. The
+>   "How to verify after entering" list at the very bottom of this file was
+>   written for build 12 and said the opposite; it has since been **rewritten**
+>   (2026-09-07) to describe the build-13 label, so it can now be followed as
+>   written.
 >
 > ### Still true, and worth stating plainly
 >
@@ -70,10 +71,15 @@
 > revision**, not an EconByte edit, and it is the open follow-up recorded in
 > this build's HANDOFF.
 
-**Status: NOT ENTERED.** This file is the instruction set for whoever opens the
-App Store Connect web UI. Nothing here has been submitted. The App Privacy
-section **cannot be edited through the ASC API** — it is web-UI only, so no lane
-can do this for you.
+**Status: ENTERED AND PUBLISHED, 2026-09-07T19:38Z.** This file was the
+instruction set for whoever opened the App Store Connect web UI; the one build-13
+edit it calls for (Advertising Data → Used for tracking purposes: No → Yes) has
+been made and published, and 1.1.2 build 13 was submitted for review at
+2026-09-07T19:46:02Z. The seven 1.1.2 rows described below were entered earlier
+and are unchanged. The App Privacy section **cannot be edited through the ASC
+API** — it is web-UI only, so every edit here was made by hand in the browser.
+Read-back and evidence:
+`AppStore/1.1.2/evidence/submission-build13-2026-09-07.md`.
 
 - App: `com.nsantulli.econbyte` (ASC app id `6780714383`)
 - Version: **1.1.2** (build **12**, the build now attached to the version.
@@ -466,14 +472,39 @@ as an Owner-reversible decision.
 
 ## How to verify after entering
 
+> **Corrected 2026-09-07 for build 13, and now a record rather than an
+> instruction.** The list below was written for build 12, whose premise was "no
+> row is tracking". Steps 2, 3 and 4 asserted that — they were false for build 13
+> and, read literally, told the operator to undo the one edit build 13 needs. The
+> section has been rewritten to state what the label must look like *after* the
+> build-13 edit, and each step is checked off against the label as published on
+> 2026-09-07T19:38Z (evidence:
+> `AppStore/1.1.2/evidence/submission-build13-2026-09-07.md`).
+
 1. **Nine data types** appear under App Privacy: the two pre-existing ad rows
    (Device ID, Advertising Data) plus the seven above, each with the purposes as
-   written.
-2. Every row reads **Linked to You: No** and **Used to Track You: No**.
-3. The public label still reads **"Data Not Linked to You"** — none of these
-   additions is linked or tracking, so the summary must **not** gain a "Data Used
-   to Track You" section. If it does, one of the seven was answered wrong.
-4. Nothing under Device ID or Advertising Data was altered in passing — purposes
-   still read Third-Party Advertising, answers still read No / No.
-5. The changes are **Published**, not left in a draft state. Screenshot the
-   published label into the evidence bundle.
+   written. — **Confirmed:** Device ID, Advertising Data, Crash Data, Performance
+   Data, Other Usage Data, Coarse Location, Product Interaction, Other Diagnostic
+   Data, User ID.
+2. Every row reads **Linked to You: No**. **Used to Track You** reads **Yes on
+   exactly two rows — Device ID and Advertising Data — and No on the other
+   seven.** (Build-12 text said every row reads Tracking: No. That is what
+   Guideline 5.1.2(i) rejected, because the binary declares tracking.) —
+   **Confirmed.**
+3. The public summary carries **both** a "Data Used to Track You" section and a
+   "Data Not Linked to You" section. The tracking section lists the two
+   *categories* the two tracking rows live in: **Identifiers** (Device ID) and
+   **Usage Data** (Advertising Data). If it lists any third category, one of the
+   seven additions was answered wrong. (Build-12 text said the summary must not
+   gain a tracking section at all.) — **Confirmed:** tracking section =
+   Usage Data, Identifiers.
+4. Under Device ID and Advertising Data, purposes still read **Third-Party
+   Advertising** and linkage still reads **No**; the only field that changed is
+   Advertising Data's tracking answer, **No → Yes**. **Device ID was not opened
+   or edited** — it already read Yes. (Build-12 text said both answers still read
+   No / No.) — **Confirmed.**
+5. The changes are **Published**, not left in a draft state. — **Confirmed:** the
+   page header moved from "Published 20 hours ago by Nick Santulli" to "Published
+   a few seconds ago by Nick Santulli", and the full label was read back from the
+   live page into the evidence bundle. No screenshot was retained; the read-back
+   is the record.
