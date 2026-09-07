@@ -596,3 +596,45 @@ adapter.
    primer.
 9. Ratify D11 — an ad can follow a topic-deck or Saved Cards completion, not only
    the daily set.
+
+---
+
+## D2 addendum — ATT is back in 1.1.2 build 13 (2026-09-07)
+
+D2 above records why version 1.1 removed the AppTrackingTransparency pathway,
+and the reasoning stands on its own terms: contextual, non-personalized ads do
+not need the advertising identifier, and a declared tracking domain is blocked at
+the network layer for every reader who declines. Nothing in that analysis was
+wrong. What it did not account for is that the **App Privacy label is an
+app-level record, and is not ours alone to set**.
+
+Three facts, each verified rather than reasoned about, retire the decision:
+
+1. **App Review rejected 1.1.2 build 12 on 2026-09-07 under Guideline
+   5.1.2(i).** The published label answers "Identifiers > Device ID: used for
+   tracking purposes", and the binary never asks.
+2. **App Store Connect refuses to move that answer.** Setting Device ID to
+   not-tracking was attempted and refused verbatim — *"Your app contains
+   NSUserTrackingUsageDescription…"* — because the LIVE 1.1.1 (build 8) carries
+   the key. The dialog was cancelled, not falsified. Recorded in
+   `~/dudley-evidence-retention/econbyte/1.1.2-resubmission-2026-09-07/`.
+3. **The ad SDK declares the tracking itself.** `GoogleMobileAds.framework`'s own
+   `PrivacyInfo.xcprivacy` (12.14.0, read out of the built app rather than out of
+   its documentation) declares `NSPrivacyCollectedDataTypeDeviceID` with
+   `Tracking = true`. The aggregated privacy report Apple reads therefore says
+   the app tracks regardless of what the app's own manifest says — so build 12's
+   `NSPrivacyTracking = false` was the incoherent half, not the label.
+
+So the binary moves to the label, which is Apple's own third remedy. What is
+**not** reversed: ads stay non-personalized on every ATT answer, authorized
+included. The portfolio invariant `adsPolicy.personalizedAdsMode: "disabled"` is
+enforced outside this repo, so turning personalization on for authorized readers
+is a policy revision across the portfolio, not an EconByte edit. Until that
+happens, the prompt buys ad *measurement* and nothing more — which is exactly
+what the usage-description string promises, and no more than it promises.
+
+The cost D2 correctly identified is real and is accepted knowingly: readers who
+decline will have `googleads.g.doubleclick.net` blocked, and will see no ads. That
+is already true of the live 1.1.1 build 8, so build 13 is not a regression against
+what is shipping today — but it IS a regression against build 12, and it is the
+strongest argument for the personalization follow-up.

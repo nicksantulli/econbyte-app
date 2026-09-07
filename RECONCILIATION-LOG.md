@@ -312,3 +312,33 @@ precisely the defect that file exists to prevent.
   and fixing it is an Owner gate.
 * **No `reviewSubmission`.** Owner gate.
 * **App Privacy label rows** remain web-UI only and unpublished.
+
+---
+
+## §9 — build 13 puts ATT back (2026-09-07)
+
+§1 records lineage B as "ATT back, `googleads.g.doubleclick.net` declared" and
+treats that as the stale line's defect, with lineage A's removal taken as
+correct. For the *product* that is still right. For the *tracking posture* it is
+now reversed: App Review rejected build 12 under 5.1.2(i), App Store Connect will
+not publish the label as not-tracking while the live build 8 carries
+`NSUserTrackingUsageDescription`, and GoogleMobileAds' own manifest declares the
+device id as tracking anyway. See the D2 addendum in `CONTENT-DECISIONS.md`.
+
+Build 13 therefore takes B's *artefacts* — the usage description, the
+`NSPrivacyTracking = true` manifest, the declared domain — and rejects B's
+*implementation*. B asked from `AdManager.presentInterstitial()`, i.e. after the
+ad SDK had already started and preloaded at launch; that is the ordering the
+guideline is about, so restoring it unchanged would have re-earned the rejection.
+Build 13 puts the decision in front of every provider call instead
+(`EconMonetization.adRequestsPermitted`), asks once per install from the
+session-complete exit path, and never asks a reader who will not see an ad.
+
+Which side won, and why:
+
+| Artefact | Winner | Why |
+|---|---|---|
+| `NSUserTrackingUsageDescription` | B (restored, reworded) | the label requires a prompt; B's copy promised personalized ads, which this build does not deliver, so the string says "measured" instead |
+| `NSPrivacyTracking` / `NSPrivacyTrackingDomains` | B | `true` with an empty domain list is an Invalid Binary at upload (B learned this at 58479fa); the SDK declares no domains of its own to inherit |
+| Where the prompt is asked | **Neither** — new | A had no prompt, B asked too late; the ordering gate is build 13's own |
+| `npa=1` / `rdp=1` on every request | A | unchanged, and now asserted for all four ATT outcomes |
