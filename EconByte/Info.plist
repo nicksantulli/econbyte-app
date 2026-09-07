@@ -32,6 +32,14 @@
 	<false/>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-9950526548980224~6219329532</string>
+	<!-- App Tracking Transparency, restored in 1.1.2 build 13 after App Review
+	     rejected build 12 under Guideline 5.1.2(i). The string says measurement
+	     and NOT personalization on purpose: every ad request carries npa=1 and
+	     rdp=1 whatever the reader answers, so a string promising personalized
+	     ads would be a promise the binary does not keep. See
+	     EconByte/Services/EconTrackingAuthorization.swift. -->
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Allows the ads that keep EconByte free to be measured. EconByte does not personalize ads.</string>
 	<!-- Instrumentation credentials, injected at build time from the gitignored
 	     Config/Secrets.xcconfig via Config/Instrumentation.xcconfig. EMPTY here
 	     and in any checkout without that file, which keeps the SDKs inert (see

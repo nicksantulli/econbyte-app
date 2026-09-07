@@ -13,8 +13,9 @@ packages:
   # Google's TEST unit; RELEASE uses the Owner-provided unit.
   # Pinned EXACTLY, like the other two: a `majorVersion` range let any 12.x
   # resolve, so the ad SDK that shipped could differ from the one that was
-  # reviewed. The app declares NSPrivacyTracking = false and never prompts for
-  # ATT, so this SDK is pinned for reproducibility, not for a tracking claim.
+  # reviewed. The app declares NSPrivacyTracking = true and prompts for ATT once
+  # per install (1.1.2 build 13, App Review 5.1.2(i)); this SDK is the reason for
+  # both, so the exact pin is a tracking claim as well as a reproducibility one.
   # 12.14.0 is the reviewed version; Package.resolved is committed beside it.
   GoogleMobileAds:
     url: https://github.com/googleads/swift-package-manager-google-mobile-ads
@@ -49,7 +50,7 @@ settings:
     # reproduces the project. EconByte is a COMMITTED-pbxproj app: this file is
     # documentation, never a generator input (never run xcodegen here).
     MARKETING_VERSION: "1.1.2"
-    CURRENT_PROJECT_VERSION: "12"
+    CURRENT_PROJECT_VERSION: "13"
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO
