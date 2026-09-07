@@ -81,3 +81,62 @@ web-UI only. The seven new rows in `app-privacy-answers.md` must be published
 A second gate is new with this build: `release/econbyte-1.1.2` **has not been
 pushed**. `origin/main` is still `42df3dc`, which is the mechanism that produced
 the two lineages in the first place. See `RECONCILIATION-LOG.md`.
+
+---
+
+# Build 13 (2026-09-07) — the shipped What's New is now FALSE and must change
+
+Build 13 restores the App Tracking Transparency prompt (App Review rejected
+build 12 under Guideline 5.1.2(i); see `AppStore/1.1.2/review-notes.md` and the
+supersession box at the top of `app-privacy-answers.md`). The What's New text
+currently set on the version says the opposite:
+
+> • No tracking-permission pop-up: EconByte doesn't track you.
+
+That line was true of builds 10-12 and is **false of build 13**. Shipping it
+would tell every updating reader there is no permission pop-up, immediately
+before showing them one — the same class of defect (an artefact contradicting
+the binary) that caused the rejection. It must be replaced before submission.
+
+## Replacement copy (en-US) — to set on `appStoreVersionLocalization 74dcd360-68af-4d27-b225-e6fda92406f5`
+
+Only the third bullet changes; every other line is unchanged and still true.
+
+```
+All 15 topics and 120 cards are back, including the five topics the previous
+update left out.
+
+• Usage analytics and crash diagnostics are separate, optional choices in
+Settings — both off unless you turn them on.
+• After your first finished set, EconByte asks once whether ads may be
+measured. Either answer is fine — ads are never personalized.
+• VoiceOver announces each card's topic, position and face, and card flips
+respect Reduce Motion.
+• The highlight on the home screen now matches its refreshed source data.
+```
+
+Why this wording:
+
+* **"asks once"** and **"after your first finished set"** are literally what the
+  binary does, and are the same two facts the review notes give App Review.
+* **"whether ads may be measured"** matches the tracking-permission string in
+  `Info.plist` ("Allows the ads that keep EconByte free to be measured. EconByte
+  does not personalize ads."). A reader who taps through should recognise the
+  sentence.
+* **"Either answer is fine"** is true and is worth saying: declining costs the
+  reader nothing in this app, because the ads were never personalized either way.
+* It does not say "we don't track". The published label says the app does, and
+  build 13 agrees with the label.
+
+## What is unchanged in build 13
+
+Content, consent posture, VoiceOver, Reduce Motion, the analytics identity row,
+pricing, the two in-app purchases, and every ad eligibility rule. The diff from
+build 12 is the ATT prompt, the ordering gate in front of the ad request, the
+privacy manifest, the usage-description string, and the build number.
+
+## Not applied by this lane
+
+Neither this copy nor the review notes has been written to App Store Connect.
+Build 13 is uploaded but **not attached to the version and not submitted** — an
+independent review comes first.

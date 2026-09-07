@@ -1,5 +1,75 @@
 # EconByte 1.1.2 — App Privacy answers to set in App Store Connect
 
+> ## BUILD 13 SUPERSEDES THE TRACKING ANSWERS BELOW (2026-09-07)
+>
+> Everything in this file below this box was written for **build 12**, whose
+> premise was "the app does not track, so the two ad rows answer Tracking: No".
+> **App Review rejected build 12 on 2026-09-07 under Guideline 5.1.2(i)** and
+> that premise is now retired. Read this box first; the rest of the file remains
+> accurate for the *seven added rows*, which do not change at all.
+>
+> ### What changed, and why the label could not simply be corrected
+>
+> 1. The published label already answers **Identifiers > Device ID: "Used for
+>    tracking purposes"**. The "starting point" table further down says both ad
+>    rows read Tracking: No — **that table is wrong for Device ID**. It was a
+>    record, not an observation, and the observation was finally taken on
+>    2026-09-07 by reading the live App Privacy page: Device ID still carries
+>    "Used for tracking purposes". Advertising Data does read not-tracking.
+> 2. Setting Device ID to not-tracking was **attempted and refused by App Store
+>    Connect**: *"Your app contains NSUserTrackingUsageDescription… update your
+>    App Privacy response to indicate that data collected from this app will be
+>    used for tracking purposes, or update your app binary and upload a new
+>    build."* The live 1.1.1 (build 8) carries the key, so the block holds. The
+>    dialog was cancelled rather than falsified. Evidence:
+>    `~/dudley-evidence-retention/econbyte/1.1.2-resubmission-2026-09-07/10-privacy-label-edit-BLOCKED.md`.
+> 3. **GoogleMobileAds 12.14.0's own privacy manifest declares
+>    `NSPrivacyCollectedDataTypeDeviceID` with `Tracking = true`.** Read out of
+>    the built app's `Frameworks/GoogleMobileAds.framework/PrivacyInfo.xcprivacy`,
+>    not from documentation. So the aggregated privacy report Apple reads says
+>    the app tracks whatever this app's own manifest claims — which means the
+>    label was never the wrong half.
+>
+> So build 13 moves the binary to the label (Apple's own remedy #3): the ATT
+> prompt is restored, `NSPrivacyTracking = true`, and
+> `NSPrivacyTrackingDomains = [googleads.g.doubleclick.net]`.
+>
+> ### The two ad rows, as they must read for build 13
+>
+> | Data type | Purposes | Linked | **Used to Track** |
+> |---|---|---|---|
+> | Identifiers → Device ID | Third-Party Advertising | No | **Yes** |
+> | Usage Data → Advertising Data | Third-Party Advertising | No | **Yes** |
+>
+> * **Device ID** already reads Yes on the live label — **no edit is needed**,
+>   and none should be attempted. Leave it exactly as it is.
+> * **Advertising Data** reads **No** on the live label and must be changed to
+>   **Yes**. This is the one App Privacy edit build 13 requires. It is the
+>   conservative direction (a data type declared as tracking that also happens
+>   not to be is an over-declaration, which Apple does not reject; the reverse is
+>   the rejection this app just took), and it matches what the binary now
+>   declares — the manifest and the label are asserted to agree by
+>   `InstrumentationPrivacyTests.testThePrivacyManifestDeclaresTheAppTracks`,
+>   which allows exactly these two rows to be marked tracking and no others.
+> * The seven rows added for 1.1.2 are **unchanged**: all seven stay
+>   Collected: Yes · Linked: No · **Tracking: No**. Do not touch them.
+> * The public summary will therefore gain a **"Data Used to Track You:
+>   Identifiers, Usage Data"** section. That is expected for build 13 and is the
+>   opposite of what step 3 of "How to verify after entering" says at the very
+>   bottom of this file — that step was written for build 12 and no longer
+>   applies to the two ad rows. It still applies to the seven additions.
+>
+> ### Still true, and worth stating plainly
+>
+> Restoring the prompt does **not** turn personalization on. Every ad request
+> still carries `npa=1` and `rdp=1`, on every ATT answer including *authorized*,
+> because `adsPolicy.personalizedAdsMode` is `"disabled"` portfolio-wide and is
+> enforced outside this repo by `scripts/release_evidence_gate.mjs`
+> (POLICY_PERSONALIZATION) and DudleyCore's `MonetizationPolicyRegistry`.
+> Collecting the eCPM this prompt makes available is a **portfolio policy
+> revision**, not an EconByte edit, and it is the open follow-up recorded in
+> this build's HANDOFF.
+
 **Status: NOT ENTERED.** This file is the instruction set for whoever opens the
 App Store Connect web UI. Nothing here has been submitted. The App Privacy
 section **cannot be edited through the ASC API** — it is web-UI only, so no lane
