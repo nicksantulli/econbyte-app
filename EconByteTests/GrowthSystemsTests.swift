@@ -68,6 +68,20 @@ final class GrowthSystemsTests: XCTestCase {
         }
     }
 
+    /// Every ad test in this file predates ATT and is about a reader who has
+    /// already answered. `.denied` is used deliberately rather than
+    /// `.authorized`: it is the majority real-world answer, it is a decided
+    /// status (so the 1.1.2 build-13 gate lets the ad SDK start), and it is the
+    /// outcome under which the request must still be non-personalized — which
+    /// is what every assertion below was written against. The prompt's own
+    /// ordering rules live in `TrackingAuthorizationTests`.
+    @MainActor
+    private final class DecidedTracking: EconTrackingAuthorizing {
+        var status: EconTrackingStatus
+        init(_ status: EconTrackingStatus = .denied) { self.status = status }
+        func requestAuthorization() async -> EconTrackingStatus { status }
+    }
+
     private func date(_ iso: String) -> Date {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
@@ -166,7 +180,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .allowed })
+                                            region: { .allowed },
+                                            tracking: DecidedTracking())
         monetization.update(entitlements: EconEntitlements(unlockAll: false, removeAds: true))
         monetization.startAdsIfPermitted()
 
@@ -183,7 +198,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .allowed })
+                                            region: { .allowed },
+                                            tracking: DecidedTracking())
         monetization.update(entitlements: EconEntitlements(removeAds: true))
         XCTAssertEqual(monetization.decisionAtSetExit(), .suppressedEntitled)
 
@@ -225,7 +241,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .restricted })
+                                            region: { .restricted },
+                                            tracking: DecidedTracking())
         monetization.startAdsIfPermitted()
         XCTAssertEqual(adapter.startCount, 0)
         XCTAssertEqual(monetization.decisionAtSetExit(), .suppressedRegion(.restricted))
@@ -233,14 +250,19 @@ final class GrowthSystemsTests: XCTestCase {
 
     // MARK: - 3. Ad request configuration (spec section 9.1, DUD-224)
 
-    /// Contextual only. No personalized request, and no ATT prompt in 1.1.
-    func testAdRequestPolicyIsContextualAndNeverRequestsTracking() {
+    /// Contextual only — still. 1.1.2 build 13 restores the ATT prompt (App
+    /// Review 5.1.2(i)), so `requestsAppTrackingAuthorization` flips; the
+    /// *request* does not. Non-personalized on every outcome, which
+    /// `TrackingAuthorizationTests` asserts for all four statuses.
+    func testAdRequestPolicyIsContextualAndDeclaresTheRestoredATTPrompt() {
         let policy = EconAdRequestPolicy()
         XCTAssertFalse(policy.usesPersonalizedAds)
-        XCTAssertFalse(policy.requestsAppTrackingAuthorization,
-                       "version 1.1 removes the ATT prompt entirely")
+        XCTAssertTrue(policy.requestsAppTrackingAuthorization,
+                      "1.1.2 build 13 restores the ATT prompt the label requires")
         XCTAssertEqual(policy.extras["npa"], "1",
                        "non-personalized ads flag must be set on every request")
+        XCTAssertEqual(policy.trackingStatus, .notDetermined,
+                       "a policy built with no decision must not imply one")
     }
 
     func testAdRequestPolicyBlocksSensitiveCategoriesAndCapsContentRating() {
@@ -382,7 +404,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .allowed })
+                                            region: { .allowed },
+                                            tracking: DecidedTracking())
         monetization.noteForegroundSessionBegan()
         monetization.noteSetCompleted(normally: true)
         let outcome = await monetization.presentIfEligibleAtSetExit()
@@ -397,7 +420,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .allowed })
+                                            region: { .allowed },
+                                            tracking: DecidedTracking())
         monetization.noteForegroundSessionBegan()
         for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
 
@@ -414,7 +438,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .allowed })
+                                            region: { .allowed },
+                                            tracking: DecidedTracking())
         monetization.noteForegroundSessionBegan()
         for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
 
@@ -436,7 +461,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .allowed })
+                                            region: { .allowed },
+                                            tracking: DecidedTracking())
         monetization.noteForegroundSessionBegan()
         for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
         let outcome = await monetization.presentIfEligibleAtSetExit()
@@ -451,7 +477,8 @@ final class GrowthSystemsTests: XCTestCase {
             EconMonetization(adapter: SpyInterstitialAdapter(),
                              defaults: self.defaults,
                              now: { self.date("2026-09-01T12:00:00Z") },
-                             region: { .allowed })
+                             region: { .allowed },
+                             tracking: DecidedTracking())
         }
         let first = makeCoordinator()
         first.noteSetCompleted(normally: true)
@@ -476,7 +503,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .allowed })
+                                            region: { .allowed },
+                                            tracking: DecidedTracking())
         monetization.onAdEligible = { eligible.append(($0, $1)) }
         monetization.onAdDismissed = { dismissed.append(($0, $1)) }
 
@@ -507,7 +535,8 @@ final class GrowthSystemsTests: XCTestCase {
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { self.date("2026-09-01T12:00:00Z") },
-                                            region: { .allowed })
+                                            region: { .allowed },
+                                            tracking: DecidedTracking())
         monetization.onAdEligible = { _, _ in eligible += 1 }
         monetization.noteForegroundSessionBegan()
         monetization.noteSetCompleted(normally: true)
