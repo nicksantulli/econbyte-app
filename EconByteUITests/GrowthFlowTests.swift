@@ -373,5 +373,16 @@ final class GrowthFlowTests: XCTestCase {
         for _ in 0..<8 where !(personal.exists && personal.isHittable) { app.swipeUp() }
         XCTAssertTrue(app.buttons["pack-personal-buy"].waitForExistence(timeout: 15))
         capturePack("eb-home-packs-2")
+
+        // One frame per App Store product for the IAP review screenshots: the
+        // pack's buy button (name + StoreKit price) scrolled into view.
+        for id in ["markets", "personal"] {
+            let button = app.buttons["pack-\(id)-buy"]
+            for _ in 0..<10 where !(button.exists && button.isHittable) { app.swipeUp() }
+            XCTAssertTrue(button.waitForExistence(timeout: 15), id)
+            XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: priced, evaluatedWith: button)], timeout: 20),
+                           .completed, "\(id) buy button must show its StoreKit price")
+            capturePack("eb-iap-\(id)")
+        }
     }
 }
