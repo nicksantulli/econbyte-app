@@ -110,6 +110,9 @@ enum TelemetrySchema {
         // prohibited property.
         "topic_opened_v1": ["entry_point", "access_state"],
         "paywall_viewed_v1": ["entry_point", "products_ready"],
+        // Topic packs (1.1.3): a locked pack offer was shown. Purchases ride
+        // the existing purchase_*_v1 funnel with a per-pack product_family.
+        "pack_shown_v1": ["product_family", "entry_point"],
         "products_loaded_v1": ["outcome"],
         "purchase_started_v1": ["product_family", "entry_point"],
         "purchase_finished_v1": ["product_family", "outcome"],
@@ -160,7 +163,7 @@ enum TelemetrySchema {
         "outcome": .enumerated(["completed", "cancelled", "pending", "failed",
                                 "unavailable", "loaded", "filled", "no_fill",
                                 "nothing_to_restore"]),
-        "product_family": .enumerated(["unlock_all", "remove_ads"]),
+        "product_family": .enumerated(["unlock_all", "remove_ads", "pack_markets", "pack_personal"]),
         "suppression": .enumerated(["region_restricted", "ads_removed"]),
         // The interstitial's one placement plus, from 1.1.3, the two anchored
         // banner slots. Declared as a vocabulary rather than a token so a new

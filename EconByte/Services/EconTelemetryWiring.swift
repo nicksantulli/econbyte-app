@@ -69,6 +69,10 @@ enum EBOutcome: String {
 enum EBProductFamily: String {
     case unlockAll = "unlock_all"
     case removeAds = "remove_ads"
+    /// Topic packs (1.1.3). One family per pack SKU so the funnel can be read
+    /// per pack without the product id ever leaving the device.
+    case packMarkets = "pack_markets"
+    case packPersonal = "pack_personal"
 }
 
 /// Why an ad was not requested or not shown. Named `suppression` rather than
@@ -221,6 +225,15 @@ enum EBEvents {
         EconTelemetry.shared.capture(TelemetryEvent("paywall_viewed_v1", [
             "entry_point": .string(entryPoint.rawValue),
             "products_ready": .bool(productsReady),
+        ]))
+    }
+
+    /// A locked pack offer became visible (1.1.3). Family + entry point only:
+    /// which pack was offered and where, never a price or product id.
+    static func packShown(family: EBProductFamily, entryPoint: EBEntryPoint) {
+        EconTelemetry.shared.capture(TelemetryEvent("pack_shown_v1", [
+            "product_family": .string(family.rawValue),
+            "entry_point": .string(entryPoint.rawValue),
         ]))
     }
 

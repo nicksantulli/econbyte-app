@@ -45,13 +45,22 @@ final class PurchaseManager: ObservableObject {
     enum ProductID: String, CaseIterable {
         case unlockAll = "com.nsantulli.econbyte.unlockall"
         case removeAds  = "com.nsantulli.econbyte.removeads"
+        /// Topic packs (1.1.3, created in ASC 2026-09-14). Each unlocks its own
+        /// four topics and nothing else; Unlock All does not include them (D18).
+        case packMarkets  = "com.nsantulli.econbyte.pack.markets"
+        case packPersonal = "com.nsantulli.econbyte.pack.personal"
+
+        static let packs: [ProductID] = [.packMarkets, .packPersonal]
+        var isPack: Bool { Self.packs.contains(self) }
 
         /// The bucketed family name analytics is allowed to see. The product id
         /// itself is a prohibited property — a StoreKit identifier never leaves.
         var family: EBProductFamily {
             switch self {
-            case .unlockAll: return .unlockAll
-            case .removeAds: return .removeAds
+            case .unlockAll:    return .unlockAll
+            case .removeAds:    return .removeAds
+            case .packMarkets:  return .packMarkets
+            case .packPersonal: return .packPersonal
             }
         }
     }
@@ -66,12 +75,16 @@ final class PurchaseManager: ObservableObject {
 
     @Published private(set) var isUnlockAllPurchased = false
     @Published private(set) var isRemoveAdsPurchased = false
+    /// Pack product ids with a verified, unrevoked entitlement. Mirrored to
+    /// UserDefaults like the other two so cold-launch gating is synchronous.
+    @Published private(set) var ownedPackProductIDs: Set<String> = []
     @Published private(set) var products: [Product] = []
     @Published private(set) var isLoadingProducts = false
     @Published private(set) var productsLoadError: String?
 
     private let unlockAllKey = "iap.unlockAll.purchased"
     private let removeAdsKey  = "iap.removeAds.purchased"
+    private let ownedPacksKey = "iap.packs.purchased"
 
     private var updates: Task<Void, Never>?
     /// Restore is single-flight: `AppStore.sync()` is only ever called from an
@@ -84,10 +97,18 @@ final class PurchaseManager: ObservableObject {
 
     var productsReady: Bool { !products.isEmpty }
 
+    /// True only for a known pack product with a verified entitlement.
+    func isPackPurchased(productID: String) -> Bool {
+        ownedPackProductIDs.contains(productID)
+    }
+
     private init() {
         // Synchronous seed from cache so the first render gates correctly.
         isUnlockAllPurchased = UserDefaults.standard.bool(forKey: unlockAllKey)
         isRemoveAdsPurchased  = UserDefaults.standard.bool(forKey: removeAdsKey)
+        // Only ids the catalog still sells are honoured from the cache.
+        let cachedPacks = Set(UserDefaults.standard.stringArray(forKey: ownedPacksKey) ?? [])
+        ownedPackProductIDs = cachedPacks.intersection(ProductID.packs.map(\.rawValue))
         updates = Task { [weak self] in await self?.listenForTransactions() }
         Task { [weak self] in
             await self?.loadProducts()
@@ -184,7 +205,7 @@ final class PurchaseManager: ObservableObject {
             do {
                 try await AppStore.sync()
                 await updatePurchasedProducts()
-                if isUnlockAllPurchased || isRemoveAdsPurchased {
+                if isUnlockAllPurchased || isRemoveAdsPurchased || !ownedPackProductIDs.isEmpty {
                     EBEvents.restoreFinished(outcome: .completed, entryPoint: entryPoint)
                     return .success
                 }
@@ -208,19 +229,24 @@ final class PurchaseManager: ObservableObject {
     func updatePurchasedProducts() async {
         var unlockAll = false
         var removeAds = false
+        var packs = Set<String>()
+        let packIDs = Set(ProductID.packs.map(\.rawValue))
         for await result in Transaction.currentEntitlements {
             guard case .verified(let transaction) = result else { continue }
             guard transaction.revocationDate == nil else { continue }
             switch transaction.productID {
             case ProductID.unlockAll.rawValue: unlockAll = true
             case ProductID.removeAds.rawValue:  removeAds = true
+            case let id where packIDs.contains(id): packs.insert(id)
             default: break
             }
         }
         isUnlockAllPurchased = unlockAll
         isRemoveAdsPurchased  = removeAds
+        ownedPackProductIDs   = packs
         UserDefaults.standard.set(unlockAll, forKey: unlockAllKey)
         UserDefaults.standard.set(removeAds, forKey: removeAdsKey)
+        UserDefaults.standard.set(packs.sorted(), forKey: ownedPacksKey)
     }
 
     // MARK: - Transaction listener
@@ -259,6 +285,11 @@ extension PurchaseManager {
     func debugSetRemoveAds(_ value: Bool) {
         isRemoveAdsPurchased = value
         UserDefaults.standard.set(value, forKey: removeAdsKey)
+    }
+    func debugSetPack(_ id: ProductID, _ value: Bool) {
+        guard id.isPack else { return }
+        if value { ownedPackProductIDs.insert(id.rawValue) } else { ownedPackProductIDs.remove(id.rawValue) }
+        UserDefaults.standard.set(ownedPackProductIDs.sorted(), forKey: ownedPacksKey)
     }
 }
 #endif

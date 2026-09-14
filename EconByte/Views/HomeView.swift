@@ -19,6 +19,12 @@ struct HomeView: View {
 
     private let dailyGoal = 3
 
+    /// Content ids of the packs whose product StoreKit has verified. Drives
+    /// the daily-set pool and pack topic access; Unlock All is not consulted.
+    private var ownedPackIDs: Set<String> {
+        Set(content.packs.filter { store.isPackPurchased(productID: $0.productID) }.map(\.id))
+    }
+
     /// Atomic payload for the card-mode cover — carries the deck + title together
     /// so the cover can never present before its data exists.
     private struct CardModeSession: Identifiable {
@@ -52,6 +58,7 @@ struct HomeView: View {
                         streakRow
                         Divider().overlay(Econ.mist.opacity(0.3))
                         browseSection
+                        packsSection
                         bookmarksRow
                     }
                     .padding(.horizontal, 20)
@@ -180,7 +187,8 @@ struct HomeView: View {
     }
 
     private var todaysSetCard: some View {
-        let daily = content.dailySet(count: 8, unlockedAll: store.isUnlockAllPurchased)
+        let daily = content.dailySet(count: 8, unlockedAll: store.isUnlockAllPurchased,
+                                     ownedPackIDs: ownedPackIDs)
         let seen = daily.filter { content.cardStates[$0.id]?.lastSeen != nil }.count
         // Completed = the user has met today's goal (same signal as the streak
         // row's "Today's goal reached ✓"). Reflect it in the CTA.
@@ -276,6 +284,38 @@ struct HomeView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("topic-\(topic.id)")
+                }
+            }
+        }
+    }
+
+    /// Topic packs (1.1.3). Every pack is discoverable here whether or not it
+    /// is owned: a locked pack shows a three-card preview and its buy row; an
+    /// owned pack shows its four topics as tiles. Empty when no packs loaded.
+    @ViewBuilder
+    private var packsSection: some View {
+        if !content.packs.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("TOPIC PACKS")
+                    .font(.system(size: 13, weight: .bold, design: .rounded))
+                    .foregroundColor(Econ.subtext)
+                    .tracking(1.5)
+                ForEach(content.packs) { pack in
+                    PackOfferView(pack: pack) { topic in
+                        let owned = ownedPackIDs
+                        EBEvents.topicOpened(
+                            entryPoint: .home,
+                            accessState: content.accessState(for: topic.id,
+                                                             unlockedAll: store.isUnlockAllPurchased,
+                                                             ownedPackIDs: owned))
+                        cardModeSession = CardModeSession(
+                            cards: content.cards(for: topic.id,
+                                                 unlockedAll: store.isUnlockAllPurchased,
+                                                 ownedPackIDs: owned),
+                            title: topic.name,
+                            mode: .topic,
+                            entryPoint: .home)
+                    }
                 }
             }
         }

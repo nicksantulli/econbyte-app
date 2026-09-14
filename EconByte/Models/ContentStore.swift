@@ -14,6 +14,20 @@ final class ContentStore: ObservableObject {
     let topics: [EconTopic]
     let allCards: [EconCard]
 
+    /// Topic packs (1.1.3). Empty when `packs-v1.json` failed to load — the
+    /// core curriculum above is unaffected and no pack is offered.
+    let packs: [EconPack]
+    /// Non-nil when the packs resource failed to load or validate. Additive:
+    /// never empties `topics`/`allCards`.
+    let packLoadError: Error?
+
+    /// Every pack card, in pack order. Kept apart from `allCards` (the core
+    /// 120) so the core totals the listing states stay pinned.
+    var packCards: [EconCard] { packs.flatMap(\.cards) }
+    var packTopics: [EconTopic] { packs.flatMap(\.topics) }
+    /// Core + packs. Bookmarks and per-card state resolve against this.
+    var everyCard: [EconCard] { allCards + packCards }
+
     /// Non-nil when the bundled catalog failed to load or validate. The runtime
     /// then serves nothing (fail closed) and the caller raises
     /// `content_catalog_invalid`. The build-time catalog test fails first, so a
@@ -46,17 +60,55 @@ final class ContentStore: ObservableObject {
 
     private init() {
         var loadedTopics: [EconTopic] = []
+        var loadedPacks: [EconPack] = []
         var failure: Error?
+        var packFailure: Error?
         do {
             let catalog = try CurriculumCatalog.loadValidated()
             loadedTopics = catalog.topics.map(Self.viewModel(for:))
+            do {
+                let packCatalog = try PackCatalog.loadValidated(core: catalog)
+                loadedPacks = packCatalog.packs.map { pack in
+                    EconPack(id: pack.packID,
+                             name: pack.name,
+                             productID: pack.productID,
+                             icon: pack.icon,
+                             summary: pack.summary,
+                             topics: pack.topics.map(Self.viewModel(for:)))
+                }
+            } catch {
+                // Additive content: log and serve the core curriculum alone.
+                NSLog("[ContentStore] topic packs failed to load: \(error)")
+                packFailure = error
+            }
         } catch {
             failure = error
         }
         topics = loadedTopics
         allCards = loadedTopics.flatMap(\.cards)
+        packs = loadedPacks
         loadError = failure
+        packLoadError = packFailure
         loadStates()
+    }
+
+    // MARK: Packs
+
+    func pack(id: String) -> EconPack? { packs.first { $0.id == id } }
+
+    /// The pack that sells `topicId`, or `nil` for a core (or unknown) topic.
+    func pack(forTopic topicId: String) -> EconPack? {
+        packs.first { $0.topics.contains { $0.id == topicId } }
+    }
+
+    func isPackTopic(_ topicId: String) -> Bool { pack(forTopic: topicId) != nil }
+
+    /// Fail-closed: a pack topic is readable only when its own pack id is in
+    /// `ownedPackIDs`. Unlock All never opens a pack topic (D18); an unknown
+    /// topic is never readable.
+    private func isPackTopicReadable(_ topicId: String, ownedPackIDs: Set<String>) -> Bool {
+        guard let pack = pack(forTopic: topicId) else { return false }
+        return ownedPackIDs.contains(pack.id)
     }
 
     /// Maps a validated catalog topic onto the view models the SwiftUI layer
@@ -117,14 +169,18 @@ final class ContentStore: ObservableObject {
     }
 
     var bookmarkedCards: [EconCard] {
-        allCards.filter { isBookmarked($0.id) }
+        everyCard.filter { isBookmarked($0.id) }
     }
 
-    func dailySet(count: Int = 8, unlockedAll: Bool = false) -> [EconCard] {
+    /// Today's set. The pool is the free topics, plus every core topic with
+    /// Unlock All, plus the cards of each OWNED pack (never an unowned one).
+    func dailySet(count: Int = 8, unlockedAll: Bool = false,
+                  ownedPackIDs: Set<String> = []) -> [EconCard] {
         // Only serve cards from free topics unless the user owns Unlock All.
-        let pool = unlockedAll
+        var pool = unlockedAll
             ? allCards
             : allCards.filter { isTopicFree($0.topicId) }
+        pool += packCards.filter { isPackTopicReadable($0.topicId, ownedPackIDs: ownedPackIDs) }
         // Unseen cards first, then least recently seen.
         let sorted = pool.sorted { a, b in
             let sa = cardStates[a.id]?.lastSeen
@@ -139,16 +195,25 @@ final class ContentStore: ObservableObject {
         return Array(sorted.prefix(count))
     }
 
-    func cards(for topicId: String, unlockedAll: Bool = false) -> [EconCard] {
+    func cards(for topicId: String, unlockedAll: Bool = false,
+               ownedPackIDs: Set<String> = []) -> [EconCard] {
+        if isPackTopic(topicId) {
+            guard isPackTopicReadable(topicId, ownedPackIDs: ownedPackIDs) else { return [] }
+            return packCards.filter { $0.topicId == topicId }.shuffled()
+        }
         guard unlockedAll || isTopicFree(topicId) else { return [] }
         return allCards.filter { $0.topicId == topicId }.shuffled()
     }
 
     func topicName(for topicId: String) -> String {
-        topics.first(where: { $0.id == topicId })?.name ?? topicId
+        (topics + packTopics).first(where: { $0.id == topicId })?.name ?? topicId
     }
 
-    func accessState(for topicId: String, unlockedAll: Bool) -> EconAccessState {
+    func accessState(for topicId: String, unlockedAll: Bool,
+                     ownedPackIDs: Set<String> = []) -> EconAccessState {
+        if isPackTopic(topicId) {
+            return isPackTopicReadable(topicId, ownedPackIDs: ownedPackIDs) ? .unlocked : .locked
+        }
         if isTopicFree(topicId) { return .free }
         return unlockedAll ? .unlocked : .locked
     }

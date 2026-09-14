@@ -8,6 +8,9 @@ import Foundation
 public enum CurriculumAccess: String, Codable, Hashable {
     case free
     case paid
+    /// A topic sold inside a topic pack (1.1.3, `PackCatalog`). Never appears
+    /// in the core catalog; unlocked only by the pack's own product id.
+    case pack
 }
 
 public enum CurriculumDifficulty: String, Codable, Hashable {

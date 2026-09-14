@@ -1,0 +1,1787 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "1.1.3-packs-1",
+  "verifiedOn": "2026-09-14",
+  "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+  "editorialPolicy": "Every factual claim is traceable to a named institutional source with a canonical URL that was re-verified by following redirects to its final landing page, plus a publication or observation date and a verification date. Claims that could not be reproduced from a primary source were removed rather than estimated. Each card carries a concrete illustration alongside its definition. Content is educational and contains no financial, investment, or tax advice.",
+  "packs": [
+    {
+      "packID": "markets",
+      "name": "Markets & Investing Basics",
+      "productID": "com.nsantulli.econbyte.pack.markets",
+      "icon": "chart.xyaxis.line",
+      "summary": "What stocks, bonds, and funds actually are, how risk and return are linked, and how the markets that trade them work.",
+      "topics": [
+        {
+          "topicID": "stocks-bonds",
+          "name": "Stocks & Bonds",
+          "icon": "chart.bar.xaxis",
+          "order": 1,
+          "access": "pack",
+          "summary": "What a share and a bond each promise, how coupons, yields, and prices relate, and how Treasury debt and credit ratings are organized.",
+          "cards": [
+            {
+              "cardID": "sb-001",
+              "topicID": "stocks-bonds",
+              "title": "What a Share Is",
+              "definition": "A share of stock is a unit of ownership in a company. Holders of common stock can usually vote at shareholder meetings and receive any dividends the company declares. Preferred stockholders usually cannot vote, but they are paid dividends first and rank ahead of common holders if the company is liquidated.",
+              "example": "Ownership is proportional. A company that has issued 1,000 shares has sold 1,000 equal slices of itself, so a holder of 10 of them owns 1 percent of the firm and collects 1 percent of whatever dividend is declared - no bigger say and no bigger cheque than that slice carries.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Stocks",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/stocks",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of shares outstanding (illustrative holding)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "proportional ownership as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sb-002",
+              "topicID": "stocks-bonds",
+              "title": "Dividends",
+              "definition": "A dividend is a portion of a company's profit paid out to its shareholders. Companies that pay dividends usually do so on a fixed schedule, although they can declare one at any time, and a payment made outside the schedule is called a special or extra dividend. Nothing obliges a company to pay a dividend at all.",
+              "example": "An illustrative company paying $0.50 a share every quarter distributes $2.00 a share over a year. If it earned $6.00 a share, it paid out a third and kept the rest. A board can cut that $0.50 to zero at the next meeting without breaking any promise, because none was made.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Dividend",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dividend",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars per share (illustrative dividend and earnings)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "dividend schedule as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sb-003",
+              "topicID": "stocks-bonds",
+              "title": "What a Bond Is",
+              "definition": "A bond is a loan from the buyer to the issuer, which may be a government, a municipality, or a corporation. The issuer promises to pay a stated rate of interest over the life of the bond and to repay the principal - its face or par value - when the bond matures. Bondholders are creditors, not owners.",
+              "example": "Held to maturity, a bond with a $1,000 face value returns exactly $1,000 at the end plus every interest payment along the way. Sold before maturity, it fetches whatever the market will pay, which may be more or less than $1,000 - the promise is fixed, the resale price is not.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Bonds",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative face value)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "bond mechanics as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sb-004",
+              "topicID": "stocks-bonds",
+              "title": "Coupon and Yield",
+              "definition": "A bond's coupon is the interest rate written into the security and paid on its face value. Its yield to maturity is the annual return an investor actually earns, which depends on the price paid. At a price equal to face value the two match; at a price above par the yield falls below the coupon, and at a price below par it rises above it.",
+              "example": "At a Treasury auction the rate and the price are set together. In the example TreasuryDirect publishes, a 20-year bond with an interest rate of 1.750 percent and a high yield of 1.850 percent sold at 98.336995 per 100 of face value - below par, so the buyer's return runs a little above the coupon.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Department of the Treasury, TreasuryDirect",
+                "documentTitle": "Understanding Pricing and Interest Rates",
+                "url": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent and price per 100 of face value (Treasury auction example)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "auction example as published by TreasuryDirect on 2026-09-14",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sb-005",
+              "topicID": "stocks-bonds",
+              "title": "Prices and Yields Move Opposite",
+              "definition": "Bond prices and market interest rates move in opposite directions. When rates go up, newly issued bonds pay more, so an older bond with a lower coupon can only be sold at a discount. When rates come down, the older bond's higher coupon makes it worth more than face value. Holding to maturity sidesteps the swing.",
+              "example": "An older bond paying 2 percent competes with new issues paying 4 percent. Nobody pays full price for half the income, so its price drops until the two offer a comparable return. Its owner still receives every coupon and $1,000 at maturity - the loss is real only if the bond is sold early.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Bonds",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent and U.S. dollars (illustrative coupons and face value)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "interest rate risk as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sb-006",
+              "topicID": "stocks-bonds",
+              "title": "Bills, Notes, and Bonds",
+              "definition": "The Treasury's conventional marketable debt comes in three maturity bands. Bills mature in one year or less and are sold at face value or at a discount, with the difference serving as the interest. Notes are issued with maturities of 2 to 10 years and bonds with 20 or 30 years, and both pay a fixed rate of interest every six months.",
+              "example": "Bills run from 4 weeks to 52 weeks; notes come in 2, 3, 5, 7, and 10 years; bonds in 20 and 30 years. A saver parking cash for a few months and a pension fund matching a liability 30 years away are buying from the same issuer at opposite ends of one menu.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Department of the Treasury, TreasuryDirect",
+                "documentTitle": "Treasury Marketable Securities",
+                "url": "https://www.treasurydirect.gov/marketable-securities/",
+                "publicationDate": "2026-09-13",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "sb-007",
+              "topicID": "stocks-bonds",
+              "title": "TIPS",
+              "definition": "Treasury Inflation-Protected Securities are Treasury securities whose principal is adjusted for inflation. Interest is a fixed rate paid on the adjusted principal, so the payment itself varies. At maturity the holder receives the adjusted principal or the original amount, whichever is larger.",
+              "example": "TIPS are sold in 5-, 10-, and 30-year terms and pay interest every six months. If the adjustment lifts a $1,000 TIPS to $1,100 in principal, each coupon is computed on the larger figure; if the adjustment had gone the other way, the holder would still get the original $1,000 back at maturity.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Department of the Treasury, TreasuryDirect",
+                "documentTitle": "Treasury Inflation-Protected Securities (TIPS)",
+                "url": "https://www.treasurydirect.gov/marketable-securities/tips/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative principal adjustment)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "TIPS terms as published by TreasuryDirect",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sb-008",
+              "topicID": "stocks-bonds",
+              "title": "Credit Ratings",
+              "definition": "A credit rating is a rating agency's opinion of how likely a bond issuer is to default. Bonds rated BBB or Baa and above are called investment grade; anything rated below is high yield, or junk. Lower-rated issuers must offer higher yields to attract buyers, and a rating is a judgment about risk, not a guarantee of payment.",
+              "example": "Two bonds with the same 10-year maturity can carry very different coupons because of 1 letter grade. A downgrade from BBB to BB moves a bond across the investment-grade line, and the market re-prices it to reflect the higher perceived risk - the price falls and the yield rises with no change in the coupon itself.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Investment-grade Bond (or High-grade Bond)",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/investment-grade-bond-or-high-grade-bond",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "funds-diversification",
+          "name": "Funds & Diversification",
+          "icon": "square.grid.2x2",
+          "order": 2,
+          "access": "pack",
+          "summary": "How pooled funds work, what they cost, and why spreading money across holdings and asset classes changes the risk.",
+          "cards": [
+            {
+              "cardID": "fdv-001",
+              "topicID": "funds-diversification",
+              "title": "Mutual Funds",
+              "definition": "A mutual fund pools money from many investors and uses it to buy a portfolio of stocks, bonds, or other securities. Each share represents a slice of the whole portfolio and of the income it produces. Investors buy shares from the fund and sell them back to it at the net asset value calculated at the end of each business day.",
+              "example": "Net asset value is arithmetic, not a quote. A fund holding securities worth $101 million, carrying $1 million of expenses and liabilities, with 10 million shares outstanding has an NAV of $10.00 a share - and every order placed that day, large or small, clears at that one figure after the market closes.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Mutual Funds",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative fund assets and net asset value)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "NAV pricing as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "fdv-002",
+              "topicID": "funds-diversification",
+              "title": "ETFs",
+              "definition": "An exchange-traded fund is a pooled investment, registered with the SEC like a mutual fund, whose shares trade on a stock exchange throughout the day. Each share is part ownership of the fund's portfolio and the income it generates. Because the shares trade between investors, the market price can differ from the value of the underlying holdings.",
+              "example": "The same 500 stocks can be held two ways. A mutual fund investor's order is filled once a day at the closing NAV; an ETF investor can buy at 10:15 and sell at 2:40 at whatever price another trader will pay, which may sit a few cents above or below what the holdings are worth at that moment.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Exchange-Traded Fund (ETF)",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/exchange-traded-fund-etf",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "fdv-003",
+              "topicID": "funds-diversification",
+              "title": "Index Funds",
+              "definition": "An index fund is a mutual fund or ETF that follows a passive strategy: it tries to match the return of a chosen market index before fees, mainly by holding the securities in that index or a representative sample of them. Because it trades less than an actively managed fund, its transaction costs are usually lower.",
+              "example": "A fund tracking an index of 500 large companies does not pick among them. It holds all 500 in roughly the index's proportions and changes only when the index does. Its report card is how closely it matched the index, not whether a manager guessed right about any of the 500.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Index Fund",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/index-fund",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "fdv-004",
+              "topicID": "funds-diversification",
+              "title": "Expense Ratios",
+              "definition": "An expense ratio is the share of a fund's average net assets deducted each year to pay its operating costs - management fees, distribution and service fees, and other expenses. It is not billed separately. It comes out of the fund's returns, so the investor never sees an invoice and the drag accumulates year after year.",
+              "example": "The SEC's own illustration: $100,000 growing 4 percent a year for 20 years ends near $208,000 with a 0.25 percent annual fee and near $179,000 with a 1.00 percent fee. The 0.75-point difference in fees costs roughly $29,000 - about 14 percent of the final balance.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Understanding Fees",
+                "url": "https://www.investor.gov/introduction-investing/getting-started/understanding-fees",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative SEC fee comparison)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "hypothetical 20-year portfolio as published by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "fdv-005",
+              "topicID": "funds-diversification",
+              "title": "Diversification",
+              "definition": "Diversification means spreading money across many investments so that a loss in one can be offset by gains or stability in others. It reduces the risk tied to any single holding but cannot remove market-wide risk: if the whole market falls, a diversified portfolio falls too, though usually by less than its worst component.",
+              "example": "A portfolio of 1 stock rises and falls with 1 company's fortunes. Spread across 30 companies in 10 industries, a single bankruptcy costs about 3 percent rather than everything - but a downturn that hits all 30 at once is not diversified away, only diluted.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Diversify Your Investments",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/save-and-invest/diversify-your-investments",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of portfolio (illustrative equal-weight holding)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "diversification as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "fdv-006",
+              "topicID": "funds-diversification",
+              "title": "Asset Classes",
+              "definition": "An asset class is a group of investments with similar characteristics that tend to behave alike. The three main ones are stocks, bonds, and cash. Asset allocation is the decision about how to divide money among them, and it matters because the classes often do not rise and fall together.",
+              "example": "In a year when a stock index falls 20 percent, a Treasury bill still pays what it was bought to yield and a bond's coupons keep arriving. A portfolio split 60-40 between stocks and bonds moves less than either piece alone - by design, not by luck.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Asset Classes",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/asset-classes",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (illustrative index decline and allocation)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "asset classes as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "fdv-007",
+              "topicID": "funds-diversification",
+              "title": "Target-Date Funds",
+              "definition": "A target-date fund is a fund of funds built around a year, usually a planned retirement date. It typically holds a mix of stock funds, bond funds, and other funds, and shifts that mix along a preset schedule toward more conservative holdings as the target year approaches. The year in the name is a label, not a promise.",
+              "example": "Two funds with the same year in their names can hold very different mixes. One may keep 50 percent in stock funds at the target date and continue shifting for 10 more years; another may reach 30 percent on the date and stop. The prospectus, not the name, says which.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Mutual Funds",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of assets in stock funds (illustrative glide paths)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "target date fund design as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "fdv-008",
+              "topicID": "funds-diversification",
+              "title": "Money Market Funds",
+              "definition": "A money market fund is a mutual fund that holds liquid, short-term debt, cash, and cash equivalents. It carries relatively low risk compared with other mutual funds and has historically earned lower returns, and its dividends generally reflect short-term interest rates. It is a fund, not a bank account, even when it is used like one.",
+              "example": "Because the holdings mature within weeks or months, the yield tracks short-term rates closely. Paper bought 90 days ago rolls into new paper at whatever rate then prevails, so a portfolio turns over about 4 times a year and a change in short-term rates shows up in the dividend within months, not years.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Money Market Fund",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/money-market-fund",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "risk-return",
+          "name": "Risk & Return",
+          "icon": "scalemass",
+          "order": 3,
+          "access": "pack",
+          "summary": "Why higher returns come with more uncertainty, and how compounding, inflation, liquidity, and time horizon shape the outcome.",
+          "cards": [
+            {
+              "cardID": "rr-001",
+              "topicID": "risk-return",
+              "title": "Risk and Return",
+              "definition": "In finance, risk is the degree of uncertainty about an asset's return and the harm that can follow when returns fall short of what was expected. Higher expected returns generally come with higher risk, because investors demand more for bearing more uncertainty. Low risk and high return rarely sit in the same asset.",
+              "example": "A 13-week Treasury bill and a small company's shares are priced by the same crowd. The bill's payoff is nearly certain, so buyers accept a modest return; the shares could double or go to zero, so buyers hold out for a much larger expected gain. The extra return is the price of the uncertainty.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Risk",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "rr-002",
+              "topicID": "risk-return",
+              "title": "Volatility",
+              "definition": "Volatility describes how widely and how fast an asset's price or return swings around its average. A volatile asset can post large gains and large losses in short stretches; a stable one moves in a narrow band. Volatility measures the size of the swings, not their direction, and it is the part of a fund's record most likely to persist.",
+              "example": "Two funds can both average 6 percent a year and feel nothing alike. One returned between 4 and 8 percent every year for 10 years; the other swung from minus 20 to plus 35 percent. Past results cannot say which will do better next, but they do show which one is the rougher ride.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Mutual Funds, Past Performance",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/mutual-funds-past-performance",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent per year (illustrative fund returns)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "volatility as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "rr-003",
+              "topicID": "risk-return",
+              "title": "Compounding and the Rule of 72",
+              "definition": "Compound interest is interest earned on the original principal and on the interest already accumulated. Each period's interest is added to the balance, so the next period's interest is computed on a larger sum. Over long horizons the effect dominates: most of the growth comes from returns on earlier returns.",
+              "example": "The Rule of 72 is a quick mental check: dividing 72 by the annual rate gives the approximate doubling time. An illustrative $1,000 at 6 percent doubles in about 12 years and doubles again by year 24 - the second $2,000 arrives in the same time as the first $1,000 because interest is now earning interest.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Compound Interest",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/compound-interest",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative Rule of 72 calculation)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "compound interest as defined by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "rr-004",
+              "topicID": "risk-return",
+              "title": "Inflation Risk",
+              "definition": "Inflation risk is the chance that rising prices erode what a fixed stream of money can buy. A bond paying the same dollar coupon every year, or cash held at a fixed value, loses real value whenever inflation runs above its return. The nominal figures never change; what they buy does.",
+              "example": "A fixed $1,000 a year buys about 74 percent as much after 10 years of 3 percent inflation, even though every payment arrives in full. Treasury sells TIPS in 5-, 10-, and 30-year terms precisely to remove this risk: their principal is adjusted for inflation, so the payments move with prices.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Department of the Treasury, TreasuryDirect",
+                "documentTitle": "Treasury Inflation-Protected Securities (TIPS)",
+                "url": "https://www.treasurydirect.gov/marketable-securities/tips/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative fixed payment under 3 percent inflation)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "inflation protection as described by TreasuryDirect",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "rr-005",
+              "topicID": "risk-return",
+              "title": "Liquidity",
+              "definition": "Liquidity is how easily and quickly an asset can be turned into cash at close to its current value. Liquid investments can be sold readily without paying a steep fee or accepting a deep discount. Illiquid ones may take weeks to sell, carry a wide spread, or need a price cut to find a buyer at all.",
+              "example": "A share of a large listed company can be sold in seconds at a price within a cent or two of the last trade. A house may sit on the market for 90 days and then sell for less than the asking price. Both are assets; only one is money on short notice.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Liquidity (or Marketability)",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/liquidity-or-marketability",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "rr-006",
+              "topicID": "risk-return",
+              "title": "Time Horizon",
+              "definition": "A time horizon is the number of months, years, or decades before invested money is needed for its purpose. It matters because short-term swings that are irrelevant to someone spending the money in 30 years can be decisive for someone spending it in 3, when a downturn could arrive at exactly the wrong time.",
+              "example": "Money for a tuition bill due in 18 months and money for a retirement 35 years away face the same market but different problems. A 20 percent drop just before the tuition is due is a permanent loss; the same drop 35 years out is one of many along a long road, with time to recover.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Time Horizon",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/time-horizon",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (illustrative market decline)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "time horizon as defined by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "rr-007",
+              "topicID": "risk-return",
+              "title": "Dollar-Cost Averaging",
+              "definition": "Dollar-cost averaging means putting the same amount of money into an investment at regular intervals regardless of its price. Because the fixed sum buys more shares when the price is low and fewer when it is high, the average cost per share ends up below the average of the prices paid. It is a schedule, not a forecast.",
+              "example": "An illustrative $100 a month for 3 months at share prices of $10, $5, and $10 buys 10, 20, and 10 shares - 40 shares for $300, an average cost of $7.50 against an average price of $8.33. The arithmetic holds whether the market ends the period higher or lower than it began.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Dollar Cost Averaging",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dollar-cost-averaging",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative purchases and share prices)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "dollar-cost averaging as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "rr-008",
+              "topicID": "risk-return",
+              "title": "Past Performance",
+              "definition": "A fund's past returns do not predict its future returns. Top performers in one year frequently post average or below-average results the next, which is why the SEC requires funds to say so in their materials. What history does show is how volatile a fund has been, and that is more durable than its ranking.",
+              "example": "A fund that returned 30 percent in one year and 2 percent the next has told an investor nothing reliable about year 3 - except that swings of that size are part of its character. The required disclosure exists because the first number is the one people remember.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Mutual Funds, Past Performance",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/mutual-funds-past-performance",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent per year (illustrative fund returns)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "past performance disclosure as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "market-structure",
+          "name": "How Markets Work",
+          "icon": "arrow.up.arrow.down",
+          "order": 4,
+          "access": "pack",
+          "summary": "Where trades happen, how orders and indexes work, who regulates and protects investors, and what settlement and circuit breakers do.",
+          "cards": [
+            {
+              "cardID": "mk-001",
+              "topicID": "market-structure",
+              "title": "Exchanges and Brokers",
+              "definition": "A securities exchange is a market where securities are bought and sold under rules the exchange itself enforces; exchanges registered with the SEC are also self-regulatory organizations, as is FINRA. Most investors never trade on an exchange directly. They place orders through broker-dealers, who charge a fee to handle trades between buyers and sellers.",
+              "example": "An order to buy 100 shares travels from the investor to a broker-dealer, which may route it to an exchange, fill it from its own inventory, or send it to an alternative trading system. The investor sees 1 confirmation; behind it are 3 kinds of venue, all operating under federal securities law.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Market Participants",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/market-participants",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mk-002",
+              "topicID": "market-structure",
+              "title": "Orders, Bids, and Asks",
+              "definition": "A security always has two prices: the bid, the most a buyer is offering, and the ask, the least a seller will take. A market order fills immediately at or near the ask when buying or the bid when selling, so execution is certain and price is not. A limit order names a price and fills only at that price or better, so price is certain and execution is not.",
+              "example": "An investor willing to pay no more than $10 a share enters a buy limit order at $10. If the stock is offered at $10.02 all day, the order sits unfilled; if the ask dips to $9.98, it executes at $9.98 or better. A market order at the same moment would have paid $10.02 and asked no questions.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Types of Orders",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/types-orders",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars per share (illustrative quotes)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "order types as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mk-003",
+              "topicID": "market-structure",
+              "title": "Market Capitalization",
+              "definition": "Market capitalization is the total market value of a company's outstanding shares: the current share price multiplied by the number of shares. It is the figure behind labels such as large-cap and small-cap, and it measures what the market says the whole company is worth, not what the company owns or earns.",
+              "example": "Share price alone says nothing about size. A company with 10 billion shares at $10 is worth $100 billion; one with 100 million shares at $500 is worth $50 billion. The stock with the higher price tag belongs to the smaller company, by half.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Market Capitalization",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/market-capitalization",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and shares (illustrative companies)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "market capitalization as defined by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mk-004",
+              "topicID": "market-structure",
+              "title": "Stock Indexes",
+              "definition": "A market index tracks the performance of a specific basket of stocks chosen to represent a market or a sector. The Dow Jones Industrial Average follows 30 large U.S. companies, the S&P 500 roughly 500, and the Wilshire 5000 most publicly traded U.S. stocks. An index is a measuring stick, not something anyone can buy directly.",
+              "example": "When a headline says the market fell 2 percent, it means an index did. The Dow's 30 stocks and the S&P 500's roughly 500 can move by different amounts on the same day because they hold different companies. Neither is the whole market; the Wilshire 5000 comes closest.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Market Indices",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/market-indices",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (illustrative one-day index move)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "index composition as described by the SEC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mk-005",
+              "topicID": "market-structure",
+              "title": "What the SEC Does",
+              "definition": "The Securities and Exchange Commission has a three-part mission: protect investors, maintain fair, orderly, and efficient markets, and facilitate capital formation. Congress created it in the Securities Exchange Act of 1934 after the 1929 crash destroyed public confidence in the markets. Its central tool is required disclosure, not approval of investments.",
+              "example": "Two laws set the pattern. The Securities Act of 1933 requires companies offering securities to the public to tell the truth about their business and its risks; the 1934 Act created the SEC to enforce that and oversee those who sell securities. The agency judges whether disclosure was made, not whether the investment is any good.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "The Role of the SEC",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/role-sec",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mk-006",
+              "topicID": "market-structure",
+              "title": "SIPC",
+              "definition": "The Securities Investor Protection Corporation is a non-profit created by Congress that works to restore customers' cash and securities when a member brokerage firm fails and assets are missing. It protects the custody of assets, not their market value: a stock that falls is not a SIPC matter, but a stock that vanishes when the broker collapses is.",
+              "example": "The limit is $500,000 per customer, of which no more than $250,000 may be cash. A customer whose failed broker cannot account for $300,000 of stock and $100,000 of cash is within the limit; one whose shares merely lost half their value in the market has no claim at all.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Securities Investor Protection Corporation",
+                "documentTitle": "What SIPC Protects",
+                "url": "https://www.sipc.org/for-investors/what-sipc-protects",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (SIPC protection limits)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "limits as published by SIPC on 2026-09-14",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mk-007",
+              "topicID": "market-structure",
+              "title": "T+1 Settlement",
+              "definition": "Settlement is the official transfer of securities to the buyer's account and of cash to the seller's. The standard cycle for most U.S. securities trades is T+1: one business day after the trade date. It had been T+2 since 2017; the SEC adopted the shorter cycle in February 2023 and it took effect on May 28, 2024.",
+              "example": "Shares sold on a Monday settle on Tuesday, and the cash is then available. Under the old T+2 cycle the same sale would have settled on Wednesday. Stocks, bonds, municipal securities, ETFs, and certain mutual funds all moved to the 1-day cycle at the same time.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "New T+1 Settlement Cycle - What Investors Need To Know: Investor Bulletin",
+                "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/new-t1-settlement-cycle-what-investors-need-know-investor-bulletin",
+                "publicationDate": "2024-03-27",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mk-008",
+              "topicID": "market-structure",
+              "title": "Circuit Breakers",
+              "definition": "Market-wide circuit breakers are coordinated trading halts triggered when the S&P 500 falls by set amounts in a single day: 7 percent at Level 1, 13 percent at Level 2, and 20 percent at Level 3. They pause trading so information can be absorbed and orders reconsidered, rather than letting a cascade of sell orders exhaust liquidity.",
+              "example": "A Level 1 or Level 2 decline before 3:25 p.m. halts market-wide trading for 15 minutes; the same decline at or after 3:25 p.m. does not. A Level 3 decline at any time closes the market for the rest of the day. Individual stocks also have their own limit up-limit down price bands.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Glossary: Stock Market Circuit Breakers",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/stock-market-circuit-breakers",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent decline in the S&P 500 and minutes (market-wide circuit breaker rules)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "thresholds as published by the SEC on 2026-09-14",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "packID": "personal",
+      "name": "Personal Economics",
+      "productID": "com.nsantulli.econbyte.pack.personal",
+      "icon": "person.text.rectangle",
+      "summary": "How a household's money moves: budgets, borrowing, saving for retirement, and the insurance and public programs that catch a fall.",
+      "topics": [
+        {
+          "topicID": "household-budgets",
+          "name": "Household Budgets",
+          "icon": "list.bullet.rectangle",
+          "order": 1,
+          "access": "pack",
+          "summary": "How income, spending, and prices meet at the household level, from take-home pay and emergency funds to real income and the cost of living.",
+          "cards": [
+            {
+              "cardID": "hb-001",
+              "topicID": "household-budgets",
+              "title": "Income and Spending",
+              "definition": "A budget is a plan that sets expected income against expected spending for a period, usually a month. Building one starts with two questions - where the money comes from and where it goes - and then a third, when the bills fall due, because a household can have enough money over a month and still run short in a particular week.",
+              "example": "Income can arrive from a job, a second job, child support, or benefits; spending sorts into categories such as housing, utilities, eating out, and entertainment. Laid out across 4 weeks, a rent payment due on the 1st and a paycheck arriving on the 5th explains a shortfall the monthly totals alone would hide.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Budgeting: How to create a budget and stick with it",
+                "url": "https://www.consumerfinance.gov/archive/blog/budgeting-how-to-create-a-budget-and-stick-with-it/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "hb-002",
+              "topicID": "household-budgets",
+              "title": "Fixed and Variable Expenses",
+              "definition": "Fixed expenses are bills that must be paid each month and generally cost about the same amount, such as rent or a loan payment. Variable expenses change in amount from month to month, such as groceries or fuel. Some bills straddle the line: a utility bill is owed every month, but its size depends on usage.",
+              "example": "A $1,200 rent payment is the same in January and in July; a heating bill might be $180 in January and $40 in July. The first can be planned to the dollar, the second only estimated - which is why a budget that works in summer can fail in winter without anyone overspending.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Youth Financial Education Glossary",
+                "url": "https://www.consumerfinance.gov/consumer-tools/educator-tools/youth-financial-education/glossary/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative monthly bills)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "fixed and variable expenses as defined by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "hb-003",
+              "topicID": "household-budgets",
+              "title": "Emergency Funds",
+              "definition": "An emergency fund is cash set aside specifically for unplanned expenses - a car repair, a medical bill, a loss of income - rather than for routine monthly spending. Its function is to absorb a shock without borrowing, so that a one-time expense does not become a debt that grows with interest. How much is enough depends on the household.",
+              "example": "A $600 car repair paid from savings costs $600. The same repair put on a credit card and paid down slowly costs $600 plus months of interest, and the balance is still there when the next surprise arrives. The reserve does not make the repair cheaper; it stops it from getting more expensive.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "An essential guide to building an emergency fund",
+                "url": "https://www.consumerfinance.gov/an-essential-guide-to-building-an-emergency-fund/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative unplanned expense)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "emergency funds as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "hb-004",
+              "topicID": "household-budgets",
+              "title": "Gross Pay and Take-Home Pay",
+              "definition": "Gross pay is the wage before anything is taken out. Take-home pay, or net income, is what remains after the employer subtracts taxes and other items each pay period: federal, state, and local income taxes, Social Security and Medicare taxes, retirement contributions, and health insurance premiums. A budget runs on the net figure.",
+              "example": "A worker offered $4,000 a month does not receive $4,000. After income tax withholding, Social Security and Medicare, a retirement contribution, and a health plan premium, the deposit might be nearer $3,000. The $1,000 gap is not lost - some is tax, some is saving - but none of it is available for rent.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "MyMoney.gov, Financial Literacy and Education Commission",
+                "documentTitle": "Earn",
+                "url": "https://www.mymoney.gov/earn",
+                "publicationDate": "2026-08-11",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative gross and net pay)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "paycheck deductions as described by MyMoney.gov",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "hb-005",
+              "topicID": "household-budgets",
+              "title": "Real and Nominal Income",
+              "definition": "Nominal income is measured in current dollars; real income is the same figure adjusted for changes in prices. A raise that matches inflation leaves a household able to buy the same amount as before, and a raise below it leaves them able to buy less, even though the paycheck is larger. BEA reports disposable personal income both ways for this reason.",
+              "example": "An illustrative 4 percent raise in a year when prices rise 3 percent is a real gain of about 1 percent; the same raise against 5 percent inflation is a real cut of about 1 percent. BEA's monthly release prints disposable personal income in current dollars and in real terms side by side so the 2 can be compared.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Bureau of Economic Analysis",
+                "documentTitle": "Personal Income and Outlays, July 2026",
+                "url": "https://www.bea.gov/news/2026/personal-income-and-outlays-july-2026",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (illustrative pay raise and inflation rates)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "real and current-dollar income as reported by BEA",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "hb-006",
+              "topicID": "household-budgets",
+              "title": "Cost of Living Across Places",
+              "definition": "The cost of living differs by place as well as over time. BEA's regional price parities express each state's price level as a percentage of the national average, which is set at 100. A state at 110 has prices about 10 percent above the U.S. average and a state at 90 about 10 percent below it, so the same salary buys different amounts in each.",
+              "example": "In 2024 the highest price levels were California at 110.7, Hawaii at 110.0, and New Jersey at 108.8, with the District of Columbia at 109.9; the lowest were Arkansas at 86.9 and Mississippi at 87.0. A $60,000 salary in California bought roughly what $47,000 bought in Arkansas.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Bureau of Economic Analysis",
+                "documentTitle": "Regional Price Parities by State and Metro Area",
+                "url": "https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of the national price level (regional price parities) and U.S. dollars (derived salary comparison)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2024",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "hb-007",
+              "topicID": "household-budgets",
+              "title": "Opportunity Cost",
+              "definition": "The opportunity cost of a choice is the value of the most valuable alternative use of the same money or time that is given up by making it. Every purchase has one, whether or not it is noticed, because a dollar spent on one thing cannot be spent on another. It is the true cost of a decision - the alternative, not the price tag.",
+              "example": "A $5 coffee on 250 working days is $1,250 a year. Its opportunity cost is not the coffee; it is whatever else that $1,250 would have done - a car repair covered without borrowing, or 2 months of a utility bill. Naming the alternative is what turns a habit into a decision.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Youth Financial Education Glossary",
+                "url": "https://www.consumerfinance.gov/consumer-tools/educator-tools/youth-financial-education/glossary/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative recurring purchase)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "opportunity cost as defined by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "hb-008",
+              "topicID": "household-budgets",
+              "title": "Indexing to Inflation",
+              "definition": "Indexing ties a dollar amount to a price index so that it moves with inflation instead of being eroded by it. Tax brackets, the standard deduction, and many benefit and contribution limits are adjusted this way each year. Without indexing, a household whose pay only kept pace with prices would drift into higher brackets while buying no more than before.",
+              "example": "For tax year 2026 the standard deduction is $16,100 for a single filer and $32,200 for a married couple filing jointly, up from $15,750 and $31,500 for 2025. The increase from one year to the next is the inflation adjustment at work - the same real deduction, restated in that year's dollars.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "IRS releases tax inflation adjustments for tax year 2026, including amendments from the One Big Beautiful Bill",
+                "url": "https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2026-including-amendments-from-the-one-big-beautiful-bill",
+                "publicationDate": "2025-10-09",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (federal standard deduction)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "tax years 2025 and 2026, as published by the IRS on 2025-10-09",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "credit-borrowing",
+          "name": "Credit & Borrowing",
+          "icon": "creditcard",
+          "order": 2,
+          "access": "pack",
+          "summary": "What APRs, credit reports, amortization, and grace periods mean, and how secured, variable, and student debt actually behave.",
+          "cards": [
+            {
+              "cardID": "cr-001",
+              "topicID": "credit-borrowing",
+              "title": "Interest Rate and APR",
+              "definition": "The interest rate is the annual cost of borrowing the principal, expressed as a percentage. The annual percentage rate, or APR, is a broader measure: it folds in the interest rate plus points, broker fees, and other charges paid to get the loan. Because it counts more of the costs, a loan's APR is usually higher than its interest rate.",
+              "example": "Two mortgage offers both quote 6.5 percent interest. One charges $3,000 in points and fees, the other $9,000; their APRs might read 6.6 and 6.8 percent. The APR exists so that a borrower can compare the 2 offers on 1 line instead of reading 2 fee schedules.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is the difference between a mortgage interest rate and an APR?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-mortgage-interest-rate-and-an-apr-en-135/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent and U.S. dollars (illustrative loan offers)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "APR as defined by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cr-002",
+              "topicID": "credit-borrowing",
+              "title": "How Card Interest Accrues",
+              "definition": "Many card issuers compute interest daily on the average daily balance, using a daily periodic rate derived from the APR. Interest accrues every day a balance is carried, and unpaid interest joins the balance that accrues more interest, so a carried card debt compounds. Paying down any part of the balance sooner reduces the interest charged.",
+              "example": "An illustrative $3,000 balance at a 24 percent APR accrues about $2 a day - roughly $60 a month. A cardholder paying $60 a month never touches the principal; a cardholder paying $150 cuts the balance by about $90 a month, and the next month's interest falls with it.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "How does my credit card company calculate the amount of interest I owe?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/how-does-my-credit-card-company-calculate-the-amount-of-interest-i-owe-en-51/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative balance and APR)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "daily interest calculation as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cr-003",
+              "topicID": "credit-borrowing",
+              "title": "Credit Reports and Scores",
+              "definition": "A credit report is a record of a person's credit activity - loans, card accounts, payment history, and balances - compiled and sold by credit reporting companies. A credit score is a number a scoring model produces from that report to predict how likely the person is to repay on time. One is the file; the other is a reading of it.",
+              "example": "There is no single score. There are 3 nationwide credit reporting companies, each holding its own file, and many scoring models, so the same borrower can see different numbers on the same day. Federal law gives each person the right to a free copy of each report every 12 months.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Credit reports and scores key terms",
+                "url": "https://www.consumerfinance.gov/consumer-tools/credit-reports-and-scores/answers/key-terms/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "cr-004",
+              "topicID": "credit-borrowing",
+              "title": "Amortization",
+              "definition": "An amortizing loan is repaid in fixed installments, each split between interest and principal. Early on, most of a payment goes to interest because the balance is large; over time the interest share falls and the principal share rises. The balance therefore declines slowly at first and faster toward the end of the term.",
+              "example": "On an illustrative 60-month car loan, roughly 40 percent of the first payment may be interest and less than 2 percent of the last. Stretching the same loan to 84 months lowers the monthly payment but raises the total interest paid, because a larger balance is outstanding for longer.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is amortization and how could it affect my auto loan?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-amortization-and-how-could-it-affect-my-auto-loan-en-771/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of payment and months (illustrative auto loan)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "amortization as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cr-005",
+              "topicID": "credit-borrowing",
+              "title": "Fixed and Variable APRs",
+              "definition": "A fixed APR does not move with an index. The issuer can still change it, but generally must give notice first and, in most cases, may apply the higher rate only to new transactions. A variable APR is tied to an index rate, such as the prime rate, and moves whenever the index does, under terms the cardholder agreement spells out.",
+              "example": "A card whose agreement reads prime rate plus 14.99 percent reprices on its own: if the index rises 1 point, the APR rises 1 point on the existing balance with no new notice, because the change was disclosed in advance. A fixed-APR card would need a notice, and the old balance would keep the old rate.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is the difference between a fixed APR and a variable APR?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-apr-and-a-variable-apr-en-45/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent and percentage points (illustrative card terms)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "fixed and variable APRs as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cr-006",
+              "topicID": "credit-borrowing",
+              "title": "Secured and Unsecured Credit",
+              "definition": "Secured credit is backed by collateral the lender can take if the borrower defaults - a house behind a mortgage or a home equity line, a car behind an auto loan. Unsecured credit, such as a personal line of credit or most credit cards, has no collateral; the lender relies on the borrower's promise to repay and on their credit history.",
+              "example": "A home equity line and a personal line of credit can offer the same $20,000 limit and work the same way - draw, repay, draw again. The difference appears only on default: the home equity lender holds a mortgage on the house, while the personal-line lender holds only the borrower's promise.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Bank accounts and services key terms",
+                "url": "https://www.consumerfinance.gov/consumer-tools/bank-accounts/answers/key-terms/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative credit limit)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "secured and unsecured lines of credit as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cr-007",
+              "topicID": "credit-borrowing",
+              "title": "Grace Periods and Minimums",
+              "definition": "A grace period is the stretch between the end of a billing cycle and the payment due date during which no interest is charged on purchases, provided the balance is paid in full by the due date. Issuers are not required to offer one, though most do. Paying only the minimum keeps the account current but leaves a balance on which interest accrues.",
+              "example": "A $1,000 statement balance paid in full by the due date, 25 days after the cycle closes, costs $0 in interest. The same balance with only a $35 minimum paid starts accruing interest on the remaining $965 from the day the grace period lapses, and the minimum shrinks the debt very slowly.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Credit cards key terms",
+                "url": "https://www.consumerfinance.gov/consumer-tools/credit-cards/answers/key-terms/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and days (illustrative statement)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "grace periods as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cr-008",
+              "topicID": "credit-borrowing",
+              "title": "Federal Student Loans",
+              "definition": "A federal Direct Loan is a student loan made by the U.S. Department of Education. With a Direct Subsidized Loan, for undergraduates with financial need, the Department pays the interest while the student is in school and during the grace period afterward. A Direct Unsubsidized Loan is open regardless of need, and interest accrues from the start.",
+              "example": "Two students each borrow $5,000 for a 4-year degree. The one with a subsidized loan leaves school owing $5,000; the one with an unsubsidized loan owes $5,000 plus 4 years of interest, which is included in what must be repaid. Same lender, same rate, different bill.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is a federal Direct Loan?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-federal-direct-loan-en-1553/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative loan balances)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "Direct Subsidized and Unsubsidized Loans as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "saving-retirement",
+          "name": "Saving & Retirement",
+          "icon": "dollarsign.circle",
+          "order": 3,
+          "access": "pack",
+          "summary": "How deposit insurance, CDs, savings bonds, 401(k)s, and Social Security claiming ages work as account types and rules, not as recommendations.",
+          "cards": [
+            {
+              "cardID": "sr-001",
+              "topicID": "saving-retirement",
+              "title": "Deposit Insurance",
+              "definition": "FDIC deposit insurance protects money in deposit accounts at insured banks if the bank fails. The standard coverage is $250,000 per depositor, per insured bank, for each account ownership category - single, joint, certain retirement, trust, and others. Deposits in the same category at the same bank are added together against that one limit.",
+              "example": "A depositor with $200,000 in a single account and $200,000 in a joint account at 1 bank is fully covered - 2 categories, 2 limits. The same $400,000 in 2 single-name accounts at the same bank is insured only to $250,000. Since the FDIC was founded in 1933, no depositor has lost a penny of insured funds.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Deposit Insurance Corporation",
+                "documentTitle": "Understanding Deposit Insurance",
+                "url": "https://www.fdic.gov/resources/deposit-insurance/understanding-deposit-insurance/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (FDIC standard insurance amount; illustrative account balances)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "coverage rules as published by the FDIC on 2026-09-14; agency founded 1933",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sr-002",
+              "topicID": "saving-retirement",
+              "title": "Deposits and Investments",
+              "definition": "Deposit insurance covers deposit accounts - checking, savings, money market deposit accounts, and certificates of deposit - at an insured bank. It does not cover investment products sold at the same bank: stocks, bonds, mutual funds, annuities, and similar holdings carry market risk and no federal guarantee, even when they are bought at a teller window.",
+              "example": "A saver who moves $50,000 from a savings account into a bond fund at the same branch has crossed a line the building does not show. The savings account was insured to $250,000; the fund is not insured at all, and if it falls 10 percent the loss is the saver's. The bank's name on both statements changes nothing.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Deposit Insurance Corporation",
+                "documentTitle": "Deposit Insurance",
+                "url": "https://www.fdic.gov/resources/deposit-insurance/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (FDIC insurance limit; illustrative transfer and loss)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "coverage as published by the FDIC on 2026-09-14",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sr-003",
+              "topicID": "saving-retirement",
+              "title": "Certificates of Deposit",
+              "definition": "A certificate of deposit is a savings account with a term. The saver agrees to leave the money untouched for a set period - months or years - and withdrawing early means paying a penalty. CDs at banks are insured by the FDIC and those at credit unions by the NCUA, each up to $250,000, so the trade is liquidity for a rate, not safety.",
+              "example": "A 5-year CD opened with $10,000 and held to maturity pays exactly what was promised. The same CD broken after 18 months pays the rate minus a penalty that may consume several months of interest. Comparing offers means reading 3 things: the term, the rate, and the size of the penalty.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is a certificate of deposit (CD)?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-certificate-of-deposit-cd-en-917/",
+                "publicationDate": "2026-08-31",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (federal insurance limits; illustrative deposit)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "insurance limits as published by the CFPB on 2026-08-31",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sr-004",
+              "topicID": "saving-retirement",
+              "title": "Series I Savings Bonds",
+              "definition": "A Series I savings bond earns a rate built from two parts: a fixed rate set when the bond is bought that never changes, and an inflation rate that is reset every 6 months. The combined rate therefore moves with inflation while the fixed component stays put for the life of the bond, which can run for 30 years.",
+              "example": "An I bond can be redeemed after 12 months. Cashed in before 5 years, it forfeits the last 3 months of interest - a bond redeemed at 18 months pays 15 months' worth. In a calendar year, one Social Security number may buy up to $10,000 in electronic I bonds.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Department of the Treasury, TreasuryDirect",
+                "documentTitle": "I bonds",
+                "url": "https://www.treasurydirect.gov/savings-bonds/i-bonds/",
+                "publicationDate": "2026-09-13",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and months (I bond purchase limit and redemption rules)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "rules as published by TreasuryDirect on 2026-09-14",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sr-005",
+              "topicID": "saving-retirement",
+              "title": "The 401(k)",
+              "definition": "A 401(k) is an employer-sponsored retirement account into which an employee elects to defer part of each paycheck. Contributions are capped by law and the caps are adjusted for the cost of living. Money in the account is invested according to the plan's menu and taxed under rules that depend on whether the deferrals were pre-tax or Roth.",
+              "example": "The employee deferral limit is $24,500 for 2026, with an additional $8,000 catch-up contribution allowed for those aged 50 and over. Under SECURE 2.0, employees aged 60 to 63 have a higher catch-up limit of $11,250 for 2026. The limits move most years, which is why plan notices quote a year alongside the figure.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "Retirement Topics - 401(k) and Profit-Sharing Plan Contribution Limits",
+                "url": "https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits",
+                "publicationDate": "2026-04-08",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (401(k) elective deferral and catch-up limits)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sr-006",
+              "topicID": "saving-retirement",
+              "title": "Roth and Traditional",
+              "definition": "The Roth and traditional labels describe when tax is paid, not what the account holds. Traditional, pre-tax contributions go in before income tax and the withdrawals are taxed later. Roth contributions go in after tax, and qualified distributions come out tax-free. Both exist as IRAs and as options inside a 401(k).",
+              "example": "A worker who defers $6,000 pre-tax lowers taxable income for that year by $6,000 and pays tax on the withdrawals decades later. A worker who puts the same $6,000 into a designated Roth account gets no deduction now and, if the distribution is qualified, owes nothing then. Same money in, different tax calendar.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "Roth Comparison Chart",
+                "url": "https://www.irs.gov/retirement-plans/roth-comparison-chart",
+                "publicationDate": "2026-09-04",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative contribution)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "Roth and pre-tax treatment as published by the IRS",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sr-007",
+              "topicID": "saving-retirement",
+              "title": "Employer Matching",
+              "definition": "An employer match is a contribution the employer makes to an employee's 401(k) account, conditioned on the employee contributing first. The plan document sets the formula - so many cents per dollar deferred, often up to a cap - and may set a vesting schedule under which the employer's money becomes the employee's only after a period of service.",
+              "example": "The IRS's own example is a plan that contributes 50 cents for each dollar a participant defers. An employee deferring $4,000 in a year sees $2,000 added by the employer; one deferring nothing receives nothing. The formula is a term of the plan, not a right, and plans differ.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "401(k) Plan Overview",
+                "url": "https://www.irs.gov/retirement-plans/plan-sponsor/401k-plan-overview",
+                "publicationDate": "2026-08-04",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative deferral and match)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "matching contributions as described by the IRS",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sr-008",
+              "topicID": "saving-retirement",
+              "title": "Full Retirement Age",
+              "definition": "Social Security retirement benefits can be claimed as early as age 62 and as late as 70. Full retirement age - the age at which the unreduced benefit is paid - is 67 for people born in 1960 or later, and between 66 and 67 for those born in 1958 or 1959. Claiming earlier reduces the monthly benefit for life; waiting increases it.",
+              "example": "The spread is wide: claiming at 62 pays a monthly benefit about 30 percent below the full amount, and waiting to 70 pays about 24 percent above it. The amount is set when the claim is made, then adjusted yearly for increases in the cost of living. Survivors and disability benefits follow different rules and can begin before 62.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Before you claim: Planning your Social Security claiming age",
+                "url": "https://www.consumerfinance.gov/consumer-tools/retirement/before-you-claim/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of the full retirement benefit (claiming-age adjustments)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "rules for people born on or after January 2, 1960, as published by the CFPB on 2026-09-14",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "safety-nets",
+          "name": "Insurance & Safety Nets",
+          "icon": "umbrella.fill",
+          "order": 4,
+          "access": "pack",
+          "summary": "How insurance pools risk, what deductibles and out-of-pocket limits do, and how public programs from unemployment insurance to Medicare fit together.",
+          "cards": [
+            {
+              "cardID": "sn-001",
+              "topicID": "safety-nets",
+              "title": "How Insurance Pools Risk",
+              "definition": "Insurance is a contract in which many people pay a regular premium into a common pool, and the pool pays the costs of the few who suffer a covered loss. The premium is owed every month whether or not the policyholder ever claims; that is what makes the money available when someone else does. Risk is not eliminated, only spread.",
+              "example": "A policyholder paying $400 a month for 12 months puts $4,800 into the pool and, in a healthy year, takes nothing out. A neighbor in the same pool has a $40,000 hospital stay covered. Neither result is a mistake; the arrangement works precisely because most years, for most people, are the healthy kind.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Centers for Medicare & Medicaid Services, HealthCare.gov",
+                "documentTitle": "Glossary: Premium",
+                "url": "https://www.healthcare.gov/glossary/premium/",
+                "publicationDate": "2026-08-25",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative premiums and claim)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "premiums as defined by HealthCare.gov",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sn-002",
+              "topicID": "safety-nets",
+              "title": "Deductibles and Coinsurance",
+              "definition": "A deductible is the amount a policyholder pays for covered services before the plan starts paying. After it is met, the policyholder usually still pays a share of each bill - a fixed copayment per service or a coinsurance percentage of the cost - and the plan pays the rest. The premium is a separate, ongoing charge.",
+              "example": "With a $2,000 deductible, the first $2,000 of covered care in the year is paid by the patient. After that, a $30 copayment might apply to an office visit, or 20 percent coinsurance to a hospital bill. A plan with a lower premium often carries a higher deductible; the cost moves, it does not disappear.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Centers for Medicare & Medicaid Services, HealthCare.gov",
+                "documentTitle": "Glossary: Deductible",
+                "url": "https://www.healthcare.gov/glossary/deductible/",
+                "publicationDate": "2026-08-25",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative cost-sharing)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "deductibles, copayments, and coinsurance as defined by HealthCare.gov",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sn-003",
+              "topicID": "safety-nets",
+              "title": "The Out-of-Pocket Maximum",
+              "definition": "The out-of-pocket maximum is the most a policyholder pays for covered, in-network services in a plan year through deductibles, copayments, and coinsurance. Once it is reached, the plan pays 100 percent of covered benefits for the rest of the year. Monthly premiums do not count toward it, and neither does care the plan does not cover.",
+              "example": "For plan year 2026, a Marketplace plan may set the limit no higher than $10,600 for an individual or $21,200 for a family. A patient with a $2,000 deductible and 20 percent coinsurance facing $200,000 of covered hospital bills does not owe $41,600; the cap stops the count at the plan's maximum.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Centers for Medicare & Medicaid Services, HealthCare.gov",
+                "documentTitle": "Glossary: Out-of-pocket maximum/limit",
+                "url": "https://www.healthcare.gov/glossary/out-of-pocket-maximum-limit/",
+                "publicationDate": "2026-09-03",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (Marketplace out-of-pocket limits; illustrative patient bill)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "plan year 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "sn-004",
+              "topicID": "safety-nets",
+              "title": "Unemployment Insurance",
+              "definition": "Unemployment insurance pays cash benefits to workers who lose their jobs through no fault of their own. There is no single federal program: each state runs its own, sets its own eligibility rules, and pays the claims. Workers generally file in the state where they worked rather than the state where they live.",
+              "example": "A worker laid off in 2020 from a job across a state line filed with the state where the job was, not the state of residence. Two neighbors laid off the same week by employers in 2 different states can face 2 different sets of rules and receive different benefits, because 2 rulebooks apply.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "USAGov, U.S. General Services Administration",
+                "documentTitle": "How to apply for unemployment benefits",
+                "url": "https://www.usa.gov/unemployment-benefits",
+                "publicationDate": "2026-09-10",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "sn-005",
+              "topicID": "safety-nets",
+              "title": "Social Security as Insurance",
+              "definition": "Social Security is social insurance rather than a savings account. It provides income when a worker retires or cannot work because of a disability, through retirement benefits and Social Security Disability Insurance. The payout depends on an insured event - reaching retirement age or losing the ability to earn - which is what makes it insurance.",
+              "example": "Two workers with identical earnings histories can receive very different totals: one who becomes disabled at 45 draws benefits for decades the other never claims, and one who lives to 95 collects 30 years of retirement checks against another's 10. Neither outcome is a flaw; both are what insuring against lost earnings looks like.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "USAGov, U.S. General Services Administration",
+                "documentTitle": "Social Security",
+                "url": "https://www.usa.gov/social-security",
+                "publicationDate": "2026-09-10",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "sn-006",
+              "topicID": "safety-nets",
+              "title": "The Parts of Medicare",
+              "definition": "Medicare is federal health insurance for people aged 65 and older and for some younger people with certain disabilities or conditions. It is organized in parts: Part A covers inpatient hospital, skilled nursing, hospice, and home health care; Part B covers doctors' services, outpatient care, and durable medical equipment; Part D covers prescription drugs.",
+              "example": "Original Medicare is Parts A and B, with drug coverage added through a separate Part D plan. Part C, Medicare Advantage, is the alternative: a private plan approved by Medicare that bundles A, B, and usually D into 1 plan. A 66-year-old choosing between the two is choosing a structure, not a different entitlement.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Centers for Medicare & Medicaid Services, Medicare.gov",
+                "documentTitle": "Parts of Medicare",
+                "url": "https://www.medicare.gov/basics/get-started-with-medicare/medicare-basics/parts-of-medicare",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "sn-007",
+              "topicID": "safety-nets",
+              "title": "Pension Insurance: PBGC",
+              "definition": "The Pension Benefit Guaranty Corporation was created by the Employee Retirement Income Security Act of 1974 to insure private-sector defined benefit pensions, the plans that promise a set monthly amount at retirement. It runs two legally separate programs, for single-employer and multiemployer plans, and pays benefits up to legal limits when a plan fails.",
+              "example": "The single-employer program is financed by premiums paid by plans, investment income, and assets recovered from failed plans; the multiemployer program by premiums and investment income. Only the Special Financial Assistance Program created in 2021 draws on taxpayer funds, and assets from 1 program cannot be used to support the other.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Pension Benefit Guaranty Corporation",
+                "documentTitle": "How PBGC Operates",
+                "url": "https://www.pbgc.gov/about/operate",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "sn-008",
+              "topicID": "safety-nets",
+              "title": "How the FDIC Is Funded",
+              "definition": "The FDIC is an independent federal agency established in 1933 after thousands of bank failures in the 1920s and early 1930s. It receives no congressional appropriations; it is funded by assessments that insured banks and savings associations pay for coverage. When a bank fails, its chartering authority closes it and the FDIC protects the insured depositors.",
+              "example": "The FDIC insures deposits at more than 4,000 institutions and directly supervises over 2,700 of them. Since insurance began on January 1, 1934, no depositor has lost a penny of insured funds in a failure - a record paid for by the banks' own assessments, which is the point: the industry pre-funds the pool that protects its customers.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Deposit Insurance Corporation",
+                "documentTitle": "What We Do",
+                "url": "https://www.fdic.gov/about/what-we-do",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "number of institutions (FDIC-insured and FDIC-supervised)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "as published by the FDIC on 2026-09-14; insurance in force since January 1, 1934",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

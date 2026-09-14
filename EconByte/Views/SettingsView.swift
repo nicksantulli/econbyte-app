@@ -14,6 +14,7 @@ struct SettingsView: View {
 
     @State private var workingRemoveAds = false
     @State private var workingRestore = false
+    @State private var workingPack: PurchaseManager.ProductID?
     @State private var alertTitle = ""
     @State private var alertMessage = ""
     @State private var showAlert = false
@@ -27,7 +28,7 @@ struct SettingsView: View {
 
     private var removeAdsProduct: Product? { store.product(for: .removeAds) }
     private var unlockAllProduct: Product? { store.product(for: .unlockAll) }
-    private var anyWorking: Bool { workingRemoveAds || workingRestore }
+    private var anyWorking: Bool { workingRemoveAds || workingRestore || workingPack != nil }
 
     var body: some View {
         NavigationStack {
@@ -158,6 +159,11 @@ struct SettingsView: View {
                 }
             }
 
+            // Topic packs (1.1.3) — separate from Unlock All (D18).
+            ForEach(ContentStore.shared.packs) { pack in
+                packRow(pack)
+            }
+
             Button("Restore Purchases") { restorePurchases() }
                 .disabled(anyWorking)
                 .accessibilityIdentifier("settingsRestoreButton")
@@ -169,8 +175,40 @@ struct SettingsView: View {
             } else if let error = store.productsLoadError, !store.productsReady {
                 Text(error)
             } else {
-                Text("Two separate one-time purchases: Remove Ads does not unlock topics, and Unlock All Topics does not remove ads. Restore re-syncs both.")
+                Text("Separate one-time purchases: Remove Ads does not unlock topics; Unlock All Topics opens every core topic and does not include the topic packs; each pack is its own unlock. Restore re-syncs all of them.")
             }
+        }
+    }
+
+    @ViewBuilder
+    private func packRow(_ pack: EconPack) -> some View {
+        if store.isPackPurchased(productID: pack.productID) {
+            HStack {
+                Text(pack.name)
+                Spacer()
+                Text("Purchased ✓").foregroundColor(Econ.sky)
+            }
+            .accessibilityIdentifier("settingsPack-\(pack.id)-owned")
+        } else if let productID = PurchaseManager.ProductID(rawValue: pack.productID) {
+            let price = store.product(for: productID)?.displayPrice
+            Button {
+                purchasePack(productID)
+            } label: {
+                HStack {
+                    Text(pack.name)
+                    Spacer()
+                    if workingPack == productID {
+                        ProgressView()
+                    } else {
+                        Text(PurchasePresentation.priceText(price))
+                            .foregroundColor(Econ.amber)
+                    }
+                }
+            }
+            .disabled(anyWorking || !PurchasePresentation.canPurchase(
+                displayPrice: price, isWorking: anyWorking, isLoading: store.isLoadingProducts))
+            .accessibilityIdentifier("settingsPack-\(pack.id)-buy")
+            .onAppear { EBEvents.packShown(family: productID.family, entryPoint: .settings) }
         }
     }
 
@@ -290,6 +328,21 @@ struct SettingsView: View {
         }
     }
 
+    private func purchasePack(_ id: PurchaseManager.ProductID) {
+        guard id.isPack else { return }
+        workingPack = id
+        growth.monetization.setBlocker(.purchase, active: true)
+        growth.review.noteNegativeSessionEvent(.purchase)
+        Task {
+            let result = await store.purchase(id, from: .settings)
+            workingPack = nil
+            growth.monetization.setBlocker(.purchase, active: false)
+            growth.syncEntitlements(from: store)
+            recordPurchaseTelemetry(result, productID: id)
+            handlePurchaseResult(result, purchased: store.isPackPurchased(productID: id.rawValue))
+        }
+    }
+
     private func restorePurchases() {
         workingRestore = true
         growth.monetization.setBlocker(.restore, active: true)
@@ -303,7 +356,8 @@ struct SettingsView: View {
                 growth.review.noteNegativeSessionEvent(.restoreFailure)
                 growth.diagnosticLog.capture(.restoreFailed)
             }
-            handlePurchaseResult(result, purchased: store.isUnlockAllPurchased || store.isRemoveAdsPurchased)
+            handlePurchaseResult(result, purchased: store.isUnlockAllPurchased || store.isRemoveAdsPurchased
+                                     || !store.ownedPackProductIDs.isEmpty)
         }
     }
 

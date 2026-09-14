@@ -54,7 +54,9 @@ struct PaywallView: View {
 
                         VStack(spacing: 12) {
                             featureRow("checkmark.circle.fill", "Every topic, unlocked forever")
-                            featureRow("infinity", "All current and future card packs")
+                            // D18 (1.1.3): Unlock All is the core curriculum. Topic
+                            // packs are separate purchases and are not promised here.
+                            featureRow("books.vertical.fill", "The full core curriculum, every topic in Browse Topics")
                             featureRow("icloud.and.arrow.down.fill", "Restores across your devices")
                         }
                         .padding(.horizontal, 28)

@@ -9,6 +9,12 @@ advice.
 - Freemium: Inflation + Interest Rates free; the other 8 topics behind
   **Unlock All Topics** (`com.nsantulli.econbyte.unlockall`, $0.99). **Remove
   Ads** (`com.nsantulli.econbyte.removeads`, $0.99) is a separate purchase.
+  1.1.3 adds two **topic packs** — Markets & Investing Basics
+  (`com.nsantulli.econbyte.pack.markets`) and Personal Economics
+  (`com.nsantulli.econbyte.pack.personal`), $1.99 each, four topics × eight
+  sourced cards in `Resources/packs-v1.json`. Unlock All does **not** include
+  them (CONTENT-DECISIONS D18); each pack is readable only behind its own
+  verified entitlement, and owned packs' cards join the daily set.
 - To run it: see [RUN-ON-DEVICE.md](RUN-ON-DEVICE.md).
 
 ## Build and test

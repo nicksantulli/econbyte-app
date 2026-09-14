@@ -134,8 +134,106 @@ final class GrowthSystemsTests: XCTestCase {
                        "com.nsantulli.econbyte.unlockall")
         XCTAssertEqual(PurchaseManager.ProductID.removeAds.rawValue,
                        "com.nsantulli.econbyte.removeads")
-        XCTAssertEqual(PurchaseManager.ProductID.allCases.count, 2,
-                       "EconByte ships exactly the two approved non-consumables")
+        XCTAssertEqual(PurchaseManager.ProductID.packMarkets.rawValue,
+                       "com.nsantulli.econbyte.pack.markets")
+        XCTAssertEqual(PurchaseManager.ProductID.packPersonal.rawValue,
+                       "com.nsantulli.econbyte.pack.personal")
+        XCTAssertEqual(PurchaseManager.ProductID.allCases.count, 4,
+                       "EconByte ships the two approved non-consumables plus the two 1.1.3 topic packs")
+        XCTAssertEqual(PurchaseManager.ProductID.packs, [.packMarkets, .packPersonal])
+        XCTAssertFalse(PurchaseManager.ProductID.unlockAll.isPack)
+        XCTAssertFalse(PurchaseManager.ProductID.removeAds.isPack)
+        XCTAssertEqual(PurchaseManager.ProductID.packs.map(\.rawValue), PackCatalog.expectedProductIDs,
+                       "the store's pack SKUs are exactly the catalog's pack SKUs, in order")
+    }
+
+    // MARK: - Topic packs (1.1.3, D18)
+
+    /// Unlock All opens the core curriculum only. A pack topic is readable
+    /// solely behind its own pack — unknown pack ids and Unlock All never do.
+    @MainActor
+    func testPackTopicsAreLockedWithoutTheirPackAndNeverOpenedByUnlockAll() throws {
+        let store = ContentStore.shared
+        XCTAssertNil(store.packLoadError, "packs-v1.json must load: \(String(describing: store.packLoadError))")
+        XCTAssertEqual(store.packs.count, 2)
+        for pack in store.packs {
+            XCTAssertEqual(pack.topics.count, 4, pack.id)
+            XCTAssertEqual(pack.cards.count, 32, pack.id)
+            XCTAssertEqual(pack.preview.count, 3, pack.id)
+            for topic in pack.topics {
+                XCTAssertTrue(store.isPackTopic(topic.id))
+                XCTAssertFalse(store.isTopicFree(topic.id), "\(topic.id) is never free")
+                XCTAssertTrue(store.cards(for: topic.id, unlockedAll: true, ownedPackIDs: []).isEmpty,
+                              "\(topic.id): Unlock All must not open a pack topic")
+                XCTAssertTrue(store.cards(for: topic.id, unlockedAll: false, ownedPackIDs: ["mystery"]).isEmpty,
+                              "\(topic.id): an unknown pack id unlocks nothing")
+                XCTAssertEqual(store.cards(for: topic.id, unlockedAll: false, ownedPackIDs: [pack.id]).count, 8,
+                               "\(topic.id) opens with its own pack")
+                XCTAssertEqual(store.accessState(for: topic.id, unlockedAll: true), .locked)
+                XCTAssertEqual(store.accessState(for: topic.id, unlockedAll: false, ownedPackIDs: [pack.id]), .unlocked)
+                XCTAssertEqual(store.pack(forTopic: topic.id)?.id, pack.id)
+                XCTAssertEqual(store.topicName(for: topic.id), topic.name)
+            }
+        }
+        XCTAssertNil(store.pack(forTopic: "gdp"), "a core topic belongs to no pack")
+        XCTAssertFalse(store.isPackTopic("inflation"))
+    }
+
+    /// The daily pool grows by exactly the OWNED packs' cards and never by an
+    /// unowned pack's, with or without Unlock All.
+    @MainActor
+    func testDailySetIncludesPackCardsOnlyWhenTheirPackIsOwned() throws {
+        let store = ContentStore.shared
+        let packIDs = Set(store.packCards.map(\.id))
+        XCTAssertEqual(packIDs.count, 64)
+        for unlockedAll in [false, true] {
+            let pool = store.dailySet(count: 500, unlockedAll: unlockedAll, ownedPackIDs: [])
+            XCTAssertTrue(pool.allSatisfy { !packIDs.contains($0.id) },
+                          "no pack card may enter the daily set without its pack (unlockedAll=\(unlockedAll))")
+        }
+        let markets = try XCTUnwrap(store.pack(id: "markets"))
+        let personal = try XCTUnwrap(store.pack(id: "personal"))
+        let withMarkets = store.dailySet(count: 500, unlockedAll: false, ownedPackIDs: [markets.id])
+        let marketsIDs = Set(markets.cards.map(\.id))
+        let personalIDs = Set(personal.cards.map(\.id))
+        XCTAssertEqual(Set(withMarkets.map(\.id)).intersection(marketsIDs).count, 32,
+                       "every Markets card is eligible once Markets is owned")
+        XCTAssertTrue(Set(withMarkets.map(\.id)).isDisjoint(with: personalIDs),
+                      "owning Markets does not admit Personal Economics cards")
+    }
+
+    /// The core totals the listing states are untouched by the packs.
+    @MainActor
+    func testCoreTotalsAreUnchangedByThePacks() {
+        let store = ContentStore.shared
+        XCTAssertEqual(store.topics.count, 15)
+        XCTAssertEqual(store.allCards.count, 120)
+        XCTAssertEqual(store.packTopics.count, 8)
+        XCTAssertEqual(store.packCards.count, 64)
+        XCTAssertEqual(store.everyCard.count, 184)
+        let ids = store.everyCard.map(\.id)
+        XCTAssertEqual(Set(ids).count, ids.count, "no pack card id collides with a core card id")
+        XCTAssertTrue(Set(store.packTopics.map(\.id)).isDisjoint(with: Set(store.topics.map(\.id))))
+    }
+
+    /// `pack_shown_v1` is family + entry point only; the per-pack families are
+    /// declared; nothing that identifies a product, price, or topic may ride.
+    func testPackShownEventIsDeclaredWithFamilyAndEntryPointOnly() {
+        XCTAssertEqual(TelemetrySchema.allowedProperties["pack_shown_v1"], ["product_family", "entry_point"])
+        let families = TelemetrySchema.allowedValues["product_family"] ?? []
+        XCTAssertEqual(families, ["unlock_all", "remove_ads", "pack_markets", "pack_personal"])
+        XCTAssertEqual(TelemetryValidator.validate(TelemetryEvent("pack_shown_v1", [
+            "product_family": .string("pack_markets"), "entry_point": .string("home"),
+        ])), .accepted)
+        XCTAssertEqual(TelemetryValidator.validate(TelemetryEvent("purchase_started_v1", [
+            "product_family": .string("pack_personal"), "entry_point": .string("settings"),
+        ])), .accepted)
+        for property in ["product_id", "price", "topic_id", "pack_id"] {
+            XCTAssertNotEqual(TelemetryValidator.validate(TelemetryEvent("pack_shown_v1", [
+                "product_family": .string("pack_markets"), "entry_point": .string("home"),
+                property: .string("x"),
+            ])), .accepted, property)
+        }
     }
 
     /// Independent products: neither purchase implies the other.

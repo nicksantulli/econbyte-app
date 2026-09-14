@@ -331,4 +331,47 @@ final class GrowthFlowTests: XCTestCase {
         app.buttons["sessionCompleteDoneButton"].tap()
         XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12))
     }
+
+    // MARK: - Topic packs (1.1.3) — discoverability + evidence capture
+
+    private func capturePack(_ name: String) {
+        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    /// Locked topic packs are discoverable on Home: name, summary, the four
+    /// topic names, a three-card preview, a buy button whose price comes from
+    /// StoreKit (the scheme's `EconByte.storekit`), and Restore. No locked pack
+    /// exposes a topic tile. The attachments are the Phase 2 evidence
+    /// screenshots — the assertions are the contract they document.
+    func testTopicPacksAreDiscoverableOnHomeWithPreviewAndBuyRow() {
+        let app = XCUIApplication()
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt",
+                                "-econResetGrowthState", "-econDisableAds"]
+        app.launch()
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 15))
+
+        let any = app.descendants(matching: .any)
+        let markets = any["pack-markets"]
+        for _ in 0..<8 where !(markets.exists && markets.isHittable) { app.swipeUp() }
+        XCTAssertTrue(markets.waitForExistence(timeout: 15), "the Markets pack offer is on Home")
+        XCTAssertTrue(any["pack-markets-preview"].exists, "a locked pack previews three cards")
+        XCTAssertFalse(any["topic-stocks-bonds"].exists, "a locked pack exposes no topic tile")
+
+        let buy = app.buttons["pack-markets-buy"]
+        XCTAssertTrue(buy.waitForExistence(timeout: 15))
+        // "$" — the storefront in EconByte.storekit is USA; the label is the
+        // StoreKit displayPrice, never a literal.
+        let priced = NSPredicate(format: "label CONTAINS '$'")
+        wait(for: [expectation(for: priced, evaluatedWith: buy)], timeout: 20)
+        XCTAssertTrue(app.buttons["pack-markets-restore"].exists, "Restore beside the buy button")
+        capturePack("eb-home-packs-1")
+
+        let personal = any["pack-personal"]
+        for _ in 0..<8 where !(personal.exists && personal.isHittable) { app.swipeUp() }
+        XCTAssertTrue(app.buttons["pack-personal-buy"].waitForExistence(timeout: 15))
+        capturePack("eb-home-packs-2")
+    }
 }

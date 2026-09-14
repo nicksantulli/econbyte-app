@@ -749,3 +749,301 @@ final class CurriculumCatalogTests: XCTestCase {
         XCTAssertEqual(store.allCards.count, 120)
     }
 }
+
+// MARK: - Topic packs (1.1.3)
+
+/// The Task 4 gate applied to `Resources/packs-v1.json`: the same editorial
+/// rules as the core catalog (sources, freshness, advice framing, concrete
+/// examples, declared claims), plus the pack contract — two packs of four
+/// topics of eight cards, `access: pack`, no collision with the core catalog,
+/// and the App Store product ids the store sells.
+final class PackCatalogTests: XCTestCase {
+
+    /// The core approved-source list plus the public primary sources the
+    /// packs draw on: the CBO and IMF the Phase 2 brief names, and the federal
+    /// regulators and agencies that publish the consumer-facing primary
+    /// material for markets and personal finance (SEC/investor.gov, FINRA,
+    /// SIPC, CFPB, NCUA, DOL, Federal Student Aid, Medicare, HealthCare.gov,
+    /// PBGC, FTC) and the remaining Reserve Banks.
+    private static let approvedSourceHosts: Set<String> = [
+        "www.federalreserve.gov", "www.federalreservehistory.org",
+        "www.newyorkfed.org", "www.philadelphiafed.org", "fred.stlouisfed.org",
+        "www.bls.gov", "www.bea.gov", "www.census.gov",
+        "fiscaldata.treasury.gov", "home.treasury.gov", "www.treasurydirect.gov",
+        "www.irs.gov", "www.ssa.gov", "www.fdic.gov",
+        "www.nber.org", "www.conference-board.org", "www.freddiemac.com",
+        "www.wto.org", "ustr.gov", "data.worldbank.org", "www.worldbank.org",
+        "www.ecb.europa.eu", "www.boj.or.jp", "www.bis.org",
+        "www.oecd.org", "www.bundesbank.de",
+        "www.cbo.gov", "www.imf.org", "www.sec.gov", "www.investor.gov",
+        "www.consumerfinance.gov", "www.ncua.gov", "www.sipc.org", "www.finra.org",
+        "www.dol.gov", "www.studentaid.gov", "studentaid.gov", "www.medicare.gov",
+        "www.healthcare.gov", "www.fhfa.gov", "www.stlouisfed.org", "www.chicagofed.org",
+        "www.clevelandfed.org", "www.atlantafed.org", "www.kansascityfed.org",
+        "www.bostonfed.org", "www.richmondfed.org", "www.dallasfed.org",
+        "www.minneapolisfed.org", "www.sf.frb.org", "www.frbsf.org", "www.pbgc.gov",
+        "www.usa.gov", "www.ftc.gov", "consumer.ftc.gov", "www.mymoney.gov",
+    ]
+
+    private static let canonicalDisclaimer =
+        "Educational content only. EconByte does not provide financial, investment, or tax advice."
+
+    private static let staleTemporalWords = [
+        "currently", "today", "nowadays", "recently", "at present",
+        "these days", "this year", "last year", "right now", "as of now",
+    ]
+
+    private static let prohibitedAdvicePhrases = [
+        "you should buy", "you should sell", "you should invest",
+        "should buy", "should sell", "invest in", "buy now", "sell now",
+        "guaranteed return", "risk-free return", "financial advice",
+        "investment advice", "we recommend", "best investment",
+        "will outperform", "get rich", "hot stock", "price target",
+        "portfolio allocation", "beat the market", "sure thing", "act fast",
+    ]
+
+    private func loadCore() throws -> Curriculum { try CurriculumCatalog.loadValidated() }
+    private func loadPacks() throws -> PackCurriculum {
+        try PackCatalog.loadValidated(core: try loadCore())
+    }
+
+    // MARK: - Contract
+
+    func testPacksLoadWithTheExpectedShape() throws {
+        let packs = try loadPacks()
+        XCTAssertEqual(packs.schemaVersion, 1)
+        XCTAssertEqual(packs.packs.map(\.packID), PackCatalog.expectedPacks.map(\.packID))
+        XCTAssertEqual(packs.packs.map(\.productID), PackCatalog.expectedProductIDs)
+        XCTAssertEqual(packs.allTopics.count, 8)
+        XCTAssertEqual(packs.allCards.count, PackCatalog.expectedCardCount)
+        for pack in packs.packs {
+            XCTAssertEqual(pack.topics.count, 4, pack.packID)
+            XCTAssertFalse(pack.summary.isEmpty)
+            XCTAssertFalse(pack.icon.isEmpty)
+            for (index, topic) in pack.topics.enumerated() {
+                XCTAssertEqual(topic.access, .pack, topic.topicID)
+                XCTAssertEqual(topic.order, index + 1, topic.topicID)
+                XCTAssertEqual(topic.cards.count, 8, topic.topicID)
+                XCTAssertFalse(topic.icon.isEmpty, topic.topicID)
+                XCTAssertTrue(topic.cards.contains { $0.difficulty == .intro },
+                              "topic \(topic.topicID) needs at least one intro card")
+            }
+        }
+        for id in PackCatalog.expectedProductIDs {
+            XCTAssertTrue(id.hasPrefix("com.nsantulli.econbyte.pack."), id)
+        }
+    }
+
+    func testPackIdentifiersNeverCollideWithTheCoreCatalog() throws {
+        let core = try loadCore()
+        let packs = try loadPacks()
+        let coreTopics = Set(core.topics.map(\.topicID))
+        let coreCards = Set(core.allCards.map(\.cardID))
+        let corePrefixes = Set(core.allCards.map { $0.cardID.split(separator: "-").dropLast().joined(separator: "-") })
+        var seenCards = Set<String>()
+        var seenTopics = Set<String>()
+        for topic in packs.allTopics {
+            XCTAssertFalse(coreTopics.contains(topic.topicID), "\(topic.topicID) is a core topic id")
+            XCTAssertTrue(seenTopics.insert(topic.topicID).inserted, "duplicate pack topic \(topic.topicID)")
+            for (index, card) in topic.cards.enumerated() {
+                XCTAssertFalse(coreCards.contains(card.cardID), "\(card.cardID) is a core card id")
+                XCTAssertTrue(seenCards.insert(card.cardID).inserted, "duplicate pack card \(card.cardID)")
+                let prefix = card.cardID.split(separator: "-").dropLast().joined(separator: "-")
+                XCTAssertFalse(corePrefixes.contains(prefix), "\(card.cardID) borrows core prefix \(prefix)")
+                XCTAssertEqual(card.cardID, String(format: "%@-%03d", prefix, index + 1),
+                               "\(card.cardID) breaks the stable-ID sequence")
+                XCTAssertEqual(card.topicID, topic.topicID)
+                XCTAssertNil(card.supersedes, "\(card.cardID) is new and supersedes nothing")
+                XCTAssertNil(card.supersedesNote)
+            }
+        }
+    }
+
+    // MARK: - Sources and claims (same bar as the core catalog)
+
+    func testEveryPackCardCitesAnApprovedCanonicalSource() throws {
+        for card in try loadPacks().allCards {
+            let source = card.source
+            XCTAssertFalse(source.organization.trimmingCharacters(in: .whitespaces).isEmpty, card.cardID)
+            XCTAssertFalse(source.documentTitle.trimmingCharacters(in: .whitespaces).isEmpty, card.cardID)
+            guard let url = URL(string: source.url) else {
+                XCTFail("\(card.cardID) has an unparseable source URL: \(source.url)")
+                continue
+            }
+            XCTAssertEqual(url.scheme, "https", "\(card.cardID) must cite an https URL")
+            XCTAssertTrue(Self.approvedSourceHosts.contains(url.host ?? ""),
+                          "\(card.cardID) cites \(url.host ?? "?"), which is not an approved primary source")
+            XCTAssertNil(url.query, "\(card.cardID) must cite a stable URL with no query string")
+            XCTAssertNil(url.fragment, "\(card.cardID) must cite a stable URL with no fragment")
+        }
+    }
+
+    func testPackSourceDatesAreWellFormedAndNotInTheFuture() throws {
+        let packs = try loadPacks()
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd"
+        let verifiedOn = try XCTUnwrap(formatter.date(from: packs.verifiedOn), "verifiedOn is not an ISO date")
+        XCTAssertLessThanOrEqual(verifiedOn, Date(), "verification cannot be in the future")
+
+        for card in packs.allCards {
+            XCTAssertEqual(card.source.verificationDate, packs.verifiedOn,
+                           "\(card.cardID) must be verified in the same pass as the packs catalog")
+            let published = try XCTUnwrap(formatter.date(from: card.source.publicationDate),
+                                          "\(card.cardID) publicationDate is not an ISO date")
+            XCTAssertLessThanOrEqual(published, verifiedOn, card.cardID)
+            if let claim = card.claim {
+                XCTAssertEqual(claim.retrievalDate, packs.verifiedOn, card.cardID)
+                XCTAssertFalse(claim.units.isEmpty, card.cardID)
+                XCTAssertFalse(claim.geography.isEmpty, card.cardID)
+                XCTAssertFalse(claim.observationPeriod.isEmpty, card.cardID)
+            }
+        }
+    }
+
+    func testPackCardProseIsCompleteConsistentAndFresh() throws {
+        let packs = try loadPacks()
+        XCTAssertEqual(packs.disclaimer, Self.canonicalDisclaimer)
+        XCTAssertGreaterThan(packs.editorialPolicy.count, 80)
+        let verificationYear = Int(packs.verifiedOn.prefix(4)) ?? 0
+        let year = try NSRegularExpression(pattern: "\\b(1[89]\\d{2}|20\\d{2})\\b")
+        let digit = try NSRegularExpression(pattern: "\\d")
+
+        for card in packs.allCards {
+            XCTAssertFalse(card.title.trimmingCharacters(in: .whitespaces).isEmpty, card.cardID)
+            XCTAssertGreaterThanOrEqual(card.definition.count, 60, "\(card.cardID) definition is too thin")
+            XCTAssertGreaterThanOrEqual(card.example.count, 40, "\(card.cardID) example is too thin")
+            XCTAssertNotEqual(card.definition, card.example, card.cardID)
+            XCTAssertFalse(card.example.localizedCaseInsensitiveContains(card.definition),
+                           "\(card.cardID) example merely restates the definition")
+            XCTAssertEqual(card.disclaimer, Self.canonicalDisclaimer, card.cardID)
+            XCTAssertEqual(card.editorial.status, "verified", card.cardID)
+            XCTAssertFalse(card.editorial.reviewer.isEmpty, card.cardID)
+
+            let prose = "\(card.title) \(card.definition) \(card.example)"
+            let lower = prose.lowercased()
+            for word in Self.staleTemporalWords {
+                XCTAssertFalse(lower.contains(word), "\(card.cardID) uses \"\(word)\", which goes stale")
+            }
+            for phrase in Self.prohibitedAdvicePhrases {
+                XCTAssertFalse(lower.contains(phrase), "\(card.cardID) contains advice framing: \"\(phrase)\"")
+            }
+            let range = NSRange(prose.startIndex..., in: prose)
+            for match in year.matches(in: prose, range: range) {
+                guard let r = Range(match.range, in: prose), let y = Int(prose[r]) else { continue }
+                XCTAssertLessThanOrEqual(y, verificationYear, "\(card.cardID) cites year \(y), after verification")
+            }
+            let exampleRange = NSRange(card.example.startIndex..., in: card.example)
+            XCTAssertNotNil(digit.firstMatch(in: card.example, range: exampleRange),
+                            "\(card.cardID) example has no concrete particular")
+        }
+    }
+
+    func testPackQuantitativeClaimsAreDeclaredAndKindMatchesPeriod() throws {
+        let magnitude = try NSRegularExpression(
+            pattern: "(\\$\\s?\\d)|(\\d[\\d,\\.]*\\s*(percent|trillion|billion|million))",
+            options: [.caseInsensitive])
+        let anyQuantity = try NSRegularExpression(
+            pattern: "\\d|\\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\\b",
+            options: [.caseInsensitive])
+        let year = try NSRegularExpression(pattern: "\\b(1[89]\\d{2}|20\\d{2})\\b")
+
+        for card in try loadPacks().allCards {
+            let prose = "\(card.title) \(card.definition) \(card.example)"
+            let range = NSRange(prose.startIndex..., in: prose)
+            if magnitude.firstMatch(in: prose, range: range) != nil {
+                XCTAssertNotNil(card.claim, "\(card.cardID) states a magnitude but declares no sourced claim")
+            }
+            guard let claim = card.claim else { continue }
+            let exampleRange = NSRange(card.example.startIndex..., in: card.example)
+            XCTAssertNotNil(anyQuantity.firstMatch(in: card.example, range: exampleRange),
+                            "\(card.cardID) declares a claim its example never makes")
+            let period = claim.observationPeriod
+            switch claim.claimKind {
+            case .observation:
+                XCTAssertNotNil(year.firstMatch(in: period, range: NSRange(period.startIndex..., in: period)),
+                                "\(card.cardID) claims an observation but names no period: \(period)")
+            case .illustration:
+                XCTAssertTrue(claim.units.lowercased().contains("illustrative"),
+                              "\(card.cardID) is an illustration and its units must say so")
+            }
+        }
+    }
+
+    // MARK: - Fail closed
+
+    private func packsJSONObject() throws -> [String: Any] {
+        let url = try XCTUnwrap(Bundle.curriculumBundle.url(forResource: PackCatalog.resourceName,
+                                                             withExtension: "json"))
+        return try XCTUnwrap(JSONSerialization.jsonObject(with: try Data(contentsOf: url)) as? [String: Any])
+    }
+
+    private func assertRejected(_ description: String,
+                                file: StaticString = #filePath, line: UInt = #line,
+                                _ mutate: (inout [String: Any]) -> Void) throws {
+        var object = try packsJSONObject()
+        mutate(&object)
+        let data = try JSONSerialization.data(withJSONObject: object)
+        let broken = try JSONDecoder().decode(PackCurriculum.self, from: data)
+        let core = try loadCore()
+        XCTAssertThrowsError(try PackCatalog.validate(broken, core: core),
+                             "validator accepted \(description)", file: file, line: line)
+    }
+
+    func testValidatorRejectsAnUnsupportedSchemaVersion() throws {
+        try assertRejected("an unsupported schemaVersion") { $0["schemaVersion"] = 99 }
+    }
+
+    func testValidatorRejectsAPackTopicPromotedToFree() throws {
+        try assertRejected("a pack topic marked free") { object in
+            guard var packs = object["packs"] as? [[String: Any]],
+                  var topics = packs[0]["topics"] as? [[String: Any]] else { return }
+            topics[0]["access"] = "free"
+            packs[0]["topics"] = topics
+            object["packs"] = packs
+        }
+    }
+
+    func testValidatorRejectsACardIdentifierBorrowedFromTheCore() throws {
+        try assertRejected("a pack card reusing a core card id") { object in
+            guard var packs = object["packs"] as? [[String: Any]],
+                  var topics = packs[0]["topics"] as? [[String: Any]],
+                  var cards = topics[0]["cards"] as? [[String: Any]] else { return }
+            cards[0]["cardID"] = "inf-001"
+            topics[0]["cards"] = cards
+            packs[0]["topics"] = topics
+            object["packs"] = packs
+        }
+    }
+
+    func testValidatorRejectsAWrongCardCount() throws {
+        try assertRejected("a pack topic with seven cards") { object in
+            guard var packs = object["packs"] as? [[String: Any]],
+                  var topics = packs[1]["topics"] as? [[String: Any]],
+                  var cards = topics[2]["cards"] as? [[String: Any]] else { return }
+            cards.removeLast()
+            topics[2]["cards"] = cards
+            packs[1]["topics"] = topics
+            object["packs"] = packs
+        }
+    }
+
+    func testValidatorRejectsAnUnexpectedProductID() throws {
+        try assertRejected("a pack selling under an unlisted product id") { object in
+            guard var packs = object["packs"] as? [[String: Any]] else { return }
+            packs[0]["productID"] = "com.nsantulli.econbyte.pack.mystery"
+            object["packs"] = packs
+        }
+    }
+
+    func testLoaderThrowsWhenThePacksResourceIsMissing() throws {
+        let core = try loadCore()
+        XCTAssertThrowsError(try PackCatalog.loadValidated(in: Bundle(for: PackCatalogTests.self), core: core)) { error in
+            guard case CurriculumError.resourceMissing = error else {
+                return XCTFail("expected resourceMissing, got \(error)")
+            }
+        }
+    }
+}

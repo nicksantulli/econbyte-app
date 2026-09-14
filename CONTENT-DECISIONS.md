@@ -717,3 +717,60 @@ The 1.1 single-slot ledger (`econ.review.lastRequestedVersion`) is still read,
 so an install asked on 1.1.2 is not asked again for 1.1.2. The launch counter is
 the one `app_opened_v1` buckets (`ebLaunchCount`), so the two cannot disagree
 about what a launch is. No sentiment pre-prompt, as before.
+
+
+---
+
+## D18 — Topic packs are separate purchases; Unlock All is the core curriculum (1.1.3)
+
+Two topic packs ship in build 15 — **Markets & Investing Basics**
+(`markets`: Stocks & Bonds, Funds & Diversification, Risk & Return, How Markets
+Work) and **Personal Economics** (`personal`: Household Budgets, Credit &
+Borrowing, Saving & Retirement, Insurance & Safety Nets) — four topics × eight
+cards each, in `EconByte/Resources/packs-v1.json`, in the exact
+`curriculum-v1.1.json` card schema and under the same editorial policy (named
+primary source with a canonical URL re-verified on 2026-09-14, declared claim
+blocks for every magnitude, no advice framing, no stale wording). Validated
+fail-closed by `PackCatalog.loadValidated(core:)` against the core catalog —
+no topic or card id may collide — and by `PackCatalogTests`. Additive: a
+defective packs file degrades to "no packs" and never removes a core topic.
+
+**Decision: `com.nsantulli.econbyte.unlockall` does NOT include the packs.**
+Each pack is its own $1.99 non-consumable (`com.nsantulli.econbyte.pack.markets`,
+`com.nsantulli.econbyte.pack.personal`, created in App Store Connect
+2026-09-14). Unlock All stays at $0.99 and keeps its approved ASC description
+("Unlock every EconByte topic — GDP, Labor Markets, Trade & Tariffs, Recessions
+and more"), which names the core curriculum, not packs. Reasons: (1) a $0.99
+product that included two $1.99 packs would invert the price ladder and make
+the packs unsellable; (2) the ASC-approved product copy never promised packs;
+(3) D4's rule that products are independent holds — buying a pack does not
+remove ads or unlock the core topics, and vice versa.
+
+**What changed to keep that honest:** the 1.1–1.1.2 paywall carried a feature
+row reading "All current and future card packs". Build 15 rewrites it to
+"The full core curriculum, every topic in Browse Topics". Readers who bought
+Unlock All under the old wording saw a promise this decision does not honour;
+**that is flagged to the Owner in the Phase 2 report** with two options
+(grandfather pre-1.1.3 Unlock All purchases into the packs via
+`Transaction.purchaseDate`, or leave as decided). Nothing in the app makes the
+call silently.
+
+**Access mechanics.** A pack topic is readable only when StoreKit has verified
+that pack's own product id (`PurchaseManager.ownedPackProductIDs`, mirrored to
+`iap.packs.purchased`); `ContentStore.cards(for:unlockedAll:ownedPackIDs:)`
+returns nothing for a pack topic without its pack, whatever `unlockedAll` says.
+Owned packs' cards join the daily-set pool. Home shows every pack under TOPIC
+PACKS whether or not it is owned: locked → summary, the four topic names, a
+three-card preview (each card's own title and first sentence), buy button with
+the StoreKit price, Restore; owned → the four topics as tiles. Settings lists
+each pack beside Remove Ads and Unlock All; Restore re-syncs all four.
+Measurement: `pack_shown_v1` (`product_family` ∈ `pack_markets` / `pack_personal`,
+`entry_point`) plus the existing `purchase_*_v1` funnel with the same
+per-pack family — never a product id, price, or topic.
+
+**Sources beyond the core list.** The core catalog's approved hosts are Fed /
+BLS / BEA / Treasury / Census / NBER and peers. The packs additionally cite
+public federal primary sources for their subject matter — SEC (sec.gov,
+investor.gov), FINRA, SIPC, CFPB, NCUA, DOL, Federal Student Aid, Medicare,
+HealthCare.gov, PBGC — plus the CBO and IMF the brief names. The allowlist in
+`PackCatalogTests.approvedSourceHosts` is the record.
