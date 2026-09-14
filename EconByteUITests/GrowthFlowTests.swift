@@ -19,7 +19,7 @@ final class GrowthFlowTests: XCTestCase {
     /// test unit can present an interstitial mid-assertion.
     private func launchApp(adsDisabled: Bool = false) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments += ["-skipStudioIntro", "-econResetGrowthState"]
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-econResetGrowthState"]
         if adsDisabled { app.launchArguments.append("-econDisableAds") }
         app.launch()
         XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 15),

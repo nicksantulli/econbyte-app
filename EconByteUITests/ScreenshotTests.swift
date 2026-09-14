@@ -23,7 +23,7 @@ final class ScreenshotTests: XCTestCase {
 
     func testCaptureAppStoreScreenshots() {
         let app = XCUIApplication()
-        app.launchArguments.append("-skipStudioIntro")
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt"]
         app.launch()
 
         XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 30),

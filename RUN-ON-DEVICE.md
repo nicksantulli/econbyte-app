@@ -39,37 +39,59 @@ through cards → tap a card to flip it for the sourced example.
 - Every card shows the disclaimer: "For educational purposes only — not
   financial or investment advice."
 
-**Ads** (design section 9.3 — one placement only)
-- There is **no ad inside a card session**. Ads never interrupt reading,
-  flipping, or advancing.
-- The only placement is the return from a **completed set** to Home. The
-  earliest one can appear is the exit of your **second** completed set, because
-  a fresh install must complete two sets before any ad is eligible.
-- DEBUG builds use Google's public **test** unit, so anything you see is
-  labelled "Test Ad" and never touches the real account.
-- Caps: at most one per foreground session, two per calendar day, fifteen
-  minutes apart, and two completed sets apart.
+**Ads** (design section 9.3, plus the 1.1.3 banner)
+- **No interstitial ever interrupts a card.** The one interstitial placement is
+  the return from a **completed set** to Home. The earliest one can appear is
+  the exit of your **second** completed set, because a fresh install must
+  complete two sets before any interstitial is eligible.
+- Interstitial caps (audited 2026-09-14): at most two per foreground session,
+  two per calendar day, fifteen minutes apart, and one completed set apart.
+- **Anchored banner (1.1.3):** a small adaptive banner sits at the bottom of
+  Home and under the card in a card session. It reserves no space until an ad
+  has loaded, so a no-fill is invisible rather than a blank strip.
+- DEBUG builds use Google's public **test** units (interstitial and banner), so
+  anything you see is labelled "Test Ad" and never touches the real account.
 - No fill or a load failure is silent — you just land back on Home.
-- **There is no App Tracking Transparency prompt.** Version 1.0 asked for
-  tracking permission before an interstitial; 1.1 removed that pathway entirely
-  and requests non-personalized ads only. If you ever see a tracking dialog,
-  that is a bug — see `CONTENT-DECISIONS.md` D2.
-- Buy **Remove Ads** and the ad SDK is never started at all.
+- **App Tracking Transparency (1.1.2 build 13):** the system tracking dialog
+  is asked **once per install**, from the exit of your **first completed set**
+  (tap Done or Browse More Topics), and never at launch. No ad — not even the
+  banner, not even an SDK start — is requested before you have answered. Every
+  answer moves the app forward; every ad request stays non-personalized
+  whatever you answer. See `CONTENT-DECISIONS.md` D2 addendum.
+- Buy **Remove Ads** and the ad SDK is never started at all — no interstitial,
+  no banner, no tracking dialog. Same for a device whose region is in the EEA/UK
+  (DUD-224).
+- A fresh Simulator run therefore shows **no banner until after your first
+  completed set** (the tracking decision comes first); from the next launch on,
+  the banner is on Home as soon as Google's test unit fills.
 
 **Consent, reminders, and rating**
-- Nothing is asked for on first launch. No permission dialog, no consent card.
-- After your **first completed set**, Session Complete offers the two data
-  choices — usage analytics and crash diagnostics — as separate toggles, both
-  off. Declining changes nothing. Both live in Settings → Privacy & Data
-  permanently.
+- **First open (1.1.3, keyed builds only):** as the Dudley studio intro fades,
+  a card asks once whether to share anonymous usage analytics (and crash
+  reports, when the build carries a Sentry DSN). Two equal buttons; "Not now"
+  is a real, remembered answer. Both toggles stay in Settings → Privacy & Data
+  permanently. A plain Simulator run is unkeyed by design
+  (`InstrumentationContext`) and shows **no card**; to see it, launch with
+  `-AllowAnalyticsInDebug` on an erased simulator. `-EBSkipConsentPrompt`
+  suppresses it for UI tests and screenshots.
+- No permission dialog appears on first launch — notifications and tracking are
+  asked later, in context.
+- If the build is unkeyed (so the first-open card did not ask), Session
+  Complete offers the two data choices after your **first completed set** as
+  separate toggles, both off — the 1.1 primer. It never asks an install the
+  first-open card already asked, and vice versa.
 - After your **next completed set**, the reminder primer appears. The iOS
   notification dialog appears only if you tap **Turn On Reminders** (or the
   Settings toggle). Enabling schedules one reminder at 7:00 p.m. local; turning
   it off removes it immediately.
-- The rating prompt will **not** appear in a fresh Simulator run: it needs 3
-  completed sets, 7 days since first launch, and a session with none of the
-  seven disqualifiers — a crash, a purchase failure, a restore failure, a
-  consent form, a notification prompt, a paywall, or an ad.
+- The rating prompt (review-rules-v2, 1.1.3) is **never asked on the first
+  open**. From the **second launch** on, the first completed set of five or
+  more cards is the moment — unless the same session carried an ad, a purchase
+  or restore, the consent card or primer, a system prompt (notifications or
+  tracking), a paywall, an error alert, or a crash recovery, in which case it
+  waits for a later session. Once per app version, attempts at least 120 days
+  apart, at most two a year. A UI-test or unit-test process never shows the
+  sheet at all.
 - Settings → **Rate EconByte** opens the App Store review sheet for app ID
   `6780714383`.
 

@@ -295,13 +295,20 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(EconAdPlacement.dailySetExit.rawValue, "daily_set_exit")
     }
 
-    func testShippedThresholdsMatchTheSpecification() {
+    /// 1.1.3 pacing audit (see `EconAdThresholds`): the first interstitial still
+    /// needs two completed sets; after that every completed set is an eligible
+    /// exit (was every other), at most two per foreground session (was one),
+    /// still 15 minutes apart and still two per calendar day.
+    func testShippedThresholdsMatchThe113PacingAudit() {
         let thresholds = EconAdThresholds()
-        XCTAssertEqual(thresholds.minimumCompletedSets, 2)
-        XCTAssertEqual(thresholds.setsSinceLastAd, 2)
-        XCTAssertEqual(thresholds.minimumInterval, 15 * 60)
-        XCTAssertEqual(thresholds.perSession, 1)
-        XCTAssertEqual(thresholds.perDay, 2)
+        XCTAssertEqual(thresholds.minimumCompletedSets, 2,
+                       "a fresh install's first set exit stays ad-free")
+        XCTAssertEqual(thresholds.setsSinceLastAd, 1)
+        XCTAssertEqual(thresholds.minimumInterval, 15 * 60,
+                       "the retention guardrail: never two interstitials within 15 minutes")
+        XCTAssertEqual(thresholds.perSession, 2)
+        XCTAssertEqual(thresholds.perDay, 2,
+                       "the other guardrail: never more than two in a calendar day")
     }
 
     func testFullyEligibleStateIsEligible() {
@@ -327,12 +334,15 @@ final class GrowthSystemsTests: XCTestCase {
                        .setNotCompletedNormally)
     }
 
-    func testTwoCompletedSetsMustElapseBetweenInterstitials() {
+    func testOneCompletedSetMustElapseBetweenInterstitials() {
         let now = date("2026-09-01T12:00:00Z")
         var state = eligibleState(now: now, dayKey: "2026-09-01")
+        state.setsSinceLastAd = 0
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
+                       .belowSetsSinceLastAd(1))
         state.setsSinceLastAd = 1
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
-                       .belowSetsSinceLastAd(2))
+                       .eligible, "every completed set after the second is an eligible exit")
     }
 
     func testFifteenMinutesMustElapseBetweenInterstitials() {
@@ -343,10 +353,13 @@ final class GrowthSystemsTests: XCTestCase {
                        .belowTimeThreshold(15 * 60))
     }
 
-    func testOneInterstitialPerForegroundSession() {
+    func testTwoInterstitialsPerForegroundSession() {
         let now = date("2026-09-01T12:00:00Z")
         var state = eligibleState(now: now, dayKey: "2026-09-01")
         state.shownThisSession = 1
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
+                       .eligible, "a second interstitial in a long sitting is allowed")
+        state.shownThisSession = 2
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
                        .sessionCapReached)
     }
@@ -449,9 +462,12 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(monetization.state.shownToday, 1)
         XCTAssertEqual(monetization.state.setsSinceLastAd, 0)
 
+        // The very next completed set is an eligible exit under the 1.1.3
+        // pacing, so what now holds the second interstitial back is the
+        // 15-minute floor — the retention guardrail that did not move.
         monetization.noteSetCompleted(normally: true)
         let second = await monetization.presentIfEligibleAtSetExit()
-        XCTAssertEqual(second, .notEligible(.belowSetsSinceLastAd(2)))
+        XCTAssertEqual(second, .notEligible(.belowTimeThreshold(15 * 60)))
     }
 
     @MainActor
@@ -658,74 +674,135 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(diagnostics.queue.count, EconDiagnosticLog.maximumQueuedReports)
     }
 
-    // MARK: - 9. Review requests (spec section 11.2)
+    // MARK: - 9. Review requests (review-rules-v2, Owner order 2026-09-14)
+    //
+    // 1.1 asked after 3 completed sets and 7 days. 1.1.3 ports Table Talk's
+    // rules-v2: never on the first open; from the second open, the first
+    // completed session of 5+ cards is the moment; once per version, 120 days
+    // apart, at most 2 a year; deferred by an ad, a purchase, the consent card,
+    // a system prompt, or an error in the same session.
 
-    private func satisfiedReviewState(now: Date) -> ReviewRequestState {
+    private func satisfiedReviewState() -> ReviewRequestState {
         var state = ReviewRequestState()
-        state.completedSetCount = 3
-        state.firstLaunchDate = now.addingTimeInterval(-8 * 86_400)
+        state.launchCount = 2
+        state.completedSetCount = 1
         state.currentSessionCompletedSet = true
+        state.currentSessionCards = 8
         return state
     }
 
-    func testReviewThresholdsMatchTheSpecification() {
-        XCTAssertEqual(ReviewRequestPolicy.thresholds.minimumCompletedSets, 3)
-        XCTAssertEqual(ReviewRequestPolicy.thresholds.minimumDaysSinceFirstLaunch, 7)
+    func testReviewThresholdsMatchRulesV2() {
+        let thresholds = ReviewRequestPolicy.thresholds
+        XCTAssertEqual(thresholds.minimumLaunches, 2, "never on the first open; the second is the earliest")
+        XCTAssertEqual(thresholds.minimumCompletedSets, 1)
+        XCTAssertEqual(thresholds.minimumCardsInSession, 5)
+        XCTAssertEqual(thresholds.minimumDaysBetweenAttempts, 120)
+        XCTAssertEqual(thresholds.maximumAttemptsPerYear, 2)
+        XCTAssertEqual(ReviewRequestPolicy.ruleVersion, "review-rules-v2")
     }
 
-    func testReviewIsEligibleWhenEveryConditionHolds() {
-        let now = date("2026-09-10T12:00:00Z")
-        XCTAssertEqual(ReviewRequestPolicy.decide(state: satisfiedReviewState(now: now),
-                                                  currentVersion: "1.1",
+    func testReviewIsEligibleOnTheSecondOpenAfterAFullSet() {
+        let now = date("2026-09-14T12:00:00Z")
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: satisfiedReviewState(),
+                                                  currentVersion: "1.1.3",
                                                   now: now),
                        .eligible)
     }
 
-    func testReviewNeedsThreeCompletedSets() {
-        let now = date("2026-09-10T12:00:00Z")
-        var state = satisfiedReviewState(now: now)
-        state.completedSetCount = 2
-        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1", now: now),
-                       .insufficientCompletedSets(3))
+    func testReviewIsNeverAskedOnTheFirstOpen() {
+        let now = date("2026-09-14T12:00:00Z")
+        var state = satisfiedReviewState()
+        state.launchCount = 1
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .belowLaunchCount(1))
+        state.launchCount = 0
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .belowLaunchCount(0))
     }
 
-    func testReviewNeedsSevenDaysSinceFirstLaunch() {
-        let now = date("2026-09-10T12:00:00Z")
-        var state = satisfiedReviewState(now: now)
-        state.firstLaunchDate = now.addingTimeInterval(-3 * 86_400)
-        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1", now: now),
-                       .insufficientDaysSinceFirstLaunch(7))
+    func testReviewNeedsACompletedSet() {
+        let now = date("2026-09-14T12:00:00Z")
+        var state = satisfiedReviewState()
+        state.completedSetCount = 0
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .insufficientCompletedSets(1))
     }
 
-    func testReviewNeedsACompletedSessionSet() {
-        let now = date("2026-09-10T12:00:00Z")
-        var state = satisfiedReviewState(now: now)
+    func testReviewNeedsTheCurrentSessionToHaveCompletedASet() {
+        let now = date("2026-09-14T12:00:00Z")
+        var state = satisfiedReviewState()
         state.currentSessionCompletedSet = false
-        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1", now: now),
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
                        .sessionNotCompleted)
     }
 
+    /// A three-card saved-cards replay is a completed set for the lifetime
+    /// counters, but not a moment to ask.
+    func testReviewNeedsAtLeastFiveCardsInTheSessionThatJustEnded() {
+        let now = date("2026-09-14T12:00:00Z")
+        var state = satisfiedReviewState()
+        state.currentSessionCards = 3
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .belowSessionCards(3))
+        state.currentSessionCards = 5
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .eligible, "five cards is the moment")
+    }
+
     func testAnyNegativeSessionEventSuppressesTheReviewRequest() {
-        let now = date("2026-09-10T12:00:00Z")
+        let now = date("2026-09-14T12:00:00Z")
         for event in EconNegativeSessionEvent.allCases {
-            var state = satisfiedReviewState(now: now)
+            var state = satisfiedReviewState()
             state.negativeSessionEvents = [event]
-            XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1", now: now),
+            XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
                            .negativeSession(event),
-                           "\(event.rawValue) in the session must suppress the prompt")
+                           "\(event.rawValue) in the session must defer the prompt")
+        }
+        // The 1.1.3 additions are present by name: an ad, a purchase or restore,
+        // the consent card, a system prompt (notifications or ATT), an error.
+        for required in [EconNegativeSessionEvent.ad, .purchase, .restore, .consentForm,
+                         .notificationPrompt, .trackingPrompt, .errorShown] {
+            XCTAssertTrue(EconNegativeSessionEvent.allCases.contains(required))
         }
     }
 
     func testReviewIsAttemptedAtMostOncePerAppVersion() {
-        let now = date("2026-09-10T12:00:00Z")
-        var state = satisfiedReviewState(now: now)
-        state.lastRequestedVersion = "1.1"
-        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1", now: now),
-                       .alreadyRequestedForVersion("1.1"))
+        let now = date("2026-09-14T12:00:00Z")
+        var state = satisfiedReviewState()
+        state.attemptedVersions = ["1.1.3"]
+        state.attemptDates = [now.addingTimeInterval(-200 * 86_400)]
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .alreadyRequestedForVersion("1.1.3"))
 
-        state.lastRequestedVersion = "1.0"
-        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1", now: now),
+        state.attemptedVersions = ["1.1.2"]
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
                        .eligible, "a new version may attempt once more")
+    }
+
+    func testAttemptsAreAtLeast120DaysApart() {
+        let now = date("2026-09-14T12:00:00Z")
+        var state = satisfiedReviewState()
+        state.attemptedVersions = ["1.1.2"]
+        state.attemptDates = [now.addingTimeInterval(-30 * 86_400)]
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .tooSoonSincePreviousAttempt(30))
+        state.attemptDates = [now.addingTimeInterval(-121 * 86_400)]
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .eligible)
+    }
+
+    func testAtMostTwoAttemptsInAnyYear() {
+        let now = date("2026-09-14T12:00:00Z")
+        var state = satisfiedReviewState()
+        state.attemptedVersions = ["1.1.1", "1.1.2"]
+        state.attemptDates = [now.addingTimeInterval(-200 * 86_400),
+                              now.addingTimeInterval(-330 * 86_400)]
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .annualCapReached(2))
+        state.attemptDates = [now.addingTimeInterval(-400 * 86_400),
+                              now.addingTimeInterval(-500 * 86_400)]
+        XCTAssertEqual(ReviewRequestPolicy.decide(state: state, currentVersion: "1.1.3", now: now),
+                       .eligible, "attempts older than a year fall out of the cap")
     }
 
     /// Settings must deep-link to the App Store review sheet, not the website.
@@ -738,68 +815,131 @@ final class GrowthSystemsTests: XCTestCase {
                        "the Dudley homepage is not a review destination")
     }
 
+    /// The coordinator reads the launch counter `EBEvents.recordLaunch` keeps.
+    func testTheCoordinatorAndTheLaunchEventShareOneLaunchCounter() {
+        XCTAssertEqual(ReviewRequestPolicy.launchCountDefaultsKey, "ebLaunchCount")
+    }
+
     @MainActor
     func testCoordinatorRecordsEligibilityBeforeCallingTheSystemAPIAndOnlyOnce() {
         var callCount = 0
-        let now = date("2026-09-10T12:00:00Z")
-        defaults.set(now.addingTimeInterval(-9 * 86_400),
-                     forKey: ReviewRequestPolicy.firstLaunchDefaultsKey)
+        let now = date("2026-09-14T12:00:00Z")
+        defaults.set(2, forKey: ReviewRequestPolicy.launchCountDefaultsKey)
 
         let coordinator = ReviewRequestCoordinator(defaults: defaults,
-                                                   currentVersion: "1.1",
+                                                   currentVersion: "1.1.3",
                                                    now: { now },
                                                    requestReview: { callCount += 1 })
         coordinator.noteForegroundSessionBegan()
-        for _ in 0..<3 { coordinator.noteSetCompleted() }
+        coordinator.noteSetCompleted(cardsViewed: 8)
 
         XCTAssertEqual(coordinator.requestReviewIfEligible(), .eligible)
         XCTAssertEqual(callCount, 1)
         XCTAssertTrue(coordinator.didCallSystemAPI)
 
         XCTAssertEqual(coordinator.requestReviewIfEligible(),
-                       .alreadyRequestedForVersion("1.1"))
+                       .alreadyRequestedForVersion("1.1.3"))
         XCTAssertEqual(callCount, 1, "the system API is called at most once per version")
     }
 
     @MainActor
-    func testCoordinatorSuppressesAfterAnAdOrPurchaseFailureInTheSameSession() {
-        let now = date("2026-09-10T12:00:00Z")
-        defaults.set(now.addingTimeInterval(-9 * 86_400),
-                     forKey: ReviewRequestPolicy.firstLaunchDefaultsKey)
+    func testCoordinatorNeverAsksOnTheFirstLaunch() {
         var callCount = 0
+        let now = date("2026-09-14T12:00:00Z")
+        defaults.set(1, forKey: ReviewRequestPolicy.launchCountDefaultsKey)
         let coordinator = ReviewRequestCoordinator(defaults: defaults,
-                                                   currentVersion: "1.1",
+                                                   currentVersion: "1.1.3",
                                                    now: { now },
                                                    requestReview: { callCount += 1 })
         coordinator.noteForegroundSessionBegan()
-        for _ in 0..<3 { coordinator.noteSetCompleted() }
-        coordinator.noteNegativeSessionEvent(.ad)
-
-        XCTAssertEqual(coordinator.requestReviewIfEligible(), .negativeSession(.ad))
+        coordinator.noteSetCompleted(cardsViewed: 8)
+        XCTAssertEqual(coordinator.requestReviewIfEligible(), .belowLaunchCount(1))
         XCTAssertEqual(callCount, 0)
     }
 
+    @MainActor
+    func testCoordinatorSuppressesAfterAnAdOrPurchaseInTheSameSessionOnly() {
+        let now = date("2026-09-14T12:00:00Z")
+        defaults.set(2, forKey: ReviewRequestPolicy.launchCountDefaultsKey)
+        var callCount = 0
+        let coordinator = ReviewRequestCoordinator(defaults: defaults,
+                                                   currentVersion: "1.1.3",
+                                                   now: { now },
+                                                   requestReview: { callCount += 1 })
+        coordinator.noteForegroundSessionBegan()
+        coordinator.noteSetCompleted(cardsViewed: 8)
+        coordinator.noteNegativeSessionEvent(.ad)
+        XCTAssertEqual(coordinator.requestReviewIfEligible(), .negativeSession(.ad))
+        coordinator.noteNegativeSessionEvent(.purchase)
+        XCTAssertEqual(coordinator.requestReviewIfEligible(), .negativeSession(.purchase))
+        XCTAssertEqual(callCount, 0)
+
+        // A new foreground session lifts the deferral; the attempt was never spent.
+        coordinator.noteForegroundSessionBegan()
+        coordinator.noteSetCompleted(cardsViewed: 8)
+        XCTAssertEqual(coordinator.requestReviewIfEligible(), .eligible)
+        XCTAssertEqual(callCount, 1)
+    }
+
+    /// The attempt ledger survives a relaunch: the version is spent, and the
+    /// next version has to wait 120 days.
+    @MainActor
+    func testCoordinatorPersistsTheAttemptLedgerAcrossLaunches() {
+        let now = date("2026-09-14T12:00:00Z")
+        defaults.set(2, forKey: ReviewRequestPolicy.launchCountDefaultsKey)
+        let first = ReviewRequestCoordinator(defaults: defaults, currentVersion: "1.1.3",
+                                             now: { now }, requestReview: {})
+        first.noteForegroundSessionBegan()
+        first.noteSetCompleted(cardsViewed: 8)
+        XCTAssertEqual(first.requestReviewIfEligible(), .eligible)
+
+        let sameVersion = ReviewRequestCoordinator(defaults: defaults, currentVersion: "1.1.3",
+                                                   now: { now.addingTimeInterval(86_400) }, requestReview: {})
+        sameVersion.noteForegroundSessionBegan()
+        sameVersion.noteSetCompleted(cardsViewed: 8)
+        XCTAssertEqual(sameVersion.requestReviewIfEligible(), .alreadyRequestedForVersion("1.1.3"))
+
+        let nextVersion = ReviewRequestCoordinator(defaults: defaults, currentVersion: "1.1.4",
+                                                   now: { now.addingTimeInterval(10 * 86_400) }, requestReview: {})
+        nextVersion.noteForegroundSessionBegan()
+        nextVersion.noteSetCompleted(cardsViewed: 8)
+        XCTAssertEqual(nextVersion.requestReviewIfEligible(), .tooSoonSincePreviousAttempt(10))
+    }
+
+    /// An install that was asked under 1.1's single-slot ledger is not asked
+    /// again for that version after the update.
+    @MainActor
+    func testALegacyRequestedVersionStillCountsAsASpentAttempt() {
+        let now = date("2026-09-14T12:00:00Z")
+        defaults.set(2, forKey: ReviewRequestPolicy.launchCountDefaultsKey)
+        defaults.set("1.1.2", forKey: ReviewRequestPolicy.lastRequestedVersionDefaultsKey)
+        let coordinator = ReviewRequestCoordinator(defaults: defaults, currentVersion: "1.1.2",
+                                                   now: { now }, requestReview: {})
+        coordinator.noteForegroundSessionBegan()
+        coordinator.noteSetCompleted(cardsViewed: 8)
+        XCTAssertEqual(coordinator.requestReviewIfEligible(), .alreadyRequestedForVersion("1.1.2"))
+    }
+
     /// Eligibility is recorded locally *before* the system API is called, so
-    /// `review_prompt_eligible` and `review_prompt_requested` are distinct.
+    /// `review_prompt_eligible` and `review_request_attempted` are distinct.
     @MainActor
     func testReviewEligibilityIsSignalledBeforeTheSystemAPI() {
-        let now = date("2026-09-10T12:00:00Z")
-        defaults.set(now.addingTimeInterval(-9 * 86_400),
-                     forKey: ReviewRequestPolicy.firstLaunchDefaultsKey)
+        let now = date("2026-09-14T12:00:00Z")
+        defaults.set(2, forKey: ReviewRequestPolicy.launchCountDefaultsKey)
         var order: [String] = []
         let coordinator = ReviewRequestCoordinator(defaults: defaults,
-                                                   currentVersion: "1.1",
+                                                   currentVersion: "1.1.3",
                                                    now: { now },
                                                    requestReview: { order.append("requested") })
         coordinator.onEligible = { order.append("eligible") }
         coordinator.noteForegroundSessionBegan()
-        for _ in 0..<3 { coordinator.noteSetCompleted() }
+        coordinator.noteSetCompleted(cardsViewed: 8)
 
         XCTAssertEqual(coordinator.requestReviewIfEligible(), .eligible)
         XCTAssertEqual(order, ["eligible", "requested"])
 
         XCTAssertEqual(coordinator.requestReviewIfEligible(),
-                       .alreadyRequestedForVersion("1.1"))
+                       .alreadyRequestedForVersion("1.1.3"))
         XCTAssertEqual(order, ["eligible", "requested"],
                        "an ineligible attempt signals nothing")
     }

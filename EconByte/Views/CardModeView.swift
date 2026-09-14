@@ -103,6 +103,12 @@ struct CardModeView: View {
                         .padding(.horizontal, 20)
                         .padding(.bottom, 32)
                 }
+                // Anchored adaptive banner (1.1.3): under the card, never over
+                // it — reading, flipping and advancing are never interrupted.
+                // Same gating as Home (`EconMonetization.canRequestAds`).
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    AdBannerSlot(placement: .bannerCard, monetization: growth.monetization)
+                }
             }
         }
         .onAppear {

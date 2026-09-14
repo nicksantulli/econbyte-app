@@ -157,6 +157,7 @@ struct PaywallView: View {
     private func buy() {
         working = true
         growth.monetization.setBlocker(.purchase, active: true)
+        growth.review.noteNegativeSessionEvent(.purchase)
         // RECONCILED (1.1.2): purchase telemetry moved INTO `PurchaseManager`,
         // where the branch is known and the StoreKit product id can be reduced
         // to its family before anything leaves — the id itself is a prohibited
@@ -178,6 +179,7 @@ struct PaywallView: View {
     private func restore() {
         working = true
         growth.monetization.setBlocker(.restore, active: true)
+        growth.review.noteNegativeSessionEvent(.restore)
         Task {
             let result = await store.restorePurchases(from: entryPoint.ebEntryPoint)
             working = false
@@ -213,6 +215,8 @@ struct PaywallView: View {
     }
 
     private func presentAlert(title: String, message: String) {
+        // A user-facing error is a bad moment to ask for a rating (rules-v2).
+        growth.review.noteNegativeSessionEvent(.errorShown)
         alertTitle = title
         alertMessage = message
         showAlert = true

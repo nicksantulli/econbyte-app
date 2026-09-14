@@ -5,7 +5,7 @@ rates, GDP, trade) as swipeable daily cards. Educational only; not financial
 advice.
 
 - Bundle id: `com.nsantulli.econbyte` · ASC app id `6780714383`
-- Current version in this tree: **1.1.2 (build 9)**
+- Current version in this tree: **1.1.3 (build 14)** — live is 1.1.2 build 13
 - Freemium: Inflation + Interest Rates free; the other 8 topics behind
   **Unlock All Topics** (`com.nsantulli.econbyte.unlockall`, $0.99). **Remove
   Ads** (`com.nsantulli.econbyte.removeads`, $0.99) is a separate purchase.
@@ -42,14 +42,32 @@ Never reuse another Dudley app's project. Table Talk's projects are
 `table-talk` / `tabletalk` and are separate on purpose — cross-app identity
 separation depends on the projects being distinct.
 
-### Defaults (1.1.2)
+### Defaults (1.1.2 → 1.1.3)
 
 | | Default | User control | Where |
 |---|---|---|---|
-| PostHog usage analytics | **ON** | opt-out switch | Settings → Privacy → "Share Anonymous Usage Analytics" |
-| Sentry crash reports | **ON** | none | — |
+| PostHog usage analytics | **OFF** (opt-in) | first-open card, then a switch | Settings → Privacy & Data → "Share Usage Analytics" |
+| Sentry crash reports | **OFF** (opt-in) | first-open card, then a switch | Settings → Privacy & Data → "Share Crash Diagnostics" |
 
-Analytics ship on because what ships is small enough to defend: only a typed,
+Both are opt-in because that is what version 1.1's published App Store notes
+promise ("separate opt-in choices, both off by default"); the 1.1.2
+reconciliation kept that posture rather than reverse a published promise on
+update (`RECONCILIATION-LOG.md` §5).
+
+**First-open consent card (1.1.3, Dudley factory pattern).** On the first open
+of a *keyed* build, a card revealed as the studio intro fades asks once whether
+to share anonymous usage analytics (and crash reports, when a DSN is present).
+Two equal-weight buttons; "Not now" is a real, persisted answer. One answer sets
+both vendor consents through the same facade paths Settings uses; Settings stays
+the per-vendor control. An install the 1.1 session-complete primer already asked
+is never asked again, and answering the card retires that primer. Code:
+`EconByte/Services/FirstOpenConsentPolicy.swift`,
+`EconByte/Views/AnalyticsConsentCard.swift`, mounted in `EconByteApp`. Launch
+argument `-EBSkipConsentPrompt` suppresses it (every UI test passes it). This
+card is **not** the App Tracking Transparency prompt — that is a separate,
+later system dialog owned by `EconMonetization` (1.1.2 build 13).
+
+What ships when analytics is on is small enough to defend: only a typed,
 allowlisted event set can reach PostHog (see
 `EconByte/Services/EconTelemetry.swift`) — bucketed, anonymous counts of which
 topics and modes get used, never a card, a definition, a bookmark, a price, or
@@ -57,15 +75,11 @@ an exact timestamp. The validator drops anything undeclared *before* it is
 queued, so "on" cannot come to mean more than it means today without a schema
 change and a review.
 
-Crash reports have no switch on purpose: the envelope is a stack trace with the
-user object and every breadcrumb stripped, and a crash reporter most people
-leave off reports nothing. Settings says out loud that they are sent.
-
 Switching analytics off stops capture before the call returns, clears this app's
 queue, calls the SDK's own `optOut()`, tears the SDK down, **deletes the SDK's
-storage directory**, and persists (`ebAnalyticsOptOut` — absent means "never
-answered", which is ON). Switching it back on gets a **new** id, so the two
-sides of an opt-out cannot be stitched together.
+storage directory**, and persists the answer (`econ.telemetry.consent`, absent
+means "never answered", which is OFF). Switching it back on gets a **new** id,
+so the two sides of an opt-out cannot be stitched together.
 
 The directory deletion is not belt-and-braces, it is the fix: posthog-ios
 `PostHogStorage.reset()` deliberately skips the event queue, so `reset()` +
@@ -142,6 +156,17 @@ configure: `cp Config/Secrets.xcconfig.example Config/Secrets.xcconfig` and fill
 it in out of band. **Note the xcconfig `//` gotcha for URLs — see the comments
 in the example file.**
 
+### Release key gate (1.1.3)
+
+Table Talk 1.1.4 shipped with an empty `POSTHOG_API_KEY` because the archive Mac
+had no `Config/Secrets.xcconfig`. EconByte now closes that at the project level:
+the first build phase of the app target, **"Instrumentation key gate"**
+(`KG0000000000000000000001` in the committed pbxproj), fails any **Release +
+iphoneos** build (archive / device install) whose `POSTHOG_API_KEY` is empty,
+and warns when `SENTRY_DSN` is empty. Simulator and Debug builds are untouched.
+To ship unkeyed on purpose pass `EB_ALLOW_UNKEYED_RELEASE=YES`. Pinned by
+`GrowthAuditTests.testProjectCarriesTheInstrumentationKeyGate`.
+
 ### App Privacy
 
 The three data types 1.1.2 adds (User ID, Crash Data, Product Interaction) are
@@ -149,3 +174,36 @@ all **not linked** and **not used for tracking**. The ad-side declarations
 (`NSPrivacyTracking`, the googleads tracking domain, the ATT prompt) are
 unchanged. The exact ASC edits are in
 [`AppStore/1.1.2/app-privacy-answers.md`](AppStore/1.1.2/app-privacy-answers.md).
+
+---
+
+## Ads (1.1.3)
+
+Two surfaces, one policy layer (`EconByte/Services/EconMonetization.swift`):
+
+- **Interstitial** — one placement, the return from a completed set to Home.
+  Pacing audited 2026-09-14: first interstitial no earlier than the **second**
+  completed set; then every completed set is an eligible exit; at most **two
+  per foreground session**, **two per calendar day**, **fifteen minutes apart**.
+  The reasoning is in the `EconAdThresholds` doc comment.
+- **Anchored adaptive banner** (`EconByte/Views/AdBannerSlot.swift`) at the
+  bottom of Home and under the card in a card session. Reserves no space until
+  an ad has loaded. Production unit `ca-app-pub-9950526548980224/4084037009`
+  (AdMob console, 2026-09-14); Debug can only select Google's public test banner
+  unit. Measured as `banner_impression_v1` with a `placement` of `home`/`card`.
+
+Both surfaces are gated identically before any request: no Remove Ads
+entitlement, region not in the EEA/UK (DUD-224, fail-closed on unknown), and the
+1.1.2 build 13 ATT ordering gate (`adRequestsPermitted`) — nothing, not even an
+SDK start, precedes the tracking decision. Every request is non-personalized
+(`npa=1`, `rdp=1`) whatever the reader answered.
+
+## Rating requests (review-rules-v2, 1.1.3)
+
+`EconByte/Services/ReviewRequestPolicy.swift`. Never on the first open; from the
+second launch, the first completed set of 5+ cards is the moment; once per app
+version, attempts at least 120 days apart, at most two a year. Deferred — never
+spent — by an ad, a purchase or restore, the consent card or primer, a system
+prompt (notifications or ATT), a paywall, an error alert, or a crash recovery in
+the same session. No sentiment pre-prompt; Settings' "Rate EconByte" opens the
+public write-review URL. Test and automation processes never show the sheet.

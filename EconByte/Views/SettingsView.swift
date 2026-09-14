@@ -279,6 +279,7 @@ struct SettingsView: View {
     private func purchaseRemoveAds() {
         workingRemoveAds = true
         growth.monetization.setBlocker(.purchase, active: true)
+        growth.review.noteNegativeSessionEvent(.purchase)
         Task {
             let result = await store.purchase(.removeAds, from: .settings)
             workingRemoveAds = false
@@ -292,6 +293,7 @@ struct SettingsView: View {
     private func restorePurchases() {
         workingRestore = true
         growth.monetization.setBlocker(.restore, active: true)
+        growth.review.noteNegativeSessionEvent(.restore)
         Task {
             let result = await store.restorePurchases(from: .settings)
             workingRestore = false
@@ -344,6 +346,8 @@ struct SettingsView: View {
     }
 
     private func presentAlert(title: String, message: String) {
+        // A user-facing error is a bad moment to ask for a rating (rules-v2).
+        growth.review.noteNegativeSessionEvent(.errorShown)
         alertTitle = title
         alertMessage = message
         showAlert = true

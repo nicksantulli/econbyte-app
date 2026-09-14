@@ -426,11 +426,12 @@ final class InstrumentationPrivacyTests: XCTestCase {
     /// the suppression is about presenting Apple's sheet, not about deciding.
     func testTheEligibilityPolicyStillDecidesInsideATestRun() {
         var state = ReviewRequestState()
-        state.completedSetCount = 5
+        state.launchCount = 2
+        state.completedSetCount = 1
         state.currentSessionCompletedSet = true
-        state.firstLaunchDate = Date(timeIntervalSince1970: 0)
+        state.currentSessionCards = 8
         XCTAssertEqual(ReviewRequestPolicy.decide(state: state,
-                                                  currentVersion: "1.1.2",
+                                                  currentVersion: "1.1.3",
                                                   now: Date(timeIntervalSince1970: 60 * 60 * 24 * 30)),
                        .eligible)
     }

@@ -103,6 +103,22 @@ public enum EconAdUnit {
         return release
         #endif
     }
+
+    // Anchored adaptive banner (Home + card session), added 2026-09-14 (1.1.3).
+    /// Google's public adaptive-banner test unit.
+    public static let debugBanner = "ca-app-pub-3940256099942544/2435281174"
+    /// The production banner unit, created in the AdMob console by the Owner on
+    /// 2026-09-14 (MANAGER-LOOP-2026-09-14 log). An empty value would hide the
+    /// slot entirely, so a build can never request a placeholder unit.
+    public static let releaseBanner = "ca-app-pub-9950526548980224/4084037009"
+
+    public static var banner: String? {
+        #if DEBUG
+        return debugBanner
+        #else
+        return releaseBanner.isEmpty ? nil : releaseBanner
+        #endif
+    }
 }
 
 // MARK: - Placement vocabulary
@@ -164,11 +180,40 @@ public struct EconEntitlements: Equatable {
 
 // MARK: - Ad policy
 
+/// Interstitial pacing, audited 2026-09-14 (1.1.3 growth lane).
+///
+/// EconByte paces by completed SETS, not by cards: the one interstitial
+/// placement is the return from a completed set to Home, so no ad can ever
+/// interrupt reading. Against that model the lane's per-card target (an ad no
+/// earlier than the 4th card, about one per six cards, three per session) maps
+/// as follows, and the two loosened values are the only ones that moved:
+///
+///   * `minimumCompletedSets` 2 — UNCHANGED. The first interstitial still
+///     cannot appear before the second completed set (16 cards). The first
+///     set's exit is where the reader meets the consent primer, the reminder
+///     primer and (build 13) the ATT dialog; a fresh install's first exit is the
+///     highest-retention-risk moment in the app and it stays ad-free.
+///   * `setsSinceLastAd` 2 → 1. Every completed set after the second is now an
+///     eligible exit rather than every other one. With 8-card sets this is one
+///     interstitial per ~8 cards, still coarser than the per-card target, and
+///     always at a natural break behind the completion screen.
+///   * `perSession` 1 → 2. A reader who finishes two topic decks in one sitting
+///     may see a second interstitial — but only if `minimumInterval` has also
+///     elapsed, so in practice this bites only in sittings longer than 15 min.
+///   * `minimumInterval` 15 min and `perDay` 2 — UNCHANGED. These two are the
+///     retention guardrails; nothing here can exceed two interstitials in a
+///     calendar day for anyone.
+///
+/// Why not go further: EconByte has no D1/D7 retention series yet (PostHog
+/// ingestion started with 1.1.2, and ads-exposed vs entitled splits are Phase 7
+/// of this loop), so there is no evidence to spend. The steady revenue surface
+/// added in 1.1.3 is the anchored banner (`AdBannerSlot`), not more
+/// interstitials. Re-audit when Phase 7's dashboards exist.
 public struct EconAdThresholds: Equatable {
     public var minimumCompletedSets = 2
-    public var setsSinceLastAd = 2
+    public var setsSinceLastAd = 1
     public var minimumInterval: TimeInterval = 15 * 60
-    public var perSession = 1
+    public var perSession = 2
     public var perDay = 2
     public init() {}
 }
@@ -271,7 +316,10 @@ public final class EconMonetization: ObservableObject {
 
     public private(set) var state = EconAdState()
     public var policy: EconAdPolicy
-    public private(set) var didStartSDK = false
+    /// Published so the anchored banner slot can appear the moment the SDK is
+    /// allowed to start (after the ATT decision on a fresh install) without the
+    /// hosting view having to be recomposed by something else.
+    @Published public private(set) var didStartSDK = false
 
     /// Whether this install has already been shown (or been offered) the ATT
     /// prompt. Persisted, because "once per install" outlives the process.
@@ -359,6 +407,20 @@ public final class EconMonetization: ObservableObject {
     public var adRequestsPermitted: Bool {
         tracking.status.isDecided || didRequestTrackingPrompt
     }
+
+    /// The request-side gate for the anchored banner (1.1.3): may this install
+    /// ask for ANY ad right now? Entitlement, region (DUD-224) and the ATT
+    /// ordering gate — the same three checks `startAdsIfPermitted` makes,
+    /// exposed so a view can decide whether to construct a banner at all. An
+    /// entitled reader, an EEA/UK reader, or a reader whose tracking decision
+    /// is still outstanding never has a banner requested on their behalf.
+    public var canRequestAds: Bool {
+        !entitlements.adsSuppressed && region().permitsAdRequests && adRequestsPermitted
+    }
+
+    /// The request configuration a banner must use: the same non-personalized
+    /// extras, carrying the live tracking status.
+    public var currentRequestPolicy: EconAdRequestPolicy { requestPolicy }
 
     /// Whether the ATT prompt is still owed to this reader.
     ///
@@ -696,6 +758,7 @@ final class EconGrowth: ObservableObject {
         defaults.removeObject(forKey: EconTelemetry.Key.consent)
         defaults.removeObject(forKey: EconDiagnostics.consentDefaultsKey)
         defaults.removeObject(forKey: ConsentPromptPolicy.shownDefaultsKey)
+        FirstOpenConsentPolicy.reset(defaults: defaults)
         EconDiagnosticLog.resetPersistedState(in: defaults)
         ReviewRequestCoordinator.resetPersistedState(in: defaults)
         NotificationCoordinator.resetPersistedState(in: defaults)

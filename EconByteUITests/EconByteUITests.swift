@@ -17,7 +17,7 @@ final class EconByteUITests: XCTestCase {
     /// interact with Home immediately (see StudioIntroView `-skipStudioIntro`).
     private func launchApp() -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments.append("-skipStudioIntro")
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt"]
         app.launch()
         return app
     }
@@ -292,7 +292,7 @@ final class EconByteUITests: XCTestCase {
     /// element's accessibility value; the visible label must be contained in it.
     func testGroceryLineIsBoundToInf001CardContent() {
         let app = XCUIApplication()
-        app.launchArguments += ["-skipStudioIntro", "-exposeGroceryBinding"]
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-exposeGroceryBinding"]
         app.launch()
 
         XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))

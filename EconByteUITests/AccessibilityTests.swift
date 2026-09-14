@@ -18,7 +18,7 @@ final class AccessibilityTests: XCTestCase {
 
     private func launchApp(contentSizeCategory: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments.append("-skipStudioIntro")
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt"]
         if let contentSizeCategory {
             // UIKit's documented launch-argument override; SwiftUI reads the
             // same preferred content size category.

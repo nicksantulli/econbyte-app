@@ -61,6 +61,13 @@ struct HomeView: View {
             }
             .navigationTitle("EconByte")
             .navigationBarTitleDisplayMode(.large)
+            // Anchored adaptive banner (1.1.3). Reserves no space until an ad
+            // has loaded, and is not constructed at all for a Remove Ads owner,
+            // an EEA/UK reader, or before the ATT decision
+            // (`EconMonetization.canRequestAds`).
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                AdBannerSlot(placement: .bannerHome, monetization: growth.monetization)
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button { showSettings = true } label: {

@@ -11,16 +11,50 @@ struct EconByteApp: App {
     @StateObject private var store = PurchaseManager.shared
 
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var wasBackgrounded = false
+
+    /// First-open analytics consent (Owner order 2026-09-14). Decided once, here,
+    /// from the same facades Settings uses; only ever true when there is a
+    /// key/DSN to consent to, and never for an install the 1.1 session-complete
+    /// primer already asked.
+    @State private var showConsentPrompt: Bool
+
+    init() {
+        // Touch the composition root first so its DEBUG reset runs before the
+        // consent decision reads the stored answer.
+        let growth = EconGrowth.shared
+        _showConsentPrompt = State(initialValue: FirstOpenConsentPolicy.shouldPresent(
+            isConfigured: growth.telemetry.isConfigured || growth.diagnostics.isConfigured,
+            legacyPrimerAnswered: growth.consentPromptShown,
+            defaults: .standard))
+    }
 
     var body: some Scene {
         WindowGroup {
             StudioIntroGate {
-                HomeView()
-                    .environmentObject(content)
-                    .environmentObject(streak)
-                    .environmentObject(store)
-                    .environmentObject(growth)
+                ZStack {
+                    HomeView()
+                        .environmentObject(content)
+                        .environmentObject(streak)
+                        .environmentObject(store)
+                        .environmentObject(growth)
+
+                    // First-open consent, revealed as the cold-launch StudioIntro
+                    // (zIndex 100) fades. While it is up no ad may present and the
+                    // rating ask is deferred for this session.
+                    if showConsentPrompt {
+                        AnalyticsConsentCard(
+                            showsDiagnosticsAddendum: growth.diagnostics.isConfigured,
+                            onDecision: { decideConsent($0) }
+                        )
+                        .zIndex(50)
+                        .onAppear {
+                            growth.monetization.setBlocker(.consent, active: true)
+                            growth.review.noteNegativeSessionEvent(.consentForm)
+                        }
+                    }
+                }
             }
             .preferredColorScheme(.dark)
             .task {
@@ -70,6 +104,29 @@ struct EconByteApp: App {
         }
     }
 
+    // MARK: First-open consent
+
+    /// One answer sets both vendor consents (analytics, and diagnostics when a
+    /// DSN is present) through the same facade paths Settings → Privacy & Data
+    /// uses, so the per-vendor switches there read back the same answer. Both
+    /// answers are persisted; the 1.1 session-complete primer is marked shown so
+    /// it can never ask the same question a second time.
+    private func decideConsent(_ granted: Bool) {
+        growth.setAnalyticsEnabled(granted, entryPoint: .home)
+        if growth.diagnostics.isConfigured {
+            growth.setDiagnosticsEnabled(granted, entryPoint: .home)
+        }
+        FirstOpenConsentPolicy.recordAnswered(defaults: .standard)
+        growth.noteConsentPromptShown()
+        growth.monetization.setBlocker(.consent, active: false)
+        withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.22)) {
+            showConsentPrompt = false
+        }
+        // Nothing is queued pre-consent by design; the next captured event is
+        // the first to ride. Flush anyway so nothing waits on a mode change.
+        if granted { EBEvents.flush() }
+    }
+
     /// DEBUG-ONLY instrumentation smoke hook. Launched with
     /// `-EBInstrumentationSmoke YES`, it forces analytics and crash diagnostics
     /// on for this run and logs the resolved state, so an ingestion smoke run
@@ -83,7 +140,9 @@ struct EconByteApp: App {
     /// alone stays inert. The log line below reports which of the two happened.
     ///
     /// RECONCILED (1.1.2): it now has to force consent ON rather than merely
-    /// undo a stored opt-out, because the reconciled build is opt-in.
+    /// undo a stored opt-out, because the reconciled build is opt-in. The
+    /// first-open consent card stands down for a smoke run
+    /// (`FirstOpenConsentPolicy.shouldPresent`) so there is one answer, not two.
     private static func applyInstrumentationSmokeIfRequested() {
         #if DEBUG
         guard ProcessInfo.processInfo.arguments.contains("-EBInstrumentationSmoke")

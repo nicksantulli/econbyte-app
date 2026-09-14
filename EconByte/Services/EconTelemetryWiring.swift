@@ -78,6 +78,10 @@ enum EBProductFamily: String {
 /// case rather than a string.
 enum EBAdPlacement: String {
     case dailySetExit = "daily_set_exit"
+    /// The two anchored-banner slots added in 1.1.3. `banner_impression_v1`
+    /// carries which one; the interstitial keeps `daily_set_exit`.
+    case bannerHome = "home"
+    case bannerCard = "card"
 }
 
 enum EBSuppression: String {
@@ -105,7 +109,9 @@ enum EBEvents {
 
     private enum Key {
         static let installDate = "ebInstallDate"
-        static let launchCount = "ebLaunchCount"
+        /// Shared with the review policy, whose second-open rule reads the
+        /// same counter — the two must never disagree about what a launch is.
+        static let launchCount = ReviewRequestPolicy.launchCountDefaultsKey
     }
 
     /// The marketing version and build, as one short token (`1.1.2 (9)`). Inside
@@ -268,6 +274,14 @@ enum EBEvents {
     static func adSuppressed(_ suppression: EBSuppression) {
         EconTelemetry.shared.capture(TelemetryEvent("ad_suppressed_v1", [
             "suppression": .string(suppression.rawValue),
+        ]))
+    }
+
+    /// An anchored banner actually loaded and took space (1.1.3). Emitted once
+    /// per slot presentation, on the first fill; a no-fill emits nothing.
+    static func bannerImpression(placement: EBAdPlacement) {
+        EconTelemetry.shared.capture(TelemetryEvent("banner_impression_v1", [
+            "placement": .string(placement.rawValue),
         ]))
     }
 

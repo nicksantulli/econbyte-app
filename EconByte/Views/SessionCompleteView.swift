@@ -127,13 +127,29 @@ struct SessionCompleteView: View {
 
     private func onAppearOnce() async {
         growth.monetization.noteSetCompleted(normally: true)
-        growth.review.noteSetCompleted()
+        // review-rules-v2 (1.1.3): the size of the deck just finished decides
+        // whether this completion is a moment to ask (5+ cards) or only counts.
+        growth.review.noteSetCompleted(cardsViewed: cardsCount)
         // RECONCILED (1.1.2): lineage A's `daily_set_completed` carried a
         // `set_id`, an exact `card_count` and an exact `streak_day`, all three
         // prohibited by the shipped schema. The completion is now reported by
         // `CardModeView`'s `session_ended_v1` (bucketed cards, bucketed
         // duration), which fires for abandoned sessions too and therefore has a
         // denominator this event never had.
+
+        // Decide the contextual offers BEFORE the rating ask, so a screen that is
+        // about to carry the consent primer — or an exit that is about to carry
+        // the ATT dialog (build 13) — is never also the moment we ask for a
+        // rating. Both defer the ask to a later healthy session; neither spends it.
+        let offersConsent = ConsentPromptPolicy.eligible(
+            completedSetCount: growth.review.state.completedSetCount,
+            alreadyShown: growth.consentPromptShown)
+        if offersConsent {
+            growth.review.noteNegativeSessionEvent(.consentForm)
+        }
+        if growth.monetization.shouldRequestTrackingAuthorization {
+            growth.review.noteNegativeSessionEvent(.trackingPrompt)
+        }
 
         // The rating request comes after the completion acknowledgement. If it
         // fires, no ad may follow it at this exit. `review_prompt_eligible` is
@@ -151,8 +167,7 @@ struct SessionCompleteView: View {
 
         analyticsEnabled = growth.telemetry.isAnalyticsEnabled
         diagnosticsEnabled = growth.diagnostics.isDiagnosticsEnabled
-        if ConsentPromptPolicy.eligible(completedSetCount: completedSets,
-                                        alreadyShown: growth.consentPromptShown) {
+        if offersConsent {
             showConsentPrompt = true
             growth.noteConsentPromptShown()
             growth.monetization.setBlocker(.consent, active: true)

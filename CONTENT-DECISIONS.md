@@ -550,13 +550,16 @@ So the asymmetry is intentional: suppress on intent, measure on outcome.
 ## D14 — DEBUG-only test harness arguments
 
 Three launch arguments exist in DEBUG builds only and are compiled out of
-Release (Gate B item 11 requires no debug controls in the release UI):
+Release (Gate B item 11 requires no debug controls in the release UI); a fourth
+(1.1.3) is honoured in every configuration because a test harness must never
+depend on a DEBUG-only branch, and it only ever *suppresses* a prompt:
 
 | Argument | Effect | Why it exists |
 |---|---|---|
 | `-skipStudioIntro` | Skips the studio intro animation | Pre-existing from 1.0 |
 | `-econResetGrowthState` | Clears consent, reminders, ad counters, review progress, card state, and streak | UI tests need a fresh-install posture |
 | `-econDisableAds` | Reports the device as ad-restricted | See below |
+| `-EBSkipConsentPrompt` | Suppresses the 1.1.3 first-open analytics consent card (all configurations) | UI tests and screenshot runs; also an `InstrumentationContext` automation marker |
 
 `-econDisableAds` routes through the real DUD-224 region gate, so the ad SDK is
 never started and no request is made. It exists because one UI test drives the
@@ -638,3 +641,79 @@ decline will have `googleads.g.doubleclick.net` blocked, and will see no ads. Th
 is already true of the live 1.1.1 build 8, so build 13 is not a regression against
 what is shipping today — but it IS a regression against build 12, and it is the
 strongest argument for the personalization follow-up.
+
+---
+
+## D15 — First-open analytics consent card (1.1.3, Owner order 2026-09-14)
+
+D10 put the two consent choices on the Session Complete screen after the first
+completed set, on the design's "never on first launch" rule. The Owner's
+2026-09-14 order for the whole portfolio is the opposite: analytics consent is
+asked **once, on first open**, as a card revealed under the studio intro — the
+Dudley factory pattern first shipped in Table Talk 1.1.5.
+
+**What was implemented.** `FirstOpenConsentPolicy` + `AnalyticsConsentCard`,
+mounted by `EconByteApp` in the same ZStack as Home, under the intro overlay.
+Shown only when this process has a PostHog key and/or a Sentry DSN (an unkeyed
+build — and every Debug/test process — shows nothing); two equal buttons, both
+answers persisted; one answer sets both vendor consents through the same facade
+paths Settings uses. While it is up no ad may present (`EconAdBlocker.consent`)
+and the rating ask is deferred (`EconNegativeSessionEvent.consentForm`).
+
+**D10 is not deleted, it is subordinated.** The Session Complete primer still
+exists for the case where the first-open card did not ask (an unkeyed build),
+and the two surfaces share one "answered" record: the card marks
+`ConsentPromptPolicy.noteShown`, and an install the primer already asked is
+never shown the card. One question, one answer, whichever surface asked it —
+so a 1.1.2 upgrader who answered the primer is not asked again on update.
+
+**Not the ATT prompt.** The card is product analytics only and its copy says so.
+The tracking dialog (D2 addendum) stays where build 13 put it: once, from the
+session-complete exit, before the first ad request.
+
+---
+
+## D16 — Anchored banner and interstitial pacing audit (1.1.3)
+
+**Banner.** EconByte's only ad surface was the set-exit interstitial, which
+needs two completed sets and (since build 13) an answered ATT prompt before it
+can fire even once. 1.1.3 adds an anchored adaptive banner at the bottom of Home
+and under the card in a card session (`AdBannerSlot`, `GoogleBannerView`),
+production unit `ca-app-pub-9950526548980224/4084037009` created by the Owner in
+the AdMob console on 2026-09-14; Debug can only select Google's public test
+banner unit. It is gated by the same three checks as the interstitial before a
+view is even constructed — entitlement, DUD-224 region, and the build-13 ATT
+ordering (`EconMonetization.canRequestAds`) — so an entitled reader, an EEA/UK
+reader, or a reader who has not yet answered ATT never has a banner requested,
+and the SDK is never touched. It reserves no space until an ad has loaded.
+Measured as `banner_impression_v1` (`placement` ∈ `home`, `card`).
+
+**Interstitial pacing.** Audited against the lane's per-card target (no ad
+before the 4th card, ~1 per 6 cards, ≤3 per session). EconByte paces by
+completed sets, so the mapping and the two values that moved are recorded in
+the `EconAdThresholds` doc comment: `setsSinceLastAd` 2 → 1 and `perSession`
+1 → 2; `minimumCompletedSets` 2, `minimumInterval` 15 min and `perDay` 2 are
+unchanged and are the retention guardrails. EconByte has no D1/D7 retention
+series yet (Phase 7 of the 2026-09-14 loop builds it), so nothing beyond that
+was spent. The release packet's statement "at most one interstitial per session"
+(`AppStore/1.1/evidence/release-packet.json`) now reads "two"; the packet is
+1.1's and is left as the historical record of that release.
+
+**D11 still holds:** a topic-deck or Saved Cards completion counts as a set.
+
+---
+
+## D17 — Rating requests move to review-rules-v2 (1.1.3)
+
+D9's rule (3 completed sets, 7 days since first launch, once per version) is
+replaced by Table Talk's `review-rules-v2` on the Owner's 2026-09-14 order:
+never on the first open; from the second launch, the first completed set of 5+
+cards is the moment; once per app version; attempts at least 120 days apart; at
+most two in any 365 days. The deferral list grows from D9's seven to eleven —
+an ad, a purchase, a purchase failure, a restore, a restore failure, the consent
+card/primer, a notification prompt, the ATT prompt, a paywall, an error alert,
+a crash recovery — and a deferral never spends the version's one attempt.
+The 1.1 single-slot ledger (`econ.review.lastRequestedVersion`) is still read,
+so an install asked on 1.1.2 is not asked again for 1.1.2. The launch counter is
+the one `app_opened_v1` buckets (`ebLaunchCount`), so the two cannot disagree
+about what a launch is. No sentiment pre-prompt, as before.

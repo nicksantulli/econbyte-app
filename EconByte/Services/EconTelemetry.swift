@@ -118,6 +118,9 @@ enum TelemetrySchema {
         "ad_load_finished_v1": ["outcome"],
         "ad_impression_v1": ["ordinal"],
         "ad_suppressed_v1": ["suppression"],
+        // 1.1.3: the anchored banner on Home and in a card session. Which slot
+        // filled, nothing else — no unit id, no size, no revenue.
+        "banner_impression_v1": ["placement"],
         "streak_day_credited_v1": ["streak_bucket"],
         "notification_permission_result_v1": ["granted"],
         "review_request_attempted_v1": ["app_version", "launch_count_bucket"],
@@ -159,9 +162,11 @@ enum TelemetrySchema {
                                 "nothing_to_restore"]),
         "product_family": .enumerated(["unlock_all", "remove_ads"]),
         "suppression": .enumerated(["region_restricted", "ads_removed"]),
-        // Lineage A's only ad placement. Declared as a vocabulary rather than a
-        // token so a second placement cannot appear without a schema change.
-        "placement": .enumerated(["daily_set_exit"]),
+        // The interstitial's one placement plus, from 1.1.3, the two anchored
+        // banner slots. Declared as a vocabulary rather than a token so a new
+        // placement cannot appear without a schema change — this line IS that
+        // change for the banner.
+        "placement": .enumerated(["daily_set_exit", "home", "card"]),
         "access_state": .enumerated(["free", "unlocked", "locked"]),
 
         "install_age_bucket": .enumerated(Bucket.installAge),

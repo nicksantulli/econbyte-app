@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 
 // MARK: - Interstitial adapter
@@ -163,4 +164,76 @@ final class AdManager: NSObject, EconInterstitialAdapting {
     func present() async -> Bool { false }
 }
 
+#endif
+
+// MARK: - Banner adapter (1.1.3)
+//
+// Same rule as the interstitial adapter: this is SDK plumbing only. Whether a
+// banner may be on screen at all is decided by `AdBannerSlot` from the policy
+// layer (`EconMonetization.canRequestAds`: entitlement, DUD-224 region, and the
+// build-13 ATT ordering gate), so an entitled reader, an EEA/UK reader, or a
+// reader who has not yet answered ATT never constructs this view and the SDK is
+// never asked for a banner. Every request carries the same non-personalized
+// extras (`npa=1`, `rdp=1`) the interstitial carries.
+
+#if canImport(GoogleMobileAds)
+struct GoogleBannerView: UIViewRepresentable {
+    let adUnitID: String
+    let width: CGFloat
+    let policy: EconAdRequestPolicy
+    /// Called with the ad's height once one has actually loaded, and with 0 on
+    /// failure — the slot reserves no space for an ad that is not there.
+    let onLoadedHeight: (CGFloat) -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator(onLoadedHeight: onLoadedHeight) }
+
+    func makeUIView(context: Context) -> BannerView {
+        let size = currentOrientationAnchoredAdaptiveBanner(width: max(width, 320))
+        let view = BannerView(adSize: size)
+        view.adUnitID = adUnitID
+        view.delegate = context.coordinator
+        view.load(Self.makeRequest(policy: policy))
+        return view
+    }
+
+    func updateUIView(_ view: BannerView, context: Context) {
+        let size = currentOrientationAnchoredAdaptiveBanner(width: max(width, 320))
+        guard abs(view.adSize.size.width - size.size.width) > 1 else { return }
+        view.adSize = size
+        view.load(Self.makeRequest(policy: policy))
+    }
+
+    private static func makeRequest(policy: EconAdRequestPolicy) -> Request {
+        let request = Request()
+        let extras = Extras()
+        extras.additionalParameters = policy.extras
+        request.register(extras)
+        return request
+    }
+
+    final class Coordinator: NSObject, BannerViewDelegate {
+        let onLoadedHeight: (CGFloat) -> Void
+        init(onLoadedHeight: @escaping (CGFloat) -> Void) { self.onLoadedHeight = onLoadedHeight }
+
+        func bannerViewDidReceiveAd(_ bannerView: BannerView) {
+            onLoadedHeight(bannerView.adSize.size.height)
+        }
+
+        func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
+            // No-fill and load failures are silent to the reader by design; the
+            // SDK's error string is a third-party message and never leaves.
+            NSLog("[Ads] banner load failed")
+            onLoadedHeight(0)
+        }
+    }
+}
+#else
+/// Compiles the app without the SDK linked: no banner can ever load.
+struct GoogleBannerView: View {
+    let adUnitID: String
+    let width: CGFloat
+    let policy: EconAdRequestPolicy
+    let onLoadedHeight: (CGFloat) -> Void
+    var body: some View { Color.clear.frame(height: 0) }
+}
 #endif

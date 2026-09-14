@@ -49,8 +49,8 @@ settings:
     # archived Info.plist is what App Store Connect reads, and this file only
     # reproduces the project. EconByte is a COMMITTED-pbxproj app: this file is
     # documentation, never a generator input (never run xcodegen here).
-    MARKETING_VERSION: "1.1.2"
-    CURRENT_PROJECT_VERSION: "13"
+    MARKETING_VERSION: "1.1.3"
+    CURRENT_PROJECT_VERSION: "14"
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO
@@ -68,6 +68,21 @@ targets:
     configFiles:
       Debug: Config/Instrumentation.xcconfig
       Release: Config/Instrumentation.xcconfig
+    # 1.1.3: "Instrumentation key gate" run-script phase (first phase of the app
+    # target in the committed pbxproj, id KG0000000000000000000001). A Release
+    # iphoneos build fails when POSTHOG_API_KEY is empty unless
+    # EB_ALLOW_UNKEYED_RELEASE=YES is passed. Mirrored here for documentation;
+    # the committed project is authoritative (never run xcodegen).
+    preBuildScripts:
+      - name: Instrumentation key gate
+        shell: /bin/sh
+        script: |
+          if [ "${CONFIGURATION}" = "Release" ] && [ "${PLATFORM_NAME}" = "iphoneos" ]; then
+            if [ -z "${POSTHOG_API_KEY}" ] && [ "${EB_ALLOW_UNKEYED_RELEASE}" != "YES" ]; then
+              echo "error: POSTHOG_API_KEY is empty in a Release device build (see Config/Secrets.xcconfig.example), or pass EB_ALLOW_UNKEYED_RELEASE=YES."
+              exit 1
+            fi
+          fi
     sources:
       - path: EconByte
     dependencies:
