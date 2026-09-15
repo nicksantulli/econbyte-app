@@ -86,8 +86,9 @@ final class GrowthFlowTests: XCTestCase {
         let app = launchApp()
         openSettings(app)
 
+        // 1.1.4: Privacy sits below the Pro and Purchases sections, and a List
+        // row below the fold is not built until it is scrolled to.
         let analytics = app.switches["settingsAnalyticsToggle"]
-        XCTAssertTrue(analytics.waitForExistence(timeout: 8))
         XCTAssertTrue(scrollTo(analytics, in: app),
                       "the analytics switch should be reachable in Settings")
 
@@ -119,8 +120,9 @@ final class GrowthFlowTests: XCTestCase {
         let app = launchApp()
         openSettings(app)
 
+        // 1.1.4: Privacy sits below the Pro and Purchases sections, and a List
+        // row below the fold is not built until it is scrolled to.
         let analytics = app.switches["settingsAnalyticsToggle"]
-        XCTAssertTrue(analytics.waitForExistence(timeout: 8))
         XCTAssertTrue(scrollTo(analytics, in: app),
                       "the analytics switch should be reachable in Settings")
 
@@ -226,7 +228,7 @@ final class GrowthFlowTests: XCTestCase {
         XCTAssertTrue(cta.waitForExistence(timeout: 15), "Home should offer today's set")
         cta.tap()
 
-        let counter = app.staticTexts.containing(NSPredicate(format: "label CONTAINS '/'")).firstMatch
+        let counter = app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Card ' AND label CONTAINS ' of '")).firstMatch
         XCTAssertTrue(counter.waitForExistence(timeout: 15), "card mode should open")
 
         let done = app.buttons["sessionCompleteDoneButton"]

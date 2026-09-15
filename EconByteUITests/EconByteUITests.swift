@@ -85,10 +85,10 @@ final class EconByteUITests: XCTestCase {
 
         // Progress counter: "1 / 8" rendered by CardModeView nav bar.
         let counter = app.staticTexts.containing(
-            NSPredicate(format: "label CONTAINS '/'")
+            NSPredicate(format: "label BEGINSWITH 'Card ' AND label CONTAINS ' of '")
         ).firstMatch
         XCTAssertTrue(counter.waitForExistence(timeout: 5),
-                      "Progress counter (N / 8) should render in card mode")
+                      "the card counter (\"Card N of 8\") should render in card mode")
     }
 
     /// Card mode close button (✕) dismisses and returns to Home.
@@ -100,7 +100,7 @@ final class EconByteUITests: XCTestCase {
 
         // Wait for card mode.
         XCTAssertTrue(
-            app.staticTexts.containing(NSPredicate(format: "label CONTAINS '/'"))
+            app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Card ' AND label CONTAINS ' of '"))
                 .firstMatch.waitForExistence(timeout: 5)
         )
 
@@ -122,7 +122,7 @@ final class EconByteUITests: XCTestCase {
         tapStart(in: app)
 
         XCTAssertTrue(
-            app.staticTexts.containing(NSPredicate(format: "label CONTAINS '/'"))
+            app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Card ' AND label CONTAINS ' of '"))
                 .firstMatch.waitForExistence(timeout: 5)
         )
 
@@ -159,6 +159,9 @@ final class EconByteUITests: XCTestCase {
         // secrets the archive happened to carry.
         let analyticsToggle = app.switches["settingsAnalyticsToggle"]
         let diagnosticsToggle = app.switches["settingsDiagnosticsToggle"]
+        // 1.1.4: Privacy sits below the Pro and Purchases sections.
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
+        for _ in 0..<8 where !(diagnosticsToggle.exists && diagnosticsToggle.isHittable) { app.swipeUp() }
         XCTAssertTrue(analyticsToggle.waitForExistence(timeout: 5),
                       "the privacy section must offer the analytics opt-in")
         XCTAssertTrue(diagnosticsToggle.waitForExistence(timeout: 5),
