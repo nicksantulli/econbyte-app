@@ -179,8 +179,15 @@ enum PlanCopy {
         return Action(action: "Subscribe", priceText: billed, ownedLabel: nil)
     }
 
-    /// Auto-renewal disclosure (checklist A4), shown on the paywall itself.
-    static let autoRenewDisclosure = "Payment is charged to your Apple ID account when you confirm the purchase, or when a free trial ends. The subscription renews automatically at the same price and period unless you cancel at least 24 hours before the current period ends. Manage or cancel in Settings → Apple ID → Subscriptions."
+    /// Auto-renewal disclosure (checklist A4), shown on the paywall itself. The
+    /// trial clause appears only alongside the trial line (A2: no trial wording
+    /// for a reader who cannot take the trial).
+    static func autoRenewDisclosure(trial: Bool) -> String {
+        let charged = trial
+            ? "Payment is charged to your Apple ID account when the free trial ends."
+            : "Payment is charged to your Apple ID account when you confirm the purchase."
+        return "\(charged) The subscription renews automatically at the same price and period unless you cancel at least 24 hours before the current period ends. Manage or cancel in Settings → Apple ID → Subscriptions."
+    }
 
     static let notAdvice = "Educational content, not financial advice."
 }

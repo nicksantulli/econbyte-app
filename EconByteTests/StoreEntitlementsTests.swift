@@ -537,10 +537,14 @@ final class PricingAndPurchaseButtonTests: XCTestCase {
     }
 
     func testAutoRenewDisclosureCoversChargeRenewalAndCancellation() {
-        for phrase in ["Apple ID", "when a free trial ends", "renews automatically", "at least 24 hours",
-                       "Settings → Apple ID → Subscriptions"] {
-            XCTAssertTrue(PlanCopy.autoRenewDisclosure.contains(phrase), phrase)
+        for phrase in ["Apple ID", "renews automatically", "at least 24 hours", "Settings → Apple ID → Subscriptions"] {
+            XCTAssertTrue(PlanCopy.autoRenewDisclosure(trial: true).contains(phrase), phrase)
+            XCTAssertTrue(PlanCopy.autoRenewDisclosure(trial: false).contains(phrase), phrase)
         }
+        XCTAssertTrue(PlanCopy.autoRenewDisclosure(trial: true).contains("when the free trial ends"))
+        XCTAssertTrue(PlanCopy.autoRenewDisclosure(trial: false).contains("when you confirm the purchase"))
+        XCTAssertFalse(PlanCopy.autoRenewDisclosure(trial: false).localizedCaseInsensitiveContains("trial"),
+                       "no trial wording for a reader who cannot take the trial (A2)")
     }
 
     /// No purchase surface carries a price literal or a trial toggle.

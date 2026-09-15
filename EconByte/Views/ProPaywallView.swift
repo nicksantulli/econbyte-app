@@ -316,7 +316,7 @@ struct ProPaywallContent<Interlude: View>: View {
 
     private var legal: some View {
         VStack(spacing: 10) {
-            Text(PlanCopy.autoRenewDisclosure)
+            Text(PlanCopy.autoRenewDisclosure(trial: trialLine != nil))
                 .font(.system(.caption, design: .rounded))
                 .foregroundColor(Econ.white.opacity(0.62))
                 .multilineTextAlignment(.center)
