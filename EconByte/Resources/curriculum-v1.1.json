@@ -944,7 +944,7 @@
           "topicID": "interest-rates",
           "title": "How Higher Rates Slow Inflation",
           "definition": "Raising the policy rate raises borrowing costs across the economy. Households and firms borrow and spend less, demand cools, and firms find price increases harder to make stick. The effect works with a lag usually measured in quarters rather than weeks.",
-          "example": "The chain is long and slow. A rate decision in March changes what a builder pays for a construction loan in June, how many houses get framed by September, and how many framing crews are hired after that. The Fed is steering something with a very long wheelbase, and the full effect of one decision can take 4 to 6 quarters to arrive.",
+          "example": "The chain is long and slow. A rate decision in March changes what a builder pays for a construction loan in June, how many houses get framed by September, and how many framing crews are hired after that. The Fed is steering something with a very long wheelbase, and the full effect of 1 decision takes quarters, not weeks, to arrive.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
           "source": {
@@ -1606,7 +1606,7 @@
           "topicID": "gdp",
           "title": "Two Quarters Is a Rule of Thumb",
           "definition": "The idea that two consecutive quarters of falling GDP constitute a recession is a shorthand, not the official U.S. standard. It is convenient because it uses one series, and unreliable for the same reason.",
-          "example": "The 2020 downturn makes the point. NBER dated a recession lasting 2 months, from a February 2020 peak to an April 2020 trough. It made that call by weighing how deep, how widespread, and how long the decline was across measures such as payroll employment and real income, not by applying a two-quarter GDP rule.",
+          "example": "The 2020 downturn makes the point. NBER dated a recession lasting 2 months, from a February 2020 peak to an April 2020 trough. It made that call by weighing how deep, how widespread, and how long the decline was across measures such as nonfarm payroll employment and real personal income less transfers, not by applying a two-quarter GDP rule.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
           "source": {
@@ -2507,7 +2507,7 @@
           "topicID": "supply-demand",
           "title": "Price Floors",
           "definition": "A price floor is a legal minimum price. The minimum wage is the most familiar example. Set above the market-clearing level, a floor raises pay for those who keep their jobs, while the size and direction of any employment effect remains actively debated among economists.",
-          "example": "A floor only bites where pay is already below it. In a labour market where employers are competing above the minimum, raising it changes nothing for most workers - which is why BLS publishes average hourly earnings every month alongside the 2 employment surveys.",
+          "example": "A floor only bites where pay is already below it. In a labor market where employers are competing above the minimum, raising it changes nothing for most workers - which is why BLS publishes average hourly earnings every month alongside the 2 employment surveys.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
           "source": {
@@ -2563,7 +2563,7 @@
           "topicID": "supply-demand",
           "title": "Substitutes and Complements",
           "definition": "Two goods are substitutes when a price rise for one increases demand for the other, and complements when they are used together, so that a price rise for one reduces demand for the other.",
-          "example": "Petrol and large cars are complements: when fuel costs jump, showrooms full of thirsty vehicles go quiet. Coffee and tea are substitutes. BLS catches both effects by re-weighting the CPI basket from the 2 expenditure surveys rather than assuming buying habits are frozen.",
+          "example": "Gasoline and large cars are complements: when fuel costs jump, showrooms full of thirsty vehicles go quiet. Coffee and tea are substitutes. BLS catches both effects by re-weighting the CPI basket from the 2 expenditure surveys rather than assuming buying habits are frozen.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intro",
           "source": {
@@ -4084,7 +4084,7 @@
           "topicID": "trade-tariffs",
           "title": "The WTO",
           "definition": "The World Trade Organization administers multilateral trade rules and provides a forum in which members negotiate and settle disputes. It does not set tariffs; members do, within the ceilings they have agreed.",
-          "example": "The WTO began life on 1 January 1995, but the system it inherited is older: the General Agreement on Tariffs and Trade had been providing the rules since 1948. The organisation was new; the rulebook was not.",
+          "example": "The WTO began life on 1 January 1995, but the system it inherited is older: the General Agreement on Tariffs and Trade had been providing the rules since 1948. The organization was new; the rulebook was not.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
           "source": {
@@ -6081,7 +6081,7 @@
           "cardID": "rec-002",
           "topicID": "recessions",
           "title": "Leading Indicators",
-          "definition": "Leading indicators are series that tend to turn before overall activity: new orders, building permits, jobless claims, credit conditions, and the yield curve among them. They give warning, not certainty, and have signalled downturns that never arrived.",
+          "definition": "Leading indicators are series that tend to turn before overall activity: new orders, building permits, jobless claims, credit conditions, and the yield curve among them. They give warning, not certainty, and have signaled downturns that never arrived.",
           "example": "No single one is trustworthy, so The Conference Board combines 10 of them into one monthly index and publishes coincident and lagging indexes beside it. A signal that shows up in 1 component is noise; one that shows up across most of them is worth attention.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intermediate",
@@ -9117,7 +9117,7 @@
           "topicID": "taxes",
           "title": "Payroll Taxes",
           "definition": "Payroll taxes fund specific social insurance programs and are levied on earnings rather than on total income. They are typically split between employee and employer, and the employee's share is withheld from each paycheck.",
-          "example": "On a U.S. paycheck the Social Security line is 6.2 percent and Medicare is 1.45 percent, totalling 7.65 percent - and the employer pays the same again on top, which never appears on the payslip at all.",
+          "example": "On a U.S. paycheck the Social Security line is 6.2 percent and Medicare is 1.45 percent, totaling 7.65 percent - and the employer pays the same again on top, which never appears on the pay stub at all.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intro",
           "source": {
@@ -9378,7 +9378,7 @@
           "topicID": "taxes",
           "title": "Who Actually Pays",
           "definition": "Legal incidence is who remits a tax. Economic incidence is whose income falls because of it. The two often differ, because the party remitting can shift part of the burden into prices or wages depending on how responsive buyers and sellers are.",
-          "example": "Tariffs are the clearest case. The importer writes the cheque to customs, so legal incidence is obvious; whether the cost lands on the foreign producer, the importer's margin, or the shopper depends on who can most easily walk away. 1 payer, 3 possible bearers.",
+          "example": "Tariffs are the clearest case. The importer writes the check to customs, so legal incidence is obvious; whether the cost lands on the foreign producer, the importer's margin, or the shopper depends on who can most easily walk away. 1 payer, 3 possible bearers.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "advanced",
           "source": {
@@ -9421,7 +9421,7 @@
           "topicID": "taxes",
           "title": "Tax Expenditures",
           "definition": "Exclusions, deductions, credits, and preferential rates reduce revenue in much the way direct spending uses it. Budget analysts call these tax expenditures and account for them separately precisely because they never appear as outlays.",
-          "example": "A housing subsidy paid as a cheque is spending; the identical subsidy delivered as a deduction is forgone revenue. The household ends up in the same place, but only 1 of the 2 shows up in the spending totals - which is why they are tracked separately.",
+          "example": "A housing subsidy paid as a check is spending; the identical subsidy delivered as a deduction is forgone revenue. The household ends up in the same place, but only 1 of the 2 shows up in the spending totals - which is why they are tracked separately.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "advanced",
           "source": {
@@ -9795,7 +9795,7 @@
           "topicID": "fiscal-policy",
           "title": "Discretionary and Mandatory Spending",
           "definition": "Mandatory spending is set by ongoing law and continues without annual action; discretionary spending is appropriated each year. Most U.S. federal spending is mandatory, which limits how much the annual budget process actually controls.",
-          "example": "This is why a government shutdown does not stop Social Security cheques. They are mandatory spending, already authorized by standing law, while the annual appropriations fight covers a minority of the 2 categories of outlay.",
+          "example": "This is why a government shutdown does not stop Social Security checks. They are mandatory spending, already authorized by standing law, while the annual appropriations fight covers a minority of the 2 categories of outlay.",
           "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
           "difficulty": "intro",
           "source": {

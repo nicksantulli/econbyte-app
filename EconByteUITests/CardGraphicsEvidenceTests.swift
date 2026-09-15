@@ -64,12 +64,22 @@ final class CardGraphicsEvidenceTests: XCTestCase {
         XCTAssertTrue(card.waitForExistence(timeout: 10), "\(context): the card announces its graphic")
     }
 
-    /// Captures `count` cards of the open deck, advancing with Next.
-    private func captureDeck(_ app: XCUIApplication, prefix: String, count: Int, only: Set<Int>? = nil) {
+    /// Captures `count` cards of the open deck, advancing with Next. With
+    /// `scrolled`, each captured card is also captured after a vertical swipe:
+    /// the face scrolls (1.1.5), so the definition under a full-size graphic is
+    /// reached by scrolling rather than by shrinking the graphic.
+    private func captureDeck(_ app: XCUIApplication, prefix: String, count: Int, only: Set<Int>? = nil,
+                             scrolled: Bool = false) {
         for index in 1...count {
             if only == nil || only!.contains(index) {
                 assertCardAnnouncesAGraphic(app, "\(prefix) card \(index)")
                 capture(String(format: "%@-%02d", prefix, index))
+                if scrolled {
+                    app.swipeUp()
+                    capture(String(format: "%@-%02d-scrolled", prefix, index))
+                    XCTAssertTrue(app.buttons["cardModeCloseButton"].exists, "a vertical swipe scrolls the card, not the deck")
+                    app.swipeDown()
+                }
             }
             if index < count {
                 let next = app.buttons["Next"]
@@ -110,9 +120,9 @@ final class CardGraphicsEvidenceTests: XCTestCase {
     func testLargeDynamicType() {
         let app = launch(pro: true, ads: false, contentSize: "UICTContentSizeCategoryAccessibilityL")
         openTopic("inflation", in: app)
-        captureDeck(app, prefix: "p20-ax-inflation", count: 11, only: [1, 3, 5, 9, 11])
+        captureDeck(app, prefix: "p20-ax-inflation", count: 11, only: [1, 3, 5, 9, 11], scrolled: true)
         app.buttons["cardModeCloseButton"].tap()
         openTopic("interest-rates", in: app)
-        captureDeck(app, prefix: "p20-ax-interest-rates", count: 12, only: [3, 6, 12])
+        captureDeck(app, prefix: "p20-ax-interest-rates", count: 12, only: [3, 6, 12], scrolled: true)
     }
 }

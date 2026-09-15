@@ -95,8 +95,8 @@ The review also found a renderer bug. Axis labels were compacted to "K/M/B", whi
 
 ## Open items for the Owner (not changed)
 
-1. **ir-004: "4 to 6 quarters" is unsourced.** The cited Federal Reserve page gives no timeframe (checked 2026-09-15); it says only that effects arrive "over time". This is not proven wrong, so the text is unchanged. The graphic uses the definition's "quarters rather than weeks". Re-source it or remove the number.
-2. **British spellings in card text.**
+1. **ir-004: "4 to 6 quarters" is unsourced.** *Resolved in the 1.1.5 integration: the number was removed; see `2026-09-15-integration-fact-read.md`.* The cited Federal Reserve page gives no timeframe (checked 2026-09-15); it says only that effects arrive "over time". This is not proven wrong, so the text is unchanged. The graphic uses the definition's "quarters rather than weeks". Re-source it or remove the number.
+2. **British spellings in card text.** *Resolved in the 1.1.5 integration (US spellings); see `2026-09-15-integration-fact-read.md`.*
    - "labour" (sd-007)
    - "Petrol" (sd-008)
    - "organisation" (tt-005)

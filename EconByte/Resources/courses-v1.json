@@ -6187,7 +6187,7 @@
         "question": "A rule's twenty-year past record is strong. Why be cautious?",
         "choices": [
          "Twenty years is too short",
-         "Maybe a chance fit among many tested rules, before costs",
+         "Maybe a chance fit among many rules, ignoring trading costs",
          "Charting research is illegal",
          "Its past guarantees its future"
         ],
@@ -10928,7 +10928,7 @@
          "No breakeven; real yields can't be negative"
         ],
         "answerIndex": 1,
-        "explanation": "Breakeven is nominal minus real: 3.1 minus −0.4 equals 3.5 points. That spread is expected inflation plus an inflation risk premium minus a TIPS liquidity premium, and negative real yields are allowed."
+        "explanation": "Breakeven is nominal minus real: 3.1 minus −0.4 equals 3.5 points. Fed research splits that spread into expected inflation, an inflation risk premium and a TIPS liquidity premium, and TIPS auctions allow negative real yields."
        },
        "visual": {
         "type": "chart",
