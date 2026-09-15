@@ -92,7 +92,6 @@ final class ProPolishEvidenceTests: XCTestCase {
                 } else {
                     XCTFail("\(lessonID): no centerpiece found")
                 }
-                goToCover(app)
                 app.buttons["storyCloseButton"].tap()
             }
             app.buttons["courseCloseButton"].tap()
