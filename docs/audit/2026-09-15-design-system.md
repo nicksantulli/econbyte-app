@@ -153,3 +153,22 @@ footer, Sources & editorial policy, the brief's disclaimer and methodology.
 - **J4 No SE-size simulator** exists on this Mac (only iPhone 17, 17 Pro Max, an iPad and a Beat rebuild sim) and disk
   was below the floor for creating one; the AX5 walk on iPhone 17 is the small-space stress test instead.
 - **J5 Drawings cap text at xLarge** (fixed geometry); everything else scales to AX5.
+
+## 8. Story lessons (Part 2) — design notes
+
+- One idea per screen: `docs/content/STORY-SCHEMA-1.1.5.md`; 27 lessons → 653 beats, 32 quick checks, 439 beats with a
+  visual, ≤ 35 words per screen (Swift `CourseCatalog.validate`, `StoryLessonsTests`, `validate_content.mjs courses`).
+- Chrome per page: segmented progress bar (one segment per page) · course overline · close (44 pt) · the page
+  (scrolls if a large text size needs it) · Back (60 pt) + Next/Start/Continue/Next lesson/Done (`PrimaryButton`).
+- Taps: right two-thirds forward, left third back; swipes; an unanswered check ignores page taps (Next still works).
+- Visuals: the 14 lesson drawings, the 28 synthetic charts (caption becomes the VoiceOver description), and four
+  data-driven figures (`stat`, `flow`, `compare`, decorative `symbol`) drawn with the same tokens.
+
+## 9. Flip card scroll (merge contract with the Phase 20 card-graphics lane)
+
+The card face (`CardView.face`) is a fixed header (topic chip + bookmark), a body that **always** scrolls vertically —
+centred when shorter than the card, scrolling when taller — and a fixed footer ("Tap to flip"). The scroll view
+proposes unlimited height, so a card graphic is never squeezed or collapsed. The graphic hook goes first in the front
+face's body stack, above the concept title (`PHASE 20 GRAPHIC SLOT`). Card mode's swipe now follows only mostly
+horizontal drags (minimum 20 pt), leaving vertical drags to the card. `DesignSystemTests.testCardFaceAlwaysScrollsAndKeepsTheGraphicSlot`
+pins all three.
