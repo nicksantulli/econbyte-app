@@ -96,7 +96,7 @@ struct HomeTabView: View {
         let seen = daily.filter { content.cardStates[$0.id]?.lastSeen != nil }.count
         let completed = streak.didReachDailyGoalToday
         return VStack(alignment: .leading, spacing: EconSpace.s) {
-            HStack(spacing: EconSpace.xs) {
+            EconAdaptiveRow {
                 Image(systemName: completed ? "checkmark.seal.fill" : "rectangle.stack.fill")
                     .foregroundColor(completed ? EconColor.interactive : EconColor.accent)
                     .font(.title3)
@@ -152,7 +152,7 @@ struct HomeTabView: View {
         if let brief = briefs.latest {
             Button { router.selectedTab = .news } label: {
                 VStack(alignment: .leading, spacing: EconSpace.xs) {
-                    HStack(spacing: EconSpace.xs) {
+                    EconAdaptiveRow {
                         Image(systemName: "newspaper.fill")
                             .foregroundColor(EconColor.accent)
                             .accessibilityHidden(true)
@@ -216,7 +216,7 @@ struct HomeTabView: View {
                 router.openCourse(pick.course, at: isPro ? pick.next : nil)
             } label: {
                 VStack(alignment: .leading, spacing: EconSpace.s) {
-                    HStack(spacing: EconSpace.xs) {
+                    EconAdaptiveRow {
                         Image(systemName: "graduationcap.fill")
                             .foregroundColor(EconColor.accent)
                             .accessibilityHidden(true)

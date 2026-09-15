@@ -302,7 +302,7 @@ struct EconBadge: View {
             .padding(.vertical, 2)
             .background(background)
             .clipShape(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous))
-            .fixedSize()
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var background: Color {
@@ -310,6 +310,21 @@ struct EconBadge: View {
         case .accent: return EconColor.accent
         case .interactive: return EconColor.interactive
         case .quiet: return EconColor.surfaceRaised
+        }
+    }
+}
+
+/// A row that stacks vertically when its pieces no longer fit side by side —
+/// at the accessibility text sizes a header like icon + label + count would
+/// otherwise push its whole card wider than the screen.
+struct EconAdaptiveRow<Content: View>: View {
+    var spacing: CGFloat = EconSpace.xs
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: spacing, content: content)
+            VStack(alignment: .leading, spacing: spacing, content: content)
         }
     }
 }

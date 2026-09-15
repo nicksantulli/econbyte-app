@@ -189,6 +189,9 @@ struct EconHeaderBar: View {
                 .accessibilityIdentifier("econWordmark")
             Spacer(minLength: EconSpace.s)
             EconIconButton(systemImage: "gearshape", label: "Settings", action: onSettings)
+                // Bar chrome stops growing at xxxLarge so it never crowds the
+                // content; VoiceOver and Large Content Viewer still read it.
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 .accessibilityIdentifier("settingsGearButton")
         }
         .padding(.leading, EconSpace.gutter)

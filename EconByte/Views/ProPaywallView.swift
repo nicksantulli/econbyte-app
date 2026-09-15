@@ -188,7 +188,7 @@ struct ProPaywallContent<Interlude: View>: View {
                     .foregroundColor(isSelected ? EconColor.accent : EconColor.textTertiary)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: EconSpace.xxs) {
-                    HStack(spacing: EconSpace.xs) {
+                    EconAdaptiveRow {
                         Text(PlanCopy.planName(id))
                             .font(EconType.subheadlineEmphasis)
                             .foregroundColor(EconColor.textPrimary)

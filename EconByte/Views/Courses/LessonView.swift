@@ -93,6 +93,9 @@ struct LessonView: View {
             .padding(.leading, EconSpace.gutter)
             .padding(.trailing, EconSpace.xxs)
             .padding(.top, EconSpace.xs)
+            // Story chrome (progress, course name, close) caps at accessibility2
+            // so the beat itself keeps most of the screen at the largest sizes.
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
 
             GeometryReader { geo in
                 ScrollViewReader { proxy in
@@ -245,6 +248,7 @@ struct LessonView: View {
         .padding(.horizontal, EconSpace.gutter)
         .padding(.top, EconSpace.xs)
         .padding(.bottom, EconSpace.s)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .accessibilityValue(Text("Page \(page + 1) of \(lesson.pageCount)"))
     }
 }
