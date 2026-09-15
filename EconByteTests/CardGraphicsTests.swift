@@ -323,6 +323,8 @@ final class CardGraphicsTests: XCTestCase {
         let ns = normalized as NSString
         for match in regex.matches(in: normalized, range: NSRange(location: 0, length: ns.length)) {
             var raw = ns.substring(with: match.range(at: 1))
+            // "2025, trillion yuan": a trailing comma ends the number, so no scale word applies.
+            let hadTrailingComma = raw.hasSuffix(",")
             while raw.hasSuffix(",") { raw.removeLast() }
             let grouped = raw.range(of: #"^\d{1,3}(,\d{3})+(\.\d+)?$"#, options: .regularExpression) != nil
             if !grouped && raw.contains(",") {
@@ -331,7 +333,7 @@ final class CardGraphicsTests: XCTestCase {
             }
             guard let value = Double(raw.replacingOccurrences(of: ",", with: "")) else { continue }
             out.append(value)
-            if match.range(at: 3).location != NSNotFound {
+            if match.range(at: 3).location != NSNotFound, !hadTrailingComma {
                 let word = ns.substring(with: match.range(at: 3)).lowercased()
                 out.append(value * (wordNumbers[word] ?? 1))
             }
