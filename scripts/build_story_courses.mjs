@@ -32,7 +32,7 @@ export const CATALOG_META = {
   verifiedOn: '2026-09-14',
   disclaimer: 'Educational content only. EconByte does not provide financial, investment, or tax advice.',
   educationalNotice: 'Educational content only — not investment advice. Nothing here recommends any investment or predicts any price.',
-  editorialPolicy: 'Every lesson cites public primary sources (SEC/investor.gov, FINRA, Federal Reserve and Reserve Banks, Treasury and TreasuryDirect, NBER) with canonical https URLs re-verified on 2026-09-14. Lessons are told as short story beats, one idea per screen; the 1.1.5 conversion kept every fact of the audited 1.1.4 lessons. Charts plot clearly labeled synthetic series designed to show a mechanism; no real market data is shown anywhere.',
+  editorialPolicy: 'Every lesson cites public primary sources (SEC/investor.gov, FINRA, Federal Reserve and Reserve Banks, Treasury and TreasuryDirect, NBER) with canonical https URLs re-verified on 2026-09-14. Lessons are told as short story beats, one idea per screen; the 1.1.5 conversion kept every fact of the audited 1.1.4 lessons. Charts plot clearly labeled synthetic series designed to show a mechanism. Lesson graphics state what their numbers rest on: the lesson's own figures, a calculation from them, an illustration labeled as one, or, in a few bond lessons, a public Federal Reserve series via FRED with its source and period printed beneath it; no security price is ever plotted.',
 };
 
 export function lessonMinutes(lesson) {

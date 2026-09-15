@@ -138,7 +138,8 @@ async function checkCatalog(catalog, { lessonIDs = null, net = false, fragment =
   writeCatalog(tmp, catalog);
   const rep = validateCourses(tmp, { fragment: false });
   fs.rmSync(tmp, { force: true });
-  let errors = rep.errors, warnings = rep.warnings;
+  // Graphic spec errors are reported once, by checkLesson (which also re-resolves recipes).
+  let errors = rep.errors.filter((m) => !/: graphic /.test(m)), warnings = rep.warnings;
   if (lessonIDs) {
     // A fragment is judged on its own lessons; catalog-wide coverage is judged at merge.
     const mine = (m) => [...lessonIDs].some((id) => m.includes(`lesson ${id}`));
