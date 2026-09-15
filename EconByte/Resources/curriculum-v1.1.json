@@ -46,7 +46,7 @@
             "title": "Consumer prices vs a year earlier",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Labor Statistics)",
+              "organization": "FRED (data: U.S. Bureau of Labor Statistics)",
               "title": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average",
               "url": "https://fred.stlouisfed.org/series/CPIAUCSL",
               "period": "2019–2023, monthly",
@@ -2957,7 +2957,7 @@
             "title": "Participation fell from 63.3% to 60.1% in 2020",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Labor Statistics)",
+              "organization": "FRED (data: U.S. Bureau of Labor Statistics)",
               "title": "Labor Force Participation Rate",
               "url": "https://fred.stlouisfed.org/series/CIVPART",
               "period": "Jan 2016–Apr 2020, monthly, seasonally adjusted",
@@ -3517,7 +3517,7 @@
             "title": "Prime-age employment still below its 2000 level",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Labor Statistics)",
+              "organization": "FRED (data: U.S. Bureau of Labor Statistics)",
               "title": "Employment-Population Ratio - 25-54 Yrs.",
               "url": "https://fred.stlouisfed.org/series/LNS12300060",
               "period": "2000–2025, April of each year, seasonally adjusted",
@@ -3621,7 +3621,7 @@
             "title": "Same 5% rate: tight in 1978, some slack in 2026",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Congressional Budget Office)",
+              "organization": "FRED (data: U.S. Congressional Budget Office)",
               "title": "Noncyclical Rate of Unemployment",
               "url": "https://fred.stlouisfed.org/series/NROU",
               "period": "1978–2026, third-quarter values",
@@ -3864,7 +3864,7 @@
             "title": "A goods deficit, a services surplus, a net deficit",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Census Bureau and U.S. Bureau of Economic Analysis)",
+              "organization": "FRED (data: U.S. Census Bureau and U.S. Bureau of Economic Analysis)",
               "title": "Trade Balance: Goods and Services, Balance of Payments Basis; Trade Balance: Goods, Balance of Payments Basis; Trade Balance: Services, Balance of Payments Basis",
               "url": "https://fred.stlouisfed.org/series/BOPGSTB",
               "period": "1992–2025, annual average of monthly values",
@@ -4573,7 +4573,7 @@
             "title": "Mortgage rates in the first week of each January",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: Freddie Mac)",
+              "organization": "FRED (data: Freddie Mac)",
               "title": "30-Year Fixed Rate Mortgage Average in the United States",
               "url": "https://fred.stlouisfed.org/series/MORTGAGE30US",
               "period": "2015–2025, first weekly reading each January",
@@ -4701,7 +4701,7 @@
             "title": "Housing starts collapsed, 2006 to 2009",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Census Bureau)",
+              "organization": "FRED (data: U.S. Census Bureau)",
               "title": "New Privately-Owned Housing Units Started: Total Units",
               "url": "https://fred.stlouisfed.org/series/HOUST",
               "period": "Jan 2005–Dec 2009, monthly, seasonally adjusted annual rate",
@@ -5077,7 +5077,7 @@
             "title": "Homeownership rate, second quarter of each year",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Census Bureau)",
+              "organization": "FRED (data: U.S. Census Bureau)",
               "title": "Homeownership Rate in the United States",
               "url": "https://fred.stlouisfed.org/series/RHORUSQ156N",
               "period": "1970–2026, second quarter of each year, not seasonally adjusted",
@@ -5319,7 +5319,7 @@
             "title": "Residential investment as a share of GDP",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Economic Analysis)",
+              "organization": "FRED (data: U.S. Bureau of Economic Analysis)",
               "title": "Shares of gross domestic product: Gross private domestic investment: Fixed investment: Residential",
               "url": "https://fred.stlouisfed.org/series/A011RE1Q156NBEA",
               "period": "1990–2025, third quarter of each year",
@@ -6321,7 +6321,7 @@
             "title": "Unemployment kept rising after the trough",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Labor Statistics)",
+              "organization": "FRED (data: U.S. Bureau of Labor Statistics)",
               "title": "Unemployment Rate",
               "url": "https://fred.stlouisfed.org/series/UNRATE",
               "period": "Jan 2008–Dec 2010, monthly, seasonally adjusted",
@@ -6838,7 +6838,7 @@
             "title": "U.S. federal debt as a share of GDP",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Office of Management and Budget; Federal Reserve Bank of St. Louis)",
+              "organization": "FRED (data: U.S. Office of Management and Budget; Federal Reserve Bank of St. Louis)",
               "title": "Federal Debt: Total Public Debt as Percent of Gross Domestic Product",
               "url": "https://fred.stlouisfed.org/series/GFDEGDQ188S",
               "period": "2007–2026, last quarter of each year (2026: Q1)",
@@ -6899,8 +6899,7 @@
                   "label": "Q1 2026: ~123%"
                 }
               ]
-            },
-            "note": "Last quarter of each year; the 2026 point is the first quarter"
+            }
           }
         },
         {
@@ -7382,7 +7381,7 @@
             "title": "April federal surplus or deficit, 2015–2026",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Department of the Treasury, Fiscal Service)",
+              "organization": "FRED (data: U.S. Department of the Treasury, Fiscal Service)",
               "title": "Federal Surplus or Deficit [-]",
               "url": "https://fred.stlouisfed.org/series/MTSDS133FMS",
               "period": "2015–2026, April of each year",
@@ -7442,7 +7441,7 @@
                 }
               ]
             },
-            "note": "Not seasonally adjusted, so each point is April compared with April"
+            "note": "Not seasonally adjusted: April vs April"
           }
         },
         {
@@ -8260,7 +8259,7 @@
             "title": "The saving rate spiked when shops shut",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Economic Analysis)",
+              "organization": "FRED (data: U.S. Bureau of Economic Analysis)",
               "title": "Personal Saving Rate",
               "url": "https://fred.stlouisfed.org/series/PSAVERT",
               "period": "2019–2023, monthly",
@@ -8393,7 +8392,7 @@
             "title": "Retail sales fell roughly 14% in one month",
             "basis": "sourced",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Census Bureau)",
+              "organization": "FRED (data: U.S. Census Bureau)",
               "title": "Advance Retail Sales: Retail Trade and Food Services",
               "url": "https://fred.stlouisfed.org/series/RSAFS",
               "period": "2019–2021, monthly, seasonally adjusted",
@@ -10460,7 +10459,7 @@
             "basis": "sourced",
             "note": "The December jump and January drop are removed once adjusted",
             "source": {
-              "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Census Bureau)",
+              "organization": "FRED (data: U.S. Census Bureau)",
               "title": "Advance Retail Sales: Retail Trade and Food Services",
               "url": "https://fred.stlouisfed.org/series/RSAFSNA",
               "period": "Jan 2023–Dec 2024, monthly",

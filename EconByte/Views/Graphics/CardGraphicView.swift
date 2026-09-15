@@ -67,7 +67,8 @@ struct GraphicPlate: View {
                     .font(.system(.caption2, design: .rounded))
                     .italic()
                     .foregroundColor(palette.secondary)
-                    .lineLimit(size == .regular ? 3 : 2)
+                    // The footnote carries the basis and the card's hedges: never cut it short.
+                    .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }

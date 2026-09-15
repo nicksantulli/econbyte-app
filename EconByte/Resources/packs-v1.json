@@ -6894,7 +6894,7 @@
                 "title": "U.S. real GDP, 1929–1938",
                 "basis": "sourced",
                 "source": {
-                  "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Economic Analysis)",
+                  "organization": "FRED (data: U.S. Bureau of Economic Analysis)",
                   "title": "Real Gross Domestic Product",
                   "url": "https://fred.stlouisfed.org/series/GDPCA",
                   "period": "1929–1938, annual",
@@ -7421,7 +7421,7 @@
                 "title": "PCE inflation around the October 1979 switch",
                 "basis": "sourced",
                 "source": {
-                  "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Economic Analysis)",
+                  "organization": "FRED (data: U.S. Bureau of Economic Analysis)",
                   "title": "Personal Consumption Expenditures: Chain-type Price Index",
                   "url": "https://fred.stlouisfed.org/series/PCEPI",
                   "period": "Jan 1979–Dec 1983, monthly, 12-month change",
@@ -8011,7 +8011,7 @@
                 "title": "Unemployment rate in the Great Recession",
                 "basis": "sourced",
                 "source": {
-                  "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Labor Statistics)",
+                  "organization": "FRED (data: U.S. Bureau of Labor Statistics)",
                   "title": "Unemployment Rate",
                   "url": "https://fred.stlouisfed.org/series/UNRATE",
                   "period": "Dec 2007–Oct 2009, monthly",
@@ -8529,7 +8529,7 @@
                 "title": "Residential mortgage delinquency rate at banks",
                 "basis": "sourced",
                 "source": {
-                  "organization": "FRED, Federal Reserve Bank of St. Louis (data: Board of Governors of the Federal Reserve System)",
+                  "organization": "FRED (data: Board of Governors of the Federal Reserve System)",
                   "title": "Delinquency Rate on Single-Family Residential Mortgages, Booked in Domestic Offices, All Commercial Banks",
                   "url": "https://fred.stlouisfed.org/series/DRSFRMACBS",
                   "period": "Q1 2007–Q1 2010, quarterly, seasonally adjusted",
@@ -8636,9 +8636,9 @@
                 "kind": "line",
                 "title": "U.S. GDP at a seasonally adjusted annual rate",
                 "basis": "sourced",
-                "note": "Current dollars; each quarter scaled up to a yearly pace",
+                "note": "Current dollars",
                 "source": {
-                  "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Economic Analysis)",
+                  "organization": "FRED (data: U.S. Bureau of Economic Analysis)",
                   "title": "Gross Domestic Product",
                   "url": "https://fred.stlouisfed.org/series/GDP",
                   "period": "2016 Q1–2026 Q2, quarterly, seasonally adjusted annual rate",
@@ -8804,9 +8804,9 @@
                 "kind": "line",
                 "title": "U.S. unemployment rate, monthly",
                 "basis": "sourced",
-                "note": "Share of the labor force without a job, seasonally adjusted",
+                "note": "Share of the labor force without a job",
                 "source": {
-                  "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Labor Statistics)",
+                  "organization": "FRED (data: U.S. Bureau of Labor Statistics)",
                   "title": "Unemployment Rate",
                   "url": "https://fred.stlouisfed.org/series/UNRATE",
                   "period": "January 2022–August 2026, monthly, seasonally adjusted",
@@ -8932,9 +8932,9 @@
                 "kind": "line",
                 "title": "CPI inflation: change over 12 months",
                 "basis": "sourced",
-                "note": "All items, all urban consumers, not seasonally adjusted",
+                "note": "All items, all urban consumers",
                 "source": {
-                  "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Bureau of Labor Statistics)",
+                  "organization": "FRED (data: U.S. Bureau of Labor Statistics)",
                   "title": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average",
                   "url": "https://fred.stlouisfed.org/series/CPIAUCNS",
                   "period": "January 2022–August 2026, monthly, not seasonally adjusted",
@@ -9237,7 +9237,7 @@
                 "basis": "sourced",
                 "note": "Total public debt, including debt held by trust funds",
                 "source": {
-                  "organization": "FRED, Federal Reserve Bank of St. Louis (data: U.S. Office of Management and Budget)",
+                  "organization": "FRED (data: U.S. Office of Management and Budget)",
                   "title": "Federal Debt: Total Public Debt as Percent of Gross Domestic Product",
                   "url": "https://fred.stlouisfed.org/series/GFDEGDQ188S",
                   "period": "2016 Q1–2026 Q1, quarterly",
