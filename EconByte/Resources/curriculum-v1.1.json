@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "catalogVersion": "1.1",
-  "verifiedOn": "2026-08-30",
+  "verifiedOn": "2026-09-14",
   "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
   "editorialPolicy": "Every factual claim is traceable to a named institutional source with a canonical URL that was re-verified by following redirects to its final landing page, plus a publication or observation date and a verification date. Claims that could not be reproduced from a primary source were removed rather than estimated. Each card carries a concrete illustration alongside its definition. Content is educational and contains no financial, investment, or tax advice.",
   "topics": [
@@ -237,6 +237,118 @@
             "retrievalDate": "2026-08-30"
           },
           "supersedes": "econbyte-1.0:inf-008"
+        },
+        {
+          "cardID": "inf-009",
+          "topicID": "inflation",
+          "title": "Inflation Expectations",
+          "definition": "Inflation expectations are the rate of price increase people anticipate over a coming period. Surveys measure them by asking people directly and reporting a typical answer, such as the median. Because the answers describe beliefs, they can differ from the inflation that actually follows, and they can differ by how far ahead people are asked to look.",
+          "example": "The New York Fed puts its questions to a rotating panel of about 1,300 household heads, with members rotating in and out each month. In its August 2026 survey the median answer was 3.6 percent for the year ahead, 3.2 percent three years ahead, and 3.0 percent five years ahead: the median fell as the horizon lengthened.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of New York",
+            "documentTitle": "Survey of Consumer Expectations",
+            "url": "https://www.newyorkfed.org/microeconomics/sce",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (median expected inflation rate at one-, three-, and five-year-ahead horizons)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "August 2026 survey",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "inf-010",
+          "topicID": "inflation",
+          "title": "Two Price Indexes, Two Answers",
+          "definition": "The personal consumption expenditures (PCE) price index and the Consumer Price Index both track what consumers pay, but they are built differently. BEA sorts the gaps into four groups: a formula effect, a weight effect for how heavily each item counts, a scope effect, and other effects. On scope, PCE covers spending by and on behalf of households, while the CPI covers households' out-of-pocket spending.",
+          "example": "In the third quarter of 2006 the PCE price index rose at a 3.0 percent annual rate and the CPI at 3.7 percent. The weight effect alone added 0.84 point, more than the whole gap, with owner-occupied housing contributing 0.56 point. Hospital and nursing home services pulled the other way, by 0.36 point, because much of that spending falls outside the CPI's scope.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "What accounts for the differences in the PCE price index and the Consumer Price Index?",
+            "url": "https://www.bea.gov/help/faq/555",
+            "publicationDate": "2018-07-26",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent change at an annual rate, and percentage-point contributions to the gap",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "third quarter of 2006",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "inf-011",
+          "topicID": "inflation",
+          "title": "Trimmed-Mean Inflation",
+          "definition": "A trimmed-mean inflation rate sorts one month's price changes for every component of an index, from the largest fall to the largest rise, throws out a set share at both ends, and takes a weighted average of what is left. Unlike a measure that always drops food and energy, it removes whichever items are most extreme in that particular month.",
+          "example": "The Dallas Fed builds its version from the components of the PCE price index. It trims the 24 percent of spending weight with the lowest price changes and the 31 percent with the highest. Those two shares were chosen from historical data because they gave the closest fit to estimates of the underlying inflation trend.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of Dallas",
+            "documentTitle": "Series Description",
+            "url": "https://www.dallasfed.org/research/pce/descr",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of expenditure weight trimmed from the lower and upper tails",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "trimming shares as published by the Dallas Fed, retrieved 2026-09-14",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "inf-012",
+          "topicID": "inflation",
+          "title": "Base Effects",
+          "definition": "A 12-month inflation rate compares this month's price level with the level a year earlier, so it changes for two reasons: a new monthly price change enters the comparison, and the monthly change from a year ago drops out. A base effect is the second reason at work, when an unusually large or small month leaves the window.",
+          "example": "The not seasonally adjusted CPI jumped about 1.4 percent in the single month from May to June 2022. A year later that month fell out of the comparison, and the 12-month rate dropped from 4.0 percent in May 2023 to 3.0 percent in June 2023, even though prices still rose about 0.3 percent during June 2023 itself.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average (CPIAUCNS)",
+            "url": "https://fred.stlouisfed.org/series/CPIAUCNS",
+            "publicationDate": "2026-09-11",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (CPI-U, not seasonally adjusted; 1-month and 12-month changes computed from index levels)",
+            "geography": "United States, city average",
+            "claimKind": "observation",
+            "observationPeriod": "May and June of 2022 and 2023 index levels",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -451,6 +563,97 @@
             "retrievalDate": "2026-08-30"
           },
           "supersedes": "econbyte-1.0:ir-008"
+        },
+        {
+          "cardID": "ir-009",
+          "topicID": "interest-rates",
+          "title": "The Prime Rate",
+          "definition": "The prime rate is an interest rate each bank sets for itself. Many kinds of loans, including small business loans and credit card loans, use it as a reference, or base, rate. The Federal Reserve has no direct role in setting it, although many banks base their prime rate partly on the Fed's target for overnight bank lending.",
+          "example": "Look up the prime rate in the Fed's H.15 statistical release and you are reading a figure no Fed official chose. The Board simply reports the rate posted by the majority of the 25 largest banks, which decide it themselves, often with an eye on the target range the Federal Open Market Committee has set.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "What is the prime rate, and does the Federal Reserve set the prime rate?",
+            "url": "https://www.federalreserve.gov/faqs/credit_12846.htm",
+            "publicationDate": "2013-08-02",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ir-010",
+          "topicID": "interest-rates",
+          "title": "SOFR Replaces LIBOR",
+          "definition": "SOFR, the Secured Overnight Financing Rate, measures the cost of borrowing cash overnight when U.S. Treasury securities are pledged as collateral in the repurchase agreement, or repo, market. It replaced LIBOR as the dominant U.S. dollar benchmark written into financial contracts whose rates reset over time.",
+          "example": "LIBOR was not anchored in actual market activity, which left it open to manipulation. U.S. banking regulators told supervised firms to stop new LIBOR use as of December 31, 2021, and June 30, 2023 marked the end of all U.S. dollar LIBOR panel settings. SOFR, produced by the New York Fed, is drawn from transactions in the Treasury repo market.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of New York (Alternative Reference Rates Committee)",
+            "documentTitle": "Transition from LIBOR",
+            "url": "https://www.newyorkfed.org/arrc/sofr-transition",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ir-011",
+          "topicID": "interest-rates",
+          "title": "The Natural Rate of Interest",
+          "definition": "The natural rate of interest, often called r-star, is the inflation-adjusted short-term interest rate expected to prevail when an economy is at full strength and inflation is stable. No market quotes it, so it has to be estimated from economic data with a model, and the New York Fed publishes estimates from more than one.",
+          "example": "The New York Fed updates estimates from models published by Laubach and Williams in 2003 and by Holston, Laubach and Williams in 2017 and 2023. The 2003 model works from 3 series: real GDP, inflation, and the federal funds rate. The bank states that the estimates are not official forecasts of the Federal Reserve.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of New York",
+            "documentTitle": "Measuring the Natural Rate of Interest",
+            "url": "https://www.newyorkfed.org/research/policy/rstar",
+            "publicationDate": "2026-08-27",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ir-012",
+          "topicID": "interest-rates",
+          "title": "The Taylor Rule",
+          "definition": "The Taylor rule is a formula that prescribes a level for the Fed's policy rate from four inputs: the neutral inflation-adjusted rate for the longer run, inflation over the past four quarters, how far inflation sits from the 2 percent objective, and how far real GDP sits from its potential. Policymakers consult rules like it alongside other information rather than following one mechanically.",
+          "example": "The rule reads: rate = neutral rate + inflation + 0.5 x (inflation - 2) + 0.5 x output gap. With an illustrative neutral rate of 1 percent, inflation at 3 percent, and output 1 percent below potential, it gives 1 + 3 + 0.5 - 0.5 = 4 percent. Each extra point of inflation raises the prescription by 1.5 points, because inflation enters the formula twice.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Policy Rules and How Policymakers Use Them",
+            "url": "https://www.federalreserve.gov/monetarypolicy/policy-rules-and-how-policymakers-use-them.htm",
+            "publicationDate": "2018-03-08",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (illustrative inputs and prescribed policy rate)",
+            "geography": "United States",
+            "claimKind": "illustration",
+            "observationPeriod": "worked example using the Taylor rule as published by the Board, page last updated March 2018",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -665,6 +868,111 @@
             "reviewer": "EconByte editorial review (Dudley Development)"
           },
           "supersedes": "econbyte-1.0:gdp-008"
+        },
+        {
+          "cardID": "gdp-009",
+          "topicID": "gdp",
+          "title": "Value Added by Industry",
+          "definition": "Value added is an industry's contribution to GDP. BEA's industry statistics break the national total down this way, so a quarter's growth can be traced to government, to private goods-producing industries such as manufacturing, or to private services-producing industries.",
+          "example": "Real GDP grew at a 2.1 percent annual rate in the first quarter of 2026. By industry, BEA reported increases in real value added of 7.5 percent for government, 4.5 percent for private goods-producing industries, and 0.8 percent for private services-producing industries. These figures come out with the third estimate of GDP each quarter.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "GDP by Industry",
+            "url": "https://www.bea.gov/data/gdp/gdp-industry",
+            "publicationDate": "2026-06-25",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (real GDP at an annual rate; change in real value added by sector as reported by BEA)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "first quarter of 2026, third estimate released June 25, 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "gdp-010",
+          "topicID": "gdp",
+          "title": "Gross Domestic Income",
+          "definition": "Gross domestic income (GDI) measures the economy by adding up the incomes generated in producing output, while GDP adds up final spending. In principle the two totals are equal. In practice they are built from different source data, and the difference between them is called the statistical discrepancy.",
+          "example": "BEA features the spending-based GDP estimate, partly because its quarterly source data arrive sooner. The two still tell a similar story: BEA puts the correlation between their quarterly growth rates at 0.82 once each quarter's third estimate is in, and at 0.97 using annual data, where differences in the timing of when spending and income are recorded matter less.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "Why do gross domestic product (GDP) and gross domestic income (GDI) differ, and what does that imply?",
+            "url": "https://www.bea.gov/help/faq/484",
+            "publicationDate": "2018-07-26",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "gdp-011",
+          "topicID": "gdp",
+          "title": "Final Sales to Private Domestic Purchasers",
+          "definition": "Real final sales to private domestic purchasers is the sum of consumer spending and gross private fixed investment, adjusted for inflation. It sets aside the rest of GDP: government spending, net exports, and the change in private inventories. Setting it beside GDP shows how much of a quarter's result came from private domestic demand.",
+          "example": "In BEA's second estimate for the second quarter of 2026, released August 26, 2026, real GDP grew at a 1.5 percent annual rate while real final sales to private domestic purchasers grew 4.2 percent. The same release reported a decrease in government spending, one of the pieces the narrower measure leaves out.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "GDP (Second Estimate) and Corporate Profits, 2nd Quarter 2026",
+            "url": "https://www.bea.gov/news/2026/gdp-second-estimate-and-corporate-profits-2nd-quarter-2026",
+            "publicationDate": "2026-08-26",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent change at a seasonally adjusted annual rate (real GDP; real final sales to private domestic purchasers)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "second quarter of 2026, second estimate released August 26, 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "gdp-012",
+          "topicID": "gdp",
+          "title": "Potential GDP and the Output Gap",
+          "definition": "Potential GDP, as the Congressional Budget Office estimates it, is the real output the economy would produce with a high rate of use of its labor and capital. The output gap is actual real GDP minus potential GDP, expressed as a percentage of potential: positive when the economy runs above that level, negative when it runs below.",
+          "example": "Suppose real GDP is $23.5 trillion and potential GDP is $24.0 trillion, both in chained 2017 dollars. The gap is (23.5 - 24.0) / 24.0, about -2.1 percent: roughly $0.5 trillion of output that fuller use of labor and capital could have delivered. CBO's published series extends about a decade past the latest actual data, because potential GDP is projected as well as estimated.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Real Potential Gross Domestic Product (GDPPOT)",
+            "url": "https://fred.stlouisfed.org/series/GDPPOT",
+            "publicationDate": "2026-02-27",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "illustrative: trillions of chained 2017 dollars and percent of potential GDP",
+            "geography": "United States",
+            "claimKind": "illustration",
+            "observationPeriod": "illustrative quarter; CBO potential GDP series, February 2026 vintage, projected about ten years ahead",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -872,6 +1180,118 @@
             "reviewer": "EconByte editorial review (Dudley Development)"
           },
           "supersedes": "econbyte-1.0:sd-008"
+        },
+        {
+          "cardID": "sd-009",
+          "topicID": "supply-demand",
+          "title": "Shifts and Movements",
+          "definition": "Economists separate two kinds of change. When a good's own price changes, buyers move along the demand curve: the quantity they want changes, but the curve stays where it is. When something other than price changes what buyers want, the whole curve shifts, so they want a different quantity at every price. Supply works the same way.",
+          "example": "A cafe that raises a coffee from $4 to $5 and sells 170 cups a day instead of 200 has moved along its demand curve. In 2020, customers who stayed home to avoid the virus, or cut back after losing income, bought less at whatever price was on the board: that is the curve itself shifting.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis",
+            "documentTitle": "The Science of Supply and Demand",
+            "url": "https://www.stlouisfed.org/publications/page-one-economics/2021/03/01/the-science-of-supply-and-demand",
+            "publicationDate": "2021-03-01",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "illustrative: dollars per cup and cups per day",
+            "geography": "United States",
+            "claimKind": "illustration",
+            "observationPeriod": "illustrative cafe prices; 2020 pandemic demand factors as described by the St. Louis Fed",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "sd-010",
+          "topicID": "supply-demand",
+          "title": "Consumer and Producer Surplus",
+          "definition": "Consumer surplus is the gap between the most a buyer would be willing to pay and the price actually paid. Producer surplus is the gap between the price a seller receives and the lowest price that seller would accept. Added together they make total surplus: the gain both sides share from trading at the market price.",
+          "example": "Three buyers would pay $50, $35, and $22 for a ticket that sells for $20, so consumer surplus is 30 + 15 + 2 = $47. If each of 3 sellers would accept $12, producer surplus is 3 x 8 = $24, and total surplus is $71. At a price of $40 only the first buyer still buys, and total surplus shrinks to 10 + 28 = $38.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis",
+            "documentTitle": "Sold Fast: Price Tags and the Impact on Consumer and Producer Surplus",
+            "url": "https://www.stlouisfed.org/publications/page-one-economics/2025/feb/sold-fast-price-tags-impact-on-consumer-and-producer-surplus",
+            "publicationDate": "2025-02-10",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "illustrative: dollars per ticket",
+            "geography": "Illustrative market",
+            "claimKind": "illustration",
+            "observationPeriod": "illustrative ticket market (worked arithmetic)",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "sd-011",
+          "topicID": "supply-demand",
+          "title": "Normal and Inferior Goods",
+          "definition": "A normal good is one people buy more of when their income rises and less of when it falls. An inferior good works the other way: people buy more of it when their income falls and less when it rises. The label describes how buying responds to income. It says nothing about the quality of the product.",
+          "example": "A household whose weekly income drops from $1,200 to $900 might cut restaurant dinners from 3 a week to 1 and cook 2 more meals at home, spending more at the grocery store. For that household restaurant meals behave as a normal good and groceries as an inferior one, and the pattern can differ from one household to another.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of Richmond",
+            "documentTitle": "Inferior Goods (Jargon Alert, Region Focus, Summer 2009)",
+            "url": "https://www.richmondfed.org/-/media/richmondfedorg/publications/research/econ_focus/2009/summer/pdf/jargon_alert.pdf",
+            "publicationDate": "2014-12-16",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "illustrative: dollars of weekly income and meals per week",
+            "geography": "Illustrative household",
+            "claimKind": "illustration",
+            "observationPeriod": "illustrative household budget (worked arithmetic)",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "sd-012",
+          "topicID": "supply-demand",
+          "title": "Deadweight Loss",
+          "definition": "Deadweight loss is value lost to inefficiency: a gain that could have gone to someone and instead goes to no one. A tax can create it by stopping trades that buyers and sellers would otherwise have made. A trade that never happens pays no tax, so the lost gains do not reappear as government revenue either.",
+          "example": "A buyer values a used bike at $150 and the seller would part with it for $110, so a sale at $130 leaves each $20 better off. Add a $50 tax on the sale and no price works, because $150 cannot cover $110 plus $50. The bike stays put, the tax raises $0, and the $40 of lost gains is the deadweight loss.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of Richmond",
+            "documentTitle": "Deadweight Loss (Jargon Alert, Region Focus, Fall 2005)",
+            "url": "https://www.richmondfed.org/-/media/richmondfedorg/publications/research/econ_focus/2005/fall/pdf/jargon_alert.pdf",
+            "publicationDate": "2014-12-16",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "illustrative: dollars (valuations, cost, tax, and lost gains)",
+            "geography": "Illustrative market",
+            "claimKind": "illustration",
+            "observationPeriod": "illustrative single sale (worked arithmetic)",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -1079,6 +1499,118 @@
             "reviewer": "EconByte editorial review (Dudley Development)"
           },
           "supersedes": "econbyte-1.0:lm-008"
+        },
+        {
+          "cardID": "lm-009",
+          "topicID": "labor-markets",
+          "title": "U-6 and Other Measures",
+          "definition": "BLS publishes six measures of labor underutilization, U-1 through U-6, and the official rate is U-3. The broadest, U-6, adds people marginally attached to the labor force, who want and are available for a job and have looked in the past 12 months but are not looking now, and people working part time for economic reasons, who want full-time work.",
+          "example": "In August 2026 U-3 was 4.1 percent and U-6 was 7.7 percent, both seasonally adjusted. The 3.6-point difference reflects people the official rate either leaves out, because they are not searching, or counts as employed even though they have had to settle for a part-time schedule.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Table A-15. Alternative measures of labor underutilization",
+            "url": "https://www.bls.gov/news.release/empsit.t15.htm",
+            "publicationDate": "2026-09-04",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent, seasonally adjusted (U-3: share of the civilian labor force; U-6: share of the labor force plus all marginally attached)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "August 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "lm-010",
+          "topicID": "labor-markets",
+          "title": "Job Openings and Quits",
+          "definition": "The Job Openings and Labor Turnover Survey tracks job openings, hires, and separations reported by employers. An opening is a position still open on the last business day of the month, while hires and separations count every change to payrolls during the month. Quits are the separations that employees generally choose themselves.",
+          "example": "In July 2026, seasonally adjusted, there were 7.3 million job openings, a rate of 4.4 percent, alongside 5.1 million hires. Quits numbered 3.1 million, a rate of 1.9 percent. Openings are positions still waiting to be filled at the end of the month, so the same month can show millions of openings and millions of hires.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Job Openings and Labor Turnover Summary",
+            "url": "https://www.bls.gov/news.release/jolts.nr0.htm",
+            "publicationDate": "2026-09-01",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "number (millions) and rate (percent), total nonfarm, seasonally adjusted",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "July 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "lm-011",
+          "topicID": "labor-markets",
+          "title": "The Prime-Age Employment Rate",
+          "definition": "The prime-age employment-population ratio is the share of people aged 25 to 54 who have a job. Because it covers the prime working years, it is less affected by the ages at which people finish school or retire. Because it counts everyone in the age group, it needs no judgment about who is searching for work.",
+          "example": "In April 2000, 81.9 percent of people aged 25 to 54 were employed. The share fell to 69.6 percent in April 2020 and was back to 80.4 percent by August 2026, all seasonally adjusted, so a quarter-century later the ratio still sat below its April 2000 level.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Employment-Population Ratio - 25-54 Yrs. (LNS12300060)",
+            "url": "https://fred.stlouisfed.org/series/LNS12300060",
+            "publicationDate": "2026-09-04",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of the population aged 25 to 54, seasonally adjusted",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "April 2000, April 2020, and August 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "lm-012",
+          "topicID": "labor-markets",
+          "title": "The Natural Rate of Unemployment",
+          "definition": "The natural rate of unemployment, also called the NAIRU, is the unemployment rate arising from all sources except swings in overall demand. The Congressional Budget Office estimates it under the name noncyclical rate of unemployment. When actual unemployment runs above that estimate, the excess is attributed to weak demand.",
+          "example": "CBO's estimate is about 6.2 percent for 1978 and about 4.4 percent for the third quarter of 2026. An unemployment rate of 5 percent would therefore have been below the estimate in 1978, a tight labor market, and above it in 2026, a labor market with some slack.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Noncyclical Rate of Unemployment (NROU)",
+            "url": "https://fred.stlouisfed.org/series/NROU",
+            "publicationDate": "2026-02-27",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (CBO noncyclical rate of unemployment), with an illustrative 5 percent comparison",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "1978 and the third quarter of 2026 (CBO February 2026 vintage)",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -1293,6 +1825,104 @@
             "reviewer": "EconByte editorial review (Dudley Development)"
           },
           "supersedes": "econbyte-1.0:tt-008"
+        },
+        {
+          "cardID": "tt-009",
+          "topicID": "trade-tariffs",
+          "title": "Most-Favored-Nation Treatment",
+          "definition": "Most-favored-nation treatment is the WTO rule against playing favorites between trading partners. A member that grants one partner a better deal, such as a lower customs duty on a product, must normally give the same deal to every other WTO member.",
+          "example": "The rule is the first article of the General Agreement on Tariffs and Trade, and it also appears in Article 2 of the services agreement and Article 4 of the intellectual property agreement. Exceptions are allowed under strict conditions, such as free trade agreements and special access for developing countries.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "World Trade Organization",
+            "documentTitle": "Understanding the WTO: Principles of the Trading System",
+            "url": "https://www.wto.org/english/thewto_e/whatis_e/tif_e/fact2_e.htm",
+            "publicationDate": "2018-12-17",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "tt-010",
+          "topicID": "trade-tariffs",
+          "title": "Anti-Dumping Duties",
+          "definition": "Dumping is a form of international price discrimination: a product is sold in an importing country for less than its normal value, which is generally the price of that product in the exporter's own market. Setting the two prices side by side fairly takes several analytical steps, so a finding of dumping comes from an investigation rather than a glance at two price tags.",
+          "example": "Article VI of GATT 1994 lets a WTO member charge an anti-dumping duty on imports from a particular source even above its bound tariff rate, but only after an investigation finds dumping, injury to the domestic industry making the like product, and a causal link between the two. Such duties normally end no later than 5 years after they are first applied, unless a review finds that removing them would likely lead dumping and injury to continue or recur.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "World Trade Organization",
+            "documentTitle": "WTO | Anti-dumping - Technical Information",
+            "url": "https://www.wto.org/english/tratop_e/adp_e/adp_info_e.htm",
+            "publicationDate": "2017-08-18",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "tt-011",
+          "topicID": "trade-tariffs",
+          "title": "The Current Account",
+          "definition": "The current account is broader than the trade balance. It records trade in goods and services plus two income flows: primary income, which is earned income, and secondary income. Its balance nets all four, so it can move differently from the balance on goods alone.",
+          "example": "BEA's revised fourth quarter of 2025 adds up exactly: goods -$259.4 billion, services +$82.1 billion, primary income +$3.4 billion and secondary income -$47.2 billion, a current account of -$221.1 billion. In the first quarter of 2026 the deficit widened even as the goods deficit shrank, because primary income swung to a deficit.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "U.S. International Transactions and Investment Position, 1st Quarter 2026 and Annual Update",
+            "url": "https://www.bea.gov/news/2026/us-international-transactions-and-investment-position-1st-quarter-2026-and-annual-update",
+            "publicationDate": "2026-06-24",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "billions of U.S. dollars, seasonally adjusted (quarterly current-account balances)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "fourth quarter of 2025 (revised estimates) and first quarter of 2026, published 24 June 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "tt-012",
+          "topicID": "trade-tariffs",
+          "title": "The Net International Investment Position",
+          "definition": "The net international investment position is a stock, not a flow: the foreign financial assets a country's residents hold minus their liabilities to foreign residents, measured at a point in time. It changes through new cross-border transactions and also through price and exchange-rate changes on existing holdings.",
+          "example": "At the end of the first quarter of 2026 U.S. residents held $43.37 trillion of foreign financial assets and owed $64.64 trillion, a net position of -$21.27 trillion. That was less negative than the -$21.87 trillion a quarter earlier despite net borrowing of $209.0 billion: price changes cut U.S. liabilities by $1.18 trillion.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "U.S. Bureau of Economic Analysis",
+            "documentTitle": "U.S. International Transactions and Investment Position, 1st Quarter 2026 and Annual Update",
+            "url": "https://www.bea.gov/news/2026/us-international-transactions-and-investment-position-1st-quarter-2026-and-annual-update",
+            "publicationDate": "2026-06-24",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (end-of-quarter international investment positions and first-quarter changes)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "end of fourth quarter 2025 and end of first quarter 2026, published 24 June 2026",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -1514,6 +2144,118 @@
             "retrievalDate": "2026-08-30"
           },
           "supersedes": "econbyte-1.0:hm-008"
+        },
+        {
+          "cardID": "hm-009",
+          "topicID": "housing-market",
+          "title": "The Homeownership Rate",
+          "definition": "The homeownership rate is the share of households that live in a home they own. The Census Bureau publishes it every quarter in its Housing Vacancies and Homeownership release. It counts households, not people or houses, so it moves when new households form as well as when homes are bought.",
+          "example": "The rate reached 69.2 percent in the second and fourth quarters of 2004, then fell to 62.9 percent in the second quarter of 2016 - matching the lowest reading in the series, first set in 1965. It stood at 65.0 percent in the second quarter of 2026.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Homeownership Rate in the United States (RHORUSQ156N)",
+            "url": "https://fred.stlouisfed.org/series/RHORUSQ156N",
+            "publicationDate": "2026-07-28",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of households (quarterly, not seasonally adjusted)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "2004 Q2 and Q4; 2016 Q2; 1965 Q1-Q2; 2026 Q2",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "hm-010",
+          "topicID": "housing-market",
+          "title": "Repeat-Sales Price Indexes",
+          "definition": "A repeat-sales index tracks house prices using properties that sold, or were refinanced, more than once, so each home is compared with itself. That holds quality roughly constant, while an average or median sale price also moves when the kind of homes that happen to sell changes.",
+          "example": "FHFA builds its index from single-family homes with conforming, conventional mortgages bought or securitized by Fannie Mae or Freddie Mac, back to 1975, and restricts data on condominiums, cooperatives, multi-unit properties and planned unit developments. Illustratively, a house bought for $200,000 and resold for $260,000 records a 30 percent rise for that pair.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Housing Finance Agency",
+            "documentTitle": "FHFA House Price Index Frequently Asked Questions",
+            "url": "https://www.fhfa.gov/faqs/hpi",
+            "publicationDate": "2026-09-11",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (illustrative price change on one repeat-sale pair)",
+            "geography": "United States",
+            "claimKind": "illustration",
+            "observationPeriod": "illustrative pair of sales; FHFA sample coverage as described on the page (transactions since 1975)",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "hm-011",
+          "topicID": "housing-market",
+          "title": "Months' Supply of New Homes",
+          "definition": "Months' supply divides the number of new houses for sale by the monthly pace of new-house sales. It answers a simple question: at the latest selling rate, how many months would the homes on the market last? The figure climbs when unsold inventory piles up faster than buyers take it.",
+          "example": "The seasonally adjusted figure was 4.1 months in March 2005 and 12.2 months in January 2009, the highest in a series that begins in 1963. In July 2026 it read 9.6 months.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Monthly Supply of New Houses in the United States (MSACSR)",
+            "url": "https://fred.stlouisfed.org/series/MSACSR",
+            "publicationDate": "2026-08-25",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "months' supply (monthly, seasonally adjusted)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "March 2005, January 2009, July 2026; series from January 1963",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "hm-012",
+          "topicID": "housing-market",
+          "title": "Housing's Share of GDP",
+          "definition": "Residential fixed investment is the housing part of private investment in the national accounts. Measured as a share of GDP, it shows how much of the economy's spending goes into housing, and it can swing far more than the economy as a whole.",
+          "example": "BEA's share stood at 6.7 percent of GDP in the third and fourth quarters of 2005 and was 2.4 percent in every quarter from the third quarter of 2010 through the third quarter of 2011 - a fall of almost two-thirds in the share. It was 3.6 percent in the second quarter of 2026.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Shares of gross domestic product: Gross private domestic investment: Fixed investment: Residential (A011RE1Q156NBEA)",
+            "url": "https://fred.stlouisfed.org/series/A011RE1Q156NBEA",
+            "publicationDate": "2026-08-26",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of GDP (residential fixed investment share, quarterly)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "2005 Q3-Q4; 2010 Q3 through 2011 Q3; 2026 Q2",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -1735,6 +2477,104 @@
             "reviewer": "EconByte editorial review (Dudley Development)"
           },
           "supersedes": "econbyte-1.0:cb-008"
+        },
+        {
+          "cardID": "cb-009",
+          "topicID": "central-banks",
+          "title": "Reserve Requirements Set to Zero",
+          "definition": "A reserve requirement obliges banks to hold a set share of certain deposits as vault cash or in an account at a Reserve Bank. The Federal Reserve Board cut every reserve requirement ratio to zero effective 26 March 2020, which ended the requirement for all depository institutions.",
+          "example": "Before the change, net transaction accounts above a small exempt amount carried a 3 percent ratio up to the low reserve tranche and 10 percent beyond it. The Board estimated that the action, announced on 15 March 2020, cut required reserves by about $200 billion.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Reserve Requirements",
+            "url": "https://www.federalreserve.gov/monetarypolicy/reservereq.htm",
+            "publicationDate": "2026-02-26",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (reserve requirement ratios) and U.S. dollars (estimated reduction in required reserves)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "ratios in effect before 26 March 2020; change announced 15 March 2020",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "cb-010",
+          "topicID": "central-banks",
+          "title": "Interest on Reserve Balances",
+          "definition": "Banks keep balances in accounts at the Federal Reserve Banks, and the Reserve Banks pay interest on those balances. The Board sets the rate, called the IORB rate, and it is one of the policy settings that support the FOMC's target range for its overnight policy rate.",
+          "example": "The power came from the Financial Services Regulatory Relief Act of 2006, which set it to start on 1 October 2011. The Emergency Economic Stabilization Act of 2008 moved the start to 1 October 2008, and the Board announced on 6 October 2008 that it would begin paying interest on reserves.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Interest on Reserve Balances",
+            "url": "https://www.federalreserve.gov/monetarypolicy/reserve-balances.htm",
+            "publicationDate": "2026-07-16",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "cb-011",
+          "topicID": "central-banks",
+          "title": "The Dot Plot",
+          "definition": "The dot plot is a chart in the Fed's quarterly Summary of Economic Projections. Each dot is one FOMC participant's assumption about the appropriate level of the policy rate at the end of each projection year and in the longer run, so the chart shows how far views differ as well as where they cluster.",
+          "example": "The Summary was first published on 20 November 2007, as an addendum to FOMC minutes. Participants' rate assumptions, and the chart informally known as the dot plot, were added on 25 January 2012; median projections followed on 17 September 2015.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Timeline: Summary of Economic Projections",
+            "url": "https://www.federalreserve.gov/monetarypolicy/timeline-summary-of-economic-projections.htm",
+            "publicationDate": "2019-02-22",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "cb-012",
+          "topicID": "central-banks",
+          "title": "Overnight Reverse Repos",
+          "definition": "In an overnight reverse repurchase agreement the New York Fed sells a Treasury security to an eligible counterparty and agrees to buy it back the next day. For that night the counterparty has in effect lent cash to the Fed, and such operations drain reserves and influence day-to-day trading in the federal funds market.",
+          "example": "Daily take-up was zero on 17 March 2021 and reached $2,553.716 billion on 30 December 2022 - about $2.55 trillion placed with the Fed for a single night.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Overnight Reverse Repurchase Agreements: Treasury Securities Sold by the Federal Reserve in the Temporary Open Market Operations (RRPONTSYD)",
+            "url": "https://fred.stlouisfed.org/series/RRPONTSYD",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "billions of U.S. dollars (daily total, not seasonally adjusted)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "17 March 2021 and 30 December 2022",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -1970,6 +2810,111 @@
             "retrievalDate": "2026-08-30"
           },
           "supersedes": "econbyte-1.0:rec-008"
+        },
+        {
+          "cardID": "rec-009",
+          "topicID": "recessions",
+          "title": "Short Contractions, Long Expansions",
+          "definition": "In the U.S. record, downturns have usually been much shorter than the growth periods between them. The NBER's chronology lets the pattern be measured: averages over many cycles show contractions lasting months and expansions lasting years, even though single cycles vary widely.",
+          "example": "For the cycles NBER groups as 1945 to 2020, contractions averaged 10.3 months and expansions 64.2 months; across 1854 to 2020 the averages were 17.0 and 41.4 months. The longest contraction since 1945 ran 18 months, from December 2007 to June 2009.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "National Bureau of Economic Research",
+            "documentTitle": "US Business Cycle Expansions and Contractions",
+            "url": "https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions",
+            "publicationDate": "2023-03-14",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "months (average and individual cycle durations)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "NBER averages for 1945-2020 and 1854-2020; December 2007 to June 2009 contraction",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "rec-010",
+          "topicID": "recessions",
+          "title": "The Chicago Fed National Activity Index",
+          "definition": "The Chicago Fed National Activity Index is a weighted average of 85 monthly indicators of economic activity, drawn from four groups: production and income; employment, unemployment and hours; personal consumption and housing; and sales, orders and inventories. A reading of zero has historically gone with growth at its average pace, and negative readings, in standard deviation units, with below-average growth.",
+          "example": "Single months are volatile, so the bank also publishes a three-month moving average, the CFNAI-MA3. Historically, contractions have gone with CFNAI-MA3 values below -0.70 and expansions with values above it. Suppose three monthly readings are -0.40, -0.80 and -1.10: they average -0.77, below that line, even though the first month on its own was well above it.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of Chicago",
+            "documentTitle": "Chicago Fed National Activity Index: About the CFNAI",
+            "url": "https://www.chicagofed.org/research/data/cfnai/about",
+            "publicationDate": "2022-01-05",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "rec-011",
+          "topicID": "recessions",
+          "title": "The Sahm Rule",
+          "definition": "The Sahm rule flags the start of a recession when the three-month average unemployment rate rises 0.50 percentage points or more above its lowest three-month average of the prior 12 months. It relies on one monthly series, so it is quick to read but is a rule of thumb, not an official dating.",
+          "example": "In the real-time version on FRED the reading rose from 0.40 in December 2007 to 0.50 in April 2008 and 2.07 by December 2008. It also reached 0.53 in July 2024 and 0.57 in August, then eased to 0.43 by October 2024 - a signal to examine, not a verdict.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Real-time Sahm Rule Recession Indicator (SAHMREALTIME)",
+            "url": "https://fred.stlouisfed.org/series/SAHMREALTIME",
+            "publicationDate": "2026-09-04",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percentage points (real-time Sahm rule indicator, monthly, seasonally adjusted)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "December 2007, April 2008, December 2008; July, August and October 2024",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "rec-012",
+          "topicID": "recessions",
+          "title": "The Anxious Index",
+          "definition": "The anxious index is the probability that professional forecasters in the Philadelphia Fed's quarterly survey attach to a fall in real GDP in the quarter after the survey. It turns a panel's judgment into one number that often rises just before recessions and eases when recovery seems near.",
+          "example": "In the survey taken in February 2001 the index was 32 percent, shortly before the 2001 recession; by the second quarter of 2002 it had fallen to 14 percent. The third-quarter 2026 survey put the probability of a fall in real GDP in the fourth quarter of 2026 at 20.0 percent.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of Philadelphia",
+            "documentTitle": "The Anxious Index: Survey of Professional Forecasters",
+            "url": "https://www.philadelphiafed.org/surveys-and-data/real-time-data-research/anxious-index",
+            "publicationDate": "2026-08-14",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (probability of a decline in real GDP in the following quarter)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "2001 Q1 survey (February 2001); 2002 Q2 survey; 2026 Q3 survey",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -2205,6 +3150,118 @@
             "retrievalDate": "2026-08-30"
           },
           "supersedes": "econbyte-1.0:dd-008"
+        },
+        {
+          "cardID": "dd-009",
+          "topicID": "debt-deficits",
+          "title": "The Primary Deficit",
+          "definition": "The primary deficit is the budget gap with interest left out: spending on everything except interest, minus revenue. Setting interest aside separates the cost of running programs in a given year from the cost of carrying what was borrowed in earlier years.",
+          "example": "Illustratively, a government that spends $7.0 trillion, including $1.0 trillion of interest, and collects $5.2 trillion has a total deficit of $1.8 trillion but a primary deficit of $0.8 trillion. If interest rose to $1.2 trillion with nothing else changed, only the total gap would widen, to $2.0 trillion.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis",
+            "documentTitle": "Does the National Debt Matter?",
+            "url": "https://www.stlouisfed.org/publications/regional-economist/fourth-quarter-2020/does-national-debt-matter",
+            "publicationDate": "2020-12-04",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (illustrative annual budget figures)",
+            "geography": "United States",
+            "claimKind": "illustration",
+            "observationPeriod": "illustrative single budget year",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "dd-010",
+          "topicID": "debt-deficits",
+          "title": "Extraordinary Measures",
+          "definition": "Extraordinary measures are steps the Treasury Secretary is authorized to take once the statutory ceiling is reached, such as pausing investment of certain federal funds held in special Treasury securities, so the government can keep paying its obligations while Congress deliberates on raising the debt limit.",
+          "example": "Treasury's description dated 17 January 2025 lists 5 measures. Suspending reinvestment of the federal employees' G Fund, then about $298 billion, frees room at once, and the G Fund is made whole after the impasse. The measures only buy time: once they run out, payments across government are limited.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury",
+            "documentTitle": "Description of the Extraordinary Measures",
+            "url": "https://home.treasury.gov/system/files/136/DescriptionofExtraordinaryMeasures20250117.pdf",
+            "publicationDate": "2025-01-17",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (approximate G Fund balance) and count of measures",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "as of 17 January 2025",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "dd-011",
+          "topicID": "debt-deficits",
+          "title": "Monthly Surpluses and Deficits",
+          "definition": "The federal budget result is reported every month in the Monthly Treasury Statement, and a single fiscal year can swing between monthly surpluses and deficits. The monthly figures are not seasonally adjusted, so a month is read most fairly against the same month in other years.",
+          "example": "In FRED's series of Monthly Treasury Statement data, April showed a surplus in 10 of the 12 years from 2015 to 2026, including $258.4 billion in April 2025 and $215.0 billion in April 2026; the exceptions were 2020 and 2021. July 2026 alone ran a deficit of $432.3 billion.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Federal Surplus or Deficit [-] (MTSDS133FMS)",
+            "url": "https://fred.stlouisfed.org/series/MTSDS133FMS",
+            "publicationDate": "2026-09-11",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (monthly federal surplus or deficit, not seasonally adjusted)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "April of each year 2015-2026; July 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "dd-012",
+          "topicID": "debt-deficits",
+          "title": "Interest Rates Versus Growth",
+          "definition": "Debt measured against GDP depends on the primary budget balance and on r, the average interest rate on the debt, versus g, the economy's nominal growth rate. When r is below g, interest adds to debt more slowly than GDP grows, so a steady primary shortfall can persist while the ratio levels off; when r is above g, the same shortfall keeps the ratio climbing.",
+          "example": "Illustratively, start with debt equal to 100 percent of GDP and a balanced primary budget. With a 3 percent nominal interest rate and 4 percent nominal growth, a year later debt is 103 against GDP of 104, about 99.0 percent. Swap the rates and the ratio rises to about 101.0 percent.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis",
+            "documentTitle": "Does the National Debt Matter?",
+            "url": "https://www.stlouisfed.org/publications/regional-economist/fourth-quarter-2020/does-national-debt-matter",
+            "publicationDate": "2020-12-04",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of GDP (illustrative debt ratios)",
+            "geography": "United States and general comparison",
+            "claimKind": "illustration",
+            "observationPeriod": "illustrative one-year calculation",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -2425,6 +3482,111 @@
             "observationPeriod": "structural illustration of partial exchange rate pass-through",
             "retrievalDate": "2026-08-30"
           }
+        },
+        {
+          "cardID": "fx-009",
+          "topicID": "exchange-rates",
+          "title": "Appreciation and Depreciation",
+          "definition": "A currency appreciates when it buys more of another currency than before and depreciates when it buys less. Every move is both at once, since one currency's rise is the other's fall, but the two percentage changes start from different bases, so they are never the same size.",
+          "example": "If the euro goes from $1.00 to $1.25, the euro has appreciated 25 percent against the dollar. Turned around, the dollar has gone from 1 euro to 0.80 euro, a depreciation of 20 percent. One move, 2 correct percentages, and a headline can quote either.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "U.S. Dollars to Euro Spot Exchange Rate (DEXUSEU)",
+            "url": "https://fred.stlouisfed.org/series/DEXUSEU",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars per euro and percent (illustrative appreciation and depreciation)",
+            "geography": "United States and euro area",
+            "claimKind": "illustration",
+            "observationPeriod": "structural illustration of one exchange rate move expressed from both sides",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "fx-010",
+          "topicID": "exchange-rates",
+          "title": "Foreign Exchange Intervention",
+          "definition": "Foreign exchange intervention is official buying or selling of currencies to influence an exchange rate. To support its own currency, an authority buys it and sells foreign currency; to weaken it, the authority sells its own currency and buys foreign currency instead.",
+          "example": "In the United States the Treasury or the FOMC directs intervention and the New York Fed carries it out. After the Bretton Woods system broke down in 1971, U.S. authorities used intervention to damp volatility and signal their views; since the mid-1990s they have intervened only on occasion.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of New York",
+            "documentTitle": "Foreign Exchange Operations",
+            "url": "https://www.newyorkfed.org/markets/international-market-operations/foreign-exchange-operations",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fx-011",
+          "topicID": "exchange-rates",
+          "title": "Real Exchange Rates",
+          "definition": "A real exchange rate adjusts a market exchange rate for differences in inflation between countries. If the market rate holds steady while prices rise faster abroad than at home, the home currency has depreciated in real terms: its goods have become relatively cheaper for foreign buyers.",
+          "example": "Suppose the dollar trades at an unchanged rate for a year while U.S. consumer prices rise 2 percent and a partner's rise 5 percent. In real terms the dollar has fallen about 2.9 percent, since 1.02 divided by 1.05 is about 0.971. The Fed publishes real versions of its broad dollar indexes, adjusted using consumer price indexes.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Foreign Exchange Rates - H.10 - Nominal/Real Indexes",
+            "url": "https://www.federalreserve.gov/releases/h10/summary/",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (illustrative inflation rates and real exchange rate change)",
+            "geography": "United States and a trading partner",
+            "claimKind": "illustration",
+            "observationPeriod": "structural illustration of a one-year real exchange rate change",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "fx-012",
+          "topicID": "exchange-rates",
+          "title": "Reserve Currencies",
+          "definition": "Central banks hold official foreign exchange reserves in other countries' currencies, and the IMF's COFER data record that currency mix worldwide. Because the holdings are valued in U.S. dollars, a currency's share can rise simply because its exchange rate rose, with no new buying at all.",
+          "example": "In 2025 the dollar held about 57 percent of global foreign exchange reserves and the euro about 20 percent, measured at constant exchange rates. At market prices the euro's share rose 1.6 percentage points, and the ECB found that the euro's appreciation against the dollar explains almost all of that rise.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "European Central Bank",
+            "documentTitle": "The international role of the euro, June 2026",
+            "url": "https://www.ecb.europa.eu/press/other-publications/ire/html/ecb.ire202606.en.html",
+            "publicationDate": "2026-06-02",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of global official foreign exchange reserves (currency shares at constant exchange rates) and percentage points (euro share change at market prices)",
+            "geography": "Global",
+            "claimKind": "observation",
+            "observationPeriod": "2025 (ECB report published 2 June 2026)",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -2638,6 +3800,118 @@
             "observationPeriod": "index composition as published by The Conference Board (as published on 2026-08-30)",
             "retrievalDate": "2026-08-30"
           }
+        },
+        {
+          "cardID": "cs-009",
+          "topicID": "consumer-spending",
+          "title": "Services and Goods",
+          "definition": "BEA divides personal consumption expenditures, the total that households spend, into goods and services such as housing, health care, and transportation. Spending on services has grown faster than the economy over most of the period since 1947, so its share of GDP has nearly doubled.",
+          "example": "Household spending on services was 24.9 percent of U.S. GDP in the first quarter of 1947 and 46.8 percent in the second quarter of 2026. Factories and shopping get the attention, but by 2026 that one line of the national accounts was close to half of GDP.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Shares of gross domestic product: Personal consumption expenditures: Services (DSERRE1Q156NBEA)",
+            "url": "https://fred.stlouisfed.org/series/DSERRE1Q156NBEA",
+            "publicationDate": "2026-08-26",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of GDP (personal consumption expenditures on services, quarterly share)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "Q1 1947 and Q2 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "cs-010",
+          "topicID": "consumer-spending",
+          "title": "Pay-Later Installment Loans",
+          "definition": "A pay-later installment loan lets a shopper take a purchase and repay it in 4 installments, the first usually a down payment on the purchase. The loans are typically interest-free, but a missed payment can bring late fees, and each one is still a debt.",
+          "example": "The 5 firms the CFPB surveyed made 180 million such loans totaling over $24 billion in 2021, close to 10 times the 2019 level, and most loans ran from $50 to $1,000. The CFPB noted that most of these lenders did not report the loans to the major credit reporting companies, leaving other lenders unaware of them.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Consumer Financial Protection Bureau",
+            "documentTitle": "CFPB Study Details the Rapid Growth of \u201cBuy Now, Pay Later\u201d Lending",
+            "url": "https://www.consumerfinance.gov/about-us/newsroom/cfpb-study-details-the-rapid-growth-of-buy-now-pay-later-lending/",
+            "publicationDate": "2022-09-15",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "count of loans and U.S. dollars originated by five surveyed lenders; U.S. dollars per loan (typical range)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "2021 originations compared with 2019 (CFPB report of 15 September 2022)",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "cs-011",
+          "topicID": "consumer-spending",
+          "title": "Spending a One-Time Payment",
+          "definition": "The marginal propensity to consume is the share of an extra dollar that a household spends rather than saves. It is central to judging rebates and relief payments, because the part of a payment that is saved adds nothing to spending in the short run.",
+          "example": "Using the random timing of the mid-2008 stimulus payments, an NBER working paper estimated that households spent about 12 to 30 percent of a payment on nondurables in the 3 months it arrived. Counting durable goods, especially vehicles, the total response was about 50 to 90 percent.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "National Bureau of Economic Research",
+            "documentTitle": "Consumer Spending and the Economic Stimulus Payments of 2008 (Working Paper 16684)",
+            "url": "https://www.nber.org/papers/w16684",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of stimulus payment spent (estimated ranges)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "economic stimulus payments of mid-2008 (NBER Working Paper 16684, January 2011)",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "cs-012",
+          "topicID": "consumer-spending",
+          "title": "Spending Out of Wealth",
+          "definition": "Households spend part of a rise in their wealth, not only of a rise in income, but just a few cents per dollar. This propensity to consume out of wealth depends on who holds the wealth: households less constrained by credit tend to spend a smaller share of a gain.",
+          "example": "A FEDS Note by Federal Reserve Board staff, published 5 August 2025, estimated that U.S. spending rose about 3.3 cents per extra dollar of wealth before 2012 and 2.7 cents after. Wealth held by the top 20 percent of the income distribution added about 0.8 cents per dollar, against about 7.5 cents for the other 80 percent.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Wealth Heterogeneity and Consumer Spending",
+            "url": "https://www.federalreserve.gov/econres/notes/feds-notes/wealth-heterogeneity-and-consumer-spending-20250805.html",
+            "publicationDate": "2025-08-05",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "cents of consumer spending per dollar of household wealth (estimated propensity); percent of the income distribution",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "FEDS Notes published 5 August 2025; estimates before and after 2012",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -2844,6 +4118,118 @@
             "status": "verified",
             "reviewer": "EconByte editorial review (Dudley Development)"
           }
+        },
+        {
+          "cardID": "tax-009",
+          "topicID": "taxes",
+          "title": "Excise Taxes",
+          "definition": "An excise tax is levied on a particular product or activity, such as gasoline, rather than on income or on sales in general. Some are a fixed amount per unit, so the tax stays the same in cents when the price changes and becomes a smaller share of the price as the price rises.",
+          "example": "In 2026 the federal tax on motor gasoline was 18.40 cents per gallon: an excise tax of 18.30 cents plus a 0.1-cent fee for leaking underground storage tanks. As of January 2026, state taxes and fees on gasoline added an average of 33.55 cents per gallon.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Energy Information Administration",
+            "documentTitle": "Factors affecting gasoline prices",
+            "url": "https://www.eia.gov/energyexplained/gasoline/factors-affecting-gasoline-prices.php",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "cents per gallon (federal gasoline tax and average state gasoline taxes and fees)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "2026 federal rate as published by EIA; state average as of January 2026",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "tax-010",
+          "topicID": "taxes",
+          "title": "Long-Term and Short-Term Gains",
+          "definition": "A capital gain is the profit from selling an asset for more than its adjusted basis, usually its cost. U.S. federal law can tax gains on assets held more than one year at lower rates than ordinary income, while net gains on assets held one year or less are taxed as ordinary income.",
+          "example": "For tax years beginning in 2025, most of a single filer's net capital gain is taxed at 0 percent while taxable income is at or below $48,350, at 15 percent up to $533,400, and at 20 percent beyond that. Gains on collectibles such as coins or art face a maximum rate of 28 percent.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Internal Revenue Service",
+            "documentTitle": "Topic no. 409, Capital gains and losses",
+            "url": "https://www.irs.gov/taxtopics/tc409",
+            "publicationDate": "2026-02-25",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent (federal capital gains rates) and U.S. dollars of taxable income (single-filer thresholds)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "tax years beginning in 2025",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "tax-011",
+          "topicID": "taxes",
+          "title": "The Corporate Income Tax",
+          "definition": "An ordinary domestic corporation files its own federal income tax return and pays tax on its own taxable income, separately from its shareholders. Unlike the individual income tax, with its brackets, the regular federal corporate income tax is figured by applying one flat rate to all taxable income.",
+          "example": "IRS Publication 542 tells corporations to multiply taxable income by 21 percent and gives 21 percent as the maximum rate for tax year 2023. At that rate a corporation with $2,000,000 of taxable income owes $420,000 in regular tax before any credits, paying the same 21 cents on its first dollar as on its last.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Internal Revenue Service",
+            "documentTitle": "Publication 542 (01/2024), Corporations",
+            "url": "https://www.irs.gov/publications/p542",
+            "publicationDate": "2026-04-30",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (illustrative tax at the 21 percent federal corporate rate)",
+            "geography": "United States",
+            "claimKind": "illustration",
+            "observationPeriod": "tax year 2023 rate as stated in IRS Publication 542 (01/2024)",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "tax-012",
+          "topicID": "taxes",
+          "title": "The Estate Tax Exclusion",
+          "definition": "The federal estate tax falls only on estates too large to be sheltered by the basic exclusion amount, which is set for the year of death. Since 1 January 2011 the estate of a person survived by a spouse can elect, on a timely estate tax return, to pass any unused exclusion to that spouse.",
+          "example": "The basic exclusion was $5,490,000 for deaths in 2017 and $11,180,000 in 2018. It reached $13,990,000 for 2025 and, under a law signed on 4 July 2025, $15,000,000 for 2026. The top rate fell from 55 percent in 2001 to 35 percent in 2010, then rose to 40 percent in 2013.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Internal Revenue Service",
+            "documentTitle": "What's new \u2014 Estate and gift tax",
+            "url": "https://www.irs.gov/businesses/small-businesses-self-employed/whats-new-estate-and-gift-tax",
+            "publicationDate": "2026-07-23",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "U.S. dollars (basic exclusion amount by year of death) and percent (top estate tax rate)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "years of death 2017, 2018, 2025 and 2026; top rates in 2001, 2010 and 2013",
+            "retrievalDate": "2026-09-14"
+          }
         }
       ]
     },
@@ -3042,6 +4428,97 @@
           "editorial": {
             "status": "verified",
             "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-009",
+          "topicID": "fiscal-policy",
+          "title": "Supplemental Appropriations",
+          "definition": "Regular appropriations fund discretionary programs for a fiscal year. When a need is too urgent to wait for the next year's regular bills, Congress can pass a supplemental appropriation, adding spending after the fiscal year has already begun.",
+          "example": "In 2020 Congress passed 4 supplemental appropriations to help the country recover from the COVID-19 pandemic. None of that money had to wait for the regular appropriations for the following fiscal year, which is the whole point of the supplemental route.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Federal Spending",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/federal-spending/",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-010",
+          "topicID": "fiscal-policy",
+          "title": "Obligations and Outlays",
+          "definition": "An obligation is a binding promise to pay, created when an agency signs a contract, awards a grant, or buys a service. An outlay is money actually paid out. Treasury reports federal spending as outlays, because not every obligation ends in a payment.",
+          "example": "Suppose an agency signs and fully funds a 3-year construction contract in year 1. The whole obligation is then recorded in year 1, but the payments can arrive in years 1, 2 and 3 as the work is done, so a total built from obligations and one built from outlays can differ for the same year.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Department of the Treasury, Fiscal Data",
+            "documentTitle": "America's Finance Guide: Federal Spending",
+            "url": "https://fiscaldata.treasury.gov/americas-finance-guide/federal-spending/",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-011",
+          "topicID": "fiscal-policy",
+          "title": "A Lapse in Appropriations",
+          "definition": "A lapse in appropriations happens when annual funding for federal agencies runs out before new funding is enacted. Agencies that rely on it shut down or operate with reduced staff, and those can include the statistical agencies that produce economic data.",
+          "example": "During the lapse from 1 October to 12 November 2025, BLS suspended the household survey behind the unemployment rate. October 2025 data were never collected, even afterward; BLS issued no October 2025 Employment Situation release, and its household tables show a dash for that month.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "2025 federal government shutdown impact on the Current Population Survey",
+            "url": "https://www.bls.gov/cps/methods/2025-federal-government-shutdown-impact-cps.htm",
+            "publicationDate": "2026-03-11",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "fp-012",
+          "topicID": "fiscal-policy",
+          "title": "The Treasury's Account at the Fed",
+          "definition": "The U.S. Treasury keeps a deposit account at the Federal Reserve, the Treasury General Account. The Fed's H.4.1 release counts it among the factors absorbing reserve funds: other things equal, money flowing into the account comes out of bank reserves, and payments out of it put reserves back.",
+          "example": "In the week ended 9 September 2026 the account averaged $883,335 million, which was $211,061 million more than in the week ended 10 September 2025. Other things equal, a rise of that size in the Treasury's balance means an equal fall in the reserves banks hold at the Fed.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Federal Reserve Balance Sheet: Factors Affecting Reserve Balances - H.4.1 - September 10, 2026",
+            "url": "https://www.federalreserve.gov/releases/h41/20260910/",
+            "publicationDate": "2026-09-10",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "millions of U.S. dollars (week average of the Treasury General Account and change from a year earlier)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "week ended 9 September 2026 compared with week ended 10 September 2025",
+            "retrievalDate": "2026-09-14"
           }
         }
       ]
@@ -3255,6 +4732,104 @@
             "claimKind": "observation",
             "observationPeriod": "survey begun 1968; conducted by the Philadelphia Fed from 1990",
             "retrievalDate": "2026-08-30"
+          }
+        },
+        {
+          "cardID": "ei-009",
+          "topicID": "economic-indicators",
+          "title": "Weekly Jobless Claims",
+          "definition": "An initial claim is filed by a person who has lost a job and is asking to be judged eligible for unemployment insurance. The count is published every week rather than every month, so a sudden wave of layoffs can show up in it well before the monthly reports arrive.",
+          "example": "Seasonally adjusted initial claims were 273,000 in the week ending 14 March 2020, then 2,914,000 a week later and 6,137,000 in the week ending 4 April 2020, the highest in a series that starts in 1967.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intro",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Initial Claims (ICSA)",
+            "url": "https://fred.stlouisfed.org/series/ICSA",
+            "publicationDate": "2026-09-10",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "number of initial claims, seasonally adjusted, weekly (ending Saturday)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "weeks ending 14 March 2020 to 4 April 2020; series begins 1967",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "ei-010",
+          "topicID": "economic-indicators",
+          "title": "Capacity Utilization",
+          "definition": "The Fed measures output in manufacturing, mining, and electric and gas utilities, and estimates capacity: the most those industries could sustainably produce with a realistic work schedule. Capacity utilization is output divided by capacity, showing how close industry is running to that limit.",
+          "example": "Capacity utilization was 76.8 percent in February 2020 and fell to 64.1 percent in April 2020, the lowest reading in a series that begins in 1967. By July 2026 it stood at 76.3 percent.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Federal Reserve Bank of St. Louis (FRED)",
+            "documentTitle": "Capacity Utilization: Total Index (TCU)",
+            "url": "https://fred.stlouisfed.org/series/TCU",
+            "publicationDate": "2026-08-18",
+            "datePrecision": "stated-on-page",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          },
+          "claim": {
+            "units": "percent of capacity, seasonally adjusted (total industry capacity utilization)",
+            "geography": "United States",
+            "claimKind": "observation",
+            "observationPeriod": "February 2020, April 2020 and July 2026; series begins 1967",
+            "retrievalDate": "2026-09-14"
+          }
+        },
+        {
+          "cardID": "ei-011",
+          "topicID": "economic-indicators",
+          "title": "The Beige Book",
+          "definition": "The Beige Book is a Federal Reserve report of anecdotal information on economic conditions. Each of the 12 Reserve Banks gathers it from its directors and from interviews with business contacts, economists, market experts, and others, then summarizes it by District and sector.",
+          "example": "The report is published 8 times a year. Alongside the 12 District reports sits an overall summary, and the job of writing that summary rotates among the Reserve Banks rather than always falling to the same one.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "intermediate",
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "The Beige Book: Summary of Commentary on Current Economic Conditions by Federal Reserve District",
+            "url": "https://www.federalreserve.gov/monetarypolicy/beige-book-default.htm",
+            "publicationDate": "2026-09-02",
+            "datePrecision": "observed-last-modified",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
+          }
+        },
+        {
+          "cardID": "ei-012",
+          "topicID": "economic-indicators",
+          "title": "Data Vintages",
+          "definition": "A data vintage is a snapshot of a statistical series exactly as it was published at a given time, before later revisions. Keeping every vintage lets researchers verify results, analyze policy, and forecast with the numbers that were available then, instead of with figures revised long afterward.",
+          "example": "The Philadelphia Fed's Real-Time Data Set for Macroeconomists, described in a 2001 journal article, is updated at the end of each month. For selected variables it also offers a separate download of just the first-, second-, and third-release values, so early estimates can be compared with later ones.",
+          "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+          "difficulty": "advanced",
+          "source": {
+            "organization": "Federal Reserve Bank of Philadelphia",
+            "documentTitle": "Real-Time Data Set for Macroeconomists",
+            "url": "https://www.philadelphiafed.org/surveys-and-data/real-time-data-research/real-time-data-set-for-macroeconomists",
+            "publicationDate": "2026-09-14",
+            "datePrecision": "observed-on-verification-date",
+            "verificationDate": "2026-09-14"
+          },
+          "editorial": {
+            "status": "verified",
+            "reviewer": "EconByte editorial review (Dudley Development)"
           }
         }
       ]

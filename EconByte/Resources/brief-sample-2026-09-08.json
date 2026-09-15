@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "briefDate": "2026-09-08",
+  "publishedAt": "2026-09-15T04:48:12Z",
+  "isSample": true,
+  "headline": "Consumer credit grew at a 4.2 percent annual rate in July; manufacturers reported higher second-quarter profits",
+  "sections": [
+    {
+      "type": "released",
+      "title": "What was released",
+      "items": [
+        {
+          "title": "Consumer Credit (G.19), July 2026",
+          "releaseDate": "2026-09-08",
+          "summary": "The Federal Reserve Board reported that consumer credit increased at a seasonally adjusted annual rate of 4.2 percent in July. Revolving credit grew at an annual rate of 2.5 percent and nonrevolving credit at an annual rate of 4.8 percent. Seasonally adjusted consumer credit outstanding totaled $5,186.2 billion at the end of July; the July figures are marked preliminary.",
+          "meaning": "An annual rate scales one month of growth up to a full year, so 4.2 percent describes the pace in July, not how much consumer credit grew within the month. The release reports revolving and nonrevolving credit separately because they are different kinds of borrowing.",
+          "figures": [
+            {
+              "label": "Total consumer credit, July, seasonally adjusted annual rate",
+              "value": "+4.2%"
+            },
+            {
+              "label": "Revolving credit, July, annual rate",
+              "value": "+2.5%"
+            },
+            {
+              "label": "Nonrevolving credit, July, annual rate",
+              "value": "+4.8%"
+            },
+            {
+              "label": "Total outstanding, end of July (seasonally adjusted, preliminary)",
+              "value": "$5,186.2 billion"
+            }
+          ],
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Consumer Credit - G.19, release of September 8, 2026 (July 2026 data)",
+            "url": "https://www.federalreserve.gov/releases/g19/20260908/",
+            "retrievedAt": "2026-09-15T04:40:35Z"
+          }
+        },
+        {
+          "title": "Quarterly Financial Report: manufacturing, mining, wholesale trade and selected services, second quarter 2026",
+          "releaseDate": "2026-09-08",
+          "summary": "The Census Bureau reported that U.S. manufacturing corporations earned seasonally adjusted after-tax profits of $359.4 billion in the second quarter of 2026, up $64.1 billion from $295.2 billion in the first quarter and up $143.8 billion from $215.6 billion in the second quarter of 2025. Their seasonally adjusted sales totaled $2,324.1 billion, compared with $2,130.1 billion in the first quarter.",
+          "meaning": "These are survey estimates of corporate income statements, so each change is printed with a margin of error: the quarterly rise in manufacturing profits is $64.1 billion plus or minus $1.2 billion.",
+          "figures": [
+            {
+              "label": "Manufacturing after-tax profits, Q2 2026 (seasonally adjusted)",
+              "value": "$359.4 billion"
+            },
+            {
+              "label": "Change from Q1 2026",
+              "value": "+$64.1 billion (±1.2)"
+            },
+            {
+              "label": "Change from Q2 2025",
+              "value": "+$143.8 billion (±2.8)"
+            },
+            {
+              "label": "Manufacturing sales, Q2 2026 (seasonally adjusted)",
+              "value": "$2,324.1 billion"
+            }
+          ],
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "Quarterly Financial Report: U.S. Manufacturing, Mining, Wholesale Trade, and Selected Service Industries, Second Quarter 2026 (CB26-144)",
+            "url": "https://www.census.gov/econ/qfr/mmws/current/index.html",
+            "retrievedAt": "2026-09-15T04:39:55Z"
+          }
+        },
+        {
+          "title": "Quarterly Financial Report: large retail trade corporations, second quarter 2026",
+          "releaseDate": "2026-09-08",
+          "summary": "In a companion release, the Census Bureau reported seasonally adjusted after-tax profits of $112.3 billion for U.S. retail corporations with assets of $50 million and over in the second quarter of 2026, up from $67.2 billion in the first quarter and $60.6 billion in the second quarter of 2025. Their seasonally adjusted sales totaled $1,171.1 billion.",
+          "meaning": "The retail report covers only corporations above an asset threshold of $50 million, so it describes large retailers rather than every store in the country.",
+          "figures": [
+            {
+              "label": "Retail corporations (assets $50 million and over) after-tax profits, Q2 2026 (seasonally adjusted)",
+              "value": "$112.3 billion"
+            },
+            {
+              "label": "Change from Q1 2026",
+              "value": "+$45.1 billion (±0.5)"
+            },
+            {
+              "label": "Retail sales of these corporations, Q2 2026 (seasonally adjusted)",
+              "value": "$1,171.1 billion"
+            }
+          ],
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "Quarterly Financial Report: Large U.S. Retail Trade Corporations, Second Quarter 2026 (CB26-143)",
+            "url": "https://www.census.gov/econ/qfr/retail/current/index.html",
+            "retrievedAt": "2026-09-15T04:39:56Z"
+          }
+        }
+      ]
+    },
+    {
+      "type": "scheduled",
+      "title": "Scheduled in the days ahead",
+      "items": [
+        {
+          "date": "2026-09-09",
+          "title": "Employer Costs for Employee Compensation, June 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-09",
+          "title": "Quarterly Services Survey, second quarter 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-10",
+          "title": "Producer Price Index, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-10",
+          "title": "Monthly Wholesale Trade: Sales and Inventories, July 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-11",
+          "title": "Consumer Price Index and Real Earnings, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-11",
+          "title": "Business Formation Statistics, August 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-11",
+          "title": "Financial Accounts of the United States - Z.1 (12:00 p.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-15",
+          "title": "Federal Open Market Committee meeting begins (two days, September 15-16), with a Summary of Economic Projections",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "FOMC press conference (2:30 p.m. ET) on the second day of the meeting",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "Advance Monthly Sales for Retail and Food Services, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "U.S. Import and Export Price Indexes, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-17",
+          "title": "New Residential Construction (building permits, housing starts, and housing completions), August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-18",
+          "title": "Industrial Production and Capacity Utilization - G.17 (9:15 a.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-18",
+          "title": "State Employment and Unemployment, August 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        }
+      ]
+    },
+    {
+      "type": "concept",
+      "title": "One concept to know",
+      "conceptTitle": "Revolving and nonrevolving credit",
+      "text": "Consumer credit comes in two forms that behave differently. Revolving credit, such as a credit card balance, can be borrowed, repaid, and borrowed again. Nonrevolving credit, such as an auto or student loan, is borrowed once and paid down on a schedule. The Federal Reserve's G.19 release reports the two separately: in July, revolving credit grew at a 2.5 percent annual rate and nonrevolving credit at 4.8 percent.",
+      "linkedCardID": "cs-005"
+    }
+  ],
+  "disclaimer": "Informational only — not investment advice. This brief restates figures published by official statistical agencies and central banks; it is not financial or tax advice either, and it makes no recommendations and no predictions. Educational content only. EconByte does not provide financial, investment, or tax advice.",
+  "methodology": "The Daily Economic Brief is written from primary sources only: official statistical releases and central-bank publications that are public domain or carry open reuse terms (Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, U.S. Treasury, Federal Reserve, Congressional Budget Office, and peer statistical offices). It never reads or restates commercial news articles or headlines. Every figure links to the release it came from with the time the page was read. Sentences are our own plain-English description of public facts. This edition is a bundled sample written on September 14–15, 2026 from releases published September 8, 2026."
+}

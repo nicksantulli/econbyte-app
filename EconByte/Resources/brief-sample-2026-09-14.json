@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "briefDate": "2026-09-14",
+  "publishedAt": "2026-09-15T05:26:06Z",
+  "isSample": true,
+  "headline": "The Fed's broad dollar index was 118.2126 on September 11, up from 117.9127 on September 8; one euro was quoted at 1.1604 dollars",
+  "sections": [
+    {
+      "type": "released",
+      "title": "What was released",
+      "items": [
+        {
+          "title": "Foreign Exchange Rates (H.10), week ending September 11, 2026",
+          "releaseDate": "2026-09-14",
+          "summary": "The Federal Reserve Board's weekly H.10 release, published September 14, 2026, lists daily exchange rates for September 8 through 11; the table shows no data for September 7, the Labor Day holiday on the Board's calendar. On September 11 one U.S. dollar was quoted at 153.7100 Japanese yen and 1.3864 Canadian dollars, while one euro was quoted at 1.1604 U.S. dollars and one British pound at 1.3524 U.S. dollars. The broad U.S. dollar index, with January 2006 set to 100, was 118.2126 on September 11, compared with 117.9127 on September 8.",
+          "meaning": "An exchange rate is the price of one currency in terms of another. The H.10 table quotes most currencies as units per U.S. dollar, so 153.7100 means one dollar cost 153.71 yen; rates marked with an asterisk, including the euro and the pound, are U.S. dollars per currency unit, so 1.1604 means one euro cost 1.1604 dollars. The broad index is a weighted average of the foreign exchange value of the U.S. dollar against the currencies of a broad group of major U.S. trading partners, so a higher reading means a higher weighted-average value of the dollar against that group.",
+          "figures": [
+            {
+              "label": "Broad U.S. dollar index, September 11, 2026 (January 2006 = 100)",
+              "value": "118.2126"
+            },
+            {
+              "label": "Broad U.S. dollar index, September 8, 2026 (January 2006 = 100)",
+              "value": "117.9127"
+            },
+            {
+              "label": "Euro, September 11, 2026 (U.S. dollars per euro)",
+              "value": "1.1604"
+            },
+            {
+              "label": "British pound, September 11, 2026 (U.S. dollars per pound)",
+              "value": "1.3524"
+            },
+            {
+              "label": "Japanese yen, September 11, 2026 (yen per U.S. dollar)",
+              "value": "153.7100"
+            },
+            {
+              "label": "Canadian dollar, September 11, 2026 (Canadian dollars per U.S. dollar)",
+              "value": "1.3864"
+            }
+          ],
+          "source": {
+            "organization": "Board of Governors of the Federal Reserve System",
+            "documentTitle": "Foreign Exchange Rates - H.10 - September 14, 2026",
+            "url": "https://www.federalreserve.gov/releases/h10/20260914/",
+            "retrievedAt": "2026-09-15T05:22:32Z"
+          }
+        }
+      ]
+    },
+    {
+      "type": "scheduled",
+      "title": "Scheduled in the days ahead",
+      "items": [
+        {
+          "date": "2026-09-15",
+          "title": "Federal Open Market Committee meeting begins (two days, September 15-16), with a Summary of Economic Projections",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "FOMC Meeting (2:00 p.m. ET) on the second day of the two-day meeting",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "FOMC press conference (2:30 p.m. ET) on the second day of the meeting",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "Advance Monthly Sales for Retail and Food Services, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "U.S. Import and Export Price Indexes, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "Manufacturing and Trade: Inventories and Sales, July 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-17",
+          "title": "New Residential Construction (building permits, housing starts, and housing completions), August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-18",
+          "title": "Industrial Production and Capacity Utilization - G.17 (9:15 a.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-18",
+          "title": "State Employment and Unemployment, August 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-21",
+          "title": "Foreign Exchange Rates - H.10, weekly (4:15 p.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-22",
+          "title": "Money Stock Measures - H.6 (1:00 p.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-24",
+          "title": "U.S. International Transactions and Investment Position, second quarter 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Economic Analysis",
+          "url": "https://www.bea.gov/news/schedule"
+        },
+        {
+          "date": "2026-09-24",
+          "title": "New Residential Sales, August 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-25",
+          "title": "Advance Report on Durable Goods: Manufacturers' Shipments, Inventories, and Orders, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        }
+      ]
+    },
+    {
+      "type": "concept",
+      "title": "One concept to know",
+      "conceptTitle": "Reading an exchange-rate quote",
+      "text": "An exchange rate can be written in either direction, and the two forms are reciprocals. The H.10 table uses both: the yen appears as 153.7100 yen per U.S. dollar, while the euro appears as 1.1604 U.S. dollars per euro. Turning the euro quote around gives 1 divided by 1.1604, or about 0.8618 euros per dollar. Reading a quote in the wrong direction reverses its meaning: a higher dollars-per-euro number means a euro costs more dollars, not that a dollar buys more euros.",
+      "linkedCardID": "fx-001"
+    }
+  ],
+  "disclaimer": "Informational only — not investment advice. This brief restates figures published by official statistical agencies and central banks; it is not financial or tax advice either, and it makes no recommendations and no predictions. Educational content only. EconByte does not provide financial, investment, or tax advice.",
+  "methodology": "The Daily Economic Brief is written from primary sources only: official statistical releases and central-bank publications that are public domain or carry open reuse terms (Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, U.S. Treasury, Federal Reserve, Congressional Budget Office, and peer statistical offices). It never reads or restates commercial news articles or headlines. Every figure links to the release it came from with the time the page was read. Sentences are our own plain-English description of public facts. This edition is a bundled sample written on September 14–15, 2026 from a Federal Reserve Board release published September 14, 2026."
+}

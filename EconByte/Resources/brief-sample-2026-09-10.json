@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "briefDate": "2026-09-10",
+  "publishedAt": "2026-09-15T04:48:12Z",
+  "isSample": true,
+  "headline": "Producer prices for final demand rose 0.4 percent in August; wholesalers' July sales rose 0.8 percent",
+  "sections": [
+    {
+      "type": "released",
+      "title": "What was released",
+      "items": [
+        {
+          "title": "Producer Price Index, August 2026",
+          "releaseDate": "2026-09-10",
+          "summary": "The Producer Price Index for final demand rose 0.4 percent in August, seasonally adjusted, after rising 0.1 percent in July and falling 0.1 percent in June. On an unadjusted basis, final demand prices were 5.4 percent higher than 12 months earlier. In August, prices for final demand goods rose 1.1 percent and prices for final demand services rose 0.1 percent. The index for final demand less foods, energy, and trade services rose 0.3 percent in the month and 4.7 percent over 12 months.",
+          "meaning": "The PPI measures the average change over time in the prices that domestic producers receive for their goods, services, and construction. Final demand covers sales for personal consumption, capital investment, government, and export, so it is not the same basket as the Consumer Price Index.",
+          "figures": [
+            {
+              "label": "Final demand, August (seasonally adjusted)",
+              "value": "+0.4%"
+            },
+            {
+              "label": "Final demand, 12 months ended August (not seasonally adjusted)",
+              "value": "+5.4%"
+            },
+            {
+              "label": "Final demand goods, August",
+              "value": "+1.1%"
+            },
+            {
+              "label": "Final demand services, August",
+              "value": "+0.1%"
+            },
+            {
+              "label": "Less foods, energy, and trade services, August",
+              "value": "+0.3%"
+            },
+            {
+              "label": "Less foods, energy, and trade services, 12 months",
+              "value": "+4.7%"
+            }
+          ],
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Producer Price Index News Release — August 2026",
+            "url": "https://www.bls.gov/news.release/archives/ppi_09102026.htm",
+            "retrievedAt": "2026-09-15T04:41:00Z"
+          }
+        },
+        {
+          "title": "Monthly Wholesale Trade: Sales and Inventories, July 2026",
+          "releaseDate": "2026-09-10",
+          "summary": "The Census Bureau estimated July sales of merchant wholesalers, excluding manufacturers' sales branches and offices, at $801.3 billion, adjusted for seasonal variation and trading-day differences but not for price changes. Sales were up 0.8 percent from June and 13.0 percent from July 2025. Inventories were $958.9 billion at the end of July, up 1.3 percent from June, and the inventories/sales ratio was 1.20, compared with 1.28 in July 2025.",
+          "meaning": "The inventories/sales ratio compares the value of goods on hand with a month of sales: $958.9 billion divided by $801.3 billion is about 1.20, meaning stocks equal to roughly 1.2 months of sales at the July pace. Because the figures are not adjusted for price changes, a rise in sales can reflect higher prices as well as more goods sold.",
+          "figures": [
+            {
+              "label": "Merchant wholesalers' sales, July 2026 (seasonally adjusted)",
+              "value": "$801.3 billion"
+            },
+            {
+              "label": "Sales, change from June",
+              "value": "+0.8% (±0.4%)"
+            },
+            {
+              "label": "Sales, change from July 2025",
+              "value": "+13.0% (±0.5%)"
+            },
+            {
+              "label": "Inventories, end of July (seasonally adjusted)",
+              "value": "$958.9 billion"
+            },
+            {
+              "label": "Inventories/sales ratio, July 2026",
+              "value": "1.20"
+            }
+          ],
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "Monthly Wholesale Trade Report: July 2026 (CB26-136)",
+            "url": "https://www.census.gov/wholesale/current/index.html",
+            "retrievedAt": "2026-09-15T04:37:24Z"
+          }
+        }
+      ]
+    },
+    {
+      "type": "scheduled",
+      "title": "Scheduled in the days ahead",
+      "items": [
+        {
+          "date": "2026-09-11",
+          "title": "Consumer Price Index and Real Earnings, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-11",
+          "title": "Business Formation Statistics, August 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-11",
+          "title": "Financial Accounts of the United States - Z.1 (12:00 p.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-15",
+          "title": "Federal Open Market Committee meeting begins (two days, September 15-16), with a Summary of Economic Projections",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "FOMC press conference (2:30 p.m. ET) on the second day of the meeting",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "Advance Monthly Sales for Retail and Food Services, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "U.S. Import and Export Price Indexes, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "Manufacturing and Trade: Inventories and Sales, July 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-17",
+          "title": "New Residential Construction (building permits, housing starts, and housing completions), August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-18",
+          "title": "Industrial Production and Capacity Utilization - G.17 (9:15 a.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-18",
+          "title": "State Employment and Unemployment, August 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        }
+      ]
+    },
+    {
+      "type": "concept",
+      "title": "One concept to know",
+      "conceptTitle": "Monthly changes and 12-month changes",
+      "text": "The PPI release reports two kinds of change. The monthly change, 0.4 percent for final demand in August, is seasonally adjusted: patterns that repeat at the same time every year are removed so one month can be compared with the next. The 12-month change, 5.4 percent, is calculated before seasonal adjustment, because comparing August with the August before already puts the same season on both sides.",
+      "linkedCardID": "ei-002"
+    }
+  ],
+  "disclaimer": "Informational only — not investment advice. This brief restates figures published by official statistical agencies and central banks; it is not financial or tax advice either, and it makes no recommendations and no predictions. Educational content only. EconByte does not provide financial, investment, or tax advice.",
+  "methodology": "The Daily Economic Brief is written from primary sources only: official statistical releases and central-bank publications that are public domain or carry open reuse terms (Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, U.S. Treasury, Federal Reserve, Congressional Budget Office, and peer statistical offices). It never reads or restates commercial news articles or headlines. Every figure links to the release it came from with the time the page was read. Sentences are our own plain-English description of public facts. This edition is a bundled sample written on September 14–15, 2026 from releases published September 10, 2026."
+}

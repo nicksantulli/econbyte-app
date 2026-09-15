@@ -11,8 +11,8 @@
       "title": "Investing Approaches",
       "icon": "chart.pie.fill",
       "level": "intro",
-      "summary": "Six short lessons on the mechanics behind common investing approaches: how risk and return relate, why diversification works, what index and active funds do, what value, growth and dividend labels mean, how regular buying and rebalancing work, and how fees compound.",
-      "estimatedMinutes": 38,
+      "summary": "Nine short lessons on the mechanics behind common investing approaches: how risk and return relate, why diversification works, what index and active funds do, what value, growth and dividend labels mean, how regular buying and rebalancing work, how fees compound, which behavioral patterns, from overconfidence to trend-following, pull investors' decisions off course, how rebalancing is carried out in practice, and how mutual fund share classes, sales loads and breakpoints work.",
+      "estimatedMinutes": 59,
       "lessons": [
         {
           "lessonID": "ia-01",
@@ -1276,6 +1276,790 @@
               "verificationDate": "2026-09-14"
             }
           ]
+        },
+        {
+          "lessonID": "ia-07",
+          "title": "Behavioral Biases",
+          "summary": "Overconfidence, loss aversion, the disposition effect and trend-following, and how they can turn into buying after rises and selling after falls.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Behavioral finance studies the social, mental and emotional factors that pull real decisions away from the calm, self-interested investor of textbook models, and it holds that the departures are not random: investors tend to make the same mistakes again and again. A report prepared in August 2010 by the Library of Congress's Federal Research Division for the SEC lists common ones: holding too few investments, trading often, following the herd, favoring the familiar, selling winners while holding on to losers, and giving in to optimism, short-term thinking and overconfidence."
+            },
+            {
+              "type": "paragraph",
+              "text": "The report describes overconfidence as common among investors and a trigger for a wide range of investment errors, and one place it shows up is trading activity. In a National Bureau of Economic Research working paper issued in May 2006, Mark Grinblatt and Matti Keloharju combined investors' stock trades with data from their tax filings, driving records and psychological profiles. Investors measured as overconfident, and those most prone to sensation seeking, traded more often, even after the authors controlled for wealth, income, age, occupation and other factors. The Library of Congress report links active trading with overconfidence and concludes that active trading generally leaves an investor's portfolio underperforming."
+            },
+            {
+              "type": "paragraph",
+              "text": "Loss aversion comes from prospect theory, developed by psychologists Daniel Kahneman and Amos Tversky. Applied to investing, it describes people attaching more importance to avoiding losses than to achieving gains. It is closely tied to the disposition effect: the tendency to sell investments that have gained too soon and to hold investments that have lost for too long. The report describes loss-averse investors selling strong performers in the hope of making up losses on weak ones, and the SEC's 2014 bulletin on the report notes that in the months after such sales, the winners that were sold often kept outperforming the losers still held."
+            },
+            {
+              "type": "paragraph",
+              "text": "Two more patterns involve other people and the recent past. Momentum investing, as the report defines it, means buying securities with high recent returns and selling those with low recent returns, expecting the trend to continue; the report cites researchers who tie it to herd behavior and notes that it can give rise to speculative bubbles. Manias and panics are the crowd-sized version: a rapid price rise fed by collective enthusiasm, then a sharp decline when wide-scale selling sets in. Together these habits tend to put money in after prices have climbed and take it out after they have dropped, the pattern the chart below exaggerates on purpose."
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-07-chasing-vs-holding",
+              "kind": "line",
+              "title": "Same fund, two owners: holding vs following the trend",
+              "caption": "Both owners start with $10,000 in the same synthetic fund. The first holds throughout, so that line is the fund's price times 100 units: up to a peak of $13,000 in month 8, down to $9,500 in month 14, and back to $12,500 by month 24. The second sits in cash at $10,000 until the rise looks convincing, buys in month 6 at a price of 125, sells after the slide in month 13 at 100, and buys back in month 20 at 115. That owner ends month 24 with about $8,696, against $12,500 for holding. Same fund, same months: the whole gap comes from when the money went in and out.",
+              "xLabel": "Month",
+              "yLabel": "Value, dollars",
+              "dataNote": "Synthetic illustration — not real market data. The prices and the buy and sell months are invented so the timing effect is easy to see.",
+              "series": [
+                {
+                  "name": "Held throughout (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 10000
+                    },
+                    {
+                      "x": 2,
+                      "y": 10800
+                    },
+                    {
+                      "x": 4,
+                      "y": 11700
+                    },
+                    {
+                      "x": 6,
+                      "y": 12500
+                    },
+                    {
+                      "x": 8,
+                      "y": 13000
+                    },
+                    {
+                      "x": 10,
+                      "y": 12100
+                    },
+                    {
+                      "x": 12,
+                      "y": 10800
+                    },
+                    {
+                      "x": 13,
+                      "y": 10000
+                    },
+                    {
+                      "x": 14,
+                      "y": 9500
+                    },
+                    {
+                      "x": 16,
+                      "y": 9900
+                    },
+                    {
+                      "x": 18,
+                      "y": 10600
+                    },
+                    {
+                      "x": 20,
+                      "y": 11500
+                    },
+                    {
+                      "x": 22,
+                      "y": 12100
+                    },
+                    {
+                      "x": 24,
+                      "y": 12500
+                    }
+                  ]
+                },
+                {
+                  "name": "Bought after the rise, sold after the fall (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 10000
+                    },
+                    {
+                      "x": 2,
+                      "y": 10000
+                    },
+                    {
+                      "x": 4,
+                      "y": 10000
+                    },
+                    {
+                      "x": 6,
+                      "y": 10000
+                    },
+                    {
+                      "x": 8,
+                      "y": 10400
+                    },
+                    {
+                      "x": 10,
+                      "y": 9680
+                    },
+                    {
+                      "x": 12,
+                      "y": 8640
+                    },
+                    {
+                      "x": 13,
+                      "y": 8000
+                    },
+                    {
+                      "x": 14,
+                      "y": 8000
+                    },
+                    {
+                      "x": 16,
+                      "y": 8000
+                    },
+                    {
+                      "x": 18,
+                      "y": 8000
+                    },
+                    {
+                      "x": 20,
+                      "y": 8000
+                    },
+                    {
+                      "x": 22,
+                      "y": 8417
+                    },
+                    {
+                      "x": 24,
+                      "y": 8696
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 6,
+                  "label": "Buys"
+                },
+                {
+                  "x": 13,
+                  "label": "Sells"
+                },
+                {
+                  "x": 20,
+                  "label": "Buys back"
+                }
+              ]
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Behavioral finance",
+                  "definition": "The study of the social, mental and emotional factors that lead investors away from purely rational decisions."
+                },
+                {
+                  "term": "Overconfidence",
+                  "definition": "A bias of judgment, common among investors, that the report says triggers a wide range of investment errors; research links it to trading more often."
+                },
+                {
+                  "term": "Loss aversion",
+                  "definition": "Attaching more importance to avoiding losses than to achieving gains, an idea rooted in prospect theory."
+                },
+                {
+                  "term": "Disposition effect",
+                  "definition": "The tendency to sell investments that have gained too soon and to hold those that have lost too long."
+                },
+                {
+                  "term": "Momentum investing",
+                  "definition": "Buying securities with high recent returns and selling those with low ones, expecting the trend to continue."
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "These are patterns researchers have found across groups of investors, not a diagnosis of any one person. This lesson does not say when anyone ought to buy or sell. Real prices do not announce their peaks and troughs in advance."
+            },
+            {
+              "type": "quiz",
+              "question": "An investor sells a fund that has gained and keeps a fund that has lost, hoping to make up the loss. Which pattern from the lesson does this describe?",
+              "choices": [
+                "Naive diversification",
+                "The disposition effect",
+                "Dollar-cost averaging",
+                "Tracking error"
+              ],
+              "answerIndex": 1,
+              "explanation": "The disposition effect is the tendency to sell winners too soon and hold losers too long. The report ties it to loss aversion: investors sell strong performers hoping to recoup losses on weak ones."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Behavioral finance holds that investors tend to repeat the same mistakes rather than err at random.",
+                "Overconfident investors trade more often, and active trading has generally been linked to underperformance.",
+                "Loss aversion and the disposition effect lead many investors to sell winners and keep losers.",
+                "Following trends and crowds tends to put money in after rises and take it out after falls."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Investor Bulletin: Behavioral Patterns of U.S. Investors",
+              "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-72",
+              "publicationDate": "2014-06-16",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Library of Congress, Federal Research Division (report prepared for the U.S. Securities and Exchange Commission)",
+              "documentTitle": "Behavioral Patterns and Pitfalls of U.S. Investors",
+              "url": "https://www.sec.gov/investor/locinvestorbehaviorreport.pdf",
+              "publicationDate": "2010-08-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Sensation Seeking, Overconfidence, and Trading Activity (Working Paper 12223)",
+              "url": "https://www.nber.org/papers/w12223",
+              "publicationDate": "2006-05-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "The Disposition Effect and Momentum (Working Paper 8734)",
+              "url": "https://www.nber.org/papers/w8734",
+              "publicationDate": "2002-01-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "ia-08",
+          "title": "Rebalancing in Practice",
+          "summary": "Calendar and tolerance-band rebalancing, steering new money instead of selling, what drift does to risk, and the costs that come with each route.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A mix drifts because its parts earn different returns. If stocks climb faster than bonds, the stock slice grows without anyone buying more, and the whole holding takes on more of the risk that stocks carry; the SEC's beginners' guide describes stocks as the category that has historically had the greatest risk of the three main ones. The guide defines rebalancing as bringing a portfolio back to its original mix, so that it does not overemphasize any category and returns to a comfortable level of risk. Lesson 5 introduced the idea; this lesson looks at how it is carried out and what it costs."
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-08-stock-share-drift",
+              "kind": "line",
+              "title": "Stock share of a 60/40 mix over 10 years",
+              "caption": "A synthetic mix starts at 60 percent stocks and 40 percent bonds, and each year the two categories earn invented returns. Left alone, the stock share wanders upward and reaches 72.24 percent by year 10. The second line checks the mix once a year against a tolerance band of 55 to 65 percent. It finds the share outside the band twice, at 66.65 percent at the end of year 5 and 66.14 percent at the end of year 10, and resets it to 60 percent both times, which is why those two points sit on the target. In every other year it stays inside the band, between 57.50 and 64.35 percent.",
+              "xLabel": "Year",
+              "yLabel": "Stocks, percent of the mix",
+              "dataNote": "Synthetic illustration — not real market data. Yearly returns, the band and the once-a-year check are invented to show the mechanism.",
+              "series": [
+                {
+                  "name": "No rebalancing (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 60.0
+                    },
+                    {
+                      "x": 1,
+                      "y": 63.21
+                    },
+                    {
+                      "x": 2,
+                      "y": 64.3
+                    },
+                    {
+                      "x": 3,
+                      "y": 60.15
+                    },
+                    {
+                      "x": 4,
+                      "y": 64.35
+                    },
+                    {
+                      "x": 5,
+                      "y": 66.65
+                    },
+                    {
+                      "x": 6,
+                      "y": 67.5
+                    },
+                    {
+                      "x": 7,
+                      "y": 64.32
+                    },
+                    {
+                      "x": 8,
+                      "y": 68.17
+                    },
+                    {
+                      "x": 9,
+                      "y": 69.77
+                    },
+                    {
+                      "x": 10,
+                      "y": 72.24
+                    }
+                  ]
+                },
+                {
+                  "name": "Reset when outside 55–65 percent, checked yearly (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 60.0
+                    },
+                    {
+                      "x": 1,
+                      "y": 63.21
+                    },
+                    {
+                      "x": 2,
+                      "y": 64.3
+                    },
+                    {
+                      "x": 3,
+                      "y": 60.15
+                    },
+                    {
+                      "x": 4,
+                      "y": 64.35
+                    },
+                    {
+                      "x": 5,
+                      "y": 60.0
+                    },
+                    {
+                      "x": 6,
+                      "y": 60.92
+                    },
+                    {
+                      "x": 7,
+                      "y": 57.5
+                    },
+                    {
+                      "x": 8,
+                      "y": 61.65
+                    },
+                    {
+                      "x": 9,
+                      "y": 63.4
+                    },
+                    {
+                      "x": 10,
+                      "y": 60.0
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 5,
+                  "label": "Rebalanced"
+                },
+                {
+                  "x": 10,
+                  "label": "Rebalanced"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "There are two common ways to decide when. Calendar rebalancing checks the mix on fixed dates, such as every six or twelve months, and the guide notes its advantage: the calendar itself is the reminder. Threshold rebalancing sets limits in advance, a tolerance band around each target, and acts only when a slice moves outside them, so the investments themselves signal when to act. Each has a blind spot. A calendar can prompt a trade after a tiny drift, or wait while a large one builds between dates. A band that is checked only occasionally can be overshot before anyone looks, as in the chart, where the yearly check finds the share already at 66.65 percent at the end of year 5."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "rebalance-bands",
+              "caption": "One category's share of a mix plotted over time. A dashed line marks the target share, and a shaded tolerance band surrounds it. The share drifts upward until it reaches the top edge of the band, where a dot marked Rebalanced shows it dropping straight back to the target. Afterward it starts drifting again, still inside the band."
+            },
+            {
+              "type": "paragraph",
+              "text": "Rebalancing does not have to mean selling. The guide describes three routes: sell some of an overweighted category and use the money to buy an underweighted one; buy more of the underweighted category; or, for someone making regular contributions, direct those contributions to the underweighted category until the mix is back in balance. As an illustration, suppose $100,000 starts at 60 percent stocks and 40 percent bonds. In a year when the stocks gain 30 percent and the bonds 2.5 percent, the holding becomes $78,000 in stocks and $41,000 in bonds, a total of $119,000 with stocks at about 65.5 percent. Selling $6,600 of stocks and buying bonds restores the mix at $71,400 and $47,600. Adding $11,000 of new money, all of it to bonds, also restores it without any sale: $78,000 is 60 percent of $130,000."
+            },
+            {
+              "type": "paragraph",
+              "text": "Each route has trade-offs. The guide says to check, before rebalancing, whether the chosen method will trigger transaction fees or tax consequences. Steering new money avoids a sale, but it restores the mix quickly only when contributions are large relative to the drift: in the example, fixing the mix with new money took $11,000, while a sale moved $6,600. Rebalancing also trims whatever has lately done well and adds to whatever has lagged, the reverse of the trend-following pull described in the previous lesson. That is a way of holding risk near a chosen level, not a promise of a higher return: a category that has lagged can keep lagging."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Drift",
+                  "definition": "The gradual change in a mix's proportions as its categories earn different returns, with no buying or selling."
+                },
+                {
+                  "term": "Target mix",
+                  "definition": "The proportions chosen for each category, such as a set share in stocks and in bonds, that rebalancing returns to."
+                },
+                {
+                  "term": "Calendar rebalancing",
+                  "definition": "Resetting a mix on fixed dates, such as every six or twelve months, whatever the size of the drift."
+                },
+                {
+                  "term": "Tolerance band",
+                  "definition": "A range set in advance around a target share; threshold rebalancing acts only when the share moves outside it."
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "This lesson does not suggest any band, schedule or mix; those choices depend on personal circumstances, costs and taxes that a lesson cannot know."
+            },
+            {
+              "type": "quiz",
+              "question": "A mix has a 60 percent stock target and a tolerance band of 55 to 65 percent. At a check, stocks are 63 percent of the mix. Under threshold rebalancing, what happens?",
+              "choices": [
+                "Nothing yet, because 63 percent is still inside the band",
+                "Stocks are sold until they are 55 percent of the mix",
+                "A trade is made, because any move above the target triggers one",
+                "Everything is moved into bonds"
+              ],
+              "answerIndex": 0,
+              "explanation": "A threshold approach acts only when a share moves outside its band, here below 55 or above 65 percent. At 63 percent the share is above target but inside the band, so no trade is triggered yet."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Drift happens because categories earn different returns, and it quietly changes a mix's risk.",
+                "Calendar rebalancing acts on fixed dates; threshold rebalancing acts when a share leaves its tolerance band.",
+                "Selling, buying the underweighted category, or redirecting contributions can each restore a target mix.",
+                "Fees and taxes are part of the trade-off, and steering new money restores a mix quickly only if contributions are large enough."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Beginners’ Guide to Asset Allocation, Diversification, and Rebalancing",
+              "url": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+              "publicationDate": "2026-09-11",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "ia-09",
+          "title": "Share Classes, Loads and Breakpoints",
+          "summary": "Why one mutual fund can carry several sets of fees, how front-end loads, deferred sales charges and 12b-1 fees differ, and how breakpoints reduce a load.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "One mutual fund can sell several classes of shares while keeping a single portfolio and a single investment adviser. Every class owns a slice of the same pool of securities, but each can carry its own fees and expenses, so owners of different classes of the same fund earn different returns. The SEC's bulletin on mutual fund classes notes that the effect of these fee differences compounds over time, and that the class with the lowest initial fees may not be the class with the lowest fees over time."
+            },
+            {
+              "type": "paragraph",
+              "text": "Three charges do most of the sorting. A front-end sales load is taken out of the purchase itself, so part of the money paid is never invested: FINRA's example is a $1,000 purchase with a 5 percent charge, which pays $50 up front and leaves shares worth $950. A contingent deferred sales charge, sometimes called a back-end load, is paid only when shares are sold, and it normally shrinks the longer they are held until it disappears. A 12b-1 fee is part of a fund's ongoing operating expenses, paid out of fund assets to cover the costs of marketing and selling shares."
+            },
+            {
+              "type": "paragraph",
+              "text": "Class A shares typically carry the front-end load and a lower yearly charge; FINRA says Class A's asset-based sales charge is often 0.25 percent a year, against often 1 percent a year for Class C. Class C shares have no front-end load, so the full purchase is invested, but they often charge about 1 percent if sold within a short time, usually one year, and they typically keep their higher yearly expenses for as long as the shares are held instead of converting to Class A. No-load classes skip sales loads but, like every class, still have ongoing operating costs."
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-09-class-a-vs-c",
+              "kind": "line",
+              "title": "$10,000 in two synthetic classes of one fund",
+              "caption": "Both classes hold the same synthetic portfolio, earning 5 percent a year before class costs. Class A takes a 5 percent front-end load, so $9,500 is invested, and it then grows 4.15 percent a year after 0.85 percent in yearly costs. Class C invests the full $10,000 but grows 3.40 percent a year after 1.60 percent in yearly costs. Class C is ahead through year 7, by $9 at that point; Class A is ahead from year 8 and leads by $1,907 at year 20. The values are before any deferred sales charge, which in this example would apply only to a Class C sale in the first year.",
+              "xLabel": "Years held",
+              "yLabel": "Value, dollars",
+              "dataNote": "Synthetic illustration — not real market data. The return, load and yearly costs are invented to show how a crossover arises.",
+              "series": [
+                {
+                  "name": "Class A (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 9500
+                    },
+                    {
+                      "x": 1,
+                      "y": 9894
+                    },
+                    {
+                      "x": 2,
+                      "y": 10305
+                    },
+                    {
+                      "x": 3,
+                      "y": 10733
+                    },
+                    {
+                      "x": 4,
+                      "y": 11178
+                    },
+                    {
+                      "x": 5,
+                      "y": 11642
+                    },
+                    {
+                      "x": 6,
+                      "y": 12125
+                    },
+                    {
+                      "x": 7,
+                      "y": 12628
+                    },
+                    {
+                      "x": 8,
+                      "y": 13152
+                    },
+                    {
+                      "x": 9,
+                      "y": 13698
+                    },
+                    {
+                      "x": 10,
+                      "y": 14266
+                    },
+                    {
+                      "x": 11,
+                      "y": 14859
+                    },
+                    {
+                      "x": 12,
+                      "y": 15475
+                    },
+                    {
+                      "x": 13,
+                      "y": 16117
+                    },
+                    {
+                      "x": 14,
+                      "y": 16786
+                    },
+                    {
+                      "x": 15,
+                      "y": 17483
+                    },
+                    {
+                      "x": 16,
+                      "y": 18208
+                    },
+                    {
+                      "x": 17,
+                      "y": 18964
+                    },
+                    {
+                      "x": 18,
+                      "y": 19751
+                    },
+                    {
+                      "x": 19,
+                      "y": 20571
+                    },
+                    {
+                      "x": 20,
+                      "y": 21424
+                    }
+                  ]
+                },
+                {
+                  "name": "Class C (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 10000
+                    },
+                    {
+                      "x": 1,
+                      "y": 10340
+                    },
+                    {
+                      "x": 2,
+                      "y": 10692
+                    },
+                    {
+                      "x": 3,
+                      "y": 11055
+                    },
+                    {
+                      "x": 4,
+                      "y": 11431
+                    },
+                    {
+                      "x": 5,
+                      "y": 11820
+                    },
+                    {
+                      "x": 6,
+                      "y": 12221
+                    },
+                    {
+                      "x": 7,
+                      "y": 12637
+                    },
+                    {
+                      "x": 8,
+                      "y": 13067
+                    },
+                    {
+                      "x": 9,
+                      "y": 13511
+                    },
+                    {
+                      "x": 10,
+                      "y": 13970
+                    },
+                    {
+                      "x": 11,
+                      "y": 14445
+                    },
+                    {
+                      "x": 12,
+                      "y": 14936
+                    },
+                    {
+                      "x": 13,
+                      "y": 15444
+                    },
+                    {
+                      "x": 14,
+                      "y": 15969
+                    },
+                    {
+                      "x": 15,
+                      "y": 16512
+                    },
+                    {
+                      "x": 16,
+                      "y": 17074
+                    },
+                    {
+                      "x": 17,
+                      "y": 17654
+                    },
+                    {
+                      "x": 18,
+                      "y": 18254
+                    },
+                    {
+                      "x": 19,
+                      "y": 18875
+                    },
+                    {
+                      "x": 20,
+                      "y": 19517
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 7,
+                  "label": "C still ahead"
+                },
+                {
+                  "x": 8,
+                  "label": "A ahead"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "The chart puts the SEC's point in numbers. Because Class C generally has a higher 12b-1 fee, the bulletin warns that an owner could end up paying more by holding it for a long time, while FINRA notes that Class C may cost less than Class A over a shorter horizon because little or no sales charge is paid. In a model like this one, where the lines cross depends on the size of the load, the gap in yearly costs and the return."
+            },
+            {
+              "type": "paragraph",
+              "text": "Breakpoints are volume discounts on the front-end load of Class A shares, and the discount depends on the amount invested in a particular family of funds. FINRA's example: a load of 5.75 percent on purchases under $50,000, cut to 4.50 percent for $50,000 to $99,999, and reduced further or eliminated for larger amounts. At those rates a $49,000 purchase pays $2,817.50 in sales charges while a $50,000 purchase pays $2,250. A breakpoint does not require one large purchase. A letter of intent is a commitment to buy a specified amount over a period, usually 13 months, and it earns the discount on each installment along the way. Rights of accumulation count shares already held, and those of certain related parties such as a spouse or children, toward the threshold."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Share class",
+                  "definition": "One of several types of shares in the same mutual fund, each owning the same portfolio but carrying its own fees and expenses."
+                },
+                {
+                  "term": "Front-end sales load",
+                  "definition": "A charge taken as a percentage of the purchase price, so that part of the money paid is not invested."
+                },
+                {
+                  "term": "Contingent deferred sales charge",
+                  "definition": "A back-end load paid only when shares are sold, normally shrinking the longer they are held."
+                },
+                {
+                  "term": "12b-1 fee",
+                  "definition": "An ongoing fee paid out of fund assets to cover the costs of marketing and selling fund shares."
+                },
+                {
+                  "term": "Breakpoint",
+                  "definition": "A purchase level at which a fund's front-end sales load is reduced, based on the amount invested in a fund family."
+                },
+                {
+                  "term": "Letter of intent",
+                  "definition": "A commitment to buy a specified amount over a period, usually 13 months, that earns the breakpoint discount on each purchase."
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "A discount that was not always applied",
+              "text": "FINRA's breakpoints page recounts that routine NASD examinations in 2002 found mutual fund transactions in which eligible customers did not always receive the breakpoint discounts they were entitled to."
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "This lesson explains how share-class costs are built and compared. It does not say which class, fund or purchase size suits anyone. A fund's actual charges for each class are set out in its prospectus."
+            },
+            {
+              "type": "quiz",
+              "question": "In the lesson's chart, why is Class C ahead in the early years but behind later?",
+              "choices": [
+                "Class C's portfolio earns a higher return before costs",
+                "Class C starts with more money invested, but its higher yearly costs compound until Class A overtakes it",
+                "Class A's front-end load is refunded after seven years",
+                "Class C shares convert into Class A shares after seven years"
+              ],
+              "answerIndex": 1,
+              "explanation": "Both classes hold the same portfolio. Class C puts the whole $10,000 to work, so it leads at first, but its yearly costs are 0.75 percentage point higher, and that gap compounds until Class A, which started with $9,500, pulls ahead after year 7."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Classes of one fund share a portfolio but can charge different fees, so their owners earn different returns.",
+                "A front-end load is taken at purchase, a deferred sales charge applies on sale and normally shrinks with time, and 12b-1 fees are ongoing.",
+                "Which class costs less depends on how long the shares are held: a lower upfront cost can lose out to lower yearly costs.",
+                "Breakpoints cut the front-end load at set purchase levels, and letters of intent and rights of accumulation can help reach them."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Updated Investor Bulletin: Mutual Fund Classes",
+              "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-61",
+              "publicationDate": "2021-02-24",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Financial Industry Regulatory Authority (FINRA)",
+              "documentTitle": "Mutual Funds - Share Classes",
+              "url": "https://www.finra.org/investors/investing/investment-products/mutual-funds/share-classes",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Financial Industry Regulatory Authority (FINRA)",
+              "documentTitle": "Breakpoints",
+              "url": "https://www.finra.org/rules-guidance/key-topics/breakpoints",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            }
+          ]
         }
       ]
     },
@@ -1283,9 +2067,9 @@
       "courseID": "reading-price-charts",
       "title": "Reading Price Charts",
       "icon": "chart.xyaxis.line",
-      "summary": "Learn to read candlesticks, trends, levels, patterns, and moving averages as a vocabulary for describing past prices - and understand why the evidence that they forecast prices is mixed and hard to use.",
+      "summary": "Nine lessons on reading candlesticks, trends, support and resistance, candle patterns, moving averages, volume, and trend lines as a vocabulary for describing past prices - plus base rates, hindsight, and costs, and why the evidence that charts forecast prices is mixed and hard to use.",
       "level": "intermediate",
-      "estimatedMinutes": 37,
+      "estimatedMinutes": 58,
       "lessons": [
         {
           "lessonID": "rpc-01",
@@ -3133,6 +3917,757 @@
               "verificationDate": "2026-09-14"
             }
           ]
+        },
+        {
+          "lessonID": "rpc-07",
+          "title": "Volume and Confirmation",
+          "summary": "What chart readers mean when they say volume confirmed a breakout, how relative volume is calculated, and what research on trading volume does and does not show.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Lesson 5 defined volume as the amount traded in a period. Chart readers put that number to one particular use: judging a breakout, a move through a support or resistance level that had held before. When the price closes through a level on much heavier trading than usual, they call the move confirmed. When it pushes through on unusually light trading, they call it unconfirmed, or say it came on thin volume. Their reasoning is that heavy trading reflects broader agreement than a handful of trades."
+            },
+            {
+              "type": "paragraph",
+              "text": "Usual is measured with relative volume: one period's volume divided by the average volume of a set number of earlier periods. In this lesson the comparison window is the previous 10 trading days. A relative volume of 2.0 means the day traded twice its recent average; 0.6 means it traded 60 percent of it. The window is a choice. A 20-day or 50-day window gives a different average, and so a different ratio for the same day."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-07-breakouts",
+              "kind": "candlestick",
+              "title": "A thin-volume break and a heavy-volume break",
+              "caption": "Days 1 to 10 never trade above 105. Day 11 closes at 105.3 on 0.9 million units, about 0.6 times the average of its previous 10 days, and day 12 closes back below 105 at 104.3. Day 18 closes at 106.1 on 3.0 million units, about 2.2 times the average of its previous 10 days. The chart ends on day 18, so it shows the label, not what followed.",
+              "xLabel": "Trading day",
+              "yLabel": "Price (illustrative units)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "candles": [
+                {
+                  "x": 1,
+                  "open": 103.0,
+                  "high": 103.9,
+                  "low": 102.6,
+                  "close": 103.6
+                },
+                {
+                  "x": 2,
+                  "open": 103.6,
+                  "high": 104.9,
+                  "low": 103.3,
+                  "close": 104.2
+                },
+                {
+                  "x": 3,
+                  "open": 104.2,
+                  "high": 104.5,
+                  "low": 103.1,
+                  "close": 103.4
+                },
+                {
+                  "x": 4,
+                  "open": 103.4,
+                  "high": 103.8,
+                  "low": 102.5,
+                  "close": 102.9
+                },
+                {
+                  "x": 5,
+                  "open": 102.9,
+                  "high": 104.8,
+                  "low": 102.7,
+                  "close": 104.5
+                },
+                {
+                  "x": 6,
+                  "open": 104.5,
+                  "high": 105.0,
+                  "low": 103.8,
+                  "close": 104.1
+                },
+                {
+                  "x": 7,
+                  "open": 104.1,
+                  "high": 104.6,
+                  "low": 103.5,
+                  "close": 104.4
+                },
+                {
+                  "x": 8,
+                  "open": 104.4,
+                  "high": 104.7,
+                  "low": 103.6,
+                  "close": 103.9
+                },
+                {
+                  "x": 9,
+                  "open": 103.9,
+                  "high": 104.6,
+                  "low": 103.4,
+                  "close": 104.3
+                },
+                {
+                  "x": 10,
+                  "open": 104.3,
+                  "high": 104.9,
+                  "low": 104.0,
+                  "close": 104.6
+                },
+                {
+                  "x": 11,
+                  "open": 104.6,
+                  "high": 105.6,
+                  "low": 104.4,
+                  "close": 105.3
+                },
+                {
+                  "x": 12,
+                  "open": 105.3,
+                  "high": 105.4,
+                  "low": 104.0,
+                  "close": 104.3
+                },
+                {
+                  "x": 13,
+                  "open": 104.3,
+                  "high": 104.7,
+                  "low": 103.4,
+                  "close": 103.8
+                },
+                {
+                  "x": 14,
+                  "open": 103.8,
+                  "high": 104.9,
+                  "low": 103.6,
+                  "close": 104.6
+                },
+                {
+                  "x": 15,
+                  "open": 104.6,
+                  "high": 104.8,
+                  "low": 103.9,
+                  "close": 104.2
+                },
+                {
+                  "x": 16,
+                  "open": 104.2,
+                  "high": 104.7,
+                  "low": 103.7,
+                  "close": 104.5
+                },
+                {
+                  "x": 17,
+                  "open": 104.5,
+                  "high": 104.9,
+                  "low": 104.1,
+                  "close": 104.7
+                },
+                {
+                  "x": 18,
+                  "open": 104.7,
+                  "high": 106.4,
+                  "low": 104.6,
+                  "close": 106.1
+                }
+              ],
+              "markers": [
+                {
+                  "x": 11,
+                  "label": "Thin-volume break"
+                },
+                {
+                  "x": 18,
+                  "label": "Heavy-volume break"
+                }
+              ]
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-07-volume",
+              "kind": "bar",
+              "title": "Synthetic daily volume for the same 18 days",
+              "caption": "Volume for the same 18 days. The bar on day 11 is the shortest in the chart and the bar on day 18 is the tallest. Each bar shows how much traded that day, not which way the price moved.",
+              "xLabel": "Trading day",
+              "yLabel": "Volume (millions of units, illustrative)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "series": [
+                {
+                  "name": "Volume",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 2,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 3,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 4,
+                      "y": 1.3
+                    },
+                    {
+                      "x": 5,
+                      "y": 1.7
+                    },
+                    {
+                      "x": 6,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 7,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 8,
+                      "y": 1.2
+                    },
+                    {
+                      "x": 9,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 10,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 11,
+                      "y": 0.9
+                    },
+                    {
+                      "x": 12,
+                      "y": 1.3
+                    },
+                    {
+                      "x": 13,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 14,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 15,
+                      "y": 1.3
+                    },
+                    {
+                      "x": 16,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 17,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 18,
+                      "y": 3.0
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 11,
+                  "label": "0.6x average"
+                },
+                {
+                  "x": 18,
+                  "label": "2.2x average"
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Activity, not direction",
+              "text": "Every unit bought on a given day was also sold by someone, so volume by itself cannot say which side was more eager. A confirmation rule is still built entirely from past prices and past volume. It sorts breakouts into labeled groups after the fact; it does not tell you which ones hold. A thin break can hold, and a heavy break can fail."
+            },
+            {
+              "type": "paragraph",
+              "text": "Research on volume does not reduce to a simple confirmation rule. In a 1992 NBER working paper, John Campbell, Sanford Grossman, and Jiang Wang found that the day-to-day correlation of stock index returns tends to decline as trading volume rises. Their model explains this with traders who absorb buying or selling pressure from others who are not trading on information, and who are rewarded through changing expected returns. The model implies that a price drop on a heavy-volume day is more often linked to a rise in expected return than a drop on a light-volume day. A 2001 NBER working paper by Guillermo Llorente, Roni Michaely, Gideon Saar, and Jiang Wang argued that price moves driven by risk-sharing trades tend to reverse, while moves driven by trades on private information tend to continue, and reported evidence consistent with that in daily data on individual stocks listed on two U.S. exchanges. Both kinds of trading add to volume, and a chart does not show which kind was behind a given day."
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "Thin volume and liquidity",
+              "text": "Investor.gov describes a stock's liquidity as how rapidly its shares can be bought or sold without substantially moving the price, and notes that stocks with low liquidity may be difficult to sell. Thin volume on one day, like day 11 in the chart, is a narrower idea: fewer units than usual changed hands that day."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Relative volume",
+                  "definition": "A period's volume divided by the average volume of a chosen number of earlier periods."
+                },
+                {
+                  "term": "Confirmation",
+                  "definition": "Chart readers' label for a breakout that happens on heavier-than-usual volume."
+                },
+                {
+                  "term": "Thin volume",
+                  "definition": "Trading that is well below a period's recent average, so relatively few units changed hands."
+                },
+                {
+                  "term": "Liquidity",
+                  "definition": "How easily and quickly shares can be bought or sold without substantially moving the price."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "Over the previous 10 trading days, volume averaged 1.5 million units. On the day the price closes above a resistance level, 3.3 million units trade. Which statement is correct?",
+              "choices": [
+                "Relative volume is 0.45, so the day traded less than half its recent average.",
+                "Relative volume is 2.2, so the breakout is certain to hold.",
+                "Relative volume is 2.2: the day traded 2.2 times its recent average, which by itself does not settle what the price does next.",
+                "Relative volume is 1.8, because volume rose by 1.8 million units."
+              ],
+              "answerIndex": 2,
+              "explanation": "Relative volume is 3.3 divided by 1.5, which is 2.2. Chart readers would call that a heavy-volume break, but the ratio only describes activity on one day; it does not settle whether the price stays above the level."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Chart readers call a breakout confirmed when it comes on heavier-than-usual volume and doubt it when volume is thin.",
+                "Relative volume divides a period's volume by an earlier average, and the window chosen changes the answer.",
+                "A thin break can hold and a heavy break can fail; the label does not settle the outcome.",
+                "Research links volume to later returns in more than one way, so heavy volume does not simply mean a move continues.",
+                "Confirmation rules use only past data and sort breakouts after the fact."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Trading Volume and Serial Correlation in Stock Returns (Working Paper 4193)",
+              "url": "https://www.nber.org/papers/w4193",
+              "publicationDate": "1992-10-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Dynamic Volume-Return Relation of Individual Stocks (Working Paper 8312)",
+              "url": "https://www.nber.org/papers/w8312",
+              "publicationDate": "2001-05-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Liquidity (or Marketability)",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/liquidity-or-marketability",
+              "publicationDate": "2026-09-11",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "rpc-08",
+          "title": "Drawing Trend Lines",
+          "summary": "How a trend line is drawn through past lows or highs, why the choice of anchor points and of closes versus intraday lows changes when a break appears, and what a false break is.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Lesson 2 described an uptrend as a run of higher highs and higher lows. A trend line turns that description into a drawing. In an uptrend, the line starts at one swing low, passes through a later and higher swing low, and is extended to the right. In a downtrend, it runs through falling swing highs instead. Two points define a line; a third touch, as with the support lines in lesson 3, only tightens the description of the past. The extended part of the line is only the past slope carried forward; it is not a forecast."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "trendline-anchors",
+              "caption": "A rising zigzag price path with three marked lows, labeled 1, 2 and 3. Dashed Line A runs through lows 1 and 2 and is steeper; dashed Line B runs through lows 1 and 3 and is shallower. Near the right edge the price dips below Line A but not below Line B, which it touches at low 3: a break of one line, not the other."
+            },
+            {
+              "type": "paragraph",
+              "text": "The anchors are a choice, and the choice sets the slope. Any two lows define a line. A steeper line runs closer to the latest prices, so the price tends to cross it sooner than a shallower one. In the diagram, a reader who drew Line A sees a break, while a reader who drew Line B sees an intact uptrend, using exactly the same prices."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-08-anchors",
+              "kind": "candlestick",
+              "title": "One set of prices, two trend lines",
+              "caption": "Swing lows on days 3, 9 and 15 are marked. A line through the day 3 and day 9 lows rises 0.3 per day; a line through the day 3 and day 15 lows rises 0.2 per day. Lows fall below the steeper line on days 15, 16, 20, 21 and 22, and closes fall below it on days 15, 21 and 22. No low from day 3 to day 22 is below the shallower line.",
+              "xLabel": "Trading day",
+              "yLabel": "Price (illustrative units)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "candles": [
+                {
+                  "x": 1,
+                  "open": 98.4,
+                  "high": 98.7,
+                  "low": 97.8,
+                  "close": 97.9
+                },
+                {
+                  "x": 2,
+                  "open": 97.9,
+                  "high": 98.1,
+                  "low": 97.3,
+                  "close": 97.5
+                },
+                {
+                  "x": 3,
+                  "open": 97.5,
+                  "high": 98.3,
+                  "low": 97.0,
+                  "close": 98.1
+                },
+                {
+                  "x": 4,
+                  "open": 98.1,
+                  "high": 98.9,
+                  "low": 98.0,
+                  "close": 98.7
+                },
+                {
+                  "x": 5,
+                  "open": 98.7,
+                  "high": 99.6,
+                  "low": 98.6,
+                  "close": 99.4
+                },
+                {
+                  "x": 6,
+                  "open": 99.4,
+                  "high": 100.2,
+                  "low": 99.2,
+                  "close": 99.9
+                },
+                {
+                  "x": 7,
+                  "open": 99.9,
+                  "high": 100.1,
+                  "low": 99.0,
+                  "close": 99.3
+                },
+                {
+                  "x": 8,
+                  "open": 99.3,
+                  "high": 99.6,
+                  "low": 98.9,
+                  "close": 99.1
+                },
+                {
+                  "x": 9,
+                  "open": 99.1,
+                  "high": 99.9,
+                  "low": 98.8,
+                  "close": 99.7
+                },
+                {
+                  "x": 10,
+                  "open": 99.7,
+                  "high": 100.6,
+                  "low": 99.5,
+                  "close": 100.4
+                },
+                {
+                  "x": 11,
+                  "open": 100.4,
+                  "high": 101.3,
+                  "low": 100.3,
+                  "close": 101.1
+                },
+                {
+                  "x": 12,
+                  "open": 101.1,
+                  "high": 101.8,
+                  "low": 100.9,
+                  "close": 101.5
+                },
+                {
+                  "x": 13,
+                  "open": 101.5,
+                  "high": 101.6,
+                  "low": 100.6,
+                  "close": 100.8
+                },
+                {
+                  "x": 14,
+                  "open": 100.8,
+                  "high": 101.1,
+                  "low": 100.4,
+                  "close": 100.9
+                },
+                {
+                  "x": 15,
+                  "open": 100.9,
+                  "high": 101.0,
+                  "low": 99.4,
+                  "close": 100.2
+                },
+                {
+                  "x": 16,
+                  "open": 100.2,
+                  "high": 101.4,
+                  "low": 100.1,
+                  "close": 101.3
+                },
+                {
+                  "x": 17,
+                  "open": 101.3,
+                  "high": 102.2,
+                  "low": 101.3,
+                  "close": 102.0
+                },
+                {
+                  "x": 18,
+                  "open": 102.0,
+                  "high": 102.8,
+                  "low": 101.8,
+                  "close": 102.6
+                },
+                {
+                  "x": 19,
+                  "open": 102.6,
+                  "high": 103.0,
+                  "low": 102.1,
+                  "close": 102.3
+                },
+                {
+                  "x": 20,
+                  "open": 102.3,
+                  "high": 102.5,
+                  "low": 101.7,
+                  "close": 102.2
+                },
+                {
+                  "x": 21,
+                  "open": 102.2,
+                  "high": 102.3,
+                  "low": 101.4,
+                  "close": 101.6
+                },
+                {
+                  "x": 22,
+                  "open": 101.6,
+                  "high": 102.4,
+                  "low": 101.2,
+                  "close": 102.1
+                }
+              ],
+              "markers": [
+                {
+                  "x": 3,
+                  "label": "Low 97.0"
+                },
+                {
+                  "x": 9,
+                  "label": "Low 98.8"
+                },
+                {
+                  "x": 15,
+                  "label": "Low 99.4"
+                },
+                {
+                  "x": 20,
+                  "label": "Intraday dip only"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "A second choice is what counts as crossing. Some readers count any trade below the line, so an intraday low is enough. Others require a close below it. In the chart, day 20 trades as low as 101.7, below the steeper line at 102.1, but closes at 102.2, above it: a break by the intraday rule and not by the closing rule. Day 15 closed below that line, yet the closes on days 16 through 20 were all back above it. A move through a line that is soon undone is called a false break. Whether a break was false is only known later, and the verdict depends on which line and which rule were chosen."
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "Short dips and stop orders",
+              "text": "Investor.gov explains that a stop order becomes a market order once the price reaches a chosen stop price, and that a short-term fluctuation can set it off, with the trade possibly filled at a different price in a fast-moving market. So an order parked just under a trend line can be triggered by a dip that reverses before the close. As lesson 1 noted, Investor.gov gives the regular-session close for stocks as the 4:00 p.m. price."
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "The eye is not a rule",
+              "text": "Because drawing lines takes judgment, researchers who test chart shapes have to replace the eye with fixed procedures. In their 2000 NBER working paper, Andrew Lo, Harry Mamaysky, and Jiang Wang wrote that technical analysis is highly subjective, since the shapes people see in price charts often depend on who is looking, and they proposed a systematic, automatic method for recognizing patterns. Scale is another hidden choice: on a logarithmic price axis, equal percentage moves take equal height, so a straight line drawn through the same two lows on a log axis is a different line from one drawn on an ordinary axis, and the price can cross the two on different days."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Trend line",
+                  "definition": "A straight line drawn through two or more swing lows in an uptrend, or swing highs in a downtrend, and extended to the right."
+                },
+                {
+                  "term": "Anchor point",
+                  "definition": "One of the past swing lows or highs a trend line passes through; changing it changes the slope."
+                },
+                {
+                  "term": "False break",
+                  "definition": "A move through a trend line or level that is reversed soon after, which can only be labeled in hindsight."
+                },
+                {
+                  "term": "Logarithmic scale",
+                  "definition": "A price axis on which equal percentage changes take up equal vertical distance."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "A trend line runs through a low of 50 on day 1 and a low of 54 on day 5. On day 10 the price trades as low as 58.4 and closes at 59.3. If the line keeps its slope, which statement is correct?",
+              "choices": [
+                "The line is at 59 on day 10, so the day is a break by the intraday-low rule but not by the closing rule.",
+                "The line is at 58 on day 10, so the day is not a break by either rule.",
+                "The line is at 59 on day 10, so the day is a break by both rules.",
+                "The line is at 54 on day 10, because a trend line stays at its last anchor."
+              ],
+              "answerIndex": 0,
+              "explanation": "The line rises 4 over 4 days, or 1 per day, so on day 10 it sits at 50 + 9 = 59. The low of 58.4 is below 59 but the close of 59.3 is above it, so only the intraday rule counts the day as a break."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "A trend line joins two or more past swing lows, or highs, and carries their slope forward.",
+                "Different anchor points give different slopes, so one line can break while another holds.",
+                "Intraday and closing rules can disagree about the same day.",
+                "A false break is a move through a line that is soon undone, and it can only be labeled afterward.",
+                "Testing chart shapes fairly requires fixed rules in place of the eye."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Foundations of Technical Analysis: Computational Algorithms, Statistical Inference, and Empirical Implementation (Working Paper 7613)",
+              "url": "https://www.nber.org/papers/w7613",
+              "publicationDate": "2000-03-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Stop Order",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/stop-order",
+              "publicationDate": "2026-09-11",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Closing Price",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price",
+              "publicationDate": "2026-09-11",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "rpc-09",
+          "title": "Base Rates: Judging a Pattern's Record",
+          "summary": "Why a pattern's hit rate means little until it is compared with how often prices rose anyway, and how frequent signals, small samples, and trading costs shrink or erase an apparent edge.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A claim that a pattern was followed by a rise 55 percent of the time sounds like evidence, but it is missing a comparison. The base rate is how often the price was higher after any comparable period, pattern or not. The conditional frequency is how often it was higher after periods when the pattern appeared. A pattern only carries information if those two numbers differ."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "base-rate-grid",
+              "caption": "A 10 × 10 grid of 100 dots, each an illustrative past case. The 20 ringed dots are cases where the pattern appeared, and 11 of them are filled because the price was higher afterward. Of the other 80 dots, 44 are filled. That is 11 of 20 (55%) with the pattern and 44 of 80 (55%) without it, so the pattern adds no information here."
+            },
+            {
+              "type": "paragraph",
+              "text": "This is the trap of a rule that fires often. With the same 55 percent base rate, a rule that signals on many days while carrying no real information would still see a rise after roughly 55 percent of its signals, and each of those rises looks like a success. The signals followed by a fall are false positives: the rule flagged something and the price did not follow. Quoting a hit rate without the base rate turns the market's ordinary behavior into an apparent skill."
+            },
+            {
+              "type": "callout",
+              "style": "example",
+              "title": "Small samples",
+              "text": "Take a coin with an exact 50 percent chance of heads. In 20 flips, the chance of getting 12 or more heads, a record of 60 percent or better, is about 25 percent. So a rule that fired 20 times and was right 12 times is easy to produce by luck alone. Test many rules on the same history and some post records like that by chance: the data-mining problem from lesson 6, in numbers."
+            },
+            {
+              "type": "paragraph",
+              "text": "Careful research makes exactly this comparison. The 2000 study by Andrew Lo, Harry Mamaysky, and Jiang Wang, discussed in lesson 4, compared the distribution of daily stock returns conditioned on patterns such as head-and-shoulders or double bottoms with the unconditional distribution, a form of base-rate comparison, and reported that several patterns provided incremental information and may have some practical value. Testing many ideas raises the bar for believing any one of them. In a 2014 NBER working paper, Campbell Harvey, Yan Liu, and Heqing Zhu argued that after hundreds of factors had been proposed to explain differences in expected stock returns, the usual significance cutoff of a t-ratio above 2.0 does not make sense for a newly discovered factor, and their model suggests such a factor needs a t-ratio above 3.0. They studied factors rather than chart patterns, but the problem of many tests applies to both."
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Costs can flip a thin edge",
+              "text": "Even an edge that is real can be too thin to survive trading costs. As an illustration, suppose a rule is right 55 percent of the time and each trade gains or loses 0.5 percent. Before costs, the average trade earns 0.55 × 0.5 − 0.45 × 0.5 = 0.05 percent. If a round trip costs 0.1 percent in commissions and spread, the average trade loses 0.05 percent. FINRA notes that frequent trading can come with higher costs that might erode returns, as well as potential tax implications."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Base rate",
+                  "definition": "How often an outcome happened across all comparable past cases, whether or not a pattern appeared."
+                },
+                {
+                  "term": "Conditional frequency",
+                  "definition": "How often an outcome happened among only the cases where a given pattern or signal appeared."
+                },
+                {
+                  "term": "False positive",
+                  "definition": "A signal that appeared but was not followed by the outcome it is supposed to point to."
+                },
+                {
+                  "term": "t-ratio",
+                  "definition": "An estimate divided by its standard error; a larger value makes a result harder to explain as chance."
+                },
+                {
+                  "term": "Multiple testing",
+                  "definition": "Trying many rules or factors on the same data, which raises the odds that some look significant by luck."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "Over 1,000 past days, a signal appeared on 200 days, and the price was higher five days later after 116 of them. On the other 800 days, the price was higher five days later after 472 of them. What does the comparison show?",
+              "choices": [
+                "The signal was right 58 percent of the time, so it had an 8-point edge over a coin flip.",
+                "Signal days were followed by a rise 58 percent of the time versus 59 percent for other days, so the signal added no information in this sample.",
+                "The base rate is 116 out of 1,000, or 11.6 percent, so the signal is far better than the base rate.",
+                "The signal was right 116 times, which is enough to show it is reliable."
+              ],
+              "answerIndex": 1,
+              "explanation": "The fair comparison is with the days without the signal: 116 of 200 is 58 percent and 472 of 800 is 59 percent. The signal's record is no better than what happened without it, so its 58 percent adds nothing beyond the base rate."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "A hit rate means little until it is compared with the base rate: how often prices rose without the pattern.",
+                "A rule that fires often collects many successes from the base rate alone, along with many false positives.",
+                "Small samples produce impressive records by chance, and testing many rules makes that more common.",
+                "Careful studies compare conditional and unconditional returns; some report information in patterns, and the bar rises when many ideas are tested.",
+                "A thin edge can turn negative after trading costs."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Foundations of Technical Analysis: Computational Algorithms, Statistical Inference, and Empirical Implementation (Working Paper 7613)",
+              "url": "https://www.nber.org/papers/w7613",
+              "publicationDate": "2000-03-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": ". . . and the Cross-Section of Expected Returns (Working Paper 20592)",
+              "url": "https://www.nber.org/papers/w20592",
+              "publicationDate": "2014-10-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Financial Industry Regulatory Authority (FINRA)",
+              "documentTitle": "Frequent Intraday Trading: Understanding the Basics",
+              "url": "https://www.finra.org/investors/insights/frequent-intraday-trading",
+              "publicationDate": "2026-06-04",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            }
+          ]
         }
       ]
     },
@@ -3140,9 +4675,9 @@
       "courseID": "bonds-rates-yield-curve",
       "title": "Bonds, Rates and the Yield Curve",
       "icon": "percent",
-      "summary": "How a bond's price and yield are linked, why longer bonds swing more, what the yield curve shows, and how the central bank's policy rate connects to the rates people meet in daily life.",
+      "summary": "How a bond's price and yield are linked, why longer bonds swing more, what the yield curve and its inversions show, how real yields and breakeven inflation are read, how the policy rate connects to everyday rates, why company bonds pay a credit spread over Treasuries, and how the Treasury auctions new debt.",
       "level": "intermediate",
-      "estimatedMinutes": 42,
+      "estimatedMinutes": 63,
       "lessons": [
         {
           "lessonID": "bry-01",
@@ -4329,6 +5864,1101 @@
               "url": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
               "publicationDate": "2026-09-14",
               "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "bry-07",
+          "title": "Credit Spreads",
+          "summary": "Why a company's bond yields more than a Treasury of similar maturity, how credit ratings sort bonds into investment grade and high yield, and how spreads widened in a documented stress episode.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Treasury yields are the ruler other borrowers are measured against. A company that sells a 10-year bond has to offer more than a 10-year Treasury pays, because lending to a company brings risks beyond those of the Treasury benchmark. The gap between the two yields, in percentage points, is the credit spread. So a corporate bond's yield can be read as two stacked pieces: the Treasury yield for a similar maturity, plus a spread for what is different about this borrower and this bond. The Federal Reserve Board's 2020 annual report tracks spreads in this form, as corporate bond yields over comparable-maturity Treasury yields."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "credit-spread-stack",
+              "caption": "Three bars side by side: Treasury, Higher-rated company and Lower-rated company. Every bar has the same lower segment, the Treasury yield. The two company bars add an upper segment labeled credit spread, and that segment is taller for the lower-rated company."
+            },
+            {
+              "type": "paragraph",
+              "text": "One piece of the spread pays for default risk. An SEC investor bulletin on corporate bonds names, as one key risk to bondholders, the chance that the company fails to make timely payments of interest or principal. Credit rating agencies assign ratings based on their evaluation of that risk and may revise them. A later SEC bulletin on credit ratings explains that some agencies split their scales between the BBB and BB categories: BBB- or higher is investment grade, and anything lower is non-investment grade, also called speculative or high yield. Those lower-rated bonds generally offer higher interest rates to compensate for greater risk, so the spread segment generally grows as the rating falls."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Credit spread",
+                  "definition": "The extra yield, in percentage points, that a bond pays over a Treasury security of similar maturity."
+                },
+                {
+                  "term": "Default risk",
+                  "definition": "The risk that a borrower fails to make timely payments of interest or principal on its bonds."
+                },
+                {
+                  "term": "Investment grade",
+                  "definition": "On rating scales that split at the BBB and BB categories, a rating of BBB- or higher."
+                },
+                {
+                  "term": "High-yield bond",
+                  "definition": "A non-investment-grade bond, also called speculative, which generally pays a higher interest rate to compensate for greater risk."
+                },
+                {
+                  "term": "Liquidity",
+                  "definition": "The ability to sell a bond for cash when the owner chooses; bonds that trade often and in high volumes may be more liquid."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Default risk is not the whole story. The credit ratings bulletin notes that a rating does not reflect market or liquidity risk, and that even debt rated at the top of the scale sometimes defaults. The corporate bond bulletin describes liquidity risk as the chance that a seller may not receive a price that reflects the bond's true value. Bond terms matter too: some bonds let the company buy them back before maturity, which the corporate bond bulletin calls call risk."
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-07-spreads-in-stress",
+              "kind": "line",
+              "title": "Illustrative 10-year yields for the Treasury and two companies through a stress episode",
+              "caption": "In months 1 to 9 the higher-rated company yields 1.2 points more than the Treasury and the lower-rated company 3.5 points more. As stress hits, the Treasury yield dips from 3.9 percent in month 9 to 3.4 percent in month 11, yet the lower-rated company's yield climbs from 7.4 to 10.4 percent, as its spread doubles to 7.0 points. The higher-rated spread peaks at 2.4 points in the same month. By month 24 both spreads are back at their starting levels.",
+              "xLabel": "Month",
+              "yLabel": "Yield (percent)",
+              "dataNote": "Synthetic illustration — hand-designed yields for a Treasury and two unnamed companies, not real market data.",
+              "series": [
+                {
+                  "name": "Treasury",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 2,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 3,
+                      "y": 4.1
+                    },
+                    {
+                      "x": 4,
+                      "y": 4.1
+                    },
+                    {
+                      "x": 5,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 6,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 7,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 8,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 9,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 10,
+                      "y": 3.6
+                    },
+                    {
+                      "x": 11,
+                      "y": 3.4
+                    },
+                    {
+                      "x": 12,
+                      "y": 3.4
+                    },
+                    {
+                      "x": 13,
+                      "y": 3.5
+                    },
+                    {
+                      "x": 14,
+                      "y": 3.6
+                    },
+                    {
+                      "x": 15,
+                      "y": 3.7
+                    },
+                    {
+                      "x": 16,
+                      "y": 3.7
+                    },
+                    {
+                      "x": 17,
+                      "y": 3.8
+                    },
+                    {
+                      "x": 18,
+                      "y": 3.8
+                    },
+                    {
+                      "x": 19,
+                      "y": 3.8
+                    },
+                    {
+                      "x": 20,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 21,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 22,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 23,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 24,
+                      "y": 3.9
+                    }
+                  ]
+                },
+                {
+                  "name": "Higher-rated company",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 2,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 3,
+                      "y": 5.3
+                    },
+                    {
+                      "x": 4,
+                      "y": 5.3
+                    },
+                    {
+                      "x": 5,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 6,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 7,
+                      "y": 5.1
+                    },
+                    {
+                      "x": 8,
+                      "y": 5.1
+                    },
+                    {
+                      "x": 9,
+                      "y": 5.1
+                    },
+                    {
+                      "x": 10,
+                      "y": 5.4
+                    },
+                    {
+                      "x": 11,
+                      "y": 5.8
+                    },
+                    {
+                      "x": 12,
+                      "y": 5.7
+                    },
+                    {
+                      "x": 13,
+                      "y": 5.5
+                    },
+                    {
+                      "x": 14,
+                      "y": 5.4
+                    },
+                    {
+                      "x": 15,
+                      "y": 5.3
+                    },
+                    {
+                      "x": 16,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 17,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 18,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 19,
+                      "y": 5.1
+                    },
+                    {
+                      "x": 20,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 21,
+                      "y": 5.2
+                    },
+                    {
+                      "x": 22,
+                      "y": 5.1
+                    },
+                    {
+                      "x": 23,
+                      "y": 5.1
+                    },
+                    {
+                      "x": 24,
+                      "y": 5.1
+                    }
+                  ]
+                },
+                {
+                  "name": "Lower-rated company",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 7.5
+                    },
+                    {
+                      "x": 2,
+                      "y": 7.5
+                    },
+                    {
+                      "x": 3,
+                      "y": 7.6
+                    },
+                    {
+                      "x": 4,
+                      "y": 7.6
+                    },
+                    {
+                      "x": 5,
+                      "y": 7.5
+                    },
+                    {
+                      "x": 6,
+                      "y": 7.5
+                    },
+                    {
+                      "x": 7,
+                      "y": 7.4
+                    },
+                    {
+                      "x": 8,
+                      "y": 7.4
+                    },
+                    {
+                      "x": 9,
+                      "y": 7.4
+                    },
+                    {
+                      "x": 10,
+                      "y": 8.6
+                    },
+                    {
+                      "x": 11,
+                      "y": 10.4
+                    },
+                    {
+                      "x": 12,
+                      "y": 9.9
+                    },
+                    {
+                      "x": 13,
+                      "y": 9.0
+                    },
+                    {
+                      "x": 14,
+                      "y": 8.4
+                    },
+                    {
+                      "x": 15,
+                      "y": 8.1
+                    },
+                    {
+                      "x": 16,
+                      "y": 7.8
+                    },
+                    {
+                      "x": 17,
+                      "y": 7.7
+                    },
+                    {
+                      "x": 18,
+                      "y": 7.6
+                    },
+                    {
+                      "x": 19,
+                      "y": 7.5
+                    },
+                    {
+                      "x": 20,
+                      "y": 7.5
+                    },
+                    {
+                      "x": 21,
+                      "y": 7.5
+                    },
+                    {
+                      "x": 22,
+                      "y": 7.4
+                    },
+                    {
+                      "x": 23,
+                      "y": 7.4
+                    },
+                    {
+                      "x": 24,
+                      "y": 7.4
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 11,
+                  "label": "Spreads at their widest"
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "A documented stress episode",
+              "text": "Federal Reserve records show this pattern in early 2020. The Board's 2020 annual report states that spreads of corporate bond yields over comparable-maturity Treasury yields increased significantly early in the pandemic, a period when liquidity conditions in that market had deteriorated. A Board FEDS Notes article of October 7, 2020, describes spreads widening dramatically while new issuance halted, then easing substantially in the days after the Federal Reserve and the Treasury announced a corporate bond buying facility on March 23, 2020, before the facility had bought a single bond. The chart is a sketch of that kind of pattern, not the data."
+            },
+            {
+              "type": "quiz",
+              "question": "An illustrative 10-year Treasury note yields 4.0 percent. A 10-year bond from a company rated A yields 5.1 percent, and a 10-year bond from a company rated BB yields 7.2 percent. On a rating scale that splits investment grade between BBB and BB, which statement is accurate?",
+              "choices": [
+                "The A bond's credit spread is 5.1 percentage points, because the spread equals its yield",
+                "Both bonds have the same spread, because they share the same Treasury benchmark",
+                "The BB bond's credit spread is 3.2 percentage points, and the bond is non-investment grade",
+                "The BB bond is investment grade, because its rating contains the letter B"
+              ],
+              "answerIndex": 2,
+              "explanation": "A credit spread is the bond's yield minus the Treasury yield of similar maturity: 7.2 minus 4.0 is 3.2 points for the BB bond, and 5.1 minus 4.0 is 1.1 points for the A bond. BB sits below BBB-, so on that scale the bond is non-investment grade, or high yield."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "A corporate bond's yield can be read as a Treasury yield of similar maturity plus a credit spread.",
+                "Ratings sort bonds by assessed default risk; on scales that split at BBB and BB, BBB- or higher is investment grade.",
+                "High-yield bonds generally pay more to compensate for greater risk, so their spreads are wider.",
+                "A rating addresses credit risk only, not liquidity or call risk, and it is not a guarantee of repayment.",
+                "Federal Reserve records document spreads widening sharply in early 2020 and easing after a corporate bond facility was announced."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "What Are Corporate Bonds?",
+              "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/what-are",
+              "publicationDate": "2013-06-04",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Updated Investor Bulletin: The ABCs of Credit Ratings",
+              "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated-8",
+              "publicationDate": "2017-10-12",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Board of Governors of the Federal Reserve System",
+              "documentTitle": "Financial Stability (2020 Annual Report)",
+              "url": "https://www.federalreserve.gov/publications/2020-financial-stability.htm",
+              "publicationDate": "2021-08-26",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Board of Governors of the Federal Reserve System",
+              "documentTitle": "The Corporate Bond Market Crises and the Government Response",
+              "url": "https://www.federalreserve.gov/econres/notes/feds-notes/the-corporate-bond-market-crises-and-the-government-response-20201007.html",
+              "publicationDate": "2020-10-07",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "bry-08",
+          "title": "Breakeven Inflation and the Real Yield Curve",
+          "summary": "How the breakeven inflation rate is computed from nominal and inflation-protected Treasury yields, what it contains besides expected inflation, and how to read a real yield below zero.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Put a nominal Treasury note and a TIPS of about the same maturity side by side. The nominal yield is stated in dollars, so it has to cover inflation; the TIPS yield is stated in real terms, because inflation is paid through the principal adjustment. Nominal yield minus TIPS yield is the breakeven inflation rate. Federal Reserve Board economists note that this spread, also called inflation compensation, has often been used as a real-time proxy for market participants' inflation expectations."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "breakeven-split",
+              "caption": "Two bars for the same maturity: a taller Nominal Treasury bar and a shorter TIPS real yield bar. A bracket spans the difference in their heights, labeled breakeven inflation ≈ nominal − real."
+            },
+            {
+              "type": "callout",
+              "style": "example",
+              "title": "Computing a breakeven",
+              "text": "An illustrative 10-year Treasury note yields 4.30 percent and a 10-year TIPS yields 1.90 percent, so the breakeven is 4.30 minus 1.90, or 2.40 percentage points. FRED, the data service of the Federal Reserve Bank of St. Louis, publishes a daily 10-Year Breakeven Inflation Rate derived from 10-year nominal and inflation-indexed constant maturity Treasury yields, in percent and not seasonally adjusted, and describes it as the inflation market participants expect over the next 10 years, on average."
+            },
+            {
+              "type": "paragraph",
+              "text": "That shorthand has limits. In the Board note's model, inflation compensation equals expected inflation, plus an inflation risk premium, minus a TIPS liquidity premium. The inflation risk premium is extra compensation nominal bond investors demand for bearing inflation risk; the note says it is believed to have been positive and sizable in the 1970s and 1980s and appears to have declined to lower or even negative levels in later decades. The liquidity premium mainly reflects the lower liquidity of TIPS compared with nominal Treasury securities, and it typically lifts TIPS yields above true real yields, pulling the measured breakeven down. So a breakeven can sit above or below expected inflation, depending on which premium is larger."
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-08-real-yield-below-zero",
+              "kind": "line",
+              "title": "An illustrative nominal yield, real yield and the breakeven between them",
+              "caption": "The breakeven line is the nominal yield minus the real yield. From month 5 to month 18 the real yield is below zero while the nominal yield stays positive, so the breakeven sits above the nominal yield. In month 8 the nominal yield is 1.0 percent and the real yield is −1.0 percent, a breakeven of 2.0 points.",
+              "xLabel": "Month",
+              "yLabel": "Percent",
+              "dataNote": "Synthetic illustration — hand-designed yields for a 10-year nominal note and a 10-year TIPS, not real Treasury data.",
+              "series": [
+                {
+                  "name": "Nominal 10-year yield",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 2.0
+                    },
+                    {
+                      "x": 2,
+                      "y": 1.9
+                    },
+                    {
+                      "x": 3,
+                      "y": 1.8
+                    },
+                    {
+                      "x": 4,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 5,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 6,
+                      "y": 1.2
+                    },
+                    {
+                      "x": 7,
+                      "y": 1.0
+                    },
+                    {
+                      "x": 8,
+                      "y": 1.0
+                    },
+                    {
+                      "x": 9,
+                      "y": 1.1
+                    },
+                    {
+                      "x": 10,
+                      "y": 1.2
+                    },
+                    {
+                      "x": 11,
+                      "y": 1.3
+                    },
+                    {
+                      "x": 12,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 13,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 14,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 15,
+                      "y": 1.7
+                    },
+                    {
+                      "x": 16,
+                      "y": 1.8
+                    },
+                    {
+                      "x": 17,
+                      "y": 1.9
+                    },
+                    {
+                      "x": 18,
+                      "y": 2.0
+                    },
+                    {
+                      "x": 19,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 20,
+                      "y": 2.2
+                    },
+                    {
+                      "x": 21,
+                      "y": 2.3
+                    },
+                    {
+                      "x": 22,
+                      "y": 2.4
+                    },
+                    {
+                      "x": 23,
+                      "y": 2.5
+                    },
+                    {
+                      "x": 24,
+                      "y": 2.6
+                    }
+                  ]
+                },
+                {
+                  "name": "TIPS real 10-year yield",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 0.4
+                    },
+                    {
+                      "x": 2,
+                      "y": 0.3
+                    },
+                    {
+                      "x": 3,
+                      "y": 0.2
+                    },
+                    {
+                      "x": 4,
+                      "y": 0.0
+                    },
+                    {
+                      "x": 5,
+                      "y": -0.3
+                    },
+                    {
+                      "x": 6,
+                      "y": -0.6
+                    },
+                    {
+                      "x": 7,
+                      "y": -0.9
+                    },
+                    {
+                      "x": 8,
+                      "y": -1.0
+                    },
+                    {
+                      "x": 9,
+                      "y": -1.0
+                    },
+                    {
+                      "x": 10,
+                      "y": -0.9
+                    },
+                    {
+                      "x": 11,
+                      "y": -0.8
+                    },
+                    {
+                      "x": 12,
+                      "y": -0.7
+                    },
+                    {
+                      "x": 13,
+                      "y": -0.6
+                    },
+                    {
+                      "x": 14,
+                      "y": -0.5
+                    },
+                    {
+                      "x": 15,
+                      "y": -0.4
+                    },
+                    {
+                      "x": 16,
+                      "y": -0.3
+                    },
+                    {
+                      "x": 17,
+                      "y": -0.2
+                    },
+                    {
+                      "x": 18,
+                      "y": -0.1
+                    },
+                    {
+                      "x": 19,
+                      "y": 0.0
+                    },
+                    {
+                      "x": 20,
+                      "y": 0.1
+                    },
+                    {
+                      "x": 21,
+                      "y": 0.1
+                    },
+                    {
+                      "x": 22,
+                      "y": 0.2
+                    },
+                    {
+                      "x": 23,
+                      "y": 0.2
+                    },
+                    {
+                      "x": 24,
+                      "y": 0.3
+                    }
+                  ]
+                },
+                {
+                  "name": "Breakeven (difference)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 2,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 3,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 4,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 5,
+                      "y": 1.7
+                    },
+                    {
+                      "x": 6,
+                      "y": 1.8
+                    },
+                    {
+                      "x": 7,
+                      "y": 1.9
+                    },
+                    {
+                      "x": 8,
+                      "y": 2.0
+                    },
+                    {
+                      "x": 9,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 10,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 11,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 12,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 13,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 14,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 15,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 16,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 17,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 18,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 19,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 20,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 21,
+                      "y": 2.2
+                    },
+                    {
+                      "x": 22,
+                      "y": 2.2
+                    },
+                    {
+                      "x": 23,
+                      "y": 2.3
+                    },
+                    {
+                      "x": 24,
+                      "y": 2.3
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 8,
+                  "label": "Real −1.0, nominal 1.0: breakeven 2.0"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Because the Treasury publishes a daily par real yield curve next to its nominal par yield curve, subtracting the real curve from the nominal curve at the same maturity gives a breakeven for each maturity."
+            },
+            {
+              "type": "paragraph",
+              "text": "A real yield can also fall below zero. TreasuryDirect states that TIPS auction rules allow negative real yield bids. Under a rule Treasury amended in April 2011, a note or bond auction that produces a yield below 0.125 percent gets a 0.125 percent interest rate, with the price adjusted to a premium. The small coupon is still paid; paying more than par is what pulls the real yield below zero. And when the real yield is negative while the nominal yield is positive, the breakeven exceeds the nominal yield, as the chart shows."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Breakeven inflation rate",
+                  "definition": "The nominal Treasury yield minus the TIPS real yield of comparable maturity; also called inflation compensation."
+                },
+                {
+                  "term": "Inflation risk premium",
+                  "definition": "Extra compensation nominal bond investors demand for bearing inflation risk; a Fed note describes it as positive in the 1970s and 1980s and lower or even negative in later decades."
+                },
+                {
+                  "term": "TIPS liquidity premium",
+                  "definition": "Extra yield on TIPS that mainly reflects their lower liquidity compared with nominal Treasury securities."
+                },
+                {
+                  "term": "Par real yield curve",
+                  "definition": "The Treasury's daily curve relating the par real yield on TIPS to time to maturity."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "An illustrative 10-year Treasury note yields 3.1 percent and a 10-year TIPS yields −0.4 percent. Which statement is accurate?",
+              "choices": [
+                "The breakeven is 2.7 percentage points, because the negative sign cancels out",
+                "The breakeven is 3.5 percentage points, and it mixes expected inflation with an inflation risk premium and a TIPS liquidity premium",
+                "The breakeven is 3.5 percentage points, and it equals expected inflation with nothing else mixed in",
+                "No breakeven can be computed, because a real yield cannot be negative"
+              ],
+              "answerIndex": 1,
+              "explanation": "Breakeven is nominal minus real: 3.1 minus −0.4 equals 3.5 percentage points. Federal Reserve Board research breaks that spread into expected inflation plus an inflation risk premium minus a TIPS liquidity premium, so it is not a pure forecast, and TIPS auction rules do allow negative real yields."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Breakeven inflation is the nominal Treasury yield minus the TIPS real yield of comparable maturity.",
+                "It is often used as a gauge of expected inflation, but it also contains an inflation risk premium and a TIPS liquidity premium.",
+                "Subtracting the Treasury's par real yield curve from its nominal par yield curve gives a breakeven at each maturity.",
+                "A real yield can be negative; when it is and the nominal yield is positive, the breakeven exceeds the nominal yield."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "Board of Governors of the Federal Reserve System",
+              "documentTitle": "Tips from TIPS: Update and Discussions",
+              "url": "https://www.federalreserve.gov/econres/notes/feds-notes/tips-from-tips-update-and-discussions-20190521.html",
+              "publicationDate": "2019-05-21",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Federal Reserve Bank of St. Louis, FRED",
+              "documentTitle": "10-Year Breakeven Inflation Rate (T10YIE)",
+              "url": "https://fred.stlouisfed.org/series/T10YIE",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Department of the Treasury",
+              "documentTitle": "Interest Rate Statistics",
+              "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+              "publicationDate": "2026-09-10",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Department of the Treasury, TreasuryDirect",
+              "documentTitle": "Information on Negative Rates and TIPS",
+              "url": "https://www.treasurydirect.gov/marketable-securities/tips/tips-negative/",
+              "publicationDate": "2026-09-13",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "bry-09",
+          "title": "Treasury Auctions",
+          "summary": "How the Treasury sells new bills, notes and bonds: the announcement, competitive and noncompetitive bids, the single-price award, and how to read an auction results release.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "The Treasury sells new marketable securities by auction. TreasuryDirect lays out four steps: announce the auction, hold it, take bids, and issue the securities. Each announcement names the security, the amount offered, the auction, issue and maturity dates, the terms of the offering, and the closing times for bids. The auction date and the issue date are often a few days or even a few weeks apart."
+            },
+            {
+              "type": "paragraph",
+              "text": "A noncompetitive bid names only an amount, up to $10 million per auction, and accepts whatever rate or yield the auction produces; bids through a TreasuryDirect account must be noncompetitive. A competitive bid names the rate, yield or discount margin the bidder will accept, must go through a bank, broker or dealer, and has a maximum of 35 percent of the offering amount. Treasury's auction rules bar a bidder from bidding both ways in the same auction."
+            },
+            {
+              "type": "paragraph",
+              "text": "The Treasury first accepts all noncompetitive bids that comply with the rules, then accepts competitive bids from the lowest rate or yield upward until the offering is fully awarded. The highest accepted yield is reported as the high yield, and a 2005 Federal Reserve Bank of New York study calls it the stop. Bids below it are filled in full, bids above it are rejected, and bids at it are prorated. Every successful bidder, competitive or noncompetitive, receives the same rate or yield as the highest accepted bid and pays the same price, which is why Treasury's rules call this a single-price auction."
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-09-bids-by-yield",
+              "kind": "bar",
+              "title": "An illustrative $30 billion auction: competitive bids and awards by yield",
+              "caption": "The offering is $30 billion, and $1.5 billion of noncompetitive bids are accepted first, leaving $28.5 billion for competitive bidders. Bids from 4.20 to 4.25 percent total $27.0 billion and are filled in full. The last $1.5 billion comes from the $5.0 billion bid at 4.26 percent, so those bids receive 30 percent of what they asked for and 4.26 percent is the high yield. Every bid above it is rejected. Total bids of $75.0 billion, including noncompetitive bids, against $30.0 billion accepted give a bid-to-cover ratio of 2.50.",
+              "xLabel": "Bid yield (percent)",
+              "yLabel": "Amount ($ billions)",
+              "dataNote": "Synthetic illustration — a hand-designed set of bids for an unnamed security, not a real Treasury auction.",
+              "series": [
+                {
+                  "name": "Competitive bids",
+                  "points": [
+                    {
+                      "x": 4.2,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 4.21,
+                      "y": 2.5
+                    },
+                    {
+                      "x": 4.22,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 4.23,
+                      "y": 6.0
+                    },
+                    {
+                      "x": 4.24,
+                      "y": 7.0
+                    },
+                    {
+                      "x": 4.25,
+                      "y": 6.0
+                    },
+                    {
+                      "x": 4.26,
+                      "y": 5.0
+                    },
+                    {
+                      "x": 4.27,
+                      "y": 8.0
+                    },
+                    {
+                      "x": 4.28,
+                      "y": 9.0
+                    },
+                    {
+                      "x": 4.29,
+                      "y": 11.0
+                    },
+                    {
+                      "x": 4.3,
+                      "y": 13.5
+                    }
+                  ]
+                },
+                {
+                  "name": "Accepted",
+                  "points": [
+                    {
+                      "x": 4.2,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 4.21,
+                      "y": 2.5
+                    },
+                    {
+                      "x": 4.22,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 4.23,
+                      "y": 6.0
+                    },
+                    {
+                      "x": 4.24,
+                      "y": 7.0
+                    },
+                    {
+                      "x": 4.25,
+                      "y": 6.0
+                    },
+                    {
+                      "x": 4.26,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 4.27,
+                      "y": 0.0
+                    },
+                    {
+                      "x": 4.28,
+                      "y": 0.0
+                    },
+                    {
+                      "x": 4.29,
+                      "y": 0.0
+                    },
+                    {
+                      "x": 4.3,
+                      "y": 0.0
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 4.26,
+                  "label": "High yield: bids here filled 30 percent"
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "example",
+              "title": "Reading a real results release",
+              "text": "The results press release for a 10-year note auctioned on May 6, 2025, shows each piece. The high yield was 4.342 percent, bids at that yield were allotted 92.86 percent, and all bids at lower yields were accepted in full. The interest rate was set at 4-1/4 percent, below the high yield, so the price was 99.260100 per $100 of face value. A footnote computes the bid-to-cover ratio as $109,378,157,100 tendered divided by $42,000,007,100 accepted, or 2.60, counting both competitive and noncompetitive bids."
+            },
+            {
+              "type": "paragraph",
+              "text": "Trading starts before the auction. The New York Fed study describes dealers and other market participants trading a new security on a when-issued basis right after its auction is announced, with those trades settling on the issue date. It cites a joint report by the Treasury, the SEC and the Federal Reserve Board finding that when-issued trading serves as a price discovery mechanism, giving potential bidders a gauge of demand. Treasury's auction rules bar anyone holding a when-issued, futures or forward position in the security being auctioned from bidding noncompetitively."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Noncompetitive bid",
+                  "definition": "A bid for an amount only, up to $10 million per auction, that accepts the rate or yield set at the auction."
+                },
+                {
+                  "term": "Competitive bid",
+                  "definition": "A bid that names the rate, yield or discount margin the bidder will accept, placed through a bank, broker or dealer."
+                },
+                {
+                  "term": "High yield (the stop)",
+                  "definition": "The highest yield accepted in an auction; every successful bidder receives it, and bids at it may be filled only in part."
+                },
+                {
+                  "term": "Bid-to-cover ratio",
+                  "definition": "The total amount of bids tendered divided by the amount accepted, reported in Treasury auction results releases."
+                },
+                {
+                  "term": "When-issued trading",
+                  "definition": "Trading in a newly announced Treasury security before it is issued, with settlement on the issue date."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "In an illustrative note auction the high yield is 4.26 percent. A competitive bidder bid 4.22 percent, and a noncompetitive bidder asked for $5,000 without naming a yield. Which statement is accurate?",
+              "choices": [
+                "The competitive bidder receives a 4.22 percent yield, because each winner gets the yield it bid",
+                "Both bidders receive the 4.26 percent high yield and pay the same price",
+                "The noncompetitive bidder is filled only if competitive bids leave some securities unsold",
+                "The competitive bidder's award is cut back because its bid was below the high yield"
+              ],
+              "answerIndex": 1,
+              "explanation": "In a single-price auction every successful bidder gets the rate or yield of the highest accepted bid. Noncompetitive bids are accepted first, and only bids exactly at the high yield can be filled in part; the 4.22 percent bid is below it, so it is filled in full."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "The Treasury announces each auction, takes bids, awards the securities and issues them on a stated date.",
+                "Noncompetitive bids of up to $10 million are accepted first and take the auction's yield; competitive bids name a yield.",
+                "Competitive bids are accepted from the lowest yield up, and bids at the high yield can be filled only in part.",
+                "Every successful bidder receives the same high yield and pays the same price.",
+                "Results releases report the high yield, the share allotted at it and the bid-to-cover ratio."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Department of the Treasury, TreasuryDirect",
+              "documentTitle": "How Auctions Work",
+              "url": "https://www.treasurydirect.gov/auctions/how-auctions-work/",
+              "publicationDate": "2026-09-13",
+              "datePrecision": "observed-last-modified",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Department of the Treasury, Bureau of the Fiscal Service",
+              "documentTitle": "Treasury Auction Results: 10-Year Note (May 06, 2025)",
+              "url": "https://www.treasurydirect.gov/instit/annceresult/press/preanre/2025/R_20250506_2.pdf",
+              "publicationDate": "2025-05-06",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Department of the Treasury, Bureau of the Fiscal Service",
+              "documentTitle": "Treasury's Auction Rules",
+              "url": "https://www.treasurydirect.gov/files/laws-and-regulations/auction-regulations-uoc/treasury-auction-rules.pdf",
+              "publicationDate": "2024-11-15",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Federal Reserve Bank of New York",
+              "documentTitle": "The Treasury Auction Process: Objectives, Structure, and Recent Adaptations (Current Issues in Economics and Finance, Volume 11, Number 2)",
+              "url": "https://www.newyorkfed.org/medialibrary/media/research/current_issues/ci11-2.pdf",
+              "publicationDate": "2005-02-01",
+              "datePrecision": "stated-on-page",
               "verificationDate": "2026-09-14"
             }
           ]

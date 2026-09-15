@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "briefDate": "2026-09-09",
+  "publishedAt": "2026-09-15T04:48:12Z",
+  "isSample": true,
+  "headline": "Employer costs for employee compensation averaged $49.46 per hour worked in June",
+  "sections": [
+    {
+      "type": "released",
+      "title": "What was released",
+      "items": [
+        {
+          "title": "Employer Costs for Employee Compensation, June 2026",
+          "releaseDate": "2026-09-09",
+          "summary": "The Bureau of Labor Statistics reported that employer costs for employee compensation for civilian workers averaged $49.46 per hour worked in June 2026, made up of $33.85 in wages and salaries and $15.61 in benefits. In private industry, compensation averaged $46.89 per hour, with wages and salaries accounting for 70.0 percent of costs and benefits for 30.0 percent. For state and local government workers the average was $66.45 per hour, of which benefits made up 38.8 percent.",
+          "meaning": "This measure counts what employers spend per hour worked on pay and on benefits, including paid leave, supplemental pay, insurance, retirement and savings, and legally required benefits. For civilian workers, benefits were 31.6 percent of total compensation in June, so a comparison based on wages alone leaves out close to a third of employer costs.",
+          "figures": [
+            {
+              "label": "Civilian workers, total compensation per hour worked, June 2026",
+              "value": "$49.46"
+            },
+            {
+              "label": "Civilian workers, wages and salaries per hour",
+              "value": "$33.85"
+            },
+            {
+              "label": "Civilian workers, benefits per hour",
+              "value": "$15.61"
+            },
+            {
+              "label": "Civilian workers, benefits share of compensation",
+              "value": "31.6%"
+            },
+            {
+              "label": "Private industry, total compensation per hour",
+              "value": "$46.89"
+            },
+            {
+              "label": "State and local government, total compensation per hour",
+              "value": "$66.45"
+            }
+          ],
+          "source": {
+            "organization": "U.S. Bureau of Labor Statistics",
+            "documentTitle": "Employer Costs for Employee Compensation News Release — June 2026 (USDL-26-1494)",
+            "url": "https://www.bls.gov/news.release/archives/ecec_09092026.htm",
+            "retrievedAt": "2026-09-15T04:40:00Z"
+          }
+        },
+        {
+          "title": "Quarterly Services Survey, second quarter 2026",
+          "releaseDate": "2026-09-09",
+          "summary": "The Census Bureau reported that revenue for U.S. selected services industries totaled $6,418.7 billion in the second quarter of 2026, adjusted for seasonal variation but not for price changes. That was 3.0 percent above the first quarter of 2026 and 7.6 percent above the second quarter of 2025. The change from the first quarter was revised from the advance estimate of 3.1 percent.",
+          "meaning": "Revenue is measured in dollars without adjusting for prices, so an increase can reflect higher prices as well as more services sold. Because the figures come from a survey, each change is printed with a 90 percent confidence interval, here 3.0 percent plus or minus 0.4 percent.",
+          "figures": [
+            {
+              "label": "Selected services total revenue, Q2 2026 (seasonally adjusted, not price-adjusted)",
+              "value": "$6,418.7 billion"
+            },
+            {
+              "label": "Change from Q1 2026",
+              "value": "+3.0% (±0.4%)"
+            },
+            {
+              "label": "Change from Q2 2025",
+              "value": "+7.6% (±0.6%)"
+            }
+          ],
+          "source": {
+            "organization": "U.S. Census Bureau",
+            "documentTitle": "Quarterly Services Survey press release, second quarter 2026 (CB26-146)",
+            "url": "https://www.census.gov/services/current/index.html",
+            "retrievedAt": "2026-09-15T04:39:56Z"
+          }
+        }
+      ]
+    },
+    {
+      "type": "scheduled",
+      "title": "Scheduled in the days ahead",
+      "items": [
+        {
+          "date": "2026-09-10",
+          "title": "Producer Price Index, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-10",
+          "title": "Monthly Wholesale Trade: Sales and Inventories, July 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-11",
+          "title": "Consumer Price Index and Real Earnings, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-11",
+          "title": "Business Formation Statistics, August 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-11",
+          "title": "Financial Accounts of the United States - Z.1 (12:00 p.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-15",
+          "title": "Federal Open Market Committee meeting begins (two days, September 15-16), with a Summary of Economic Projections",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "FOMC press conference (2:30 p.m. ET) on the second day of the meeting",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "Advance Monthly Sales for Retail and Food Services, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-16",
+          "title": "U.S. Import and Export Price Indexes, August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        },
+        {
+          "date": "2026-09-17",
+          "title": "New Residential Construction (building permits, housing starts, and housing completions), August 2026 (8:30 a.m. ET)",
+          "organization": "U.S. Census Bureau",
+          "url": "https://www.census.gov/economic-indicators/calendar-listview.html"
+        },
+        {
+          "date": "2026-09-18",
+          "title": "Industrial Production and Capacity Utilization - G.17 (9:15 a.m. ET)",
+          "organization": "Federal Reserve Board",
+          "url": "https://www.federalreserve.gov/newsevents/2026-september.htm"
+        },
+        {
+          "date": "2026-09-18",
+          "title": "State Employment and Unemployment, August 2026 (10:00 a.m. ET)",
+          "organization": "U.S. Bureau of Labor Statistics",
+          "url": "https://www.bls.gov/schedule/2026/09_sched.htm"
+        }
+      ]
+    },
+    {
+      "type": "concept",
+      "title": "One concept to know",
+      "conceptTitle": "Margins of error in survey estimates",
+      "text": "Figures from a survey rather than a complete count carry sampling error, and the Census Bureau prints that uncertainty next to its estimates: services revenue rose 3.0 percent in the second quarter, plus or minus 0.4 percent, at 90 percent confidence. When such an interval includes zero, the Bureau states that there is insufficient evidence to conclude the actual change differs from zero.",
+      "linkedCardID": "ei-006"
+    }
+  ],
+  "disclaimer": "Informational only — not investment advice. This brief restates figures published by official statistical agencies and central banks; it is not financial or tax advice either, and it makes no recommendations and no predictions. Educational content only. EconByte does not provide financial, investment, or tax advice.",
+  "methodology": "The Daily Economic Brief is written from primary sources only: official statistical releases and central-bank publications that are public domain or carry open reuse terms (Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, U.S. Treasury, Federal Reserve, Congressional Budget Office, and peer statistical offices). It never reads or restates commercial news articles or headlines. Every figure links to the release it came from with the time the page was read. Sentences are our own plain-English description of public facts. This edition is a bundled sample written on September 14–15, 2026 from releases published September 9, 2026."
+}
