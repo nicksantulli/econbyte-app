@@ -9,8 +9,8 @@ struct BarsGraphicView: View {
     let size: GraphicSize
     let palette: GraphicPalette
     // Fixed columns: at large text the label wraps instead of squeezing the bar.
-    private let labelWidth: CGFloat = 108
-    private let valueWidth: CGFloat = 64
+    private let labelWidth: CGFloat = 100
+    private let valueWidth: CGFloat = 80
 
     var body: some View {
         let maxValue = max(bars.items.map(\.value).max() ?? 1, 1e-9)
@@ -36,7 +36,8 @@ struct BarsGraphicView: View {
                         .monospacedDigit()
                         .foregroundColor(palette.ink)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.75)
+                        // "~$952.38" at the largest standard size needs ~84 pt; shrink rather than truncate.
+                        .minimumScaleFactor(0.6)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: valueWidth, alignment: .trailing)
                 }
