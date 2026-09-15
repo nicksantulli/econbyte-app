@@ -68,7 +68,8 @@ struct DiagramGraphicView: View {
                 // Arrows.
                 ForEach(Array((diagram.arrows ?? []).enumerated()), id: \.offset) { _, arrow in
                     if arrow.from.count == 2, arrow.to.count == 2 {
-                        let from = map(arrow.from), to = map(arrow.to)
+                        let from = map(arrow.from)
+                        let to = map(arrow.to)
                         Self.arrowPath(from: from, to: to)
                             .stroke(palette.accent, style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round))
                         if let label = arrow.label {

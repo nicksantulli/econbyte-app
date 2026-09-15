@@ -47,7 +47,7 @@ struct GraphicPlate: View {
     @ScaledMetric(relativeTo: .caption) private var compactChartHeight: CGFloat = 90
 
     var body: some View {
-        let palette = GraphicPalette.for(colorScheme)
+        let palette = GraphicPalette.palette(for: colorScheme)
         VStack(alignment: .leading, spacing: 6) {
             Text(spec.title)
                 .font(.system(.footnote, design: .rounded).weight(.semibold))
@@ -115,7 +115,7 @@ private struct GraphicCollapsedLabel: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        let palette = GraphicPalette.for(colorScheme)
+        let palette = GraphicPalette.palette(for: colorScheme)
         HStack(spacing: 8) {
             Image(systemName: GraphicPalette.symbol(for: spec.kind))
                 .foregroundColor(palette.primary)
@@ -174,7 +174,7 @@ struct GraphicPalette {
     let third: Color
     let remainder: Color
 
-    static func `for`(_ scheme: ColorScheme) -> GraphicPalette {
+    static func palette(for scheme: ColorScheme) -> GraphicPalette {
         scheme == .dark ? dark : light
     }
 
