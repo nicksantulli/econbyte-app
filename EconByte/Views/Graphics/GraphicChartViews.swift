@@ -8,9 +8,21 @@ struct BarsGraphicView: View {
     let bars: BarsGraphic
     let size: GraphicSize
     let palette: GraphicPalette
-    // Fixed columns: at large text the label wraps instead of squeezing the bar.
-    private let labelWidth: CGFloat = 100
-    private let valueWidth: CGFloat = 80
+    /// Estimated width of one caption character; scales with Dynamic Type.
+    @ScaledMetric(relativeTo: .caption) private var charWidth: CGFloat = 6.4
+
+    private func text(for item: BarsGraphic.Item) -> String {
+        item.display ?? GraphicFormat.value(item.value, unit: bars.unit, decimals: bars.decimals)
+    }
+
+    /// The value column fits this graphic's longest value; the label column
+    /// takes what is left, never so much that the bar track drops below ~70 pt
+    /// of a ~298 pt plate. At large text labels wrap instead of squeezing bars.
+    private var valueWidth: CGFloat {
+        let longest = CGFloat(bars.items.map { text(for: $0).count }.max() ?? 4)
+        return min(max(longest * charWidth + 6, 44), 132)
+    }
+    private var labelWidth: CGFloat { max(72, 212 - valueWidth) }
 
     var body: some View {
         let maxValue = max(bars.items.map(\.value).max() ?? 1, 1e-9)
@@ -31,13 +43,13 @@ struct BarsGraphicView: View {
                             .frame(maxHeight: .infinity, alignment: .center)
                     }
                     .frame(height: size == .regular ? 12 : 9)
-                    Text(item.display ?? GraphicFormat.value(item.value, unit: bars.unit, decimals: bars.decimals))
+                    Text(text(for: item))
                         .font(.system(size == .regular ? .caption : .caption2, design: .rounded).weight(.semibold))
                         .monospacedDigit()
                         .foregroundColor(palette.ink)
                         .lineLimit(1)
-                        // "~$952.38" at the largest standard size needs ~84 pt; shrink rather than truncate.
-                        .minimumScaleFactor(0.6)
+                        // The column is sized for the longest value; this only absorbs estimate error.
+                        .minimumScaleFactor(0.8)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: valueWidth, alignment: .trailing)
                 }
