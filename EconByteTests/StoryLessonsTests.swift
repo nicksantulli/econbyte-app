@@ -358,7 +358,7 @@ final class StoryLessonsTests: XCTestCase {
     func testEveryLessonGraphicSatisfiesTheContractAndItsNumbersAreBacked() throws {
         var failures: [String] = []
         for lesson in try loadCourses().allLessons {
-            let prose = Self.numbers(in: Self.lessonProse(lesson))
+            let prose = Self.numbers(in: Self.lessonProse(lesson), prose: true)
             for (index, beat) in lesson.beats.enumerated() {
                 guard case let .graphic(spec)? = beat.visual else { continue }
                 let place = "\(lesson.lessonID) beat \(index + 1)"
@@ -384,7 +384,7 @@ final class StoryLessonsTests: XCTestCase {
                 allowed += (spec.proportion.map { [$0.total] } ?? [])
                 for text in spec.displayStrings {
                     let cleaned = text.replacingOccurrences(of: "12-month", with: "twelve-month")
-                    for number in Self.numbers(in: cleaned) where !Self.contains(allowed, number) {
+                    for number in Self.numbers(in: cleaned, prose: false) where !Self.contains(allowed, number) {
                         failures.append("\(place): \"\(text)\" shows \(number)")
                     }
                 }
@@ -521,16 +521,22 @@ final class StoryLessonsTests: XCTestCase {
         return parts.joined(separator: " \n ")
     }
 
+    /// Mirrors `WORD_NUMBERS` in scripts/card_graphics.mjs.
     private static let wordNumbers: [String: Double] = [
         "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9,
-        "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "twenty": 20, "thirty": 30,
-        "forty": 40, "fifty": 50, "sixty": 60, "hundred": 100, "thousand": 1000, "million": 1e6, "billion": 1e9,
-        "half": 0.5, "twice": 2, "double": 2, "first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5, "decade": 10, "decades": 10,
+        "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16,
+        "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20, "thirty": 30, "forty": 40, "fifty": 50,
+        "sixty": 60, "seventy": 70, "eighty": 80, "ninety": 90, "hundred": 100, "thousand": 1000, "million": 1e6,
+        "billion": 1e9, "trillion": 1e12, "half": 0.5, "double": 2, "doubled": 2, "doubles": 2, "doubling": 2,
+        "twice": 2, "triple": 3, "tripled": 3, "triples": 3, "quadrupled": 4, "quadruple": 4, "first": 1, "second": 2,
+        "third": 3, "fourth": 4, "fifth": 5, "sixth": 6, "seventh": 7, "eighth": 8, "ninth": 9, "tenth": 10,
+        "dozen": 12, "decade": 10, "decades": 10, "century": 100,
     ]
 
     /// Numbers in text: grouped digits ("1,000"), decimals, scale words
-    /// ("1.5 million" → 1.5 and 1,500,000) and number words.
-    static func numbers(in text: String) -> [Double] {
+    /// ("1.5 million" → 1.5 and 1,500,000) and, in prose only, number words
+    /// (a graphic's "Two ways" names a count, not a figure).
+    static func numbers(in text: String, prose: Bool) -> [Double] {
         var out: [Double] = []
         let normalized = text.replacingOccurrences(of: "−", with: "-")
         let pattern = #"(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)(\s*(?:thousand|million|billion|trillion))?"#
@@ -544,6 +550,7 @@ final class StoryLessonsTests: XCTestCase {
                 out.append(value * ["thousand": 1e3, "million": 1e6, "billion": 1e9, "trillion": 1e12][word, default: 1])
             }
         }
+        guard prose else { return out }
         for word in normalized.lowercased().split(whereSeparator: { !$0.isLetter }) {
             if let value = wordNumbers[String(word)] { out.append(value) }
         }
