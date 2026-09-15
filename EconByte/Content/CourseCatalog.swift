@@ -132,6 +132,9 @@ public enum StoryVisual: Hashable {
     case flow(steps: [String])
     case compare(left: StoryCompareSide, right: StoryCompareSide)
     case symbol(name: String)
+    /// Phase 24: a typed graphic drawn natively (the card-graphics spec,
+    /// `docs/content/LESSON-GRAPHICS-1.1.5.md`).
+    case graphic(CardGraphicSpec)
 
     /// Decorative SF Symbols a beat may use (all present on iOS 16). Mirrors
     /// `ALLOWED_SYMBOLS` in `scripts/validate_content.mjs`.
@@ -154,13 +157,27 @@ public enum StoryVisual: Hashable {
         case .flow: return "flow"
         case .compare: return "compare"
         case .symbol: return "symbol"
+        case .graphic: return "graphic"
         }
+    }
+
+    /// A picture that teaches (anything but a decorative symbol).
+    public var isPurposeful: Bool {
+        if case .symbol = self { return false }
+        return true
+    }
+
+    /// The graphic's labels: artwork, not counted as beat words, but still
+    /// reader-facing text for the editorial checks.
+    public var artworkText: [String] {
+        if case let .graphic(spec) = self { return spec.displayStrings }
+        return []
     }
 
     /// Words the visual adds to its screen (drawings and charts add none).
     public var readingText: [String] {
         switch self {
-        case .diagram, .chart, .symbol: return []
+        case .diagram, .chart, .symbol, .graphic: return []
         case let .stat(value, label): return [value, label]
         case let .flow(steps): return steps
         case let .compare(left, right): return [left.label, left.detail, right.label, right.detail]
@@ -170,7 +187,7 @@ public enum StoryVisual: Hashable {
 
 extension StoryVisual: Codable {
     private enum CodingKeys: String, CodingKey {
-        case type, diagramID, chartID, value, label, steps, left, right, name
+        case type, diagramID, chartID, value, label, steps, left, right, name, graphic
     }
 
     public init(from decoder: Decoder) throws {
@@ -185,6 +202,7 @@ extension StoryVisual: Codable {
         case "compare": self = .compare(left: try c.decode(StoryCompareSide.self, forKey: .left),
                                         right: try c.decode(StoryCompareSide.self, forKey: .right))
         case "symbol": self = .symbol(name: try c.decode(String.self, forKey: .name))
+        case "graphic": self = .graphic(try c.decode(CardGraphicSpec.self, forKey: .graphic))
         default:
             throw DecodingError.dataCorruptedError(forKey: .type, in: c,
                                                    debugDescription: "unknown story visual type \(type)")
@@ -201,6 +219,7 @@ extension StoryVisual: Codable {
         case let .flow(steps): try c.encode(steps, forKey: .steps)
         case let .compare(left, right): try c.encode(left, forKey: .left); try c.encode(right, forKey: .right)
         case let .symbol(name): try c.encode(name, forKey: .name)
+        case let .graphic(spec): try c.encode(spec, forKey: .graphic)
         }
     }
 }
@@ -215,9 +234,13 @@ public struct LessonBeat: Codable, Hashable {
     public let check: Quiz?
     public let items: [String]?
     public let visual: StoryVisual?
+    /// Phase 24: the one beat per lesson whose picture carries the lesson's key
+    /// concept; it is drawn larger.
+    public let centerpiece: Bool?
 
     public init(kind: BeatKind, heading: String? = nil, text: String? = nil, tone: CalloutStyle? = nil,
-                terms: [KeyTerm]? = nil, check: Quiz? = nil, items: [String]? = nil, visual: StoryVisual? = nil) {
+                terms: [KeyTerm]? = nil, check: Quiz? = nil, items: [String]? = nil, visual: StoryVisual? = nil,
+                centerpiece: Bool? = nil) {
         self.kind = kind
         self.heading = heading
         self.text = text
@@ -226,7 +249,12 @@ public struct LessonBeat: Codable, Hashable {
         self.check = check
         self.items = items
         self.visual = visual
+        self.centerpiece = centerpiece
     }
+
+    public var isCenterpiece: Bool { centerpiece == true }
+    /// An idea or term beat: the beats the picture-coverage rule counts.
+    public var isTeaching: Bool { kind == .idea || kind == .term }
 
     /// Everything the reader reads on this beat's screen (a check's explanation
     /// is revealed after answering and counted on its own).
@@ -245,7 +273,7 @@ public struct LessonBeat: Codable, Hashable {
 
     /// Every reader-facing string, for the editorial tests.
     public var allText: [String] {
-        screenText + (check.map { [$0.explanation] } ?? [])
+        screenText + (check.map { [$0.explanation] } ?? []) + (visual?.artworkText ?? [])
     }
 }
 
@@ -254,6 +282,20 @@ public enum StoryRules {
     public static let maxHeadingWords = 8
     public static let beatRange = 10...30
     public static let checkRange = 1...2
+    /// Phase 24 coverage: share of teaching beats with a purposeful picture.
+    public static let catalogPictureCoverage = 0.9
+    public static let lessonPictureCoverage = 0.8
+    /// Graphic kinds strong enough to be a lesson's centerpiece.
+    public static let centerpieceGraphicKinds: Set<CardGraphicKind> = [.line, .bars, .candles, .diagram, .proportion, .timeline]
+
+    /// Whether `visual` can be a lesson's centerpiece.
+    public static func canBeCenterpiece(_ visual: StoryVisual?) -> Bool {
+        switch visual {
+        case .chart?, .diagram?: return true
+        case let .graphic(spec)?: return centerpieceGraphicKinds.contains(spec.kind)
+        default: return false
+        }
+    }
 
     public static func words(in text: String) -> Int {
         text.split(whereSeparator: { $0.isWhitespace }).count
@@ -281,6 +323,11 @@ public struct Lesson: Codable, Hashable, Identifiable {
     /// The first quick check (1.1.4's single quiz).
     public var quiz: Quiz? { checks.first }
     public var hasVisual: Bool { beats.contains { $0.visual != nil } }
+    /// Teaching beats that carry a purposeful picture, and all teaching beats.
+    public var pictureCoverage: (covered: Int, teaching: Int) {
+        let teaching = beats.filter(\.isTeaching)
+        return (teaching.filter { $0.visual?.isPurposeful == true }.count, teaching.count)
+    }
 
     /// Story pages: the cover (page 0) and one page per beat.
     public var pageCount: Int { beats.count + 1 }
@@ -491,7 +538,7 @@ public enum CourseCatalog {
                     lessonChartIDs.insert(spec.chartID)
                 }
 
-                var checks = 0, recaps = 0, visuals = 0, symbols = 0
+                var checks = 0, recaps = 0, visuals = 0, symbols = 0, centerpieces = 0
                 var shownCharts = Set<String>()
                 for (index, beat) in lesson.beats.enumerated() {
                     let place = "lesson \(lesson.lessonID) beat \(index + 1)"
@@ -504,6 +551,12 @@ public enum CourseCatalog {
                         }
                     }
                     if beat.tone != nil, beat.kind != .idea { try fail("\(place) tone belongs on idea beats") }
+                    if let centerpiece = beat.centerpiece {
+                        centerpieces += 1
+                        guard centerpiece, beat.isTeaching, StoryRules.canBeCenterpiece(beat.visual) else {
+                            try fail("\(place) a centerpiece is an idea or term beat with a chart, diagram or strong graphic")
+                        }
+                    }
                     switch beat.kind {
                     case .idea:
                         guard let text = beat.text, !text.isEmpty, beat.terms == nil, beat.check == nil, beat.items == nil else {
@@ -567,6 +620,14 @@ public enum CourseCatalog {
                             guard StoryVisual.allowedSymbols.contains(name) else {
                                 try fail("\(place) symbol \(name) is not in the allowlist")
                             }
+                        case let .graphic(spec):
+                            let problems = spec.validationProblems()
+                            guard problems.isEmpty else {
+                                try fail("\(place) graphic: \(problems.joined(separator: "; "))")
+                            }
+                            guard spec.basis != .fromCard, spec.kind != .icons else {
+                                try fail("\(place) a lesson graphic restates the lesson (fromLesson) and never uses icons")
+                            }
                         }
                     }
                 }
@@ -582,6 +643,11 @@ public enum CourseCatalog {
                 }
                 guard symbols <= visuals / 3 else {
                     try fail("lesson \(lesson.lessonID): too many decorative symbol visuals")
+                }
+                // At most one centerpiece: content tests require exactly one, but a
+                // missing flag must never lock readers out of the whole library.
+                guard centerpieces <= 1 else {
+                    try fail("lesson \(lesson.lessonID) has \(centerpieces) centerpieces")
                 }
                 guard shownCharts == lessonChartIDs else {
                     try fail("lesson \(lesson.lessonID) carries a chart no beat shows")

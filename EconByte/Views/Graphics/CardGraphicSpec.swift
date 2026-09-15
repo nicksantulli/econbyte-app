@@ -15,6 +15,8 @@ import Foundation
 
 public enum CardGraphicKind: String, Codable, Hashable, CaseIterable {
     case bars, line, diagram, flow, compare, timeline, formula, proportion, icons
+    /// Phase 24: a textbook candlestick drawing (story lessons).
+    case candles
 }
 
 /// Why the graphic's numbers can be trusted — printed under the graphic.
@@ -23,12 +25,19 @@ public enum CardGraphicBasis: String, Codable, Hashable, CaseIterable {
     case conceptual
     /// Restates figures the card's own (audited, sourced) prose states.
     case fromCard
+    /// Phase 24: restates figures a story lesson's own prose states.
+    case fromLesson
     /// A series computed exactly from a stated formula and the card's inputs.
     case computed
     /// Real data resolved from FRED or the World Bank, cited in `source`.
     case sourced
     /// Invented shapes or numbers that teach a mechanism.
     case illustrative
+}
+
+/// Where a graphic is drawn: its footnote names the text its numbers rest on.
+public enum GraphicHost: Hashable {
+    case card, lesson
 }
 
 public struct CardGraphicSource: Codable, Hashable {
@@ -160,7 +169,7 @@ public struct FormulaGraphic: Codable, Hashable {
 }
 
 public struct ProportionGraphic: Codable, Hashable {
-    public enum Style: String, Codable, Hashable { case bar, waffle }
+    public enum Style: String, Codable, Hashable { case bar, waffle, donut }
     public struct Segment: Codable, Hashable {
         public let label: String
         public let value: Double
@@ -184,6 +193,125 @@ public struct IconsGraphic: Codable, Hashable {
     public let items: [Item]
 }
 
+/// A textbook candlestick drawing (Phase 24). Up candles close above their
+/// open, down candles below; the wick spans low…high and the body open…close.
+/// A highlighted pattern is checked against its geometric definition
+/// (`patternProblems`, mirrored from `candleProblems` in scripts/card_graphics.mjs).
+public struct CandlesGraphic: Codable, Hashable {
+    public enum Pattern: String, Codable, Hashable, CaseIterable {
+        case none, doji, hammer, shootingStar, bullishEngulfing, bearishEngulfing
+
+        public var spokenName: String {
+            switch self {
+            case .none: return ""
+            case .doji: return "doji"
+            case .hammer: return "hammer"
+            case .shootingStar: return "shooting star"
+            case .bullishEngulfing: return "bullish engulfing"
+            case .bearishEngulfing: return "bearish engulfing"
+            }
+        }
+    }
+    public enum Annotation: String, Codable, Hashable { case ohlc }
+    public struct Candle: Codable, Hashable {
+        public let open: Double
+        public let high: Double
+        public let low: Double
+        public let close: Double
+        public var isUp: Bool { close > open }
+        public var body: Double { abs(close - open) }
+        public var range: Double { high - low }
+        public var upperWick: Double { high - max(open, close) }
+        public var lowerWick: Double { min(open, close) - low }
+    }
+    public struct Highlight: Codable, Hashable {
+        /// 1-based positions, inclusive.
+        public let from: Int
+        public let to: Int
+        public let pattern: Pattern?
+        public let label: String
+    }
+    public struct Reference: Codable, Hashable {
+        public let y: Double
+        public let label: String
+    }
+    public let xLabel: String
+    public let yLabel: String
+    public let candles: [Candle]
+    public let highlight: Highlight?
+    public let annotate: Annotation?
+    public let references: [Reference]?
+
+    /// The price span the drawing needs: every wick and reference, padded 8%.
+    public var yDomain: ClosedRange<Double> {
+        let values = candles.flatMap { [$0.low, $0.high] } + (references ?? []).map(\.y)
+        guard let lo = values.min(), let hi = values.max(), hi > lo else { return 0...1 }
+        let pad = (hi - lo) * 0.08
+        return (lo - pad)...(hi + pad)
+    }
+
+    /// Geometry and pattern problems; empty when the drawing is textbook-correct.
+    public func patternProblems() -> [String] {
+        var problems: [String] = []
+        if !(1...30).contains(candles.count) { problems.append("candles: 1–30 candles") }
+        for (i, k) in candles.enumerated() {
+            if ![k.open, k.high, k.low, k.close].allSatisfy(\.isFinite) { problems.append("candles[\(i)] has a non-finite price"); continue }
+            if k.high < max(k.open, k.close) { problems.append("candles[\(i)]: high is below the body") }
+            if k.low > min(k.open, k.close) { problems.append("candles[\(i)]: low is above the body") }
+            if !(k.high > k.low) { problems.append("candles[\(i)]: high must exceed low") }
+        }
+        guard let highlight else { return problems }
+        guard highlight.from >= 1, highlight.to >= highlight.from, highlight.to <= candles.count else {
+            problems.append("highlight: from/to must be 1-based positions within the candles")
+            return problems
+        }
+        let i = highlight.from - 1, span = highlight.to - highlight.from + 1, eps = 1e-9
+        let label = highlight.label.lowercased()
+        func priorTrend(_ at: Int) -> Double? { at >= 3 ? candles[at - 1].close - candles[at - 3].close : nil }
+        func name(_ word: String) { if !label.contains(word) { problems.append("highlight.label must name the pattern (\"\(word)\")") } }
+        switch highlight.pattern ?? .none {
+        case .none:
+            break
+        case .doji:
+            if span != 1 { problems.append("doji: highlight exactly one candle") }
+            if candles[i].body > 0.1 * candles[i].range + eps { problems.append("doji: body exceeds 10% of the range") }
+            name("doji")
+        case .hammer, .shootingStar:
+            let hammer = highlight.pattern == .hammer
+            let k = candles[i]
+            if span != 1 { problems.append("\(hammer ? "hammer" : "shooting star"): highlight exactly one candle") }
+            let long = hammer ? k.lowerWick : k.upperWick, short = hammer ? k.upperWick : k.lowerWick
+            if !(k.body > eps) { problems.append("hammer/shooting star: needs a real body") }
+            if long < 2 * k.body - eps { problems.append("hammer/shooting star: long wick is not at least twice the body") }
+            if short > 0.1 * k.range + eps { problems.append("hammer/shooting star: short wick exceeds 10% of the range") }
+            if let t = priorTrend(i) {
+                if hammer ? !(t < 0) : !(t > 0) { problems.append("hammer/shooting star: wrong prior move") }
+            } else {
+                problems.append("hammer/shooting star: needs 3 candles before it")
+            }
+            name(hammer ? "hammer" : "shooting star")
+        case .bullishEngulfing, .bearishEngulfing:
+            let bull = highlight.pattern == .bullishEngulfing
+            guard span == 2 else { problems.append("engulfing: highlight exactly two candles"); break }
+            let a = candles[i], b = candles[i + 1]
+            if bull ? !(a.close < a.open && b.close > b.open) : !(a.close > a.open && b.close < b.open) {
+                problems.append("engulfing: wrong candle directions")
+            }
+            let covers = min(b.open, b.close) <= min(a.open, a.close) + eps && max(b.open, b.close) >= max(a.open, a.close) - eps
+            if !covers || !(b.body > a.body) { problems.append("engulfing: the second body must cover the first and be larger") }
+            if let t = priorTrend(i) {
+                if bull ? !(t < 0) : !(t > 0) { problems.append("engulfing: wrong prior move") }
+            } else {
+                problems.append("engulfing: needs 3 candles before it")
+            }
+            name("engulfing")
+            name(bull ? "bullish" : "bearish")
+        }
+        if annotate == .ohlc && span != 1 { problems.append("annotate ohlc labels one highlighted candle") }
+        return problems
+    }
+}
+
 // MARK: - Spec
 
 public struct CardGraphicSpec: Codable, Hashable {
@@ -203,15 +331,21 @@ public struct CardGraphicSpec: Codable, Hashable {
     public let formula: FormulaGraphic?
     public let proportion: ProportionGraphic?
     public let icons: IconsGraphic?
+    public let candles: CandlesGraphic?
+
+    /// The footnote printed under a card graphic.
+    public var footnote: String? { footnote(in: .card) }
 
     /// The footnote the app prints under the graphic: what the numbers rest on,
     /// then the author's note.
-    public var footnote: String? {
+    public func footnote(in host: GraphicHost) -> String? {
         let basisLine: String?
+        let owner = host == .card ? "card" : "lesson"
         switch basis {
         case .conceptual:   basisLine = nil
         case .fromCard:     basisLine = "Figures from this card's source"
-        case .computed:     basisLine = "Computed from this card's figures"
+        case .fromLesson:   basisLine = "Figures from this lesson"
+        case .computed:     basisLine = "Computed from this \(owner)'s figures"
         case .sourced:      basisLine = source.map { "Source: \($0.organization), \($0.period)" }
         case .illustrative: basisLine = "Illustrative, not real data"
         }
@@ -233,6 +367,7 @@ public struct CardGraphicSpec: Codable, Hashable {
         case .formula:    return !(formula?.expression.isEmpty ?? true)
         case .proportion: return (proportion.map { $0.total > 0 && !$0.segments.isEmpty }) ?? false
         case .icons:      return (icons?.items.count ?? 0) >= 1
+        case .candles:    return !(candles?.candles.isEmpty ?? true) && (candles?.yDomain.upperBound ?? 0) > (candles?.yDomain.lowerBound ?? 0)
         }
     }
 }
@@ -286,6 +421,11 @@ public extension CardGraphicSpec {
             }
         case .icons:
             out += (icons?.items ?? []).map(\.label)
+        case .candles:
+            if let candles {
+                out += [candles.xLabel, candles.yLabel] + [candles.highlight?.label].compactMap { $0 }
+                out += (candles.references ?? []).map(\.label)
+            }
         }
         return out
     }
@@ -310,7 +450,7 @@ public extension CardGraphicSpec {
         let payloads: [(CardGraphicKind, Bool)] = [
             (.bars, bars != nil), (.line, line != nil), (.diagram, diagram != nil), (.flow, flow != nil),
             (.compare, compare != nil), (.timeline, timeline != nil), (.formula, formula != nil),
-            (.proportion, proportion != nil), (.icons, icons != nil),
+            (.proportion, proportion != nil), (.icons, icons != nil), (.candles, candles != nil),
         ]
         for (k, present) in payloads {
             if k == kind && !present { fail("\(k.rawValue) payload is missing") }
@@ -448,6 +588,15 @@ public extension CardGraphicSpec {
                 if ![10, 20, 50, 100].contains(proportion.total) { fail("proportion: waffle total ∈ {10, 20, 50, 100}") }
                 if proportion.segments.contains(where: { $0.value != $0.value.rounded() }) { fail("proportion: waffle values are integers") }
             }
+        case .candles:
+            guard let candles else { break }
+            check("candles.xLabel", candles.xLabel, max: Limit.axisLabel)
+            check("candles.yLabel", candles.yLabel, max: Limit.axisLabel)
+            if let highlight = candles.highlight { check("candles.highlight.label", highlight.label, max: Limit.markerLabel) }
+            if (candles.references?.count ?? 0) > 2 { fail("candles: at most 2 references") }
+            for (i, r) in (candles.references ?? []).enumerated() { check("candles.references[\(i)].label", r.label, max: Limit.markerLabel) }
+            problems += candles.patternProblems()
+            if ![.illustrative, .fromLesson, .fromCard].contains(basis) { fail("candles are illustrative or restate stated prices") }
         case .icons:
             guard let icons else { break }
             if !(2...4).contains(icons.items.count) { fail("icons: 2–4 items") }

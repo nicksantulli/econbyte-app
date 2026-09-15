@@ -12,6 +12,9 @@ struct ChartBlockView: View {
     /// 1.1.5 story beats say what the chart shows in the beat text; the caption
     /// stays the chart's VoiceOver description.
     var showsCaption = true
+    /// Plot height before marker headroom; a story beat passes a compact or
+    /// centerpiece size.
+    var plotHeight: CGFloat = 220
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -23,7 +26,7 @@ struct ChartBlockView: View {
                 // Marker labels sit above the plot; reserve their rows so they never
                 // cover the title (two rows when labels alternate).
                 .padding(.top, markerHeadroom)
-                .frame(height: 220 + markerHeadroom)
+                .frame(height: plotHeight + markerHeadroom)
                 .dynamicTypeSize(...DynamicTypeSize.xLarge)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text("\(spec.title). \(spec.caption)"))
@@ -41,7 +44,8 @@ struct ChartBlockView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("chart-\(spec.chartID)-note")
         }
-        .econInset()
+        .padding(EconSpace.s)
+        .lessonSurface()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("chart-\(spec.chartID)")
     }

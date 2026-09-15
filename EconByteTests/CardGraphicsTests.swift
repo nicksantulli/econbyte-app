@@ -145,6 +145,7 @@ final class CardGraphicsTests: XCTestCase {
             switch graphic.basis {
             case .conceptual:   XCTAssertEqual(graphic.footnote, graphic.note, card.cardID)
             case .fromCard:     XCTAssertTrue(graphic.footnote?.hasPrefix("Figures from this card's source") == true, card.cardID)
+            case .fromLesson:   XCTFail("\(card.cardID): a card graphic never uses the lesson basis")
             case .computed:     XCTAssertTrue(graphic.footnote?.hasPrefix("Computed from this card's figures") == true, card.cardID)
             case .sourced:      XCTAssertTrue(graphic.footnote?.hasPrefix("Source: ") == true, card.cardID)
             case .illustrative: XCTAssertTrue(graphic.footnote?.hasPrefix("Illustrative, not real data") == true, card.cardID)
@@ -315,7 +316,8 @@ final class CardGraphicsTests: XCTestCase {
           "timeline": {"kind":"timeline","title":"Fixture","basis":"illustrative","timeline":{"events":[{"when":"1999","label":"A"},{"when":"2001","label":"B"}]}},
           "formula": {"kind":"formula","title":"Fixture","basis":"conceptual","formula":{"expression":"A = B × C","terms":[{"symbol":"A","meaning":"Thing"}]}},
           "proportion": {"kind":"proportion","title":"Fixture","basis":"illustrative","proportion":{"style":"waffle","total":100,"segments":[{"label":"A","value":40}],"remainderLabel":"Rest"}},
-          "icons": {"kind":"icons","title":"Fixture","basis":"conceptual","icons":{"connector":"plus","items":[{"symbol":"house","label":"Home"},{"symbol":"banknote","label":"Loan"}]}}
+          "icons": {"kind":"icons","title":"Fixture","basis":"conceptual","icons":{"connector":"plus","items":[{"symbol":"house","label":"Home"},{"symbol":"banknote","label":"Loan"}]}},
+          "candles": {"kind":"candles","title":"Fixture","basis":"illustrative","candles":{"xLabel":"Day","yLabel":"Price","candles":[{"open":104,"high":104.3,"low":102.7,"close":103},{"open":103,"high":103.3,"low":101.7,"close":102},{"open":102,"high":102.3,"low":100.7,"close":101},{"open":100.8,"high":101.25,"low":98.6,"close":101.2}],"highlight":{"from":4,"to":4,"pattern":"hammer","label":"Hammer"},"annotate":"ohlc","references":[{"y":104,"label":"Resistance"}]}}
         }
         """#
         let raw = try JSONDecoder().decode([String: CardGraphicSpec].self, from: Data(json.utf8))
@@ -429,5 +431,77 @@ final class CardGraphicsTests: XCTestCase {
         }
         let value = add()
         return i == s.count ? value : nil
+    }
+
+    // MARK: - Phase 24: candlestick patterns and the donut
+
+    private static func candles(_ list: [[Double]], highlight: String? = nil) throws -> CandlesGraphic {
+        let items = list.map { "{\"open\":\($0[0]),\"high\":\($0[1]),\"low\":\($0[2]),\"close\":\($0[3])}" }.joined(separator: ",")
+        let json = "{\"xLabel\":\"Day\",\"yLabel\":\"Price\",\"candles\":[\(items)]\(highlight.map { ",\"highlight\":\($0)" } ?? "")}"
+        return try JSONDecoder().decode(CandlesGraphic.self, from: Data(json.utf8))
+    }
+
+    private static let decline: [[Double]] = [[104, 104.3, 102.7, 103], [103, 103.3, 101.7, 102], [102, 102.3, 100.7, 101]]
+    private static let rise: [[Double]] = [[100, 101.3, 99.7, 101], [101, 102.3, 100.7, 102], [102, 103.3, 101.7, 103]]
+
+    func testCandlePatternsAcceptTextbookShapes() throws {
+        let hammer = try Self.candles(Self.decline + [[100.8, 101.25, 98.6, 101.2]], highlight: #"{"from":4,"to":4,"pattern":"hammer","label":"Hammer"}"#)
+        XCTAssertEqual(hammer.patternProblems(), [])
+        let star = try Self.candles(Self.rise + [[103.2, 105.4, 102.95, 103.0]], highlight: #"{"from":4,"to":4,"pattern":"shootingStar","label":"Shooting star"}"#)
+        XCTAssertEqual(star.patternProblems(), [])
+        let doji = try Self.candles([[100, 101.5, 98.5, 100.1]], highlight: #"{"from":1,"to":1,"pattern":"doji","label":"Doji"}"#)
+        XCTAssertEqual(doji.patternProblems(), [])
+        let bullish = try Self.candles(Self.decline + [[101, 101.2, 99.8, 100], [99.8, 101.6, 99.6, 101.4]],
+                                       highlight: #"{"from":4,"to":5,"pattern":"bullishEngulfing","label":"Bullish engulfing"}"#)
+        XCTAssertEqual(bullish.patternProblems(), [])
+        let bearish = try Self.candles(Self.rise + [[103, 104.2, 102.8, 104], [104.2, 104.4, 102.5, 102.7]],
+                                       highlight: #"{"from":4,"to":5,"pattern":"bearishEngulfing","label":"Bearish engulfing"}"#)
+        XCTAssertEqual(bearish.patternProblems(), [])
+    }
+
+    func testCandlePatternsRejectWrongShapesAndLabels() throws {
+        func rejects(_ g: CandlesGraphic, _ fragment: String, file: StaticString = #filePath, line: UInt = #line) {
+            XCTAssertTrue(g.patternProblems().contains { $0.contains(fragment) }, "\(fragment): \(g.patternProblems())", file: file, line: line)
+        }
+        rejects(try Self.candles([[100, 99, 98, 99.5]]), "high is below the body")
+        rejects(try Self.candles([[100, 101, 100.2, 99.5]]), "low is above the body")
+        rejects(try Self.candles(Self.decline + [[101, 102.5, 99, 101.5]], highlight: #"{"from":4,"to":4,"pattern":"hammer","label":"Hammer"}"#),
+                "short wick exceeds 10%")
+        rejects(try Self.candles(Self.rise + [[100.8, 101.25, 98.6, 101.2]], highlight: #"{"from":4,"to":4,"pattern":"hammer","label":"Hammer"}"#),
+                "wrong prior move")
+        rejects(try Self.candles([[100, 101.5, 98.5, 101]], highlight: #"{"from":1,"to":1,"pattern":"doji","label":"Doji"}"#),
+                "body exceeds 10%")
+        rejects(try Self.candles(Self.decline + [[101, 101.2, 99.8, 100], [100.2, 101.6, 99.6, 100.8]],
+                                 highlight: #"{"from":4,"to":5,"pattern":"bullishEngulfing","label":"Bullish engulfing"}"#),
+                "must cover the first")
+        rejects(try Self.candles(Self.decline + [[101, 101.2, 99.8, 100], [99.8, 101.6, 99.6, 101.4]],
+                                 highlight: #"{"from":4,"to":5,"pattern":"bullishEngulfing","label":"Bearish engulfing"}"#),
+                "bullish")
+        rejects(try Self.candles(Self.decline + [[100.8, 101.25, 98.6, 101.2]], highlight: #"{"from":4,"to":4,"pattern":"hammer","label":"Big candle"}"#),
+                "must name the pattern")
+        rejects(try Self.candles(Self.decline, highlight: #"{"from":3,"to":5,"pattern":"none","label":"Span"}"#), "from/to")
+    }
+
+    /// The anatomy labels (Open/High/Low/Close) never overlap, even on a candle
+    /// whose open and close sit at its high.
+    func testCandleAnnotationLabelsNeverOverlap() throws {
+        let tight = try Self.candles([[100.95, 101, 99, 101]])
+        let rows = CandlesGraphicView.annotationRows(for: tight.candles[0], y: { CGFloat(200 - ($0 - 99) * 60) }, minGap: 14)
+        XCTAssertEqual(rows.map(\.text), ["High", "Close", "Open", "Low"])
+        for pair in zip(rows, rows.dropFirst()) {
+            XCTAssertGreaterThanOrEqual(pair.1.label - pair.0.label, 14 - 1e-9, "\(pair.0.text) and \(pair.1.text) overlap")
+        }
+    }
+
+    @MainActor
+    func testDonutRendersAndReadsItsShares() throws {
+        let spec = try spec(#"{"kind":"proportion","title":"An illustrative mix","basis":"illustrative","proportion":{"style":"donut","total":100,"segments":[{"label":"Stocks","value":60},{"label":"Bonds","value":30}],"remainderLabel":"Cash"}}"#)
+        XCTAssertEqual(spec.validationProblems(), [])
+        XCTAssertTrue(spec.accessibilitySummary(in: .lesson).contains("Cash, 10"))
+        for host in [GraphicHost.card, .lesson] {
+            let view = GraphicPlate(spec: spec, host: host).frame(width: 340).environment(\.colorScheme, .dark)
+            let image = try XCTUnwrap(ImageRenderer(content: view).uiImage)
+            XCTAssertGreaterThan(image.size.height, 100)
+        }
     }
 }

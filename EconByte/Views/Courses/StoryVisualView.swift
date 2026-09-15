@@ -1,22 +1,45 @@
 import SwiftUI
 
 /// The picture on a story beat (1.1.5): one of the lesson drawings, one of the
-/// lesson's synthetic charts, or a simple data-driven figure — a big stat, a
+/// lesson's synthetic charts, a typed graphic (Phase 24, the card-graphics spec
+/// drawn on the lesson ground), or a simple data-driven figure — a big stat, a
 /// flow of steps, a two-sided comparison, or a decorative symbol. Figures use
 /// only words and numbers from the lesson (validated), wrap at accessibility
-/// text sizes, and read to VoiceOver as one element.
+/// text sizes, and read to VoiceOver as one element. Every picture sits on the
+/// same lesson surface tone and corner radius.
 struct StoryVisualView: View {
+    enum Size {
+        /// Above a quick check's question: short, so the answer's feedback fits.
+        case compact
+        case regular
+        /// The lesson's key-concept picture.
+        case centerpiece
+
+        var plotHeight: CGFloat {
+            switch self {
+            case .compact: return 150
+            case .regular: return 220
+            case .centerpiece: return 270
+            }
+        }
+    }
+
     let visual: StoryVisual
     let lesson: Lesson
+    var size: Size = .regular
 
     var body: some View {
         switch visual {
+        case let .graphic(spec):
+            if spec.isRenderable {
+                GraphicPlate(spec: spec, host: .lesson, prominent: size == .centerpiece)
+            }
         case let .diagram(id):
-            DiagramView(id: id)
+            DiagramView(id: id, height: size.plotHeight)
                 .accessibilityIdentifier("diagram-\(id.rawValue)")
         case let .chart(chartID):
             if let spec = lesson.chart(withID: chartID) {
-                ChartBlockView(spec: spec, showsCaption: false)
+                ChartBlockView(spec: spec, showsCaption: false, plotHeight: size.plotHeight)
             }
         case let .stat(value, label):
             VStack(spacing: EconSpace.xxs) {
@@ -33,7 +56,7 @@ struct StoryVisualView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, EconSpace.m)
-            .econInset()
+            .lessonSurface()
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("storyStat")
         case let .flow(steps):
@@ -57,7 +80,7 @@ struct StoryVisualView: View {
                 .font(.system(.largeTitle))
                 .imageScale(.large)
                 .foregroundColor(EconColor.accent)
-                .frame(width: 112, height: 112)
+                .frame(width: 96, height: 96)
                 .background(EconColor.surfaceRaised)
                 .clipShape(Circle())
                 .frame(maxWidth: .infinity)
@@ -98,6 +121,17 @@ struct StoryVisualView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .econInset()
+        .padding(EconSpace.s)
+        .lessonSurface()
+    }
+}
+
+extension View {
+    /// The ground every lesson picture sits on: the lesson surface tone, the
+    /// control radius (the same as a lesson graphic plate).
+    func lessonSurface() -> some View {
+        frame(maxWidth: .infinity, alignment: .leading)
+            .background(EconColor.surface)
+            .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
     }
 }

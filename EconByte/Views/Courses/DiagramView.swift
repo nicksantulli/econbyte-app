@@ -8,6 +8,8 @@ import SwiftUI
 /// accessibility element whose label says what the picture shows.
 struct DiagramView: View {
     let id: DiagramID
+    /// Drawing height; a story beat passes a compact or centerpiece size.
+    var height: CGFloat = 220
 
     var body: some View {
         Group {
@@ -29,13 +31,13 @@ struct DiagramView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 220)
+        .frame(height: height)
         // A fixed-geometry drawing: its labels scale with Dynamic Type only up
         // to xLarge so they stay inside the artwork; the drawing's meaning is
         // also in its VoiceOver description and the beat text beside it.
         .dynamicTypeSize(...DynamicTypeSize.xLarge)
         .padding(EconSpace.s)
-        .background(EconColor.surfaceInset)
+        .background(EconColor.surface)
         .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(Self.accessibilityDescription(for: id)))

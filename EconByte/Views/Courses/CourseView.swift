@@ -3,6 +3,10 @@ import SwiftUI
 /// A course's lesson list with progress. Presented in its own
 /// `NavigationStack` from Home and the Pro tab; a lesson opens full screen as a
 /// story (1.1.5) and "Next lesson" swaps the next story in place.
+///
+/// Phase 24: the navigation bar carries the course title, so the header card no
+/// longer repeats it; the card holds the course facts, progress and one primary
+/// action that resumes (or starts) the right lesson.
 struct CourseView: View {
     let course: Course
     var initialLesson: Lesson? = nil
@@ -62,38 +66,74 @@ struct CourseView: View {
         .accessibilityIdentifier("course-\(course.courseID)")
     }
 
+    // MARK: Header
+
+    private enum PrimaryAction {
+        case open(Lesson, title: String)
+        case pro
+    }
+
+    /// The one thing to do next: resume a lesson in progress, else start the
+    /// first unfinished lesson the reader can open, else offer Pro.
+    private var primaryAction: PrimaryAction {
+        let readable = course.lessons.filter { $0.isPreview || store.isProActive }
+        if let inProgress = readable.first(where: { progress.resumePage(for: $0) > 0 }) {
+            return .open(inProgress, title: "Continue")
+        }
+        if let next = readable.first(where: { !progress.isCompleted($0.lessonID) }) {
+            let started = course.lessons.contains { progress.isCompleted($0.lessonID) }
+            return .open(next, title: next.isPreview && !store.isProActive ? "Start free lesson" : (started ? "Next lesson" : "Start"))
+        }
+        if !store.isProActive { return .pro }
+        return .open(course.lessons[0], title: "Read again")
+    }
+
     private var header: some View {
         let done = progress.completedCount(of: course)
-        return VStack(alignment: .leading, spacing: EconSpace.s) {
-            HStack(spacing: EconSpace.s) {
-                Image(systemName: course.icon)
-                    .font(EconType.title)
-                    .foregroundColor(EconColor.accent)
-                    .accessibilityHidden(true)
+        let total = course.lessons.count
+        return VStack(alignment: .leading, spacing: EconSpace.m) {
+            EconAdaptiveRow(spacing: EconSpace.s) {
+                CourseProgressRing(done: done, total: total, icon: course.icon)
+                    .frame(width: EconSize.tapTarget + EconSpace.xs, height: EconSize.tapTarget + EconSpace.xs)
                 VStack(alignment: .leading, spacing: EconSpace.xxs) {
-                    Text(course.title)
-                        .font(EconType.title)
-                        .foregroundColor(EconColor.textPrimary)
+                    Text("\(done) of \(total) lessons")
+                        .font(EconType.headline)
+                        .foregroundColor(done == total ? EconColor.interactive : EconColor.textPrimary)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text("\(course.lessons.count) lessons · \(course.estimatedMinutes) min · \(course.level == .intro ? "Intro" : "Intermediate")")
+                    Text("\(course.estimatedMinutes) min · \(course.level == .intro ? "Intro" : "Intermediate")")
                         .font(EconType.caption)
                         .foregroundColor(EconColor.textTertiary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            HStack(spacing: EconSpace.s) {
-                ProgressView(value: Double(done), total: Double(max(course.lessons.count, 1)))
-                    .tint(EconColor.interactive)
-                    .accessibilityLabel("Course progress")
-                    .accessibilityValue("\(done) of \(course.lessons.count) lessons")
-                Text("\(done)/\(course.lessons.count)")
-                    .font(EconType.caption)
-                    .monospacedDigit()
-                    .foregroundColor(done == course.lessons.count ? EconColor.interactive : EconColor.textTertiary)
-                    .accessibilityHidden(true)
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("courseProgress")
+
+            switch primaryAction {
+            case let .open(lesson, title):
+                Button {
+                    story = StorySession(lesson: lesson)
+                } label: {
+                    VStack(spacing: 2) {
+                        Text(title)
+                        Text(lesson.title)
+                            .font(EconType.caption)
+                            .lineLimit(2)
+                    }
+                }
+                .buttonStyle(PrimaryButton())
+                .accessibilityLabel(Text("\(title): \(lesson.title)"))
+                .accessibilityIdentifier("courseContinueButton")
+            case .pro:
+                Button("See EconByte Pro") { onProPaywall?() }
+                    .buttonStyle(PrimaryButton())
+                    .accessibilityIdentifier("courseContinueButton")
             }
         }
         .econCard()
     }
+
+    // MARK: Lessons
 
     private var lessonList: some View {
         VStack(alignment: .leading, spacing: EconSpace.xs) {
@@ -137,6 +177,11 @@ struct CourseView: View {
                                 Text("\(lesson.estimatedMinutes) min")
                                     .font(EconType.caption)
                                     .foregroundColor(EconColor.textTertiary)
+                                if resume > 0 {
+                                    Text("In progress")
+                                        .font(EconType.caption)
+                                        .foregroundColor(EconColor.interactive)
+                                }
                                 if lesson.isPreview && !store.isProActive {
                                     EconBadge(text: "Free")
                                 }

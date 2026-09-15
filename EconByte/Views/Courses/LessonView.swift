@@ -3,12 +3,13 @@ import SwiftUI
 /// One course lesson as a story (1.1.5, Owner: "almost like a 'story' you
 /// click through rather than an article you read").
 ///
-/// Page 0 is the cover (course, title, summary, minutes); every later page is
-/// one beat. A segmented bar at the top shows where the reader is. Tap the right
-/// of the page or swipe left to go on; tap the left or swipe right to go back;
-/// the Back / Next buttons at the bottom do the same for VoiceOver and Switch
-/// Control. On an unanswered check the page itself does not advance on a tap
-/// (a near-miss beside a choice must not skip the question) — Next still does.
+/// Page 0 is the cover (course, lesson number, title, summary, minutes); every
+/// later page is one beat. The top row is the segmented progress bar and the
+/// close button, nothing else (Phase 24: less chrome, more picture). Tap the
+/// right of the page or swipe left to go on; tap the left or swipe right to go
+/// back; the Back / Next buttons at the bottom do the same for VoiceOver and
+/// Switch Control. On an unanswered check the page itself does not advance on a
+/// tap (a near-miss beside a choice must not skip the question) — Next still does.
 ///
 /// The position is saved on every page, so a lesson reopens where it was left;
 /// reaching the last beat (the recap) completes it. The sources and the one
@@ -26,6 +27,7 @@ struct LessonView: View {
     @EnvironmentObject private var store: PurchaseManager
     @EnvironmentObject private var progress: CourseProgressStore
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @ScaledMetric(relativeTo: .headline) private var backSize: CGFloat = EconSize.buttonHeight
 
     @State private var page = 0
     @State private var forward = true
@@ -34,10 +36,10 @@ struct LessonView: View {
 
     private var accessible: Bool { lesson.isPreview || store.isProActive }
     private var lastPage: Int { lesson.pageCount - 1 }
+    private var lessonNumber: Int { (course.lessons.firstIndex { $0.lessonID == lesson.lessonID } ?? 0) + 1 }
     private var nextLesson: Lesson? {
-        guard let index = course.lessons.firstIndex(where: { $0.lessonID == lesson.lessonID }),
-              index + 1 < course.lessons.count else { return nil }
-        return course.lessons[index + 1]
+        guard lessonNumber < course.lessons.count else { return nil }
+        return course.lessons[lessonNumber]
     }
     private var beat: LessonBeat? { page > 0 ? lesson.beats[page - 1] : nil }
     private var awaitingAnswer: Bool {
@@ -77,63 +79,75 @@ struct LessonView: View {
 
     private var story: some View {
         VStack(spacing: 0) {
-            VStack(spacing: EconSpace.xs) {
+            // One row of chrome: progress and close. The course and lesson
+            // number live on the cover, not on every beat.
+            HStack(spacing: EconSpace.xs) {
                 StoryProgressBar(pages: lesson.pageCount, current: page)
-                    .padding(.trailing, EconSpace.gutter - EconSpace.xxs)
-                HStack(spacing: EconSpace.xs) {
-                    Text(course.title.uppercased())
-                        .font(EconType.overline)
-                        .tracking(EconType.overlineTracking)
-                        .foregroundColor(EconColor.textTertiary)
-                        .lineLimit(2)
-                    Spacer(minLength: EconSpace.xs)
-                    closeButton
-                }
+                closeButton
             }
             .padding(.leading, EconSpace.gutter)
             .padding(.trailing, EconSpace.xxs)
-            .padding(.top, EconSpace.xs)
-            // Story chrome (progress, course name, close) caps at accessibility2
-            // so the beat itself keeps most of the screen at the largest sizes.
+            .padding(.top, EconSpace.xxs)
+            // Story chrome caps at accessibility2 so the beat itself keeps most
+            // of the screen at the largest sizes.
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
 
             GeometryReader { geo in
                 ScrollViewReader { proxy in
-                ScrollView {
-                    pageContent(proxy)
-                        .padding(.horizontal, EconSpace.gutter)
-                        .padding(.vertical, EconSpace.m)
-                        .frame(maxWidth: .infinity, minHeight: geo.size.height, alignment: .top)
-                        .contentShape(Rectangle())
-                        .gesture(SpatialTapGesture().onEnded { value in
-                            if value.location.x < geo.size.width / 3 {
-                                go(to: page - 1)
-                            } else if !awaitingAnswer && page < lastPage {
-                                go(to: page + 1)
-                            }
-                        })
-                }
-                // The page id sits on the scroll view, its own accessibility
-                // node: on a container it would overwrite the id of a page's
-                // only child (a check beat without a picture lost "quiz").
-                .accessibilityIdentifier("storyPage-\(page)")
-                .id(page)
-                .transition(pageTransition)
-                .simultaneousGesture(
-                    DragGesture(minimumDistance: 30).onEnded { value in
-                        let dx = value.translation.width, dy = value.translation.height
-                        guard abs(dx) > abs(dy) * 1.5, abs(dx) > 50 else { return }
-                        go(to: dx < 0 ? min(page + 1, lastPage) : page - 1)
+                    ScrollView {
+                        pageContent(proxy)
+                            .padding(.horizontal, EconSpace.gutter)
+                            .padding(.top, EconSpace.xs)
+                            // Room below the last line so it clears the fade.
+                            .padding(.bottom, EconSpace.xl)
+                            .frame(maxWidth: .infinity, minHeight: geo.size.height, alignment: pageAlignment)
+                            .contentShape(Rectangle())
+                            .gesture(SpatialTapGesture().onEnded { value in
+                                if value.location.x < geo.size.width / 3 {
+                                    go(to: page - 1)
+                                } else if !awaitingAnswer && page < lastPage {
+                                    go(to: page + 1)
+                                }
+                            })
                     }
-                )
+                    // The page id sits on the scroll view, its own accessibility
+                    // node: on a container it would overwrite the id of a page's
+                    // only child (a check beat without a picture lost "quiz").
+                    .accessibilityIdentifier("storyPage-\(page)")
+                    .modifier(StoryScrollCue(trigger: page))
+                    .id(page)
+                    .transition(pageTransition)
+                    .simultaneousGesture(
+                        DragGesture(minimumDistance: 30).onEnded { value in
+                            let dx = value.translation.width, dy = value.translation.height
+                            guard abs(dx) > abs(dy) * 1.5, abs(dx) > 50 else { return }
+                            go(to: dx < 0 ? min(page + 1, lastPage) : page - 1)
+                        }
+                    )
                 }
             }
             .clipped()
+            // A page taller than the screen fades into the controls, so a cut-off
+            // line reads as "scroll for more", never as truncated.
+            .overlay(alignment: .bottom) {
+                LinearGradient(colors: [EconColor.background.opacity(0), EconColor.background],
+                               startPoint: .top, endPoint: .bottom)
+                    .frame(height: EconSpace.xl)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
 
             controls
         }
         .accessibilityAction(named: Text("Next page")) { go(to: min(page + 1, lastPage)) }
         .accessibilityAction(named: Text("Previous page")) { go(to: page - 1) }
+    }
+
+    /// Short idea and term beats sit centered, so a picture and its sentence
+    /// read as one composition; the cover, checks and the recap start at the top.
+    private var pageAlignment: Alignment {
+        guard let beat else { return .center }
+        return beat.isTeaching ? .center : .top
     }
 
     private var closeButton: some View {
@@ -170,7 +184,7 @@ struct LessonView: View {
                           onSources: { showSources = true },
                           onReveal: {
                               withAnimation(reduceMotion ? nil : .easeOut(duration: 0.25)) {
-                                  proxy.scrollTo(StoryCheckView.feedbackAnchor, anchor: .bottom)
+                                  proxy.scrollTo(StoryCheckAnchor.feedback, anchor: .bottom)
                               }
                           })
         } else {
@@ -180,24 +194,31 @@ struct LessonView: View {
 
     private var cover: some View {
         VStack(alignment: .leading, spacing: EconSpace.m) {
-            Spacer(minLength: EconSpace.xl)
             Image(systemName: course.icon)
-                .font(.system(.largeTitle))
+                .font(EconType.title)
                 .foregroundColor(EconColor.accent)
-                .frame(width: 72, height: 72)
+                .frame(width: 56, height: 56)
                 .background(EconColor.surfaceRaised)
                 .clipShape(Circle())
                 .accessibilityHidden(true)
-            Text(lesson.title)
-                .font(EconType.display)
-                .foregroundColor(EconColor.textPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityAddTraits(.isHeader)
+            VStack(alignment: .leading, spacing: EconSpace.xs) {
+                Text("\(course.title) · Lesson \(lessonNumber) of \(course.lessons.count)".uppercased())
+                    .font(EconType.overline)
+                    .tracking(EconType.overlineTracking)
+                    .foregroundColor(EconColor.textTertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityLabel(Text("\(course.title), lesson \(lessonNumber) of \(course.lessons.count)"))
+                Text(lesson.title)
+                    .font(EconType.display)
+                    .foregroundColor(EconColor.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+            }
             Text(lesson.summary)
                 .font(EconType.story)
                 .foregroundColor(EconColor.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: EconSpace.xs) {
+            HStack(spacing: EconSpace.s) {
                 Label("\(lesson.estimatedMinutes) min", systemImage: "clock")
                 if progress.isCompleted(lesson.lessonID) {
                     Label("Completed", systemImage: "checkmark.circle.fill")
@@ -206,7 +227,6 @@ struct LessonView: View {
             }
             .font(EconType.caption)
             .foregroundColor(EconColor.textTertiary)
-            Spacer(minLength: EconSpace.xl)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -215,17 +235,20 @@ struct LessonView: View {
 
     private var controls: some View {
         HStack(spacing: EconSpace.s) {
-            Button { go(to: page - 1) } label: {
-                Image(systemName: "chevron.left")
-                    .font(EconType.headline)
-                    .foregroundColor(page > 0 ? EconColor.interactive : EconColor.textTertiary)
-                    .frame(width: 60, height: 60)
-                    .background(EconColor.interactiveFill)
-                    .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
+            // The cover has nowhere to go back to, so it offers only Start.
+            if page > 0 {
+                Button { go(to: page - 1) } label: {
+                    Image(systemName: "chevron.left")
+                        .font(EconType.headline)
+                        .foregroundColor(EconColor.interactive)
+                        .frame(width: backSize, height: backSize)
+                        .background(EconColor.interactiveFill)
+                        .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
+                }
+                .accessibilityLabel("Previous page")
+                .accessibilityIdentifier("storyBackButton")
+                .transition(.opacity)
             }
-            .disabled(page == 0)
-            .accessibilityLabel("Previous page")
-            .accessibilityIdentifier("storyBackButton")
 
             if page == lastPage {
                 if let next = nextLesson {
@@ -241,8 +264,8 @@ struct LessonView: View {
                 // A lesson in progress reopens on the page the reader left
                 // (`onAppear`), so the cover only ever offers "Start".
                 Button(page == 0 ? "Start" : "Next") { go(to: page + 1) }
-                .buttonStyle(PrimaryButton())
-                .accessibilityIdentifier("storyNextButton")
+                    .buttonStyle(PrimaryButton())
+                    .accessibilityIdentifier("storyNextButton")
             }
         }
         .padding(.horizontal, EconSpace.gutter)
@@ -253,11 +276,25 @@ struct LessonView: View {
     }
 }
 
+/// Flashes the scroll indicator when a page appears (iOS 17+), so a page taller
+/// than the screen says so.
+private struct StoryScrollCue: ViewModifier {
+    let trigger: Int
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            content.scrollIndicatorsFlash(trigger: trigger)
+        } else {
+            content
+        }
+    }
+}
+
 /// Instagram-style segmented progress: one segment per page, filled up to and
 /// including the current one.
 struct StoryProgressBar: View {
     let pages: Int
     let current: Int
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HStack(spacing: pages > 20 ? 2 : EconSpace.xxs) {
@@ -268,6 +305,7 @@ struct StoryProgressBar: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: current)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Lesson progress")
         .accessibilityValue("Page \(current + 1) of \(pages)")
@@ -286,25 +324,44 @@ struct StoryBeatView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: EconSpace.l) {
-            // A check puts its question first and its picture after the
-            // feedback, so the answer's explanation lands on screen.
-            if beat.kind != .check, let visual = beat.visual {
-                StoryVisualView(visual: visual, lesson: lesson)
-            }
             switch beat.kind {
-            case .idea: idea
-            case .term: terms
+            case .idea:
+                picture
+                idea
+            case .term:
+                picture
+                terms
             case .check:
                 if let check = beat.check, let ordinal = lesson.checkOrdinal(forBeat: beatIndex) {
-                    StoryCheckView(quiz: check, lessonID: lesson.lessonID, ordinal: ordinal, onReveal: onReveal)
+                    // The question's picture comes first, compact, so question,
+                    // choices and the revealed feedback all sit above the fixed
+                    // controls (the answer scrolls the feedback into view).
+                    StoryCheckView(quiz: check, lessonID: lesson.lessonID, ordinal: ordinal, onReveal: onReveal) {
+                        if let visual = beat.visual {
+                            StoryVisualView(visual: visual, lesson: lesson, size: .compact)
+                        }
+                    }
                 }
-            case .recap: recap
-            }
-            if beat.kind == .check, let visual = beat.visual {
-                StoryVisualView(visual: visual, lesson: lesson)
+            case .recap:
+                recap
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var picture: some View {
+        if let visual = beat.visual {
+            if beat.isCenterpiece {
+                // `.contain` keeps the picture's own id (diagram-…, chart-…,
+                // lessonGraphic-…); a plain identifier would overwrite it.
+                StoryVisualView(visual: visual, lesson: lesson, size: .centerpiece)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("storyCenterpiece")
+            } else {
+                StoryVisualView(visual: visual, lesson: lesson, size: .regular)
+            }
+        }
     }
 
     private var toneIcon: (name: String, color: Color, label: String)? {
@@ -317,7 +374,7 @@ struct StoryBeatView: View {
     }
 
     private var idea: some View {
-        VStack(alignment: .leading, spacing: EconSpace.s) {
+        VStack(alignment: .leading, spacing: EconSpace.xs) {
             if let heading = beat.heading {
                 HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
                     if let tone = toneIcon {
@@ -332,10 +389,9 @@ struct StoryBeatView: View {
                         .accessibilityAddTraits(.isHeader)
                 }
             } else if let tone = toneIcon {
-                Image(systemName: tone.name)
-                    .font(EconType.title3)
+                Label(tone.label, systemImage: tone.name)
+                    .font(EconType.overline)
                     .foregroundColor(tone.color)
-                    .accessibilityLabel(tone.label)
             }
             Text(beat.text ?? "")
                 .font(EconType.story)
@@ -364,6 +420,7 @@ struct StoryBeatView: View {
                     Text(term.term)
                         .font(EconType.title3)
                         .foregroundColor(EconColor.accentText)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(term.definition)
                         .font(EconType.story)
                         .foregroundColor(EconColor.textPrimary)
@@ -382,14 +439,21 @@ struct StoryBeatView: View {
 
     private var recap: some View {
         VStack(alignment: .leading, spacing: EconSpace.m) {
-            Text(beat.heading ?? "Recap")
-                .font(EconType.title)
-                .foregroundColor(EconColor.textPrimary)
-                .accessibilityAddTraits(.isHeader)
+            Label {
+                Text(beat.heading ?? "Recap")
+                    .font(EconType.title)
+                    .foregroundColor(EconColor.textPrimary)
+            } icon: {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(EconType.title3)
+                    .foregroundColor(EconColor.interactive)
+            }
+            .accessibilityAddTraits(.isHeader)
             VStack(alignment: .leading, spacing: EconSpace.s) {
                 ForEach(Array((beat.items ?? []).enumerated()), id: \.offset) { _, item in
                     HStack(alignment: .firstTextBaseline, spacing: EconSpace.s) {
-                        Image(systemName: "checkmark.circle.fill")
+                        Image(systemName: "checkmark")
+                            .font(EconType.footnote.weight(.bold))
                             .foregroundColor(EconColor.interactive)
                             .accessibilityHidden(true)
                         Text(item)
@@ -401,15 +465,17 @@ struct StoryBeatView: View {
             }
             .econCard()
             .accessibilityIdentifier("takeaways")
-            Button {
-                onSources()
-            } label: {
-                Label("Sources (\(lesson.sources.count))", systemImage: "doc.text")
+            VStack(alignment: .leading, spacing: EconSpace.xxs) {
+                Button {
+                    onSources()
+                } label: {
+                    Label("Sources (\(lesson.sources.count))", systemImage: "doc.text")
+                }
+                .buttonStyle(EconLinkButton())
+                .accessibilityIdentifier("lessonSourcesButton")
+                // The one "not advice" line in a lesson, at its end.
+                EducationalNoticeBanner(text: PlanCopy.notAdvice)
             }
-            .buttonStyle(EconLinkButton())
-            .accessibilityIdentifier("lessonSourcesButton")
-            // The one "not advice" line in a lesson, at its end.
-            EducationalNoticeBanner(text: PlanCopy.notAdvice)
         }
     }
 }
@@ -419,12 +485,12 @@ struct StoryBeatView: View {
 /// Single-answer multiple choice with immediate feedback. The first answer is
 /// recorded; the reader can tap other choices afterwards to see why they are
 /// wrong, without changing it.
-struct StoryCheckView: View {
+struct StoryCheckView<Picture: View>: View {
     let quiz: Quiz
     let lessonID: String
     let ordinal: Int
     var onReveal: () -> Void = {}
-    static let feedbackAnchor = "storyCheckFeedback"
+    @ViewBuilder var picture: () -> Picture
     @EnvironmentObject private var progress: CourseProgressStore
     @State private var chosen: Int?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -434,6 +500,7 @@ struct StoryCheckView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: EconSpace.s) {
             EconSectionLabel(text: "Quick check")
+            picture()
             Text(quiz.question)
                 .font(EconType.title3)
                 .foregroundColor(EconColor.textPrimary)
@@ -470,19 +537,35 @@ struct StoryCheckView: View {
                 .accessibilityValue(Text(accessibilityValue(for: index)))
             }
             if revealed {
-                VStack(alignment: .leading, spacing: EconSpace.xxs) {
-                    Text(chosen == quiz.answerIndex ? "Correct" : "Not quite")
+                let correct = chosen == quiz.answerIndex
+                HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
+                    Image(systemName: correct ? "checkmark.circle.fill" : "info.circle.fill")
                         .font(EconType.headline)
-                        .foregroundColor(chosen == quiz.answerIndex ? EconColor.interactive : EconColor.accentText)
-                    Text(quiz.explanation)
-                        .font(EconType.body)
-                        .foregroundColor(EconColor.textSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                        .foregroundColor(correct ? EconColor.interactive : EconColor.accentText)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: EconSpace.xxs) {
+                        Text(correct ? "Correct" : "Not quite")
+                            .font(EconType.headline)
+                            .foregroundColor(correct ? EconColor.interactive : EconColor.accentText)
+                        Text(quiz.explanation)
+                            .font(EconType.body)
+                            .foregroundColor(EconColor.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
+                .padding(EconSpace.s)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(EconColor.surface)
+                .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("quizExplanation")
-                .id(Self.feedbackAnchor)
                 .transition(.opacity)
+                // The scroll target sits below the feedback, so the feedback
+                // itself lands clear of the page's bottom fade.
+                Color.clear
+                    .frame(height: EconSpace.xl)
+                    .id(StoryCheckAnchor.feedback)
+                    .accessibilityHidden(true)
             }
         }
         // `.contain`: a plain container's identifier would override the
@@ -517,6 +600,11 @@ struct StoryCheckView: View {
         if index == chosen { return "your answer, incorrect" }
         return ""
     }
+}
+
+/// The scroll anchor of a check's revealed feedback.
+enum StoryCheckAnchor {
+    static let feedback = "storyCheckFeedback"
 }
 
 // MARK: - Supporting views

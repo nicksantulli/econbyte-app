@@ -13,8 +13,20 @@ struct ProTabView: View {
         EconTabScaffold(scrollSpace: "pro") { _ in
             // Subscribers and everyone else see the same offer: a subscriber's
             // tile says "Current plan" (checklist A10) with Manage Subscription.
-            ProPaywallContent(entryPoint: .proTab) {
-                coursesSection
+            // Phase 24: a subscriber came for the courses, so they come first and
+            // the (unchanged) plan card follows; a non-subscriber sees the offer
+            // first with the courses as its interlude, exactly as before.
+            Group {
+                if store.isProActive {
+                    VStack(spacing: EconSpace.l) {
+                        coursesSection
+                        ProPaywallContent(entryPoint: .proTab) { EmptyView() }
+                    }
+                } else {
+                    ProPaywallContent(entryPoint: .proTab) {
+                        coursesSection
+                    }
+                }
             }
             .padding(.horizontal, EconSpace.gutter)
             .padding(.top, EconSpace.s)
@@ -59,9 +71,7 @@ struct ProCourseRow: View {
                         .font(EconType.subheadlineEmphasis)
                         .foregroundColor(EconColor.textPrimary)
                         .multilineTextAlignment(.leading)
-                    Text(store.isProActive || done > 0
-                         ? "\(done)/\(total) lessons · \(course.estimatedMinutes) min"
-                         : "\(total) lessons · first lesson free")
+                    Text(subtitle(done: done, total: total))
                         .font(EconType.caption)
                         .foregroundColor(EconColor.textTertiary)
                         .multilineTextAlignment(.leading)
@@ -77,5 +87,15 @@ struct ProCourseRow: View {
         .buttonStyle(.plain)
         .accessibilityIdentifier("proCourseRow-\(course.courseID)")
         .accessibilityValue(Text("\(done) of \(total) lessons complete"))
+    }
+
+    /// A subscriber mid-course sees what is next; everyone else the size of the
+    /// course and the free first lesson.
+    private func subtitle(done: Int, total: Int) -> String {
+        guard store.isProActive || done > 0 else { return "\(total) lessons · first lesson free" }
+        if done > 0, done < total, let next = progress.nextLesson(in: course) {
+            return "\(done)/\(total) · Next: \(next.title)"
+        }
+        return "\(done)/\(total) lessons · \(course.estimatedMinutes) min"
     }
 }

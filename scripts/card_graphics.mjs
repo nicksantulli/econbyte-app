@@ -31,8 +31,10 @@ export const CATALOG_FILES = {
 };
 const CACHE = process.env.CARD_GRAPHICS_CACHE || path.join(os.tmpdir(), 'econbyte-card-graphics-cache');
 
-export const KINDS = ['bars', 'line', 'diagram', 'flow', 'compare', 'timeline', 'formula', 'proportion', 'icons'];
-export const BASES = ['conceptual', 'fromCard', 'computed', 'sourced', 'illustrative'];
+export const KINDS = ['bars', 'line', 'diagram', 'flow', 'compare', 'timeline', 'formula', 'proportion', 'icons', 'candles'];
+// `fromCard` restates a card's prose; `fromLesson` (Phase 24, story lessons) restates the lesson's prose.
+export const BASES = ['conceptual', 'fromCard', 'fromLesson', 'computed', 'sourced', 'illustrative'];
+export const CANDLE_PATTERNS = ['none', 'doji', 'hammer', 'shootingStar', 'bullishEngulfing', 'bearishEngulfing'];
 const APPROVED_SOURCE_HOSTS = new Set(['fred.stlouisfed.org', 'data.worldbank.org']);
 const STALE_WORDS = ['currently', 'today', 'nowadays', 'recently', 'at present', 'these days',
   'this year', 'last year', 'right now', 'as of now'];
@@ -215,13 +217,114 @@ export function computeSeries(c) {
       }
       return pts;
     }
+    case 'returnPath': {
+      // A value compounded through a stated list of period returns: [0, start], [1, start·(1+r1)], …
+      need('start');
+      if (!Array.isArray(c.returnsPct) || c.returnsPct.length < 1 || c.returnsPct.length > 59 || !c.returnsPct.every((v) => typeof v === 'number' && Number.isFinite(v) && v > -100)) {
+        throw new Error('compute.returnPath needs returnsPct: 1–59 numbers above −100');
+      }
+      let v = c.start;
+      pts.push([0, r2(v)]);
+      c.returnsPct.forEach((r, i) => { v *= 1 + r / 100; pts.push([i + 1, r2(v)]); });
+      return pts;
+    }
     default:
       throw new Error(`unknown compute model ${c.model}`);
   }
 }
 
 export function computeInputs(c) {
-  return Object.entries(c).filter(([k, v]) => k !== 'step' && k !== 'model' && typeof v === 'number').map(([k, v]) => ({ k, v }));
+  const out = Object.entries(c).filter(([k, v]) => k !== 'step' && k !== 'model' && typeof v === 'number').map(([k, v]) => ({ k, v }));
+  if (Array.isArray(c.returnsPct)) c.returnsPct.forEach((v, i) => out.push({ k: `returnsPct[${i}]`, v: Math.abs(v) }));
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Candlestick patterns (Phase 24). Textbook definitions, stated as geometry so a
+// drawing can be checked: a candle's body is |close − open|, its range high − low,
+// its upper wick high − max(open, close) and its lower wick min(open, close) − low.
+//   doji             body ≤ 10% of the range
+//   hammer           after a decline (the close before it is below the close three
+//                    candles before it): body > 0, lower wick ≥ 2 × body, upper wick
+//                    ≤ 10% of the range, so the body sits at the top of the range
+//   shootingStar     the mirror image after a rise: upper wick ≥ 2 × body, lower
+//                    wick ≤ 10% of the range
+//   bullishEngulfing after a decline: a down candle, then an up candle whose body
+//                    opens at or below the first close and closes at or above the
+//                    first open (and is larger)
+//   bearishEngulfing the mirror image after a rise
+// `highlight.from`/`to` are 1-based candle positions; a single-candle pattern
+// spans one candle, an engulfing pattern exactly two.
+
+export function candleProblems(p) {
+  const problems = [];
+  const candles = Array.isArray(p?.candles) ? p.candles : [];
+  if (candles.length < 1 || candles.length > 30) problems.push(`candles: 1–30 candles, got ${candles.length}`);
+  candles.forEach((k, i) => {
+    for (const f of ['open', 'high', 'low', 'close']) if (typeof k?.[f] !== 'number' || !Number.isFinite(k[f])) problems.push(`candles[${i}].${f} must be a number`);
+    if (k && k.high < Math.max(k.open, k.close)) problems.push(`candles[${i}]: high ${k.high} is below the body`);
+    if (k && k.low > Math.min(k.open, k.close)) problems.push(`candles[${i}]: low ${k.low} is above the body`);
+    if (k && !(k.high > k.low)) problems.push(`candles[${i}]: high must exceed low`);
+  });
+  const h = p?.highlight;
+  if (h === undefined) return problems;
+  if (!Number.isInteger(h.from) || !Number.isInteger(h.to) || h.from < 1 || h.to < h.from || h.to > candles.length) {
+    problems.push(`highlight: from/to must be 1-based positions within ${candles.length} candles`);
+    return problems;
+  }
+  const pattern = h.pattern ?? 'none';
+  if (!CANDLE_PATTERNS.includes(pattern)) { problems.push(`highlight.pattern must be one of ${CANDLE_PATTERNS.join(' | ')}`); return problems; }
+  const i = h.from - 1;
+  const span = h.to - h.from + 1;
+  const g = (k) => ({ body: Math.abs(k.close - k.open), range: k.high - k.low, upper: k.high - Math.max(k.open, k.close), lower: Math.min(k.open, k.close) - k.low, up: k.close > k.open, down: k.close < k.open });
+  const priorTrend = (at) => (at >= 3 ? candles[at - 1].close - candles[at - 3].close : null);
+  const eps = 1e-9;
+  const needWord = (word) => { if (!new RegExp(word, 'i').test(h.label ?? '')) problems.push(`highlight.label "${h.label}" must name the ${pattern} pattern ("${word}")`); };
+  switch (pattern) {
+    case 'none': break;
+    case 'doji': {
+      if (span !== 1) problems.push('doji: highlight exactly one candle');
+      const k = g(candles[i]);
+      if (k.body > 0.1 * k.range + eps) problems.push(`doji: body ${k.body.toFixed(3)} exceeds 10% of the range ${k.range.toFixed(3)}`);
+      needWord('doji');
+      break;
+    }
+    case 'hammer':
+    case 'shootingStar': {
+      if (span !== 1) problems.push(`${pattern}: highlight exactly one candle`);
+      const k = g(candles[i]);
+      const [longWick, shortWick] = pattern === 'hammer' ? [k.lower, k.upper] : [k.upper, k.lower];
+      if (!(k.body > eps)) problems.push(`${pattern}: needs a real body (a zero body is a doji)`);
+      if (longWick < 2 * k.body - eps) problems.push(`${pattern}: long wick ${longWick.toFixed(3)} is not at least twice the body ${k.body.toFixed(3)}`);
+      if (shortWick > 0.1 * k.range + eps) problems.push(`${pattern}: short wick ${shortWick.toFixed(3)} exceeds 10% of the range`);
+      const t = priorTrend(i);
+      if (t === null) problems.push(`${pattern}: needs at least 3 candles before it to show the prior move`);
+      else if (pattern === 'hammer' ? !(t < 0) : !(t > 0)) problems.push(`${pattern}: must follow a ${pattern === 'hammer' ? 'decline' : 'rise'} (close before it vs three candles before it)`);
+      needWord(pattern === 'hammer' ? 'hammer' : 'shooting star');
+      break;
+    }
+    case 'bullishEngulfing':
+    case 'bearishEngulfing': {
+      if (span !== 2) { problems.push(`${pattern}: highlight exactly two candles`); break; }
+      const a = candles[i], b = candles[i + 1];
+      const ga = g(a), gb = g(b);
+      const bull = pattern === 'bullishEngulfing';
+      if (bull ? !(ga.down && gb.up) : !(ga.up && gb.down)) problems.push(`${pattern}: needs a ${bull ? 'down then an up' : 'up then a down'} candle`);
+      const covers = Math.min(b.open, b.close) <= Math.min(a.open, a.close) + eps && Math.max(b.open, b.close) >= Math.max(a.open, a.close) - eps;
+      if (!covers || !(gb.body > ga.body)) problems.push(`${pattern}: the second body must cover the whole first body and be larger`);
+      const t = priorTrend(i);
+      if (t === null) problems.push(`${pattern}: needs at least 3 candles before it to show the prior move`);
+      else if (bull ? !(t < 0) : !(t > 0)) problems.push(`${pattern}: must follow a ${bull ? 'decline' : 'rise'}`);
+      needWord('engulfing');
+      if (!new RegExp(bull ? 'bullish' : 'bearish', 'i').test(h.label ?? '')) problems.push(`${pattern}: label must say ${bull ? 'bullish' : 'bearish'}`);
+      break;
+    }
+  }
+  if (p.annotate !== undefined) {
+    if (p.annotate !== 'ohlc') problems.push('annotate must be "ohlc"');
+    else if (span !== 1) problems.push('annotate "ohlc" labels one highlighted candle');
+  }
+  return problems;
 }
 
 // ---------------------------------------------------------------------------
@@ -364,6 +467,10 @@ export function displayStrings(spec) {
     case 'icons':
       (p.items || []).forEach((it, i) => push(`icons.items[${i}].label`, it.label));
       break;
+    case 'candles':
+      push('candles.xLabel', p.xLabel); push('candles.yLabel', p.yLabel); push('candles.highlight.label', p.highlight?.label);
+      (p.references || []).forEach((m, i) => push(`candles.references[${i}].label`, m.label));
+      break;
   }
   return out;
 }
@@ -378,6 +485,10 @@ function dataValues(spec) {
     (p.markers || []).forEach((m, i) => out.push({ where: `line.markers[${i}].x`, v: m.x, x: true, marker: true }));
     (p.references || []).forEach((m, i) => out.push({ where: `line.references[${i}].y`, v: m.y }));
   }
+  if (spec.kind === 'candles') {
+    (p.candles || []).forEach((k, i) => ['open', 'high', 'low', 'close'].forEach((f) => out.push({ where: `candles[${i}].${f}`, v: k?.[f], ohlc: true })));
+    (p.references || []).forEach((m, i) => out.push({ where: `candles.references[${i}].y`, v: m.y }));
+  }
   if (spec.kind === 'proportion') {
     out.push({ where: 'proportion.total', v: p.total, total: true });
     (p.segments || []).forEach((s, i) => out.push({ where: `proportion.segments[${i}].value`, v: s.value }));
@@ -391,7 +502,7 @@ const LIMITS = {
   expression: 40, symbol: 8, meaning: 32, example: 60, segLabel: 22, unitLabel: 34, iconLabel: 18, seriesName: 28,
 };
 
-export function validateSpec(spec, card, { resolved = null } = {}) {
+export function validateSpec(spec, card, { resolved = null, host = 'card', hostText = null } = {}) {
   const errors = [], warnings = [];
   const fail = (w, m) => errors.push(`${w}: ${m}`);
   const warn = (w, m) => warnings.push(`${w}: ${m}`);
@@ -524,7 +635,7 @@ export function validateSpec(spec, card, { resolved = null } = {}) {
       break;
     }
     case 'proportion': {
-      if (!['bar', 'waffle'].includes(p.style)) fail('proportion.style', 'bar | waffle');
+      if (!['bar', 'waffle', 'donut'].includes(p.style)) fail('proportion.style', 'bar | waffle | donut');
       if (!isNum(p.total) || p.total <= 0) fail('proportion.total', 'number > 0');
       const segs = p.segments || [];
       if (segs.length < 1 || segs.length > 4) fail('proportion.segments', '1–4 segments');
@@ -537,6 +648,15 @@ export function validateSpec(spec, card, { resolved = null } = {}) {
         if (![10, 20, 50, 100].includes(p.total)) fail('proportion.total', 'waffle total ∈ {10, 20, 50, 100}');
         segs.forEach((s, i) => { if (!Number.isInteger(s.value)) fail(`proportion.segments[${i}].value`, 'waffle values are integers'); });
       }
+      break;
+    }
+    case 'candles': {
+      within('candles.xLabel', p.xLabel, LIMITS.axisLabel); within('candles.yLabel', p.yLabel, LIMITS.axisLabel);
+      for (const m of candleProblems(p)) fail('candles', m);
+      if (p.highlight !== undefined) within('candles.highlight.label', p.highlight.label, LIMITS.markerLabel);
+      if ((p.references || []).length > 2) fail('candles.references', 'at most 2');
+      (p.references || []).forEach((m, i) => { within(`candles.references[${i}].label`, m.label, LIMITS.markerLabel); if (!isNum(m.y)) fail(`candles.references[${i}].y`, 'number'); });
+      if (!['illustrative', 'fromLesson', 'fromCard'].includes(spec.basis)) fail('basis', 'candles are illustrative, or restate prices the text states');
       break;
     }
     case 'icons': {
@@ -578,8 +698,11 @@ export function validateSpec(spec, card, { resolved = null } = {}) {
   if (spec.basis === 'computed' && spec.kind !== 'line') fail('basis', 'computed applies to line series only (use derived for single values)');
   if (spec.basis === 'sourced' && spec.kind !== 'line') fail('basis', 'sourced applies to line series only');
 
-  const cardText = card ? `${card.title} ${card.definition} ${card.example}` : '';
-  const cardNums = card ? proseNumbers(cardText) : [];
+  if (host === 'lesson' && spec.basis === 'fromCard') fail('basis', 'a lesson graphic restates the lesson: use fromLesson');
+  if (host === 'card' && spec.basis === 'fromLesson') fail('basis', 'a card graphic restates the card: use fromCard');
+  if (host === 'lesson' && spec.kind === 'icons') fail('kind', 'icons are not used in lessons (no honest picture: leave the beat without one)');
+  const cardText = hostText ?? (card ? `${card.title} ${card.definition} ${card.example}` : '');
+  const cardNums = cardText ? proseNumbers(cardText) : [];
   const allowed = [...cardNums];
   (spec.derived || []).forEach((d, i) => {
     if (!isNum(d.value) || !isStr(d.expr)) return fail(`derived[${i}]`, 'needs value and expr');
@@ -618,7 +741,7 @@ export function validateSpec(spec, card, { resolved = null } = {}) {
   const data = dataValues(spec);
   if (spec.basis === 'conceptual') {
     for (const { where, s } of strings) if (/\d/.test(s)) fail(where, `a conceptual graphic shows no numbers ("${s}")`);
-  } else if (spec.basis === 'fromCard' || spec.basis === 'computed' || spec.basis === 'sourced') {
+  } else if (spec.basis === 'fromCard' || spec.basis === 'fromLesson' || spec.basis === 'computed' || spec.basis === 'sourced') {
     for (const n of shown) if (!allowedHas(allowed, n.v)) fail(n.where, `number ${n.text?.trim() ?? n.v} is not in the card text, derived, or data`);
     for (const d of data) {
       if (spec.kind === 'line' && (p.series || []).some((s) => s.compute || s.recipe) && !d.marker && !d.where.startsWith('line.references')) continue;

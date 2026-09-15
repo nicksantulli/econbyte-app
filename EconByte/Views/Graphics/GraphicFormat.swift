@@ -90,7 +90,11 @@ extension CardGraphicSpec {
     /// What VoiceOver says for the graphic: title, then the content in words,
     /// then the basis footnote. Generated from the payload, so it can never
     /// disagree with the drawing.
-    public var accessibilitySummary: String {
+    public var accessibilitySummary: String { accessibilitySummary(in: .card) }
+
+    /// The spoken summary for a graphic drawn on a card or a lesson beat (the
+    /// basis footnote names the host).
+    public func accessibilitySummary(in host: GraphicHost) -> String {
         var parts = ["Graphic: \(title)."]
         switch kind {
         case .bars:
@@ -192,8 +196,29 @@ extension CardGraphicSpec {
                 }
                 parts.append(icons.items.map(\.label).joined(separator: joiner) + ".")
             }
+        case .candles:
+            if let candles, let first = candles.candles.first, let last = candles.candles.last {
+                let n = candles.candles.count
+                let fmt = { (v: Double) in GraphicFormat.number(v) }
+                parts.append("\(n) candlestick\(n == 1 ? "" : "s"), \(candles.xLabel) across and \(candles.yLabel) up.")
+                if n > 1 {
+                    let direction = last.close > first.open ? "above" : (last.close < first.open ? "below" : "level with")
+                    parts.append("The first opens at \(fmt(first.open)); the last closes at \(fmt(last.close)), \(direction) that open.")
+                }
+                if let h = candles.highlight {
+                    let place = h.from == h.to ? "candle \(h.from)" : "candles \(h.from) to \(h.to)"
+                    let pattern = (h.pattern ?? .none) == .none ? "" : ", a \((h.pattern ?? .none).spokenName) pattern"
+                    var sentence = "Highlighted: \(h.label), \(place)\(pattern)"
+                    let marked = candles.candles[max(0, h.from - 1)...min(n - 1, h.to - 1)]
+                    sentence += ": " + marked.map { k in
+                        "\(k.isUp ? "up" : (k.close < k.open ? "down" : "flat")) candle, open \(fmt(k.open)), high \(fmt(k.high)), low \(fmt(k.low)), close \(fmt(k.close))"
+                    }.joined(separator: "; then ")
+                    parts.append(sentence + ".")
+                }
+                for reference in candles.references ?? [] { parts.append("Reference line: \(reference.label) at \(fmt(reference.y)).") }
+            }
         }
-        if let footnote { parts.append(footnote + ".") }
+        if let footnote = footnote(in: host) { parts.append(footnote + ".") }
         return parts.joined(separator: " ")
     }
 }

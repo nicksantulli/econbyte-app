@@ -26,6 +26,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { validateSpec } from './card_graphics.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repo = path.resolve(here, '..');
@@ -421,7 +422,25 @@ export function beatWords(beat) {
     + visualWords(beat.visual);
 }
 
-function beatText(beat) {
+// Phase 24: a beat's `graphic` visual is a typed spec (docs/content/LESSON-GRAPHICS-1.1.5.md),
+// drawn like a chart: its labels are artwork and are not counted as beat words.
+export const HERO_GRAPHIC_KINDS = new Set(['line', 'bars', 'candles', 'diagram', 'proportion', 'timeline']);
+export const COVERAGE = { catalog: 0.9, lesson: 0.8 };
+
+/** Every reader-facing number source of a lesson (graphics excluded): the prose a `fromLesson` graphic restates. */
+export function lessonText(lesson) {
+  const parts = [lesson.title, lesson.summary];
+  for (const beat of lesson.beats ?? []) parts.push(beatText(beat));
+  for (const chart of lesson.charts ?? []) parts.push(chart.title, chart.caption);
+  return parts.filter(x => typeof x === 'string').join(' \n ');
+}
+
+/** A teaching beat (idea or term) carries a purposeful picture: anything but none or a decorative symbol. */
+export function isPurposeful(beat) {
+  return !!beat.visual && beat.visual.type !== 'symbol';
+}
+
+export function beatText(beat) {
   const v = beat.visual ?? {};
   return [beat.heading, beat.text,
     ...(beat.terms ?? []).flatMap(t => [t?.term, t?.definition]),
@@ -463,7 +482,7 @@ function checkChart(rep, bw, block, seenCharts) {
   }
 }
 
-function checkVisual(rep, bw, v, chartIDs, usedCharts, usedDiagrams) {
+function checkVisual(rep, bw, v, chartIDs, usedCharts, usedDiagrams, hostText = '') {
   if (!v || typeof v !== 'object') return rep.fail(bw, 'visual must be an object');
   switch (v.type) {
     case 'diagram':
@@ -493,11 +512,19 @@ function checkVisual(rep, bw, v, chartIDs, usedCharts, usedDiagrams) {
     case 'symbol':
       if (!ALLOWED_SYMBOLS.has(v.name)) rep.fail(bw, `symbol "${v.name}" is not in the allowlist`);
       break;
+    case 'graphic': {
+      if (!v.graphic || typeof v.graphic !== 'object') { rep.fail(bw, 'graphic visual needs a graphic spec'); break; }
+      for (const k of Object.keys(v)) if (!['type', 'graphic'].includes(k)) rep.fail(bw, `graphic visual has an unknown key ${k}`);
+      // Recipes are re-resolved by scripts/lesson_graphics.mjs (async); everything else is checked here.
+      const r = validateSpec(v.graphic, null, { host: 'lesson', hostText });
+      for (const m of r.errors) rep.fail(bw, `graphic ${m}`);
+      break;
+    }
     default: rep.fail(bw, `unknown visual type ${v.type}`);
   }
 }
 
-function validateCourses(file, { fragment = false } = {}) {
+export function validateCourses(file, { fragment = false } = {}) {
   const rep = new Report();
   const catalog = readJSON(file);
   if (catalog.schemaVersion !== 2) rep.fail('catalog', `unsupported schemaVersion ${catalog.schemaVersion} (story lessons are schemaVersion 2)`);
@@ -515,7 +542,7 @@ function validateCourses(file, { fragment = false } = {}) {
   const expected = new Map(EXPECTED_COURSES);
   const seenLessons = new Set(); const seenCharts = new Set(); const seenCourses = new Set();
   const usedDiagrams = new Set();
-  const stats = { lessons: 0, beats: 0, checks: 0, maxWords: 0 };
+  const stats = { lessons: 0, beats: 0, checks: 0, maxWords: 0, teachBeats: 0, purposeful: 0, graphics: 0 };
 
   courses.forEach((course, ci) => {
     const where = `course ${course.courseID ?? ci}`;
@@ -559,7 +586,8 @@ function validateCourses(file, { fragment = false } = {}) {
       stats.beats += beats.length;
       if (beats.length < BEAT_RANGE[0] || beats.length > BEAT_RANGE[1]) rep.fail(lw, `has ${beats.length} beats, needs ${BEAT_RANGE[0]}–${BEAT_RANGE[1]}`);
       const usedCharts = new Set();
-      let checks = 0, recaps = 0, visuals = 0, symbols = 0;
+      const hostText = lessonText(lesson);
+      let checks = 0, recaps = 0, visuals = 0, symbols = 0, teach = 0, purposeful = 0, centerpieces = 0;
       beats.forEach((beat, bi) => {
         const bw = `${lw}/beat ${bi + 1} (${beat.kind})`;
         if (!BEAT_KINDS.has(beat.kind)) rep.fail(bw, `unknown beat kind ${beat.kind}`);
@@ -610,10 +638,23 @@ function validateCourses(file, { fragment = false } = {}) {
         if (beat.visual !== undefined) {
           visuals += 1;
           if (beat.visual?.type === 'symbol') symbols += 1;
-          checkVisual(rep, bw, beat.visual, chartIDs, usedCharts, usedDiagrams);
+          checkVisual(rep, bw, beat.visual, chartIDs, usedCharts, usedDiagrams, hostText);
         }
         checkProse(rep, bw, beatText(beat), verificationYear, { named: true, prediction: true });
+        if (beat.kind === 'idea' || beat.kind === 'term') { teach += 1; if (isPurposeful(beat)) purposeful += 1; }
+        if (beat.visual?.type === 'graphic') stats.graphics += 1;
+        if (beat.centerpiece !== undefined) {
+          centerpieces += 1;
+          if (beat.centerpiece !== true) rep.fail(bw, 'centerpiece is true or absent');
+          if (!['idea', 'term'].includes(beat.kind)) rep.fail(bw, 'the centerpiece is an idea or term beat');
+          const v = beat.visual;
+          const hero = v && (v.type === 'chart' || v.type === 'diagram' || (v.type === 'graphic' && HERO_GRAPHIC_KINDS.has(v.graphic?.kind)));
+          if (!hero) rep.fail(bw, `the centerpiece shows a chart, a diagram or a ${[...HERO_GRAPHIC_KINDS].join('/')} graphic`);
+        }
       });
+      stats.teachBeats += teach; stats.purposeful += purposeful;
+      if (centerpieces !== 1) rep.fail(lw, `needs exactly one centerpiece beat, has ${centerpieces}`);
+      if (teach && purposeful / teach < COVERAGE.lesson) rep.fail(lw, `only ${purposeful} of ${teach} teaching beats carry a purposeful picture (needs ${COVERAGE.lesson * 100}%)`);
       stats.checks += checks;
       if (beats.length && !['idea', 'term'].includes(beats[0].kind)) rep.fail(lw, 'the first beat is an idea or a term');
       if (recaps !== 1) rep.fail(lw, `needs exactly one recap, has ${recaps}`);
@@ -627,6 +668,7 @@ function validateCourses(file, { fragment = false } = {}) {
     });
   });
   if (!fragment) for (const d of ALLOWED_DIAGRAMS) if (!usedDiagrams.has(d)) rep.fail('catalog', `diagram ${d} is not used by any lesson`);
+  if (!fragment && stats.teachBeats && stats.purposeful / stats.teachBeats < COVERAGE.catalog) rep.fail('catalog', `${stats.purposeful} of ${stats.teachBeats} teaching beats carry a purposeful picture (needs ${COVERAGE.catalog * 100}%)`);
   rep.stats = stats;
   return rep;
 }

@@ -248,8 +248,8 @@ struct GraphicTag: View {
 
 extension GraphicPalette {
     /// Tags sit over lines; the light plate is translucent, so give them an
-    /// opaque backing that matches the card surface.
-    var plateOpaque: Color { self.ink == Econ.ink ? Econ.page : Econ.ocean }
+    /// opaque backing that matches the plate's surface.
+    var plateOpaque: Color { backing }
 }
 
 // MARK: - Proportion
@@ -281,6 +281,7 @@ struct ProportionGraphicView: View {
         switch proportion.style {
         case .bar:    barView
         case .waffle: waffleView
+        case .donut:  donutView
         }
     }
 
@@ -330,6 +331,32 @@ struct ProportionGraphicView: View {
         }
     }
 
+    /// A ring (Phase 24): segments clockwise from the top, the remainder last,
+    /// with the legend beside it (below it when the text is large).
+    private var donutView: some View {
+        let ring = min(max(height, 96), 132)
+        let total = max(proportion.total, 1e-9)
+        var start = 0.0
+        let arcs: [(Share, Double, Double)] = shares.map { share in
+            defer { start += share.value / total }
+            return (share, start, start + share.value / total)
+        }
+        let donut = ZStack {
+            ForEach(arcs, id: \.0.id) { share, from, to in
+                Circle()
+                    .trim(from: from, to: max(from, to - (arcs.count > 1 ? 0.004 : 0)))
+                    .stroke(share.color, style: StrokeStyle(lineWidth: ring * 0.2, lineCap: .butt))
+                    .rotationEffect(.degrees(-90))
+            }
+        }
+        .padding(ring * 0.1)
+        .frame(width: ring, height: ring)
+        return EconAdaptiveRow(spacing: 14) {
+            donut
+            legend
+        }
+    }
+
     private var waffleView: some View {
         let total = Int(proportion.total)
         let columns = 10
@@ -356,5 +383,142 @@ struct ProportionGraphicView: View {
             .fixedSize()
             legend
         }
+    }
+}
+
+// MARK: - Candles
+
+/// A textbook candlestick drawing (Phase 24). Each candle's thin wick spans its
+/// low to its high and its body spans open to close; a candle that closes above
+/// its open is drawn in the primary (sky) tone, one that closes below in amber,
+/// and the legend says so. An optional highlight bands and names a pattern,
+/// `annotate: .ohlc` labels one candle's four prices, and up to two reference
+/// lines mark levels such as support and resistance. Prices are not printed on
+/// an axis: the drawing teaches shapes, and every figure a lesson states is in
+/// its text.
+struct CandlesGraphicView: View {
+    let candles: CandlesGraphic
+    let palette: GraphicPalette
+    let height: CGFloat
+    @ScaledMetric(relativeTo: .caption2) private var tagRow: CGFloat = 18
+    @ScaledMetric(relativeTo: .caption2) private var annotationWidth: CGFloat = 50
+
+    private var annotated: CandlesGraphic.Candle? {
+        guard candles.annotate == .ohlc, let h = candles.highlight, h.from == h.to,
+              candles.candles.indices.contains(h.from - 1) else { return nil }
+        return candles.candles[h.from - 1]
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(candles.yLabel)
+                .font(.system(.caption2, design: .rounded))
+                .foregroundColor(palette.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            GeometryReader { geo in plot(in: geo.size) }
+                .frame(height: height)
+            Text(candles.xLabel)
+                .font(.system(.caption2, design: .rounded))
+                .foregroundColor(palette.secondary)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+            EconAdaptiveRow(spacing: 12) {
+                legendItem(color: palette.primary, text: "Closed above open")
+                legendItem(color: palette.accent, text: "Closed below open")
+            }
+        }
+    }
+
+    private func legendItem(color: Color, text: String) -> some View {
+        HStack(spacing: 5) {
+            RoundedRectangle(cornerRadius: EconRadius.mark).fill(color).frame(width: 8, height: 12)
+            Text(text)
+                .font(.system(.caption2, design: .rounded))
+                .foregroundColor(palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func plot(in size: CGSize) -> some View {
+        let list = candles.candles
+        let top: CGFloat = candles.highlight == nil ? 4 : tagRow + 4
+        let bottom: CGFloat = 4
+        let plotWidth = max(40, size.width - (annotated == nil ? 0 : annotationWidth))
+        let slot = plotWidth / CGFloat(max(list.count, 1))
+        let bodyWidth = max(3, min(slot * 0.58, 26))
+        let domain = candles.yDomain
+        let span = domain.upperBound - domain.lowerBound
+        let y: (Double) -> CGFloat = { v in top + CGFloat(1 - (v - domain.lowerBound) / span) * (size.height - top - bottom) }
+        let x: (Int) -> CGFloat = { i in slot * (CGFloat(i) + 0.5) }
+
+        return ZStack(alignment: .topLeading) {
+            if let h = candles.highlight, h.from >= 1, h.to <= list.count {
+                let minX = x(h.from - 1) - slot / 2 + 1
+                let maxX = x(h.to - 1) + slot / 2 - 1
+                RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous)
+                    .fill(palette.accent.opacity(0.14))
+                    .overlay(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous)
+                        .stroke(palette.accent.opacity(0.7), style: StrokeStyle(lineWidth: 1, dash: [3, 2])))
+                    .frame(width: maxX - minX, height: size.height - top + 2)
+                    .offset(x: minX, y: top - 2)
+                GraphicTag(text: h.label, palette: palette, color: palette.accent)
+                    .position(x: min(max((minX + maxX) / 2, 44), size.width - 44), y: tagRow / 2)
+            }
+            ForEach(Array((candles.references ?? []).enumerated()), id: \.offset) { _, reference in
+                Path { p in
+                    p.move(to: CGPoint(x: 0, y: y(reference.y)))
+                    p.addLine(to: CGPoint(x: plotWidth, y: y(reference.y)))
+                }
+                .stroke(palette.muted, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                GraphicTag(text: reference.label, palette: palette)
+                    .fixedSize()
+                    .offset(x: 2, y: y(reference.y) - (y(reference.y) > size.height / 2 ? 16 : -2))
+            }
+            ForEach(Array(list.enumerated()), id: \.offset) { index, candle in
+                let color = candle.isUp ? palette.primary : palette.accent
+                Path { p in
+                    p.move(to: CGPoint(x: x(index), y: y(candle.high)))
+                    p.addLine(to: CGPoint(x: x(index), y: y(candle.low)))
+                }
+                .stroke(color, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                let bodyTop = y(max(candle.open, candle.close))
+                let bodyHeight = max(1.5, y(min(candle.open, candle.close)) - bodyTop)
+                Rectangle()
+                    .fill(color)
+                    .frame(width: bodyWidth, height: bodyHeight)
+                    .offset(x: x(index) - bodyWidth / 2, y: bodyTop)
+            }
+            if let candle = annotated, let h = candles.highlight {
+                let cx = x(h.from - 1)
+                ForEach(Array(Self.annotationRows(for: candle, y: y, minGap: tagRow - 4).enumerated()), id: \.offset) { _, row in
+                    Path { p in
+                        p.move(to: CGPoint(x: cx + bodyWidth / 2 + 2, y: row.anchor))
+                        p.addLine(to: CGPoint(x: plotWidth + 4, y: row.label))
+                    }
+                    .stroke(palette.muted, lineWidth: 0.8)
+                    Text(row.text)
+                        .font(.system(.caption2, design: .rounded).weight(.semibold))
+                        .foregroundColor(palette.ink)
+                        .lineLimit(1)
+                        .fixedSize()
+                        .position(x: plotWidth + 6 + annotationWidth / 2 - 4, y: row.label)
+                }
+            }
+        }
+        .frame(width: size.width, height: size.height, alignment: .topLeading)
+    }
+
+    /// Open/High/Low/Close labels, top to bottom, nudged apart so none overlap.
+    static func annotationRows(for candle: CandlesGraphic.Candle, y: (Double) -> CGFloat, minGap: CGFloat)
+        -> [(text: String, anchor: CGFloat, label: CGFloat)] {
+        var rows: [(text: String, anchor: CGFloat, label: CGFloat)] = [
+            ("High", y(candle.high), y(candle.high)),
+            (candle.isUp ? "Close" : "Open", y(max(candle.open, candle.close)), y(max(candle.open, candle.close))),
+            (candle.isUp ? "Open" : "Close", y(min(candle.open, candle.close)), y(min(candle.open, candle.close))),
+            ("Low", y(candle.low), y(candle.low)),
+        ]
+        for i in rows.indices.dropFirst() where rows[i].label - rows[i - 1].label < minGap {
+            rows[i].label = rows[i - 1].label + minGap
+        }
+        return rows
     }
 }

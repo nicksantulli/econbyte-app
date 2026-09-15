@@ -60,6 +60,7 @@ final class StoryLessonUITests: XCTestCase {
         XCTAssertTrue(bar.exists, "the segmented progress bar is on top")
         let total = Int((bar.value as? String ?? "").components(separatedBy: " of ").last ?? "") ?? 0
         XCTAssertGreaterThanOrEqual(total, 11, "cover + at least 10 beats")
+        XCTAssertFalse(app.buttons["storyBackButton"].exists, "the cover offers only Start (Phase 24)")
         capture("story-01-cover")
 
         // Next button, right-side tap, left-side tap, swipe.
@@ -86,7 +87,11 @@ final class StoryLessonUITests: XCTestCase {
         XCTAssertEqual(currentPage(app), checkPage, "a stray tap does not skip an unanswered check")
         capture("story-03-check")
         app.buttons["quizChoice-0"].tap()
-        XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 5), "answering gives immediate feedback")
+        let explanation = any["quizExplanation"]
+        XCTAssertTrue(explanation.waitForExistence(timeout: 5), "answering gives immediate feedback")
+        sleep(1) // the reveal scrolls the feedback into view
+        XCTAssertLessThanOrEqual(explanation.frame.maxY, next.frame.minY,
+                                 "the feedback sits above the fixed controls, never under them (Phase 24)")
         capture("story-04-check-answered")
         next.tap()
         let resumeAt = currentPage(app) ?? 0
@@ -120,5 +125,45 @@ final class StoryLessonUITests: XCTestCase {
         app.buttons["storyCloseButton"].tap()
         XCTAssertTrue(row.waitForExistence(timeout: 10))
         XCTAssertEqual(row.value as? String, "completed", "reaching the recap completed the lesson")
+    }
+
+    /// Phase 24: a subscriber's Pro tab leads with the courses; the course screen
+    /// has one primary action that opens the right lesson; every lesson has one
+    /// centerpiece picture, and pictures keep their own accessibility ids.
+    func testCoursesLeadForSubscribersAndContinueOpensTheCenterpieceLesson() {
+        let app = launchPro()
+        let any = app.descendants(matching: .any)
+        app.tabBars.buttons["Pro"].tap()
+        let row = any["proCourseRow-reading-price-charts"]
+        XCTAssertTrue(row.waitForExistence(timeout: 15))
+        let offer = any["proOfferCard"]
+        XCTAssertTrue(offer.waitForExistence(timeout: 5))
+        XCTAssertLessThan(row.frame.minY, offer.frame.minY, "a subscriber sees the courses before the plan card")
+        capture("pro-subscriber-top")
+        row.tap()
+        XCTAssertTrue(any["course-reading-price-charts"].waitForExistence(timeout: 15))
+
+        let action = app.buttons["courseContinueButton"]
+        XCTAssertTrue(action.waitForExistence(timeout: 5), "the course screen has one primary action")
+        XCTAssertTrue(["Start", "Continue", "Next lesson", "Read again"].contains { action.label.hasPrefix($0) }, action.label)
+        capture("course-detail")
+        action.tap()
+        XCTAssertTrue(any["storyProgressBar"].waitForExistence(timeout: 15), "the action opens a story")
+
+        let bar = any["storyProgressBar"]
+        let total = Int((bar.value as? String ?? "").components(separatedBy: " of ").last ?? "") ?? 0
+        let centerpiece = any["storyCenterpiece"]
+        let next = app.buttons["storyNextButton"]
+        for _ in 0..<total where !centerpiece.exists && next.exists { next.tap() }
+        if !centerpiece.exists {
+            for _ in 0..<total where !centerpiece.exists && app.buttons["storyBackButton"].exists { app.buttons["storyBackButton"].tap() }
+        }
+        XCTAssertTrue(centerpiece.waitForExistence(timeout: 5), "the lesson has a centerpiece picture")
+        let picture = centerpiece.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH 'lessonGraphic-' OR identifier BEGINSWITH 'diagram-' OR identifier BEGINSWITH 'chart-'")).firstMatch
+        XCTAssertTrue(picture.exists, "the centerpiece keeps its picture's own identifier")
+        capture("story-centerpiece")
+        app.buttons["storyCloseButton"].tap()
+        XCTAssertTrue(action.waitForExistence(timeout: 10))
     }
 }
