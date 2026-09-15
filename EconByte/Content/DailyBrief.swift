@@ -7,7 +7,7 @@ import Foundation
 // and open-licence statistical data — never a commercial news site — and writes
 // its own plain-English sentences about public facts. The app never fetches,
 // parses, or summarizes anything itself: it downloads the finished document from
-// `https://dudleyapps.com/econbyte/brief/latest.json`, validates it, caches the
+// the EconByte brief service (`BriefStore.latestURL`), validates it, caches the
 // last 30, and falls back to the bundled sample when nothing else is available.
 //
 // The model is deliberately strict. A brief that cites a host outside
@@ -86,6 +86,16 @@ public struct DailyBrief: Codable, Hashable, Identifiable {
     public func section(_ type: BriefSectionType) -> BriefSection? {
         sections.first { $0.type == type }
     }
+
+    /// How a brief gets published, as the "How this brief is made" screen states
+    /// it. Must match the brief service (`docs/daily-brief/SERVER.md`).
+    public static let publishingProcess: [String] = [
+        "Sources: official statistical releases and central-bank publications only — never news articles or headlines.",
+        "Drafting: an AI model writes the plain-English text from the releases' own words and tables, and nothing else.",
+        "Checks before publishing: the document format, every source link, every number against the release text, and a second, independent fact-check. A brief that fails is not published; the previous one stays.",
+        "Schedule: each U.S. federal business day, at 11:30 a.m. and 5:30 p.m. New York time (the later run only when new releases are out). No briefs on weekends or federal holidays.",
+        "Delivered from the EconByte brief service; the app keeps the latest 30 briefs for offline reading.",
+    ]
 
     /// The free teaser: the headline plus the first released item. Everything
     /// else is Pro.

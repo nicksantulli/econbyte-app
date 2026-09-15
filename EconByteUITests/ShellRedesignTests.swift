@@ -358,6 +358,35 @@ final class ShellRedesignTests: XCTestCase {
         capture("a2-owned-settings")
     }
 
+    /// Live service (network): once a published brief arrives it replaces the
+    /// bundled samples — no SAMPLE badge, and no sample in the archive.
+    func testLiveBriefReplacesTheSamplesWithoutASampleBadge() {
+        let app = launch(["-econDebugPro", "-econInitialTab", "news"])
+        let any = app.descendants(matching: .any)
+        XCTAssertTrue(any["briefHeadline"].waitForExistence(timeout: 15))
+        let badge = any["Sample brief"]
+        let gone = NSPredicate(format: "exists == false")
+        XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: gone, evaluatedWith: badge)], timeout: 40), .completed,
+                       "a fetched brief shows no SAMPLE badge")
+        sleep(1)
+        capture("a2-news-live-brief")
+        let rows = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'briefArchiveRow-'"))
+        let first = rows.firstMatch
+        for _ in 0..<20 where !(first.exists && first.isHittable) { app.swipeUp() }
+        XCTAssertTrue(first.exists, "the archive lists the published briefs")
+        let sampleDates = ["2026-09-14", "2026-09-11", "2026-09-10", "2026-09-09", "2026-09-08"]
+        for date in sampleDates {
+            XCTAssertFalse(any["briefArchiveRow-\(date)"].exists, "sample \(date) is not listed beside real briefs")
+        }
+        capture("a2-news-live-archive")
+        let method = app.buttons["briefMethodologyButton"]
+        for _ in 0..<6 where !(method.exists && method.isHittable) { app.swipeUp() }
+        method.tap()
+        XCTAssertTrue(any["briefPublishingProcess"].waitForExistence(timeout: 10))
+        sleep(1)
+        capture("a2-news-how-its-made")
+    }
+
     // MARK: - Phase 11: purchase controls and banner layout
 
     /// Orchestrator finding (Phase 10 screenshots): with no StoreKit price the

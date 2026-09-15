@@ -341,6 +341,29 @@ struct BriefMethodologyView: View {
                 Econ.ocean.ignoresSafeArea()
                 ScrollView {
                     VStack(alignment: .leading, spacing: 14) {
+                        Text("HOW IT'S PUBLISHED")
+                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                            .foregroundColor(Econ.subtext)
+                            .tracking(1.5)
+                            .accessibilityAddTraits(.isHeader)
+                        ForEach(DailyBrief.publishingProcess, id: \.self) { step in
+                            HStack(alignment: .top, spacing: 10) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(Econ.amber)
+                                    .accessibilityHidden(true)
+                                Text(step)
+                                    .font(.system(size: 14, design: .rounded))
+                                    .foregroundColor(Econ.white.opacity(0.9))
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                        .accessibilityIdentifier("briefPublishingProcess")
+                        Text("THIS EDITION")
+                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                            .foregroundColor(Econ.subtext)
+                            .tracking(1.5)
+                            .padding(.top, 6)
+                            .accessibilityAddTraits(.isHeader)
                         Text(brief.methodology)
                             .font(.system(size: 15, design: .rounded))
                             .foregroundColor(Econ.white.opacity(0.9))

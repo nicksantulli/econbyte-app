@@ -17,13 +17,21 @@ import Foundation
 @MainActor
 final class BriefStore: ObservableObject {
 
-    static let shared = BriefStore()
+    static let shared: BriefStore = {
+        #if DEBUG
+        // `-econBriefOffline`: UI tests that assert the bundled samples never
+        // reach the live service.
+        if ProcessInfo.processInfo.arguments.contains("-econBriefOffline") {
+            return BriefStore(endpoint: URL(string: "https://offline.invalid/latest.json")!)
+        }
+        #endif
+        return BriefStore()
+    }()
 
-    /// The brief service's public base URL — the ONE place it is set. Serves
-    /// `latest.json`, `index.json` and `<YYYY-MM-DD>.json`.
-    /// TODO(orchestrator, 1.1.4): confirm/replace with the base URL in
-    /// `~/dudley-lane-briefs/reports/laneB-daily-brief-service.md` before archiving.
-    nonisolated static let baseURL = URL(string: "https://dudleyapps.com/econbyte/brief/")!
+    /// The EconByte brief service's public base URL — the ONE place it is set
+    /// (Lane B, live 2026-09-15). Serves `latest.json`, `index.json` and
+    /// `archive/<YYYY-MM-DD>.json`.
+    nonisolated static let baseURL = URL(string: "https://econbyte-brief-production.up.railway.app/")!
     nonisolated static var latestURL: URL { baseURL.appendingPathComponent("latest.json") }
     nonisolated static var indexURL: URL { baseURL.appendingPathComponent("index.json") }
     /// Published briefs pulled into the archive per refresh, newest first.
@@ -31,7 +39,7 @@ final class BriefStore: ObservableObject {
     static let cacheLimit = 30
     /// How often a new brief is published, as the paywall states it (A5, A14).
     /// Must match the brief service's real schedule.
-    static let cadenceDescription = "every U.S. business day"
+    static let cadenceDescription = "each U.S. federal business day"
     /// A refresh is attempted at most this often, so opening the screen
     /// repeatedly is not a request each time.
     static let minimumRefreshInterval: TimeInterval = 60 * 60
@@ -139,6 +147,11 @@ final class BriefStore: ObservableObject {
                 return
             }
             let brief = try DailyBrief.decodeValidated(data)
+            guard brief.isSample != true else {
+                // A sample is never published over, or next to, real briefs.
+                refreshNote = nil
+                return
+            }
             store(brief)
             if let current = latest, current.briefDate > brief.briefDate, source != .bundled {
                 // Never replace a newer cached brief with an older one.
@@ -168,13 +181,13 @@ final class BriefStore: ObservableObject {
               (result.1 as? HTTPURLResponse)?.statusCode == 200 else { return }
         let have = Set(cachedDates)
         let missing = BriefIndex.entries(from: result.0, base: indexEndpoint.deletingLastPathComponent())
-            .filter { !have.contains($0.briefDate) }
+            .filter { !$0.isSample && !have.contains($0.briefDate) }
             .prefix(Self.archiveFetchLimit)
         for entry in missing {
             guard let fetched = try? await session.data(for: Self.request(entry.url)),
                   (fetched.1 as? HTTPURLResponse)?.statusCode == 200,
                   let brief = try? DailyBrief.decodeValidated(fetched.0),
-                  brief.briefDate == entry.briefDate else { continue }
+                  brief.briefDate == entry.briefDate, brief.isSample != true else { continue }
             store(brief)
         }
     }
@@ -234,11 +247,14 @@ final class BriefStore: ObservableObject {
 struct BriefIndexEntry: Equatable {
     let briefDate: String
     let url: URL
+    /// The service lists the app's samples too; the archive skips them.
+    var isSample = false
 }
 
-/// Reads `index.json` tolerantly — a bare array of dates, `{"dates": [...]}`,
-/// or `{"briefs": [{"briefDate"|"date": ..., "url"|"path": ...}]}` — and keeps
-/// only well-formed dates whose file lives on the service's own host over HTTPS.
+/// Reads `index.json` tolerantly — `{"briefs": [{"briefDate", "url": "/archive/<date>.json",
+/// "isSample"}]}` (the live service), `{"dates": [...]}` or a bare array of dates
+/// (resolved to `archive/<date>.json`) — and keeps only well-formed dates whose
+/// file lives on the service's own host over HTTPS.
 enum BriefIndex {
     static func entries(from data: Data, base: URL) -> [BriefIndexEntry] {
         guard let json = try? JSONSerialization.jsonObject(with: data) else { return [] }
@@ -246,6 +262,7 @@ enum BriefIndex {
         if let array = json as? [Any] {
             raw = array
         } else if let object = json as? [String: Any] {
+            // `briefs` (with isSample) wins over the bare `dates` list.
             raw = (object["briefs"] as? [Any]) ?? (object["items"] as? [Any])
                 ?? (object["archive"] as? [Any]) ?? (object["dates"] as? [Any]) ?? []
         }
@@ -253,18 +270,20 @@ enum BriefIndex {
         let entries = raw.compactMap { item -> BriefIndexEntry? in
             var date: String?
             var path: String?
+            var sample = false
             if let string = item as? String {
                 date = string
             } else if let object = item as? [String: Any] {
                 date = (object["briefDate"] as? String) ?? (object["date"] as? String)
                 path = (object["url"] as? String) ?? (object["path"] as? String) ?? (object["file"] as? String)
+                sample = (object["isSample"] as? Bool) ?? false
             }
             guard let date, isISODate(date), !seen.contains(date) else { return nil }
             let resolved = path.flatMap { URL(string: $0, relativeTo: base)?.absoluteURL }
-                ?? base.appendingPathComponent("\(date).json")
+                ?? base.appendingPathComponent("archive").appendingPathComponent("\(date).json")
             guard resolved.scheme == "https", resolved.host == base.host else { return nil }
             seen.insert(date)
-            return BriefIndexEntry(briefDate: date, url: resolved)
+            return BriefIndexEntry(briefDate: date, url: resolved, isSample: sample)
         }
         return entries.sorted { $0.briefDate > $1.briefDate }
     }

@@ -494,7 +494,7 @@ struct SourcesPolicyView: View {
         ("Cards and packs",
          "Every card names the primary or official source it is built on — agencies such as the Bureau of Labor Statistics, the Bureau of Economic Analysis and the Federal Reserve — and shows it on the card."),
         ("The Daily Brief",
-         "Built only from official public releases on a fixed list of official statistics agencies, central banks and international organizations, never from news articles. Every figure links to its release and says when it was read."),
+         "Built only from official releases on a fixed list of statistics agencies, central banks and international organizations, never from news articles. An AI model drafts it from the releases' own text; it is published only after automated checks of every link and number and a second fact-check. Every figure links to its release. Published each U.S. federal business day."),
         ("Courses",
          "Charts that illustrate a concept use synthetic data and say so. Quizzes check the lesson, not the market."),
         ("Not advice",

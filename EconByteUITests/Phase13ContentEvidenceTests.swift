@@ -16,7 +16,10 @@ final class Phase13ContentEvidenceTests: XCTestCase {
     private func launchPro() -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-EBSkipPermissionPrompts",
-                                "-econResetGrowthState", "-econDisableAds", "-econDebugPro"]
+                                "-econResetGrowthState", "-econDisableAds", "-econDebugPro",
+                                // The archive assertions are about the bundled samples:
+                                // keep the live brief service out of this run.
+                                "-econBriefOffline"]
         app.launch()
         XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 20),
                       "Home renders")

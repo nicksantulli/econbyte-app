@@ -62,11 +62,12 @@ and mirrored in `scripts/validate_content.mjs` for writers.
 `Views/BriefView.swift`): a per-business-day JSON document produced server-side
 **from official releases only** (BLS, BEA, Census, Treasury, Federal Reserve,
 CBO and open-licence peers — the complete list is `DailyBrief.allowedHosts`),
-never a news site. The app fetches
-`https://dudleyapps.com/econbyte/brief/latest.json` (may 404 until the job
-exists), validates it fail-closed, caches the newest 30, and otherwise shows the
-newest of the five bundled samples `Resources/brief-sample-YYYY-MM-DD.json`
-(labeled SAMPLE, one per recent business day; the older four fill the archive). Free readers see the headline and first item; Pro
+never a news site. The app fetches `latest.json` and `index.json` from the
+EconByte brief service (`BriefStore.baseURL`, live since 2026-09-15; published
+each U.S. federal business day at 11:30 and 17:30 ET), validates every document
+fail-closed, caches the newest 30 real briefs for the archive, and only when it
+has none (first launch offline) shows the five bundled samples
+`Resources/brief-sample-YYYY-MM-DD.json`, labeled SAMPLE. Free readers see the headline and first item; Pro
 readers see everything. Server job spec: `docs/daily-brief/SERVER.md`.
 
 **Telemetry** (allowlisted, bucketed, tested): `pro_paywall_shown_v1`,

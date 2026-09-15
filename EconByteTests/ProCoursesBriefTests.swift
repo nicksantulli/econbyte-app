@@ -558,6 +558,7 @@ final class ProCoursesBriefTests: XCTestCase {
     // MARK: - Daily Brief: the service (1.1.4 release scope, step 5)
 
     func testBriefServiceURLsDeriveFromOneBaseConstant() {
+        XCTAssertEqual(BriefStore.baseURL.absoluteString, "https://econbyte-brief-production.up.railway.app/")
         XCTAssertEqual(BriefStore.baseURL.scheme, "https")
         XCTAssertEqual(BriefStore.latestURL, BriefStore.baseURL.appendingPathComponent("latest.json"))
         XCTAssertEqual(BriefStore.indexURL, BriefStore.baseURL.appendingPathComponent("index.json"))
@@ -567,8 +568,8 @@ final class ProCoursesBriefTests: XCTestCase {
         let base = URL(string: "https://briefs.example.org/econbyte/brief/")!
         let bare = try JSONSerialization.data(withJSONObject: ["2026-09-14", "2026-09-15", "2026-09-15", "bad"])
         XCTAssertEqual(BriefIndex.entries(from: bare, base: base),
-                       [BriefIndexEntry(briefDate: "2026-09-15", url: URL(string: "https://briefs.example.org/econbyte/brief/2026-09-15.json")!),
-                        BriefIndexEntry(briefDate: "2026-09-14", url: URL(string: "https://briefs.example.org/econbyte/brief/2026-09-14.json")!)])
+                       [BriefIndexEntry(briefDate: "2026-09-15", url: URL(string: "https://briefs.example.org/econbyte/brief/archive/2026-09-15.json")!),
+                        BriefIndexEntry(briefDate: "2026-09-14", url: URL(string: "https://briefs.example.org/econbyte/brief/archive/2026-09-14.json")!)])
         let dates = try JSONSerialization.data(withJSONObject: ["dates": ["2026-09-11"]])
         XCTAssertEqual(BriefIndex.entries(from: dates, base: base).map(\.briefDate), ["2026-09-11"])
         let objects = try JSONSerialization.data(withJSONObject: ["briefs": [
@@ -580,6 +581,15 @@ final class ProCoursesBriefTests: XCTestCase {
                        [BriefIndexEntry(briefDate: "2026-09-12", url: URL(string: "https://briefs.example.org/econbyte/brief/2026-09-12.json")!)],
                        "another host or plain http is never fetched")
         XCTAssertEqual(BriefIndex.entries(from: Data("not json".utf8), base: base), [])
+        // The live service's shape: absolute archive paths and isSample flags.
+        let live = try JSONSerialization.data(withJSONObject: [
+            "schemaVersion": 1, "dates": ["2026-09-15", "2026-09-14"],
+            "briefs": [["briefDate": "2026-09-15", "isSample": false, "url": "/archive/2026-09-15.json"],
+                       ["briefDate": "2026-09-14", "isSample": true, "url": "/archive/2026-09-14.json"]]])
+        let service = URL(string: "https://econbyte-brief-production.up.railway.app/")!
+        XCTAssertEqual(BriefIndex.entries(from: live, base: service),
+                       [BriefIndexEntry(briefDate: "2026-09-15", url: URL(string: "https://econbyte-brief-production.up.railway.app/archive/2026-09-15.json")!, isSample: false),
+                        BriefIndexEntry(briefDate: "2026-09-14", url: URL(string: "https://econbyte-brief-production.up.railway.app/archive/2026-09-14.json")!, isSample: true)])
     }
 
     @MainActor
@@ -595,11 +605,16 @@ final class ProCoursesBriefTests: XCTestCase {
         let latest = try document("2026-09-15")
         let previous = try document("2026-09-14")
         let older = try document("2026-09-11")
+        var sampleObject = template
+        sampleObject["briefDate"] = "2026-09-09"
+        sampleObject["isSample"] = true
+        let sampleDoc = try JSONSerialization.data(withJSONObject: sampleObject)
         let index = try JSONSerialization.data(withJSONObject: ["briefs": [
-            ["briefDate": "2026-09-15", "url": "2026-09-15.json"],
-            ["briefDate": "2026-09-14", "url": "2026-09-14.json"],
+            ["briefDate": "2026-09-15", "url": "/econbyte/brief/archive/2026-09-15.json"],
+            ["briefDate": "2026-09-14", "url": "archive/2026-09-14.json"],
             ["date": "2026-09-11"],
             ["briefDate": "2026-09-10", "url": "https://evil.example.com/2026-09-10.json"],
+            ["briefDate": "2026-09-09", "url": "archive/2026-09-09.json", "isSample": true],
         ]])
         StubURLProtocol.handler = { request in
             switch request.url?.lastPathComponent {
@@ -607,6 +622,7 @@ final class ProCoursesBriefTests: XCTestCase {
             case "index.json": return (200, index)
             case "2026-09-14.json": return (200, previous)
             case "2026-09-11.json": return (200, older)
+            case "2026-09-09.json": return (200, sampleDoc)
             default: return (404, Data())
             }
         }
@@ -621,7 +637,7 @@ final class ProCoursesBriefTests: XCTestCase {
         XCTAssertEqual(store.source, .network)
         XCTAssertEqual(store.latest?.briefDate, "2026-09-15")
         XCTAssertEqual(store.history.map(\.briefDate), ["2026-09-14", "2026-09-11"],
-                       "the archive comes from index.json; no bundled samples are mixed in; off-host entries are skipped")
+                       "the archive comes from index.json; samples (listed or bundled) are never mixed in; off-host entries are skipped")
         XCTAssertFalse(store.showsSampleBadge(try XCTUnwrap(store.latest)), "a fetched brief shows no SAMPLE badge")
         XCTAssertTrue(store.history.allSatisfy { !store.showsSampleBadge($0) })
 
@@ -635,6 +651,23 @@ final class ProCoursesBriefTests: XCTestCase {
         XCTAssertEqual(offline.latest?.briefDate, "2026-09-15")
         XCTAssertNotNil(offline.refreshNote)
         XCTAssertFalse(offline.showsSampleBadge(try XCTUnwrap(offline.latest)))
+    }
+
+    @MainActor
+    func testAFetchedSampleNeverReplacesTheBundledSamplesOrARealBrief() async throws {
+        var object = try sampleBriefJSON()
+        object["briefDate"] = "2026-09-20"
+        object["isSample"] = true
+        let data = try JSONSerialization.data(withJSONObject: object)
+        StubURLProtocol.handler = { _ in (200, data) }
+        let cache = temporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: cache) }
+        let store = BriefStore(session: stubbedSession(), cacheDirectory: cache)
+        let before = store.latest?.briefDate
+        await store.refresh()
+        XCTAssertEqual(store.source, .bundled)
+        XCTAssertEqual(store.latest?.briefDate, before)
+        XCTAssertEqual(store.cachedDates, [], "a sample from the service is never cached")
     }
 
     // MARK: - Entitlement: Pro suppresses ads and opens core topics (D19)

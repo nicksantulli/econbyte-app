@@ -1017,3 +1017,27 @@ is evidence, not a gate. (4) A notifications ask iOS did not present writes noth
 options: keep; or skip the analytics mapping in DUD-224 regions). Apple's recording + new review notes are required
 for the 1.1.4 submission (draft text in the audit doc); the 1.1.3 build-13 notes must not be reused.
 
+
+## D25 — 1.1.4 release scope: pricing, All Packs Bundle, checklist-A paywall, copy trim, live brief (Lane A2, 2026-09-15)
+
+**Pricing** (`~/dudley-lane-briefs/econbyte-pricing-2026-09-15.md`, mirrored in App Store Connect by Lane C):
+Pro Annual $39.99 with the only free trial (1 week, group level 1), Pro Monthly $9.99 (no offer, level 2), All Packs
+Bundle `com.nsantulli.econbyte.pack.bundle` $5.99 (every pack, not core topics, not ads), packs $1.99, Unlock All
+$2.99, Remove Ads $1.99. Prices on screen come only from StoreKit (`StoreOffer`).
+
+**Paywall** (checklist A): two tiles (Annual preselected, no toggle); the billed price in words is the largest price;
+per-month and "Save X%" are derived and rounded down ($39.99 vs 12 × $9.99 = 66.6% → "Save 66%", never overstated);
+the complete trial line and the trial clause of the auto-renew disclosure appear only for an eligible reader; a
+subscriber sees "Current plan" and switches through StoreKit. Plan names "Annual"/"Monthly" match ASC.
+
+**One PurchaseButton + OfferCard** for every pack, the bundle, Unlock All, Remove Ads and Pro. Settings sells Remove
+Ads, Unlock All and the bundle; single packs are sold on Browse.
+
+**Copy trim:** `docs/audit/2026-09-15-copy-trim.md` (the not-advice line once at lesson end, card-session end,
+brief end and paywall).
+
+**Brief:** the service is live (Lane B). `BriefStore.baseURL` is the one constant; the archive comes from
+`index.json` and skips entries/documents marked `isSample`; fetched briefs never show SAMPLE; samples appear only
+when there is no real brief on the device. "Daily Brief" wording stays, stated as "each U.S. federal business day".
+
+**Deferred to 1.1.5:** story-style (tap-through) lessons — see the Lane A2 report.
