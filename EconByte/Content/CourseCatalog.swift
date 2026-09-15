@@ -293,9 +293,14 @@ public struct Lesson: Codable, Hashable, Identifiable {
 
     /// Every reader-facing string, for the editorial tests.
     public var allText: [String] {
-        [title, summary] + beats.flatMap(\.allText)
-            + charts.flatMap { [$0.title, $0.caption, $0.dataNote, $0.xLabel, $0.yLabel]
-                + ($0.series?.map(\.name) ?? []) + ($0.markers?.map(\.label) ?? []) }
+        var text: [String] = [title, summary]
+        for beat in beats { text += beat.allText }
+        for chart in charts {
+            text += [chart.title, chart.caption, chart.dataNote, chart.xLabel, chart.yLabel]
+            text += chart.series?.map(\.name) ?? []
+            text += chart.markers?.map(\.label) ?? []
+        }
+        return text
     }
 }
 
