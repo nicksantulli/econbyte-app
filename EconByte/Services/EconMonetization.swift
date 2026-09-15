@@ -11,15 +11,29 @@ import UIKit
 // Revised 2026-09-15 (Phase 25, Owner: "no ads in EEA/UK/CH, literally
 // everywhere else gets ads"):
 //   * The block list is the EEA — EU 27 + Iceland, Liechtenstein, Norway, and
-//     the EU outermost regions that carry their own ISO 3166 codes
-//     (Guadeloupe GP, Martinique MQ, French Guiana GF, Réunion RE, Mayotte YT,
-//     Saint-Martin MF) — plus the United Kingdom (GB) and Switzerland (CH).
-//     Table Talk carries the identical list (`AdRegion`).
+//     the EU territories that carry their own ISO 3166 code rather than their
+//     member state's: the outermost regions (Guadeloupe GP, Martinique MQ,
+//     French Guiana GF, Réunion RE, Mayotte YT, Saint-Martin MF, the Canary
+//     Islands IC), Åland (AX, an autonomous region of Finland) and Ceuta &
+//     Melilla (EA, Spanish cities in North Africa) — plus the United Kingdom
+//     (GB) and Switzerland (CH). Table Talk carries the identical list
+//     (`AdRegion`), and both match `monetization-policy.json` rev 4.
+//   * AX, IC and EA were MISSING until 2026-09-15 (Phase 27). All three are EU
+//     territory where the GDPR applies, and iOS can report any of them as the
+//     device region, so leaving them out meant ad requests in the EEA. In
+//     practice their App Store storefronts resolve to FIN/ESP, which were
+//     already blocked, so only a device whose storefront is unreadable was
+//     exposed — but that is exactly the case the locale fallback exists for.
 //   * Jersey (JE), Guernsey (GG), the Isle of Man (IM) and Gibraltar (GI) are
 //     NOT blocked. Each has its own GDPR-style data-protection law, but none is
 //     on the Owner's list and none is covered by the UK or EEA codes above, so
 //     they are served (non-personalized unless the reader allowed tracking).
 //     Revisit if counsel advises otherwise.
+//   * Also deliberately served, for the same reason: the overseas countries and
+//     territories that are NOT EU territory — Greenland (GL) and the Faroes
+//     (FO), and the French OCTs Saint-Barthélemy (BL), Saint-Pierre and
+//     Miquelon (PM), French Polynesia (PF), New Caledonia (NC), Wallis and
+//     Futuna (WF). The EU treaties do not apply to them.
 //   * The region is read from the App Store storefront first (the country of
 //     the reader's App Store account, which is what the store's own legal
 //     posture follows) and only then from the device's region setting. No
@@ -52,14 +66,16 @@ public struct EconAdRegionResolution: Equatable {
 }
 
 public enum EconAdRegion {
-    /// ISO 3166-1 alpha-2 codes of the no-ads territories (38).
+    /// ISO 3166-1 alpha-2 codes of the no-ads territories (41).
     public static let restrictedRegionCodes: Set<String> = [
         // EU 27
         "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
         "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
         "SI", "ES", "SE",
-        // EU outermost regions with their own ISO codes
-        "GP", "MQ", "GF", "RE", "YT", "MF",
+        // EU territories with their own ISO 3166 code: the outermost regions,
+        // the Canary Islands, Åland, and Ceuta & Melilla (IC, AX and EA were
+        // missing until 2026-09-15 — see the note above)
+        "GP", "MQ", "GF", "RE", "YT", "MF", "IC", "AX", "EA",
         // EEA (non-EU)
         "IS", "LI", "NO",
         // United Kingdom
@@ -69,12 +85,15 @@ public enum EconAdRegion {
     ]
 
     /// The same territories as ISO 3166-1 alpha-3, which is what the App Store
-    /// storefront reports (`Storefront.countryCode`, e.g. "USA", "DEU").
+    /// storefront reports (`Storefront.countryCode`, e.g. "USA", "DEU"). 39, not
+    /// 41: IC (Canary Islands) and EA (Ceuta & Melilla) are ISO 3166
+    /// exceptional reservations with no alpha-3 form, and those storefronts
+    /// report ESP, which is on this list already.
     public static let restrictedStorefrontCodes: Set<String> = [
         "AUT", "BEL", "BGR", "HRV", "CYP", "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC",
         "HUN", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "POL", "PRT", "ROU", "SVK",
         "SVN", "ESP", "SWE",
-        "GLP", "MTQ", "GUF", "REU", "MYT", "MAF",
+        "GLP", "MTQ", "GUF", "REU", "MYT", "MAF", "ALA",
         "ISL", "LIE", "NOR",
         "GBR",
         "CHE",

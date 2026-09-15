@@ -147,22 +147,24 @@ final class GrowthAuditTests: XCTestCase {
     // MARK: - 3. Version stamp
 
     /// 1.1.4 build 16 is in App Review and builds 17–19 are reserved for 1.1.4
-    /// hotfixes, so this tree (1.1.5: design system + story lessons) is build 21 (Phase 24 Pro polish; build 20 was the first 1.1.5 TestFlight)
-    /// in both places the project declares it, and the documentation mirror
-    /// agrees.
-    func testProjectIsStampedOneOneFiveBuildTwenty() throws {
+    /// hotfixes, so the 1.1.5 line runs from build 20. Build 20 was the first
+    /// 1.1.5 TestFlight, 21 was Phase 24's Pro polish, and 22 (Phase 27) is the
+    /// combined release build: Pro polish + the Phase 25 ad-delivery lane + the
+    /// AX/IC/EA region fix. The stamp must match in both places the project
+    /// declares it, and in the documentation mirror.
+    func testProjectIsStampedOneOneFiveBuildTwentyTwo() throws {
         let pbx = try String(contentsOf: repoRoot.appendingPathComponent("EconByte.xcodeproj/project.pbxproj"),
                              encoding: .utf8)
         XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.5;").count - 1, 2)
-        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 21;").count - 1, 2)
-        for used in 13...20 {
+        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 22;").count - 1, 2)
+        for used in 13...21 {
             XCTAssertFalse(pbx.contains("CURRENT_PROJECT_VERSION = \(used);"),
                            "build \(used) is live, submitted, in review or reserved for 1.1.4 hotfixes")
         }
 
         let yml = try String(contentsOf: repoRoot.appendingPathComponent("project.yml"), encoding: .utf8)
         XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.5\""))
-        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"21\""))
+        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"22\""))
     }
 
     // MARK: - 4. Anchored banner

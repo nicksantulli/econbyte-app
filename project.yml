@@ -20,6 +20,17 @@ packages:
   GoogleMobileAds:
     url: https://github.com/googleads/swift-package-manager-google-mobile-ads
     exactVersion: 12.14.0
+  # Phase 25 (2026-09-15): the AdMob mediation adapter for Meta Audience
+  # Network, the only Google mediation adapter whose current release still
+  # accepts GoogleMobileAds 12.x (every other network's requires GMA 13). It
+  # pulls in FBAudienceNetwork 6.21.0, which carries its own privacy manifest,
+  # and stays inert until the Owner's Meta account is created and mapped in
+  # AdMob. Pinned exactly, like every other vendor package. The committed
+  # pbxproj is authoritative (product `MetaAdapterTarget`); this entry exists so
+  # the mirror does not drift.
+  MetaAdapter:
+    url: https://github.com/googleads/googleads-mobile-ios-mediation-meta
+    exactVersion: 6.21.0
   # Product analytics. The vendor SDK is touched only by
   # EconByte/Services/PostHogTelemetryTransport.swift, behind the
   # TelemetryTransporting seam. It is inert unless Config/Secrets.xcconfig
@@ -50,7 +61,7 @@ settings:
     # reproduces the project. EconByte is a COMMITTED-pbxproj app: this file is
     # documentation, never a generator input (never run xcodegen here).
     MARKETING_VERSION: "1.1.5"
-    CURRENT_PROJECT_VERSION: "21"
+    CURRENT_PROJECT_VERSION: "22"
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO
@@ -87,6 +98,8 @@ targets:
       - path: EconByte
     dependencies:
       - package: GoogleMobileAds
+      - package: MetaAdapter
+        product: MetaAdapterTarget
       - package: PostHog
       - package: Sentry
     settings:

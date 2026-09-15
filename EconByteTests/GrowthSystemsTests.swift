@@ -324,21 +324,43 @@ final class GrowthSystemsTests: XCTestCase {
 
     // MARK: - 2. Region gate (DUD-224)
 
-    /// Owner 2026-09-15: EEA (EU 27 + IS/LI/NO + the EU outermost regions with
-    /// their own codes) + GB + CH. Identical to Table Talk's `AdRegion`.
+    /// Owner 2026-09-15: EEA (EU 27 + IS/LI/NO + the EU territories with their
+    /// own codes) + GB + CH. Identical to Table Talk's `AdRegion`.
     func testRestrictedRegionsAreTheEEAUnitedKingdomAndSwitzerland() {
         for code in ["DE", "FR", "IE", "IT", "ES", "NL", "SE", "PL", "NO", "IS", "LI", "GB", "CH",
                      "GP", "MQ", "GF", "RE", "YT", "MF"] {
             XCTAssertEqual(EconAdRegion.state(for: code), .restricted,
                            "\(code) must be ad-restricted")
         }
-        XCTAssertEqual(EconAdRegion.restrictedRegionCodes.count, 38,
-                       "EU 27 + 6 outermost regions + Iceland, Liechtenstein, Norway + UK + Switzerland")
-        XCTAssertEqual(EconAdRegion.restrictedStorefrontCodes.count, 38,
-                       "the storefront (alpha-3) list names exactly the same territories")
-        for code in ["DEU", "FRA", "GBR", "CHE", "NOR", "REU", "MAF", "GLP"] {
+        XCTAssertEqual(EconAdRegion.restrictedRegionCodes.count, 41,
+                       "EU 27 + 9 EU territories with their own codes + Iceland, Liechtenstein, "
+                        + "Norway + UK + Switzerland")
+        XCTAssertEqual(EconAdRegion.restrictedStorefrontCodes.count, 39,
+                       "the same territories in alpha-3, less IC and EA, which have no alpha-3 form")
+        for code in ["DEU", "FRA", "GBR", "CHE", "NOR", "REU", "MAF", "GLP", "ALA"] {
             XCTAssertEqual(EconAdRegion.state(for: code), .restricted, "\(code) storefront")
         }
+    }
+
+    /// Phase 27 (2026-09-15): Åland, the Canary Islands and Ceuta & Melilla are
+    /// EU territory (Finland and Spain) that iOS reports under their OWN ISO
+    /// codes, so the EU-27 codes never covered them. They were missing from the
+    /// block list until this build, which meant an ad request in the EEA
+    /// whenever the storefront was unreadable and the device region was one of
+    /// the three. `monetization-policy.json` rev 4 names all three.
+    func testTheEUTerritoriesWithTheirOwnCodesAreBlocked() {
+        for code in ["AX", "IC", "EA", "GP", "MQ", "GF", "RE", "YT", "MF"] {
+            XCTAssertEqual(EconAdRegion.state(for: code), .restricted,
+                           "\(code) is EU territory where the GDPR applies")
+        }
+        XCTAssertEqual(EconAdRegion.state(for: "ALA"), .restricted, "Åland's alpha-3")
+        // IC and EA have no alpha-3 form; their storefronts report ESP, and
+        // Åland's reports FIN. Both are blocked in their own right.
+        XCTAssertEqual(EconAdRegion.state(for: "ESP"), .restricted)
+        XCTAssertEqual(EconAdRegion.state(for: "FIN"), .restricted)
+        XCTAssertEqual(EconAdRegion.restrictedStorefrontCodes.count + 2,
+                       EconAdRegion.restrictedRegionCodes.count,
+                       "the alpha-3 list is the alpha-2 list less exactly IC and EA")
     }
 
     /// Jersey, Guernsey, the Isle of Man and Gibraltar are served (Owner list;
@@ -346,6 +368,18 @@ final class GrowthSystemsTests: XCTestCase {
     func testCrownDependenciesAndGibraltarGetAds() {
         for code in ["JE", "GG", "IM", "GI", "JEY", "GGY", "IMN", "GIB"] {
             XCTAssertEqual(EconAdRegion.state(for: code), .allowed, "\(code) is not on the block list")
+        }
+    }
+
+    /// The other side of the Phase 27 sweep: territories that look European but
+    /// are NOT EU/EEA territory keep their ads, per the Owner's "everywhere else
+    /// gets ads". Greenland and the Faroes (Denmark) and the French OCTs are
+    /// overseas countries and territories, which the EU treaties do not cover.
+    func testOverseasTerritoriesOutsideTheEUGetAds() {
+        for code in ["GL", "FO", "BL", "PM", "PF", "NC", "WF",
+                     "GRL", "FRO", "BLM", "SPM", "PYF", "NCL", "WLF"] {
+            XCTAssertEqual(EconAdRegion.state(for: code), .allowed,
+                           "\(code) is an overseas country or territory, not EU territory")
         }
     }
 
