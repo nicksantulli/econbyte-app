@@ -25,7 +25,7 @@
               "topicID": "stocks-bonds",
               "title": "What a Share Is",
               "definition": "A share of stock is a unit of ownership in a company. Holders of common stock can usually vote at shareholder meetings and receive any dividends the company declares. Preferred stockholders usually cannot vote, but they are paid dividends first and rank ahead of common holders if the company is liquidated.",
-              "example": "Ownership is proportional. A company that has issued 1,000 shares has sold 1,000 equal slices of itself, so a holder of 10 of them owns 1 percent of the firm and collects 1 percent of whatever dividend is declared - no bigger say and no bigger cheque than that slice carries.",
+              "example": "Ownership is proportional. A company that has issued 1,000 shares has sold 1,000 equal slices of itself, so a holder of 10 of them owns 1 percent of the firm and collects 1 percent of whatever dividend is declared - no bigger say and no bigger payout than that slice carries.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -81,7 +81,7 @@
               "topicID": "stocks-bonds",
               "title": "What a Bond Is",
               "definition": "A bond is a loan from the buyer to the issuer, which may be a government, a municipality, or a corporation. The issuer promises to pay a stated rate of interest over the life of the bond and to repay the principal - its face or par value - when the bond matures. Bondholders are creditors, not owners.",
-              "example": "Held to maturity, a bond with a $1,000 face value returns exactly $1,000 at the end plus every interest payment along the way. Sold before maturity, it fetches whatever the market will pay, which may be more or less than $1,000 - the promise is fixed, the resale price is not.",
+              "example": "Held to maturity, a bond with a $1,000 face value returns exactly $1,000 at the end plus every interest payment along the way, as long as the issuer does not default. Sold before maturity, it fetches whatever the market will pay, which may be more or less than $1,000 - the promise is fixed, the resale price is not.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -108,7 +108,7 @@
               "cardID": "sb-004",
               "topicID": "stocks-bonds",
               "title": "Coupon and Yield",
-              "definition": "A bond's coupon is the interest rate written into the security and paid on its face value. Its yield to maturity is the annual return an investor actually earns, which depends on the price paid. At a price equal to face value the two match; at a price above par the yield falls below the coupon, and at a price below par it rises above it.",
+              "definition": "A bond's coupon is the interest rate written into the security and paid on its face value. Its yield to maturity is the annual return an investor earns by holding the bond to maturity, which depends on the price paid. At a price equal to face value the two match; at a price above par the yield falls below the coupon, and at a price below par it rises above it.",
               "example": "At a Treasury auction the rate and the price are set together. In the example TreasuryDirect publishes, a 20-year bond with an interest rate of 1.750 percent and a high yield of 1.850 percent sold at 98.336995 per 100 of face value - below par, so the buyer's return runs a little above the coupon.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -137,7 +137,7 @@
               "topicID": "stocks-bonds",
               "title": "Prices and Yields Move Opposite",
               "definition": "Bond prices and market interest rates move in opposite directions. When rates go up, newly issued bonds pay more, so an older bond with a lower coupon can only be sold at a discount. When rates come down, the older bond's higher coupon makes it worth more than face value. Holding to maturity sidesteps the swing.",
-              "example": "An older bond paying 2 percent competes with new issues paying 4 percent. Nobody pays full price for half the income, so its price drops until the two offer a comparable return. Its owner still receives every coupon and $1,000 at maturity - the loss is real only if the bond is sold early.",
+              "example": "An older bond paying 2 percent competes with new issues paying 4 percent. Nobody pays full price for half the income, so its price drops until the two offer a comparable return. Its owner still receives every coupon and $1,000 at maturity - the price loss is locked in only if the bond is sold early, though the owner keeps earning less than new bonds pay.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -245,7 +245,7 @@
               "topicID": "funds-diversification",
               "title": "Mutual Funds",
               "definition": "A mutual fund pools money from many investors and uses it to buy a portfolio of stocks, bonds, or other securities. Each share represents a slice of the whole portfolio and of the income it produces. Investors buy shares from the fund and sell them back to it at the net asset value calculated at the end of each business day.",
-              "example": "Net asset value is arithmetic, not a quote. A fund holding securities worth $101 million, carrying $1 million of expenses and liabilities, with 10 million shares outstanding has an NAV of $10.00 a share - and every order placed that day, large or small, clears at that one figure after the market closes.",
+              "example": "Net asset value is arithmetic, not a quote. A fund holding securities worth $101 million, carrying $1 million of expenses and liabilities, with 10 million shares outstanding has an NAV of $10.00 a share - and every order received before that day's calculation, large or small, clears at that one figure.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -315,7 +315,7 @@
               "topicID": "funds-diversification",
               "title": "Expense Ratios",
               "definition": "An expense ratio is the share of a fund's average net assets deducted each year to pay its operating costs - management fees, distribution and service fees, and other expenses. It is not billed separately. It comes out of the fund's returns, so the investor never sees an invoice and the drag accumulates year after year.",
-              "example": "The SEC's own illustration: $100,000 growing 4 percent a year for 20 years ends near $208,000 with a 0.25 percent annual fee and near $179,000 with a 1.00 percent fee. The 0.75-point difference in fees costs roughly $29,000 - about 14 percent of the final balance.",
+              "example": "The SEC's own illustration: $100,000 growing 4 percent a year for 20 years ends near $208,000 with a 0.25 percent annual fee and near $179,000 with a 1.00 percent fee. The 0.75-point difference in fees costs roughly $29,000 - about 14 percent of the low-fee balance.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -371,7 +371,7 @@
               "topicID": "funds-diversification",
               "title": "Asset Classes",
               "definition": "An asset class is a group of investments with similar characteristics that tend to behave alike. The three main ones are stocks, bonds, and cash. Asset allocation is the decision about how to divide money among them, and it matters because the classes often do not rise and fall together.",
-              "example": "In a year when a stock index falls 20 percent, a Treasury bill still pays what it was bought to yield and a bond's coupons keep arriving. A portfolio split 60-40 between stocks and bonds moves less than either piece alone - by design, not by luck.",
+              "example": "In a year when a stock index falls 20 percent, a Treasury bill still pays what it was bought to yield and a bond's coupons keep arriving. A portfolio split 60-40 between stocks and bonds swings less than an all-stock portfolio would - by design, not by luck - though bond prices can fall in the same year.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -404,10 +404,10 @@
               "difficulty": "intermediate",
               "source": {
                 "organization": "U.S. Securities and Exchange Commission, Investor.gov",
-                "documentTitle": "Mutual Funds",
-                "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "documentTitle": "Target Date Funds - Investor Bulletin",
+                "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/target-date-funds-investor-bulletin",
+                "publicationDate": "2025-03-25",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -451,7 +451,7 @@
           "icon": "scalemass",
           "order": 3,
           "access": "pack",
-          "summary": "Why higher returns come with more uncertainty, and how compounding, inflation, liquidity, and time horizon shape the outcome.",
+          "summary": "Why higher expected returns come with more uncertainty, and how compounding, inflation, liquidity, and time horizon shape the outcome.",
           "cards": [
             {
               "cardID": "rr-001",
@@ -478,14 +478,14 @@
               "cardID": "rr-002",
               "topicID": "risk-return",
               "title": "Volatility",
-              "definition": "Volatility describes how widely and how fast an asset's price or return swings around its average. A volatile asset can post large gains and large losses in short stretches; a stable one moves in a narrow band. Volatility measures the size of the swings, not their direction, and it is the part of a fund's record most likely to persist.",
+              "definition": "Volatility describes how widely and how fast an asset's price or return swings around its average. A volatile asset can post large gains and large losses in short stretches; a stable one moves in a narrow band. Volatility measures the size of the swings, not their direction, and the SEC notes that a fund's past record shows how volatile it has been even though it does not predict future returns.",
               "example": "Two funds can both average 6 percent a year and feel nothing alike. One returned between 4 and 8 percent every year for 10 years; the other swung from minus 20 to plus 35 percent. Past results cannot say which will do better next, but they do show which one is the rougher ride.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "U.S. Securities and Exchange Commission, Investor.gov",
-                "documentTitle": "Glossary: Mutual Funds, Past Performance",
-                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/mutual-funds-past-performance",
+                "documentTitle": "Mutual Funds",
+                "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
                 "publicationDate": "2026-09-14",
                 "datePrecision": "observed-on-verification-date",
                 "verificationDate": "2026-09-14"
@@ -512,10 +512,10 @@
               "difficulty": "intro",
               "source": {
                 "organization": "U.S. Securities and Exchange Commission, Investor.gov",
-                "documentTitle": "Glossary: Compound Interest",
-                "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/compound-interest",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "documentTitle": "What is compound interest?",
+                "url": "https://www.investor.gov/additional-resources/information/youth/teachers-classroom-resources/what-compound-interest",
+                "publicationDate": "2026-09-11",
+                "datePrecision": "observed-last-modified",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -583,8 +583,8 @@
               "cardID": "rr-006",
               "topicID": "risk-return",
               "title": "Time Horizon",
-              "definition": "A time horizon is the number of months, years, or decades before invested money is needed for its purpose. It matters because short-term swings that are irrelevant to someone spending the money in 30 years can be decisive for someone spending it in 3, when a downturn could arrive at exactly the wrong time.",
-              "example": "Money for a tuition bill due in 18 months and money for a retirement 35 years away face the same market but different problems. A 20 percent drop just before the tuition is due is a permanent loss; the same drop 35 years out is one of many along a long road, with time to recover.",
+              "definition": "A time horizon is the number of months, years, or decades before invested money is needed for its purpose. It matters because short-term swings that matter little to someone spending the money in 30 years can be decisive for someone spending it in 3, when a downturn could arrive at exactly the wrong time.",
+              "example": "Money for a tuition bill due in 18 months and money for a retirement 35 years away face the same market but different problems. A 20 percent drop just before the tuition is due is a permanent loss; the same drop 35 years out is one of many along a long road, with time for prices to recover, though a recovery is never guaranteed.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -611,7 +611,7 @@
               "cardID": "rr-007",
               "topicID": "risk-return",
               "title": "Dollar-Cost Averaging",
-              "definition": "Dollar-cost averaging means putting the same amount of money into an investment at regular intervals regardless of its price. Because the fixed sum buys more shares when the price is low and fewer when it is high, the average cost per share ends up below the average of the prices paid. It is a schedule, not a forecast.",
+              "definition": "Dollar-cost averaging means putting the same amount of money into an investment at regular intervals regardless of its price. Because the fixed sum buys more shares when the price is low and fewer when it is high, the average cost per share ends up at or below the average of the prices paid. It is a schedule, not a forecast, and it does not prevent a loss if prices fall.",
               "example": "An illustrative $100 a month for 3 months at share prices of $10, $5, and $10 buys 10, 20, and 10 shares - 40 shares for $300, an average cost of $7.50 against an average price of $8.33. The arithmetic holds whether the market ends the period higher or lower than it began.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -639,8 +639,8 @@
               "cardID": "rr-008",
               "topicID": "risk-return",
               "title": "Past Performance",
-              "definition": "A fund's past returns do not predict its future returns. Top performers in one year frequently post average or below-average results the next, which is why the SEC requires funds to say so in their materials. What history does show is how volatile a fund has been, and that is more durable than its ranking.",
-              "example": "A fund that returned 30 percent in one year and 2 percent the next has told an investor nothing reliable about year 3 - except that swings of that size are part of its character. The required disclosure exists because the first number is the one people remember.",
+              "definition": "A fund's past returns do not necessarily predict its future returns. Top performers in one year frequently post average or below-average results the next, which is why the SEC requires funds to say so in their materials. What history can show is how volatile a fund has been, which says something about its risk even when it says little about future returns.",
+              "example": "A fund that returned 30 percent in one year and 2 percent the next has told an investor nothing reliable about year 3 - only that its returns have swung widely so far. The SEC requires the warning because a strong year is often not repeated.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "advanced",
               "source": {
@@ -754,8 +754,8 @@
               "cardID": "mk-004",
               "topicID": "market-structure",
               "title": "Stock Indexes",
-              "definition": "A market index tracks the performance of a specific basket of stocks chosen to represent a market or a sector. The Dow Jones Industrial Average follows 30 large U.S. companies, the S&P 500 roughly 500, and the Wilshire 5000 most publicly traded U.S. stocks. An index is a measuring stick, not something anyone can buy directly.",
-              "example": "When a headline says the market fell 2 percent, it means an index did. The Dow's 30 stocks and the S&P 500's roughly 500 can move by different amounts on the same day because they hold different companies. Neither is the whole market; the Wilshire 5000 comes closest.",
+              "definition": "A market index tracks the performance of a specific basket of stocks chosen to represent a market or a sector. One long-running U.S. index follows 30 large companies, a broad one follows roughly 500, and total-market indexes include most publicly traded U.S. stocks. An index is a measuring stick, not something anyone can buy directly.",
+              "example": "When a headline says the market fell 2 percent, it means an index did. A 30-stock index and a 500-stock index can move by different amounts on the same day because they hold different companies. Neither is the whole market; a total-market index comes closest.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -852,7 +852,7 @@
               "cardID": "mk-008",
               "topicID": "market-structure",
               "title": "Circuit Breakers",
-              "definition": "Market-wide circuit breakers are coordinated trading halts triggered when the S&P 500 falls by set amounts in a single day: 7 percent at Level 1, 13 percent at Level 2, and 20 percent at Level 3. They pause trading so information can be absorbed and orders reconsidered, rather than letting a cascade of sell orders exhaust liquidity.",
+              "definition": "Market-wide circuit breakers are coordinated trading halts triggered when a broad index of 500 large U.S. stocks falls by set amounts in a single day: 7 percent at Level 1, 13 percent at Level 2, and 20 percent at Level 3. They pause trading so information can be absorbed and orders reconsidered, rather than letting a cascade of sell orders exhaust liquidity.",
               "example": "A Level 1 or Level 2 decline before 3:25 p.m. halts market-wide trading for 15 minutes; the same decline at or after 3:25 p.m. does not. A Level 3 decline at any time closes the market for the rest of the day. Individual stocks also have their own limit up-limit down price bands.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "advanced",
@@ -869,7 +869,7 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "percent decline in the S&P 500 and minutes (market-wide circuit breaker rules)",
+                "units": "percent decline in a broad 500-stock U.S. index and minutes (market-wide circuit breaker rules)",
                 "geography": "United States",
                 "claimKind": "observation",
                 "observationPeriod": "thresholds as published by the SEC on 2026-09-14",
@@ -2341,7 +2341,7 @@
               "topicID": "stagflation-1970s",
               "title": "October 1979: A New Way to Tighten",
               "definition": "A central bank can steer by setting a short-term interest rate or by controlling the quantity of reserves banks hold. On October 6, 1979 the Federal Reserve switched from the first to the second, letting interest rates swing much more widely so that money growth could be reined in. The change was a signal that inflation would be fought whatever the cost to rates.",
-              "example": "Inflation, measured by the price index for personal consumption expenditures, was 7.7 percent in January 1979 and peaked at 11.6 percent in March 1980. The federal funds rate reached a record 20 percent in late 1980. The medicine worked slowly: inflation was down to 6.1 percent in early 1982 and 3.7 percent the year after, but unemployment peaked at 10.8 percent in late 1982.",
+              "example": "Inflation, measured by the price index for personal consumption expenditures, was 7.7 percent in January 1979 and peaked at 11.6 percent in March 1980. The federal funds rate reached a record 20 percent in late 1980. The medicine worked slowly: inflation came down substantially over 1982 and 1983, but unemployment peaked at 10.8 percent in late 1982.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
