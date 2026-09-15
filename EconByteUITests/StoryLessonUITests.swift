@@ -92,16 +92,14 @@ final class StoryLessonUITests: XCTestCase {
         let resumeAt = currentPage(app) ?? 0
         XCTAssertEqual(resumeAt, checkPage + 1)
 
-        // Leave and come back: the lesson resumes on the same page.
+        // Leave and come back: the lesson reopens on the page the reader left.
         app.buttons["storyCloseButton"].tap()
         XCTAssertTrue(row.waitForExistence(timeout: 10))
         XCTAssertTrue((row.value as? String ?? "").contains("in progress"), "the course list shows the lesson in progress")
         row.tap()
         XCTAssertTrue(any["lesson-ia-02"].waitForExistence(timeout: 15))
-        XCTAssertEqual(currentPage(app), 0, "a reopened lesson shows its cover first")
-        XCTAssertEqual(next.label, "Continue")
-        next.tap()
-        XCTAssertEqual(currentPage(app), resumeAt, "Continue returns to the page the reader left")
+        XCTAssertEqual(currentPage(app), resumeAt, "a reopened lesson resumes on the page the reader left")
+        capture("story-03b-resumed")
 
         // Finish: the recap completes the lesson and carries sources + notice.
         let complete = app.buttons["lessonCompleteButton"]

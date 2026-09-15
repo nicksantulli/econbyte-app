@@ -227,9 +227,9 @@ struct LessonView: View {
                         .accessibilityIdentifier("lessonCompleteButton")
                 }
             } else {
-                Button(page == 0 ? (progress.resumePage(for: lesson) > 0 ? "Continue" : "Start") : "Next") {
-                    go(to: page == 0 ? max(progress.resumePage(for: lesson), 1) : page + 1)
-                }
+                // A lesson in progress reopens on the page the reader left
+                // (`onAppear`), so the cover only ever offers "Start".
+                Button(page == 0 ? "Start" : "Next") { go(to: page + 1) }
                 .buttonStyle(PrimaryButton())
                 .accessibilityIdentifier("storyNextButton")
             }
