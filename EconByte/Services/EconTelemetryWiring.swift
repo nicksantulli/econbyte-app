@@ -41,6 +41,8 @@ enum EBEntryPoint: String {
     case brief = "brief"
     /// 1.1.4 shell: the Pro tab, which shows the paywall inline.
     case proTab = "pro_tab"
+    /// Phase 11: a promoted in-app purchase started on the App Store.
+    case appStorePromotion = "app_store_promotion"
 }
 
 enum EBDirection: String {
@@ -125,6 +127,8 @@ enum EBAdPlacement: String {
     /// carries which one; the interstitial keeps `daily_set_exit`.
     case bannerHome = "home"
     case bannerCard = "card"
+    /// Phase 11: Browse at rest (never while searching).
+    case bannerBrowse = "browse"
 }
 
 enum EBSuppression: String {
@@ -375,10 +379,27 @@ enum EBEvents {
         ]))
     }
 
-    /// An anchored banner actually loaded and took space (1.1.3). Emitted once
-    /// per slot presentation, on the first fill; a no-fill emits nothing.
+    /// The ad SDK recorded a banner impression (Phase 11: one per recorded
+    /// impression, including refreshes — was "first fill per slot", which
+    /// counted loads, not impressions).
     static func bannerImpression(placement: EBAdPlacement) {
         EconTelemetry.shared.capture(TelemetryEvent("banner_impression_v1", [
+            "placement": .string(placement.rawValue),
+        ]))
+    }
+
+    /// A banner slot's fill outcome: `filled`, `no_fill`, or `failed` (any other
+    /// load error). Emitted when a slot's outcome changes, not per refresh.
+    static func bannerLoadFinished(placement: EBAdPlacement, outcome: EBOutcome) {
+        EconTelemetry.shared.capture(TelemetryEvent("banner_load_finished_v1", [
+            "placement": .string(placement.rawValue),
+            "outcome": .string(outcome.rawValue),
+        ]))
+    }
+
+    /// The ad SDK recorded a click on a banner or the interstitial.
+    static func adClicked(placement: EBAdPlacement) {
+        EconTelemetry.shared.capture(TelemetryEvent("ad_clicked_v1", [
             "placement": .string(placement.rawValue),
         ]))
     }

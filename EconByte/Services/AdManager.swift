@@ -38,6 +38,9 @@ final class AdManager: NSObject, EconInterstitialAdapting {
     var onAdDismissed: ((Bool) -> Void)?
 
     private var interstitial: InterstitialAd?
+    /// When the held interstitial loaded. Google expires a loaded interstitial
+    /// after an hour; presenting an older one fails, so it is replaced first.
+    private var loadedAt: Date?
     private var isLoading = false
     private var didStart = false
     private var pendingPolicy = EconAdRequestPolicy()
@@ -46,7 +49,12 @@ final class AdManager: NSObject, EconInterstitialAdapting {
     /// ordinal only — never an ad unit id, never an advertising identifier.
     private(set) var impressionCount = 0
 
-    var isAdLoaded: Bool { interstitial != nil }
+    var isAdLoaded: Bool { interstitial != nil && !isExpired }
+
+    private var isExpired: Bool {
+        guard let loadedAt else { return false }
+        return Date().timeIntervalSince(loadedAt) > EconAdErrorClassifier.maximumInterstitialAge
+    }
 
     func startSDK(policy: EconAdRequestPolicy) {
         guard !didStart else { return }
@@ -66,6 +74,10 @@ final class AdManager: NSObject, EconInterstitialAdapting {
 
     func preload(policy: EconAdRequestPolicy) {
         pendingPolicy = policy
+        if isExpired {
+            interstitial = nil
+            loadedAt = nil
+        }
         guard didStart, !isLoading, interstitial == nil else { return }
         isLoading = true
         Task { @MainActor in
@@ -73,6 +85,7 @@ final class AdManager: NSObject, EconInterstitialAdapting {
                 let ad = try await InterstitialAd.load(with: EconAdUnit.current,
                                                        request: Self.makeRequest(policy: policy))
                 self.interstitial = ad
+                self.loadedAt = Date()
                 self.isLoading = false
                 EBEvents.adLoadFinished(outcome: .filled)
             } catch {
@@ -80,13 +93,15 @@ final class AdManager: NSObject, EconInterstitialAdapting {
                 self.onFailure?(.adLoadFailed, error)
                 // Outcome only. The SDK's error string is a third-party message
                 // and `sdk_error_description` is a prohibited property name.
-                EBEvents.adLoadFinished(outcome: .noFill)
+                // Phase 11: a real no-fill is told apart from any other error.
+                EBEvents.adLoadFinished(outcome: EconAdErrorClassifier.outcome(for: error))
             }
         }
     }
 
     func discardLoadedAd() {
         interstitial = nil
+        loadedAt = nil
     }
 
     func present() async -> Bool {
@@ -97,14 +112,17 @@ final class AdManager: NSObject, EconInterstitialAdapting {
             try ad.canPresent(from: presenter)
         } catch {
             interstitial = nil
+            loadedAt = nil
             onFailure?(.adPresentFailed, error)
+            EBEvents.adDismissed(placement: .dailySetExit, outcome: .failed)
             return false
         }
         interstitial = nil
+        loadedAt = nil
         ad.fullScreenContentDelegate = self
         ad.present(from: presenter)
-        impressionCount += 1
-        EBEvents.adImpression(ordinal: impressionCount)
+        // `ad_impression_v1` moved to `adDidRecordImpression` (Phase 11): the
+        // SDK's recorded impression, not the call to present.
         return true
     }
 
@@ -131,6 +149,15 @@ final class AdManager: NSObject, EconInterstitialAdapting {
 }
 
 extension AdManager: FullScreenContentDelegate {
+    func adDidRecordImpression(_ ad: FullScreenPresentingAd) {
+        impressionCount += 1
+        EBEvents.adImpression(ordinal: impressionCount)
+    }
+
+    func adDidRecordClick(_ ad: FullScreenPresentingAd) {
+        EBEvents.adClicked(placement: .dailySetExit)
+    }
+
     func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
         onAdDismissed?(true)
         preload(policy: pendingPolicy)
@@ -181,11 +208,12 @@ struct GoogleBannerView: UIViewRepresentable {
     let adUnitID: String
     let width: CGFloat
     let policy: EconAdRequestPolicy
+    let placement: EBAdPlacement
     /// Called with the ad's height once one has actually loaded, and with 0 on
     /// failure — the slot reserves no space for an ad that is not there.
     let onLoadedHeight: (CGFloat) -> Void
 
-    func makeCoordinator() -> Coordinator { Coordinator(onLoadedHeight: onLoadedHeight) }
+    func makeCoordinator() -> Coordinator { Coordinator(placement: placement, onLoadedHeight: onLoadedHeight) }
 
     func makeUIView(context: Context) -> BannerView {
         let size = currentOrientationAnchoredAdaptiveBanner(width: max(width, 320))
@@ -211,12 +239,28 @@ struct GoogleBannerView: UIViewRepresentable {
         return request
     }
 
+    @MainActor
     final class Coordinator: NSObject, BannerViewDelegate {
+        let placement: EBAdPlacement
         let onLoadedHeight: (CGFloat) -> Void
-        init(onLoadedHeight: @escaping (CGFloat) -> Void) { self.onLoadedHeight = onLoadedHeight }
+        /// The slot's last reported fill outcome; `banner_load_finished_v1` is
+        /// emitted when it changes, not on every 60-second refresh.
+        private var lastOutcome: EBOutcome?
+
+        init(placement: EBAdPlacement, onLoadedHeight: @escaping (CGFloat) -> Void) {
+            self.placement = placement
+            self.onLoadedHeight = onLoadedHeight
+        }
+
+        private func report(_ outcome: EBOutcome) {
+            guard outcome != lastOutcome else { return }
+            lastOutcome = outcome
+            EBEvents.bannerLoadFinished(placement: placement, outcome: outcome)
+        }
 
         func bannerViewDidReceiveAd(_ bannerView: BannerView) {
             onLoadedHeight(bannerView.adSize.size.height)
+            report(.filled)
         }
 
         func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
@@ -224,6 +268,15 @@ struct GoogleBannerView: UIViewRepresentable {
             // SDK's error string is a third-party message and never leaves.
             NSLog("[Ads] banner load failed")
             onLoadedHeight(0)
+            report(EconAdErrorClassifier.outcome(for: error))
+        }
+
+        func bannerViewDidRecordImpression(_ bannerView: BannerView) {
+            EBEvents.bannerImpression(placement: placement)
+        }
+
+        func bannerViewDidRecordClick(_ bannerView: BannerView) {
+            EBEvents.adClicked(placement: placement)
         }
     }
 }
@@ -233,7 +286,27 @@ struct GoogleBannerView: View {
     let adUnitID: String
     let width: CGFloat
     let policy: EconAdRequestPolicy
+    let placement: EBAdPlacement
     let onLoadedHeight: (CGFloat) -> Void
     var body: some View { Color.clear.frame(height: 0) }
 }
 #endif
+
+// MARK: - Provider error classification (Phase 11)
+
+/// Pure helpers the adapters share, outside the SDK conditional so they are
+/// unit-tested without Google's framework.
+enum EconAdErrorClassifier {
+    /// `GADErrorDomain` in GoogleMobileAds 12 (`GADRequestError.h`).
+    static let googleErrorDomain = "com.google.admob"
+    /// `GADErrorNoFill`.
+    static let noFillCode = 1
+    /// Google expires a loaded interstitial after one hour; replace it at 55
+    /// minutes so the one placement never tries to present a dead ad.
+    static let maximumInterstitialAge: TimeInterval = 55 * 60
+
+    static func outcome(for error: Error) -> EBOutcome {
+        let ns = error as NSError
+        return (ns.domain == googleErrorDomain && ns.code == noFillCode) ? .noFill : .failed
+    }
+}

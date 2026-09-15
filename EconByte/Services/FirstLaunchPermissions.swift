@@ -149,6 +149,7 @@ final class FirstLaunchPermissionsCoordinator {
         var outcome = Outcome()
         guard !FirstLaunchPermissionPolicy.isSkipped(arguments: arguments) else {
             outcome.skipped = true
+            monetization.setLaunchPermissionsHold(false)
             return outcome
         }
         guard !didRunThisProcess, !isRunning else { return outcome }
@@ -194,6 +195,7 @@ final class FirstLaunchPermissionsCoordinator {
 
         // Only now may an ad be requested.
         monetization.setBlocker(.systemPrompt, active: false)
+        monetization.setLaunchPermissionsHold(false)
         monetization.startAdsIfPermitted()
         isRunning = false
         return outcome

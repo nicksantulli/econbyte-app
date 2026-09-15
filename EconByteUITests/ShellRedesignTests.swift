@@ -131,6 +131,129 @@ final class ShellRedesignTests: XCTestCase {
         capture("p10-15-sources-policy")
     }
 
+    // MARK: - Phase 11: purchase controls and banner layout
+
+    /// Orchestrator finding (Phase 10 screenshots): with no StoreKit price the
+    /// Pro tiles showed "—", the button "Subscribe for —", the pack CTA
+    /// "Unlock Personal Finance — —", Settings rows "—". On this Mac's
+    /// xcodebuild the local StoreKit configuration is not attached, so the Pro
+    /// products are genuinely unpriced here — exactly the state to prove.
+    func testPurchaseControlsNeverShowARawPlaceholder() {
+        let app = launch()
+        let any = app.descendants(matching: .any)
+        let settled = NSPredicate(format: "NOT (label BEGINSWITH 'Loading')")
+        func assertReadable(_ element: XCUIElement, _ name: String) {
+            let label = element.label
+            XCTAssertFalse(label.contains("— —"), "\(name): doubled dash in '\(label)'")
+            XCTAssertFalse(label.hasSuffix("—"), "\(name): dangling dash in '\(label)'")
+            XCTAssertFalse(label.contains("for —"), "\(name): placeholder price in '\(label)'")
+            XCTAssertNotEqual(label.trimmingCharacters(in: .whitespaces), "—", "\(name): bare placeholder")
+        }
+
+        app.tabBars.buttons["Pro"].tap()
+        let subscribe = app.buttons["proPaywallSubscribeButton"]
+        XCTAssertTrue(subscribe.waitForExistence(timeout: 15))
+        _ = XCTWaiter().wait(for: [expectation(for: settled, evaluatedWith: subscribe)], timeout: 40)
+        assertReadable(subscribe, "subscribe")
+        for id in ["proPaywallPlan-annual", "proPaywallPlan-monthly"] {
+            XCTAssertTrue(any[id].exists, id)
+            assertReadable(any[id], id)
+        }
+        if !subscribe.label.contains("$") {
+            XCTAssertFalse(subscribe.isEnabled, "no price, no live subscribe control")
+            XCTAssertEqual(subscribe.label, "Subscribe", "disabled but readable")
+            XCTAssertTrue(any["proPaywallPricesUnavailable"].exists, "Prices unavailable — Try again")
+            XCTAssertTrue(app.buttons["proPaywallPricesUnavailableRetryButton"].exists)
+        }
+        capture("p11-01-pro-prices")
+
+        app.tabBars.buttons["Browse"].tap()
+        let buy = app.buttons["pack-personalfinance-buy"]
+        for _ in 0..<14 where !(buy.exists && buy.isHittable) { app.swipeUp() }
+        XCTAssertTrue(buy.waitForExistence(timeout: 15))
+        _ = XCTWaiter().wait(for: [expectation(for: settled, evaluatedWith: buy)], timeout: 40)
+        assertReadable(buy, "pack CTA")
+        if !buy.label.contains("$") {
+            XCTAssertEqual(buy.label, "Unlock Personal Finance")
+            XCTAssertFalse(buy.isEnabled)
+        }
+        capture("p11-02-pack-cta")
+
+        app.buttons["settingsGearButton"].tap()
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
+        let proRow = app.buttons["settingsProButton"]
+        XCTAssertTrue(proRow.waitForExistence(timeout: 10))
+        _ = XCTWaiter().wait(for: [expectation(for: settled, evaluatedWith: proRow)], timeout: 20)
+        assertReadable(proRow, "Settings Pro row")
+        for id in ["settingsRemoveAdsButton", "settingsUnlockAllButton", "settingsPack-markets-buy"] {
+            let row = app.buttons[id]
+            for _ in 0..<6 where !(row.exists && row.isHittable) { app.swipeUp() }
+            if row.exists { assertReadable(row, id) }
+        }
+        let dashes = app.staticTexts.matching(NSPredicate(format: "label == '—'"))
+        XCTAssertEqual(dashes.count, 0, "no bare placeholder text anywhere in Settings")
+        capture("p11-03-settings-prices")
+    }
+
+    /// Banner layout: above the tab bar on Home and Browse, gone while
+    /// searching, and above the home indicator (under the Next button) in a
+    /// card session. Uses Google's public test banner unit (DEBUG); if it does
+    /// not fill on this simulator the layout cannot be asserted and the test
+    /// says so instead of passing.
+    func testBannersSitAboveTheTabBarAndHomeIndicatorAndLeaveSearch() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipPermissionPrompts",
+                                "-econResetGrowthState", "-econTrackingAnswered"]
+        app.launch()
+        let any = app.descendants(matching: .any)
+        XCTAssertTrue(any["econWordmark"].waitForExistence(timeout: 20))
+
+        func waitForBanner(_ id: String, timeout: Int = 30) -> XCUIElement? {
+            let banner = any[id]
+            for _ in 0..<timeout {
+                if banner.exists, banner.frame.height > 10 { return banner }
+                sleep(1)
+            }
+            return nil
+        }
+
+        guard let home = waitForBanner("ad.banner.home") else {
+            throw XCTSkip("Google's test banner did not fill on this simulator; banner layout not asserted")
+        }
+        let tabBar = app.tabBars.firstMatch
+        XCTAssertLessThanOrEqual(home.frame.maxY, tabBar.frame.minY + 1, "Home banner sits above the tab bar")
+        capture("p11-10-banner-home")
+
+        app.tabBars.buttons["Browse"].tap()
+        if let browse = waitForBanner("ad.banner.browse") {
+            XCTAssertLessThanOrEqual(browse.frame.maxY, tabBar.frame.minY + 1, "Browse banner sits above the tab bar")
+            capture("p11-11-banner-browse")
+        } else {
+            XCTFail("the Browse banner did not fill although Home's did")
+        }
+        app.textFields["browseSearchField"].tap()
+        app.typeText("infl")
+        XCTAssertTrue(any["ad.banner.browse"].waitForNonExistence(timeout: 5),
+                      "no banner while searching (sensitive surface; keyboard would lift it over results)")
+        capture("p11-12-browse-search-no-banner")
+        app.buttons["browseSearchClearButton"].tap()
+
+        app.tabBars.buttons["Home"].tap()
+        app.buttons["homeGroceryLine"].tap()
+        XCTAssertTrue(app.buttons["cardModeCloseButton"].waitForExistence(timeout: 10))
+        if let card = waitForBanner("ad.banner.card") {
+            let window = app.windows.firstMatch.frame
+            XCTAssertLessThanOrEqual(card.frame.maxY, window.maxY - 20, "card banner clears the home indicator")
+            let next = app.buttons["Next →"]
+            if next.exists {
+                XCTAssertLessThanOrEqual(next.frame.maxY, card.frame.minY + 1, "the banner never covers Next")
+            }
+            capture("p11-13-banner-card")
+        } else {
+            XCTFail("the card-session banner did not fill although Home's did")
+        }
+    }
+
     func testSubscriberShell() {
         let app = launch(["-econDebugPro"])
         let any = app.descendants(matching: .any)

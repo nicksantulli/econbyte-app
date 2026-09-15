@@ -49,7 +49,11 @@ struct EconByteApp: App {
                 // Anything already answered is skipped, so this is a no-op on
                 // every later launch; UI-test arguments stand it down.
                 await LaunchSequence.shared.waitForIntro()
-                guard await Self.waitUntilActive() else { return }
+                guard await Self.waitUntilActive() else {
+                    // Never leave ads held for a flow that will not run.
+                    growth.monetization.setLaunchPermissionsHold(false)
+                    return
+                }
                 try? await Task.sleep(nanoseconds: 450_000_000)
                 await growth.permissions.runIfNeeded()
             }
@@ -64,6 +68,11 @@ struct EconByteApp: App {
             // EconByte Pro (1.1.4): an active subscription suppresses ads and
             // opens the core topics; a lapse or refund reverses both at once.
             .onChange(of: store.isProActive) { _ in
+                growth.syncEntitlements(from: store)
+            }
+            // Phase 11: StoreKit's first answer ends the provisional
+            // (mirror-based) ad suppression, in either direction.
+            .onChange(of: store.hasVerifiedEntitlements) { _ in
                 growth.syncEntitlements(from: store)
             }
             .onChange(of: scenePhase) { phase in
@@ -81,6 +90,8 @@ struct EconByteApp: App {
                         await store.updatePurchasedProducts()
                         growth.syncEntitlements(from: store)
                         growth.applicationDidBecomeActive()
+                        // An offline launch left no prices: try again now.
+                        if !store.productsReady { await store.loadProducts() }
                     }
                 default:
                     break

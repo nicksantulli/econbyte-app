@@ -76,6 +76,14 @@ public struct EconAdRequestPolicy: Equatable {
         "alcohol",
         "dating",
         "get-rich-quick",
+        // Phase 11: the portfolio's `adsPolicy.providerCategoryBlocks`
+        // (config/app-factory/monetization-policy.json) folded in, so the
+        // app's declaration is a superset of the policy it ships under.
+        "adult-sexual",
+        "controlled-substances",
+        "religion",
+        "simulated-gambling",
+        "violence",
     ]
 
     /// `npa` requests non-personalized delivery; `rdp` restricts data
@@ -129,6 +137,51 @@ public enum EconAdPlacement: String, CaseIterable, Equatable {
     case dailySetExit = "daily_set_exit"
 }
 
+/// Every surface in the 1.1.4 shell and whether an ad may appear on it
+/// (Phase 11 placement matrix; reasoning per row in
+/// `docs/audit/2026-09-14-ads-iap-audit.md` §2). Views ask this type — a
+/// surface that is not listed as a banner surface cannot construct a banner.
+///
+/// Banners: list/feed surfaces a reader browses (Home, Browse at rest) and the
+/// strip under a card session. Never on the portfolio's sensitive surfaces for
+/// EconByte — article body (the Daily Brief), search, saved reading
+/// (bookmarks), quiz explanation (lessons/quizzes), purchase/restore (paywalls),
+/// privacy/consent/permission (Settings, first launch).
+/// Interstitial: only the set exit, after the completion screen.
+enum EconAdSurface: String, CaseIterable {
+    case home
+    case browse
+    case search
+    case newsBrief
+    case newsArchive
+    case proTab
+    case courseLesson
+    case quiz
+    case cardMode
+    case bookmarks
+    case bookmarksReview
+    case setComplete
+    case paywall
+    case settings
+    case firstLaunch
+
+    /// The banner slot this surface may carry, or nil for no banner.
+    var bannerPlacement: EBAdPlacement? {
+        switch self {
+        case .home: return .bannerHome
+        case .browse: return .bannerBrowse
+        case .cardMode: return .bannerCard
+        case .search, .newsBrief, .newsArchive, .proTab, .courseLesson, .quiz,
+             .bookmarks, .bookmarksReview, .setComplete, .paywall, .settings, .firstLaunch:
+            return nil
+        }
+    }
+
+    /// Only the set exit (the dismissal of the completion screen) may show the
+    /// interstitial.
+    var allowsInterstitial: Bool { self == .setComplete }
+}
+
 /// Moments an ad may never interrupt.
 public enum EconAdBlocker: String, CaseIterable, Equatable {
     case purchase, restore, consent, review, notification, paywall, error, systemPrompt
@@ -140,6 +193,9 @@ public enum EconAdDecision: Equatable {
     case suppressedRegion(EconAdRegionState)
     case setNotCompletedNormally
     case belowLifetimeSetThreshold(Int)
+    /// Phase 11: the install's first foreground session carries no
+    /// interstitial (portfolio cap `initialSessionInterstitials: 0`).
+    case initialSession
     case belowSetsSinceLastAd(Int)
     case belowTimeThreshold(TimeInterval)
     case sessionCapReached
@@ -214,12 +270,36 @@ public struct EconEntitlements: Equatable {
 /// of this loop), so there is no evidence to spend. The steady revenue surface
 /// added in 1.1.3 is the anchored banner (`AdBannerSlot`), not more
 /// interstitials. Re-audit when Phase 7's dashboards exist.
+///
+/// Phase 11 (2026-09-14) re-audit against the portfolio cap policy
+/// (`config/app-factory/monetization-policy.json` `adsPolicy.capPolicy`, which
+/// EconByte declares no override for and `release_evidence_gate.mjs` bounds):
+///
+///   * `initialSessionInterstitials` 0 — NEW. The install's first foreground
+///     session never carries an interstitial, even if the reader finishes two
+///     sets in it. Before this a fresh install could meet an interstitial at
+///     its second set exit in its first sitting (portfolio: 0).
+///   * `perSession` 2 → 1. The portfolio base cap is one per foreground
+///     session; the 1.1.3 loosening exceeded it. It only ever bound in a
+///     sitting longer than 15 minutes with three or more completed sets.
+///   * `perDay` 2 is now ALSO a rolling 24-hour cap (`rollingWindow`), so
+///     23:50 + 00:10 can no longer make four in under an hour across midnight
+///     (portfolio: `maximumInterstitialsPer24Hours` 2).
+///   * `minimumInterval` 15 min (portfolio: 1 per 10 min) and
+///     `minimumCompletedSets` 2 unchanged.
+///
+/// Retention guardrail (Phase 7 dashboards): if D1 retention of ad-eligible
+/// installs drops more than 15% relative to entitled installs after 1.1.4,
+/// set `minimumCompletedSets` to 3 and `setsSinceLastAd` to 2 (the spec83
+/// pacing) before touching the banner.
 public struct EconAdThresholds: Equatable {
     public var minimumCompletedSets = 2
+    public var initialSessionInterstitials = 0
     public var setsSinceLastAd = 1
     public var minimumInterval: TimeInterval = 15 * 60
-    public var perSession = 2
+    public var perSession = 1
     public var perDay = 2
+    public var rollingWindow: TimeInterval = 24 * 60 * 60
     public init() {}
 }
 
@@ -231,7 +311,15 @@ public struct EconAdState: Equatable {
     public var shownThisSession = 0
     public var shownToday = 0
     public var dayKey = ""
+    /// Foreground sessions this install has begun, counting the current one.
+    public var foregroundSessionsLifetime = 0
+    /// When the most recent interstitials were shown, for the rolling cap.
+    public var recentShownAt: [Date] = []
     public init() {}
+
+    public func shownWithin(_ window: TimeInterval, of now: Date) -> Int {
+        recentShownAt.filter { now.timeIntervalSince($0) < window }.count
+    }
 
     public static func dayKey(for date: Date, calendar: Calendar = .current) -> String {
         let parts = calendar.dateComponents([.year, .month, .day], from: date)
@@ -267,6 +355,10 @@ public struct EconAdPolicy {
         guard state.completedSetsLifetime >= thresholds.minimumCompletedSets else {
             return .belowLifetimeSetThreshold(thresholds.minimumCompletedSets)
         }
+        if state.foregroundSessionsLifetime <= 1,
+           state.shownThisSession >= thresholds.initialSessionInterstitials {
+            return .initialSession
+        }
         guard state.setsSinceLastAd >= thresholds.setsSinceLastAd else {
             return .belowSetsSinceLastAd(thresholds.setsSinceLastAd)
         }
@@ -276,6 +368,9 @@ public struct EconAdPolicy {
         }
         guard state.shownThisSession < thresholds.perSession else { return .sessionCapReached }
         if state.dayKey == dayKey, state.shownToday >= thresholds.perDay {
+            return .dailyCapReached
+        }
+        if state.shownWithin(thresholds.rollingWindow, of: now) >= thresholds.perDay {
             return .dailyCapReached
         }
         return .eligible
@@ -309,6 +404,8 @@ public final class EconMonetization: ObservableObject {
         static let lastShownAt = "econ.ads.lastShownAt"
         static let dayKey = "econ.ads.dayKey"
         static let shownToday = "econ.ads.shownToday"
+        static let foregroundSessions = "econ.ads.foregroundSessionsLifetime"
+        static let recentShownAt = "econ.ads.recentShownAt"
         /// Set the moment the ATT prompt is asked for, so "once per install"
         /// survives a relaunch even in the states where iOS leaves the status
         /// `.notDetermined` (it declines to present the prompt when the app is
@@ -329,6 +426,13 @@ public final class EconMonetization: ObservableObject {
     /// Whether this install has already been shown (or been offered) the ATT
     /// prompt. Persisted, because "once per install" outlives the process.
     public private(set) var didRequestTrackingPrompt: Bool
+
+    /// Phase 11: held from app launch until the first-launch permission flow
+    /// has run (or been skipped), so no ad SDK start — and therefore no banner
+    /// or interstitial request — can land under Apple's ATT or notifications
+    /// prompt, including for an upgrader whose ATT is already decided but whose
+    /// notifications prompt is still owed.
+    public private(set) var isHeldForLaunchPermissions = false
 
     /// Raised once per exit when every local eligibility rule passes, before any
     /// provider call. Carries the set counter as it stood *before* the reset.
@@ -374,6 +478,13 @@ public final class EconMonetization: ObservableObject {
         state.lastShownAt = defaults.object(forKey: Key.lastShownAt) as? Date
         state.dayKey = defaults.string(forKey: Key.dayKey) ?? ""
         state.shownToday = defaults.integer(forKey: Key.shownToday)
+        state.recentShownAt = (defaults.array(forKey: Key.recentShownAt) as? [Date]) ?? []
+        if defaults.object(forKey: Key.foregroundSessions) != nil {
+            state.foregroundSessionsLifetime = defaults.integer(forKey: Key.foregroundSessions)
+        } else if state.completedSetsLifetime > 0 {
+            // An upgrader from 1.1.3 or earlier has certainly had a session.
+            state.foregroundSessionsLifetime = 1
+        }
         state.shownThisSession = 0
         rollDayIfNeeded()
 
@@ -421,7 +532,23 @@ public final class EconMonetization: ObservableObject {
     /// is still outstanding never has a banner requested on their behalf.
     public var canRequestAds: Bool {
         !entitlements.adsSuppressed && region().permitsAdRequests && adRequestsPermitted
+            && !isHeldForLaunchPermissions
     }
+
+    /// See `isHeldForLaunchPermissions`. Released by
+    /// `FirstLaunchPermissionsCoordinator` when the flow ends or is skipped.
+    public func setLaunchPermissionsHold(_ held: Bool) {
+        isHeldForLaunchPermissions = held
+    }
+
+    #if DEBUG
+    /// DEBUG-only (`-econTrackingAnswered`): lets a UI test that skips the
+    /// system prompts still reach a real (test-unit) banner, so banner layout
+    /// can be asserted. In-memory only; never persisted.
+    public func debugMarkTrackingPromptRequested() {
+        didRequestTrackingPrompt = true
+    }
+    #endif
 
     /// The request configuration a banner must use: the same non-personalized
     /// extras, carrying the live tracking status.
@@ -468,6 +595,7 @@ public final class EconMonetization: ObservableObject {
     /// region gate, and the tracking decision all permit an ad request.
     public func startAdsIfPermitted() {
         guard !didStartSDK else { return }
+        guard !isHeldForLaunchPermissions else { return }
         guard !entitlements.adsSuppressed else { return }
         guard region().permitsAdRequests else { return }
         guard adRequestsPermitted else { return }
@@ -486,7 +614,9 @@ public final class EconMonetization: ObservableObject {
 
     public func noteForegroundSessionBegan() {
         state.shownThisSession = 0
+        state.foregroundSessionsLifetime += 1
         rollDayIfNeeded()
+        persist()
     }
 
     // MARK: Session signals
@@ -541,6 +671,8 @@ public final class EconMonetization: ObservableObject {
         state.shownThisSession += 1
         state.shownToday += 1
         state.lastShownAt = moment
+        state.recentShownAt = (state.recentShownAt + [moment])
+            .filter { moment.timeIntervalSince($0) < policy.thresholds.rollingWindow }
         state.setsSinceLastAd = 0
         persist()
         preloadIfPermitted()
@@ -562,6 +694,8 @@ public final class EconMonetization: ObservableObject {
         defaults.set(state.setsSinceLastAd, forKey: Key.setsSinceLastAd)
         defaults.set(state.shownToday, forKey: Key.shownToday)
         defaults.set(state.dayKey, forKey: Key.dayKey)
+        defaults.set(state.foregroundSessionsLifetime, forKey: Key.foregroundSessions)
+        defaults.set(state.recentShownAt, forKey: Key.recentShownAt)
         if let last = state.lastShownAt {
             defaults.set(last, forKey: Key.lastShownAt)
         } else {
@@ -574,7 +708,8 @@ public final class EconMonetization: ObservableObject {
     #if DEBUG
     public static func resetPersistedState(in defaults: UserDefaults = .standard) {
         for key in [Key.completedSets, Key.setsSinceLastAd, Key.lastShownAt,
-                    Key.dayKey, Key.shownToday, Key.trackingPromptRequested] {
+                    Key.dayKey, Key.shownToday, Key.trackingPromptRequested,
+                    Key.foregroundSessions, Key.recentShownAt] {
             defaults.removeObject(forKey: key)
         }
     }
@@ -642,6 +777,16 @@ final class EconGrowth: ObservableObject {
         self.notifications = NotificationCoordinator(defaults: defaults)
         self.defaultsForPermissions = defaults
 
+        // Phase 11: no ad SDK start before the first-launch prompts resolve.
+        if !FirstLaunchPermissionPolicy.isSkipped(arguments: ProcessInfo.processInfo.arguments) {
+            monetization.setLaunchPermissionsHold(true)
+        }
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-econTrackingAnswered") {
+            monetization.debugMarkTrackingPromptRequested()
+        }
+        #endif
+
         AdManager.shared.onFailure = { [weak self] code, error in
             self?.diagnosticLog.capture(code, detail: error.map(EconDiagnosticDetail.init))
         }
@@ -684,9 +829,12 @@ final class EconGrowth: ObservableObject {
     /// Entitlement changes must reach ad behaviour and content access on the same
     /// turn, in either direction (purchase, restore, refund, revocation).
     func syncEntitlements(from store: PurchaseManager) {
+        // `provisionalAdsSuppression` keeps ads OFF (never content ON) for a
+        // reader whose last verified state was entitled, until StoreKit's
+        // first answer this run (Phase 11).
         monetization.update(entitlements: EconEntitlements(
             unlockAll: store.isUnlockAllPurchased,
-            removeAds: store.isRemoveAdsPurchased,
+            removeAds: store.isRemoveAdsPurchased || store.provisionalAdsSuppression,
             pro: store.isProActive))
     }
 

@@ -9,6 +9,7 @@ struct ProTabView: View {
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var progress: CourseProgressStore
     @EnvironmentObject private var router: AppRouter
+    @State private var showManageSubscriptions = false
 
     var body: some View {
         EconTabScaffold(scrollSpace: "pro") { _ in
@@ -27,6 +28,7 @@ struct ProTabView: View {
             .padding(.top, 12)
             .padding(.bottom, 32)
         }
+        .manageSubscriptions(isPresented: $showManageSubscriptions, store: store)
     }
 
     private var statusCard: some View {
@@ -40,18 +42,21 @@ struct ProTabView: View {
                     .font(.system(size: 22, weight: .heavy, design: .rounded))
                     .foregroundColor(Econ.white)
                 Spacer()
-                Text("Active ✓")
+                let billingIssue = store.proEntitlement?.state.hasBillingIssue == true
+                Text(billingIssue ? "Payment issue" : "Active ✓")
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundColor(Econ.sky)
+                    .foregroundColor(billingIssue ? Econ.amber : Econ.sky)
                     .accessibilityIdentifier("proActiveBadge")
             }
-            if let plan = store.proProductID {
-                detailRow("Plan", plan == PurchaseManager.ProductID.proAnnual.rawValue ? "Yearly" : "Monthly")
+            if let pro = store.proEntitlement {
+                ForEach(ProStatusCopy.rows(for: pro).filter { $0.title != "Status" }) { row in
+                    detailRow(row.title, row.value)
+                }
+                Text(ProStatusCopy.footer(for: pro))
+                    .font(.system(size: 12, design: .rounded))
+                    .foregroundColor(Econ.subtext)
             }
-            if let expiration = store.proExpiration {
-                detailRow("Current period ends", expiration.formatted(date: .abbreviated, time: .omitted))
-            }
-            Link("Manage Subscription", destination: PurchaseManager.manageSubscriptionsURL)
+            Button("Manage Subscription") { showManageSubscriptions = true }
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundColor(Econ.sky)
                 .accessibilityIdentifier("proManageSubscriptionLink")

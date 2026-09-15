@@ -3,9 +3,10 @@ import StoreKit
 
 /// Paywall shown when a free user taps a locked topic. Sells the
 /// `com.nsantulli.econbyte.unlockall` non-consumable. Price is read from
-/// StoreKit (`product.displayPrice`) — never hardcoded — per DUD-186, and when
-/// StoreKit has not supplied one there is no price shown and no buy control to
-/// tap (`PurchasePresentation`).
+/// StoreKit (`product.displayPrice`) — never hardcoded — per DUD-186. While
+/// StoreKit is fetching, the button reads "Loading price…"; when it gave no
+/// price, the button reads "Unlock All" (disabled) with "Prices unavailable —
+/// Try again" under it (Phase 11 — no bare placeholder dash).
 struct PaywallView: View {
     /// Where the reader came from, so `paywall_viewed` and the purchase events
     /// carry a real entry point rather than an assumed one.
@@ -15,11 +16,10 @@ struct PaywallView: View {
     @EnvironmentObject private var store: PurchaseManager
     @EnvironmentObject private var growth: EconGrowth
     @State private var working = false
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var showAlert = false
+    @State private var alert: PurchaseAlertCopy.Alert?
 
-    private var product: Product? { store.product(for: .unlockAll) }
+    private var priceState: PurchasePresentation.PriceState { store.priceState(for: .unlockAll) }
+    private var pending: Bool { store.isPending(.unlockAll) }
 
     private var lockedTopicCount: Int {
         let topics = ContentStore.shared.topics
@@ -27,7 +27,8 @@ struct PaywallView: View {
     }
 
     private var canBuy: Bool {
-        store.productsReady && !working
+        !pending && PurchasePresentation.canPurchase(displayPrice: priceState.displayPrice,
+                                                     isWorking: working, isLoading: store.isLoadingProducts)
     }
 
     var body: some View {
@@ -67,34 +68,13 @@ struct PaywallView: View {
                                 .foregroundColor(Econ.sky)
                                 .padding(.top, 8)
                         } else {
-                            if store.isLoadingProducts {
-                                ProgressView("Loading purchase options…")
-                                    .tint(Econ.sky)
-                                    .foregroundColor(Econ.white.opacity(0.8))
-                                    .padding(.top, 8)
-                            } else if !store.productsReady {
-                                VStack(spacing: 12) {
-                                    Text(store.productsLoadError ?? "Purchases are temporarily unavailable.")
-                                        .font(.system(size: 14, design: .rounded))
-                                        .foregroundColor(Econ.white.opacity(0.7))
-                                        .multilineTextAlignment(.center)
-                                        .padding(.horizontal, 28)
-                                    Button("Try Again") {
-                                        Task { await store.loadProducts() }
-                                    }
-                                    .buttonStyle(SecondaryButton())
-                                    .padding(.horizontal, 28)
-                                }
-                                .padding(.top, 8)
-                            }
-
                             Button {
                                 buy()
                             } label: {
                                 if working {
                                     ProgressView().tint(Econ.ink)
                                 } else {
-                                    Text("Unlock All — \(PurchasePresentation.priceText(product?.displayPrice))")
+                                    Text(PurchasePresentation.buyTitle("Unlock All", priceState, pending: pending))
                                 }
                             }
                             .buttonStyle(PrimaryButton())
@@ -103,6 +83,12 @@ struct PaywallView: View {
                             .padding(.horizontal, 28)
                             .padding(.top, 8)
                             .accessibilityIdentifier("paywallUnlockButton")
+
+                            if priceState == .unavailable {
+                                PricesUnavailableNotice(identifier: "paywallPricesUnavailable") {
+                                    Task { await store.loadProducts() }
+                                }
+                            }
 
                             Button("Restore Purchases") { restore() }
                                 .buttonStyle(SecondaryButton())
@@ -126,11 +112,7 @@ struct PaywallView: View {
             .onChange(of: store.isUnlockAllPurchased) { unlocked in
                 if unlocked { dismiss() }
             }
-            .alert(alertTitle, isPresented: $showAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(alertMessage)
-            }
+            .purchaseAlert($alert)
         }
         .tint(Econ.sky)
         .task {
@@ -169,12 +151,10 @@ struct PaywallView: View {
             working = false
             growth.monetization.setBlocker(.purchase, active: false)
             growth.syncEntitlements(from: store)
-            if case .success = result {
-                // Nothing to record here: `purchase_finished_v1` already did.
-            } else {
+            if case .success = result {} else {
                 growth.review.noteNegativeSessionEvent(.purchaseFailure)
             }
-            handlePurchaseResult(result, successTitle: "Unlocked")
+            show(result, kind: .purchase)
         }
     }
 
@@ -191,36 +171,59 @@ struct PaywallView: View {
                 growth.review.noteNegativeSessionEvent(.restoreFailure)
                 growth.diagnosticLog.capture(.restoreFailed)
             }
-            handlePurchaseResult(result, successTitle: "Restored")
+            show(result, kind: .restore)
         }
     }
 
-    private func handlePurchaseResult(_ result: PurchaseManager.PurchaseResult, successTitle: String) {
-        switch result {
-        case .success:
-            if !store.isUnlockAllPurchased {
-                presentAlert(title: successTitle, message: "Your purchase is processing. If topics stay locked, tap Restore Purchases.")
-            }
-        case .cancelled:
-            break
-        case .pending:
-            presentAlert(title: "Purchase Pending", message: "Your purchase needs approval. You'll get access once it's approved.")
-        case .productUnavailable:
-            presentAlert(
-                title: "Purchase Unavailable",
-                message: store.productsLoadError ?? "We couldn't reach the App Store. Check your connection and try again."
-            )
-            Task { await store.loadProducts() }
-        case .failed(let message):
-            presentAlert(title: "Something Went Wrong", message: message)
-        }
-    }
-
-    private func presentAlert(title: String, message: String) {
+    private func show(_ result: PurchaseManager.PurchaseResult, kind: PurchaseAlertCopy.Kind) {
+        if result == .productUnavailable { Task { await store.loadProducts() } }
+        guard let next = PurchaseAlertCopy.alert(for: result, kind: kind,
+                                                 accessGranted: store.isUnlockAllPurchased) else { return }
         // A user-facing error is a bad moment to ask for a rating (rules-v2).
         growth.review.noteNegativeSessionEvent(.errorShown)
-        alertTitle = title
-        alertMessage = message
-        showAlert = true
+        alert = next
+    }
+}
+
+// MARK: - Shared purchase UI (Phase 11)
+
+/// "Prices unavailable — Try again": shown wherever a buy control has no
+/// StoreKit price after a completed fetch. The buy control itself stays
+/// readable and disabled beside it.
+struct PricesUnavailableNotice: View {
+    let identifier: String
+    let onRetry: () -> Void
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 13))
+                .foregroundColor(Econ.amber)
+                .accessibilityHidden(true)
+            Text("\(PurchasePresentation.pricesUnavailableText) —")
+                .font(.system(size: 14, weight: .medium, design: .rounded))
+                .foregroundColor(Econ.white.opacity(0.8))
+            Button(PurchasePresentation.retryText, action: onRetry)
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                .foregroundColor(Econ.sky)
+                .buttonStyle(.borderless)
+                .accessibilityIdentifier("\(identifier)RetryButton")
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(identifier)
+    }
+}
+
+extension View {
+    /// Presents a `PurchaseAlertCopy.Alert`.
+    func purchaseAlert(_ alert: Binding<PurchaseAlertCopy.Alert?>) -> some View {
+        self.alert(alert.wrappedValue?.title ?? "",
+                   isPresented: Binding(get: { alert.wrappedValue != nil },
+                                        set: { if !$0 { alert.wrappedValue = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alert.wrappedValue?.message ?? "")
+        }
     }
 }

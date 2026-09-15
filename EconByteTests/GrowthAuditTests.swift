@@ -215,7 +215,8 @@ final class GrowthAuditTests: XCTestCase {
 
     func testBannerImpressionIsDeclaredWithAClosedPlacementVocabulary() {
         XCTAssertEqual(TelemetrySchema.allowedProperties["banner_impression_v1"], ["placement"])
-        XCTAssertEqual(TelemetrySchema.allowedValues["placement"], ["daily_set_exit", "home", "card"])
+        // Phase 11 adds `browse` (the Browse-at-rest banner, `EconAdSurface.browse`).
+        XCTAssertEqual(TelemetrySchema.allowedValues["placement"], ["daily_set_exit", "home", "card", "browse"])
         XCTAssertEqual(TelemetryValidator.validate(TelemetryEvent("banner_impression_v1",
                                                                   ["placement": .string("home")])),
                        .accepted)

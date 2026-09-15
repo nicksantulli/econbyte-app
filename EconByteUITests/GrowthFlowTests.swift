@@ -413,9 +413,10 @@ final class GrowthFlowTests: XCTestCase {
         // only in EconByte.storekit until the Owner creates them in ASC, and
         // this box's xcodebuild does not attach the scheme's StoreKit
         // configuration (sentinel-price proof, 2026-09-14), so the buy control is
-        // either priced ("$") or in its fail-closed state ("—" and disabled).
+        // either priced ("$") or in its fail-closed state (Phase 11: a readable,
+        // disabled label once loading has finished — never a bare "—").
         app.tabBars.buttons["Browse"].tap()
-        let pricedOrClosed = NSPredicate(format: "label CONTAINS '$' OR label CONTAINS '—'")
+        let pricedOrClosed = NSPredicate(format: "label CONTAINS '$' OR (enabled == false AND NOT (label BEGINSWITH 'Loading'))")
         for id in ["history", "world", "systems", "personalfinance"] {
             let buy = app.buttons["pack-\(id)-buy"]
             for _ in 0..<14 where !(buy.exists && buy.isHittable) { app.swipeUp() }
@@ -424,6 +425,8 @@ final class GrowthFlowTests: XCTestCase {
                            .completed, "\(id) buy button is priced by StoreKit or fail-closed")
             if !buy.label.contains("$") {
                 XCTAssertFalse(buy.isEnabled, "\(id) buy control must be disabled while StoreKit has no price")
+                XCTAssertFalse(buy.label.contains("—"), "\(id) buy control must not show a placeholder dash")
+                XCTAssertTrue(any["pack-\(id)-pricesUnavailable"].exists, "\(id) offers Prices unavailable — Try again")
             }
             XCTAssertTrue(any["pack-\(id)-preview"].exists, "\(id) previews three cards")
             if id == "world" { capturePack("eb-home-packs-new-1") }

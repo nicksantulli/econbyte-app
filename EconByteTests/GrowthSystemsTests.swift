@@ -104,6 +104,7 @@ final class GrowthSystemsTests: XCTestCase {
         state.shownThisSession = 0
         state.shownToday = 0
         state.dayKey = dayKey
+        state.foregroundSessionsLifetime = 5
         return state
     }
 
@@ -402,20 +403,114 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(EconAdPlacement.dailySetExit.rawValue, "daily_set_exit")
     }
 
-    /// 1.1.3 pacing audit (see `EconAdThresholds`): the first interstitial still
-    /// needs two completed sets; after that every completed set is an eligible
-    /// exit (was every other), at most two per foreground session (was one),
-    /// still 15 minutes apart and still two per calendar day.
-    func testShippedThresholdsMatchThe113PacingAudit() {
+    /// Phase 11 pacing audit (see `EconAdThresholds`), bounded by the portfolio
+    /// cap policy EconByte declares no override for: no interstitial in the
+    /// install's first session, two completed sets first, one per foreground
+    /// session, 15 minutes apart, two per calendar day AND per rolling 24 h.
+    func testShippedThresholdsMatchThePhase11PacingAudit() {
         let thresholds = EconAdThresholds()
         XCTAssertEqual(thresholds.minimumCompletedSets, 2,
                        "a fresh install's first set exit stays ad-free")
+        XCTAssertEqual(thresholds.initialSessionInterstitials, 0, "portfolio initialSessionInterstitials")
         XCTAssertEqual(thresholds.setsSinceLastAd, 1)
         XCTAssertEqual(thresholds.minimumInterval, 15 * 60,
                        "the retention guardrail: never two interstitials within 15 minutes")
-        XCTAssertEqual(thresholds.perSession, 2)
+        XCTAssertEqual(thresholds.perSession, 1, "portfolio maximumInterstitialsPerForegroundSession")
         XCTAssertEqual(thresholds.perDay, 2,
-                       "the other guardrail: never more than two in a calendar day")
+                       "the other guardrail: never more than two in a day")
+        XCTAssertEqual(thresholds.rollingWindow, 24 * 60 * 60, "portfolio maximumInterstitialsPer24Hours")
+    }
+
+    func testTheInstallsFirstForegroundSessionCarriesNoInterstitial() {
+        let now = date("2026-09-01T12:00:00Z")
+        var state = eligibleState(now: now, dayKey: "2026-09-01")
+        state.foregroundSessionsLifetime = 1
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"), .initialSession)
+        state.foregroundSessionsLifetime = 2
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"), .eligible)
+    }
+
+    @MainActor
+    func testAnUpgraderIsNotTreatedAsAFirstSession() {
+        defaults.set(4, forKey: "econ.ads.completedSetsLifetime")
+        let monetization = EconMonetization(adapter: SpyInterstitialAdapter(), defaults: defaults,
+                                            now: { self.date("2026-09-01T12:00:00Z") },
+                                            region: { .allowed }, tracking: DecidedTracking())
+        monetization.noteForegroundSessionBegan()
+        XCTAssertEqual(monetization.state.foregroundSessionsLifetime, 2)
+    }
+
+    func testTheDailyCapIsAlsoARolling24HourWindowAcrossMidnight() {
+        let now = date("2026-09-02T00:20:00Z")
+        var state = eligibleState(now: now, dayKey: "2026-09-02")
+        state.lastShownAt = date("2026-09-01T23:50:00Z").addingTimeInterval(-3600)
+        state.shownToday = 0
+        state.recentShownAt = [date("2026-09-01T22:30:00Z"), date("2026-09-01T23:00:00Z")]
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-02"), .dailyCapReached,
+                       "two in the last 24 hours caps the exit even on a new calendar day")
+        let later = date("2026-09-02T22:31:00Z")
+        XCTAssertEqual(decide(state: state, now: later, dayKey: "2026-09-02"), .eligible,
+                       "the window rolls off")
+    }
+
+    @MainActor
+    func testRecentImpressionsPersistForTheRollingCap() async {
+        let adapter = SpyInterstitialAdapter()
+        let monetization = EconMonetization(adapter: adapter, defaults: defaults,
+                                            now: { self.date("2026-09-01T12:00:00Z") },
+                                            region: { .allowed }, tracking: DecidedTracking())
+        monetization.noteForegroundSessionBegan()
+        monetization.noteForegroundSessionBegan()
+        for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
+        do { let awaited = await monetization.presentIfEligibleAtSetExit(); XCTAssertEqual(awaited, .presented) }
+        let reborn = EconMonetization(adapter: SpyInterstitialAdapter(), defaults: defaults,
+                                      now: { self.date("2026-09-01T12:00:00Z") },
+                                      region: { .allowed }, tracking: DecidedTracking())
+        XCTAssertEqual(reborn.state.recentShownAt.count, 1)
+    }
+
+    /// Phase 11: nothing starts the ad SDK — so no banner or interstitial can
+    /// be requested — while the first-launch prompts are still owed.
+    @MainActor
+    func testTheLaunchPermissionHoldBlocksTheAdSDKUntilReleased() {
+        let adapter = SpyInterstitialAdapter()
+        let monetization = EconMonetization(adapter: adapter, defaults: defaults,
+                                            now: { self.date("2026-09-01T12:00:00Z") },
+                                            region: { .allowed }, tracking: DecidedTracking())
+        monetization.setLaunchPermissionsHold(true)
+        monetization.noteForegroundSessionBegan()
+        monetization.startAdsIfPermitted()
+        XCTAssertEqual(adapter.startCount, 0, "held: no SDK start under a system prompt")
+        XCTAssertFalse(monetization.canRequestAds, "held: no banner may be constructed")
+
+        monetization.setLaunchPermissionsHold(false)
+        XCTAssertTrue(monetization.canRequestAds)
+        monetization.startAdsIfPermitted()
+        XCTAssertEqual(adapter.startCount, 1)
+        XCTAssertEqual(adapter.preloadCount, 1)
+    }
+
+    /// The placement matrix: banners only on Home, Browse at rest and under a
+    /// card session; the interstitial only at the set exit.
+    func testThePlacementMatrix() {
+        let bannerSurfaces = EconAdSurface.allCases.filter { $0.bannerPlacement != nil }
+        XCTAssertEqual(Set(bannerSurfaces), [.home, .browse, .cardMode])
+        XCTAssertEqual(EconAdSurface.home.bannerPlacement, .bannerHome)
+        XCTAssertEqual(EconAdSurface.browse.bannerPlacement, .bannerBrowse)
+        XCTAssertEqual(EconAdSurface.cardMode.bannerPlacement, .bannerCard)
+        for never in [EconAdSurface.search, .newsBrief, .newsArchive, .proTab, .courseLesson, .quiz,
+                      .bookmarks, .bookmarksReview, .setComplete, .paywall, .settings, .firstLaunch] {
+            XCTAssertNil(never.bannerPlacement, "\(never) must never carry a banner")
+        }
+        XCTAssertEqual(EconAdSurface.allCases.filter(\.allowsInterstitial), [.setComplete])
+    }
+
+    func testDeclaredCategoryBlocksCoverThePortfolioPolicy() {
+        let declared = Set(EconAdRequestPolicy().blockedSensitiveCategories)
+        for category in ["adult-sexual", "controlled-substances", "dating", "gambling", "politics",
+                         "religion", "simulated-gambling", "violence"] {
+            XCTAssertTrue(declared.contains(category), category)
+        }
     }
 
     func testFullyEligibleStateIsEligible() {
@@ -460,15 +555,14 @@ final class GrowthSystemsTests: XCTestCase {
                        .belowTimeThreshold(15 * 60))
     }
 
-    func testTwoInterstitialsPerForegroundSession() {
+    func testOneInterstitialPerForegroundSession() {
         let now = date("2026-09-01T12:00:00Z")
         var state = eligibleState(now: now, dayKey: "2026-09-01")
+        state.shownThisSession = 0
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"), .eligible)
         state.shownThisSession = 1
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
-                       .eligible, "a second interstitial in a long sitting is allowed")
-        state.shownThisSession = 2
-        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
-                       .sessionCapReached)
+                       .sessionCapReached, "portfolio cap: one per foreground session")
     }
 
     func testTwoInterstitialsPerCalendarDay() {
@@ -542,6 +636,9 @@ final class GrowthSystemsTests: XCTestCase {
                                             now: { self.date("2026-09-01T12:00:00Z") },
                                             region: { .allowed },
                                             tracking: DecidedTracking())
+        // Phase 11: a second foreground session — the install's first carries
+        // no interstitial (portfolio `initialSessionInterstitials: 0`).
+        monetization.noteForegroundSessionBegan()
         monetization.noteForegroundSessionBegan()
         for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
 
@@ -560,6 +657,9 @@ final class GrowthSystemsTests: XCTestCase {
                                             now: { self.date("2026-09-01T12:00:00Z") },
                                             region: { .allowed },
                                             tracking: DecidedTracking())
+        // Phase 11: a second foreground session — the install's first carries
+        // no interstitial (portfolio `initialSessionInterstitials: 0`).
+        monetization.noteForegroundSessionBegan()
         monetization.noteForegroundSessionBegan()
         for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
 
@@ -586,6 +686,9 @@ final class GrowthSystemsTests: XCTestCase {
                                             now: { self.date("2026-09-01T12:00:00Z") },
                                             region: { .allowed },
                                             tracking: DecidedTracking())
+        // Phase 11: a second foreground session — the install's first carries
+        // no interstitial (portfolio `initialSessionInterstitials: 0`).
+        monetization.noteForegroundSessionBegan()
         monetization.noteForegroundSessionBegan()
         for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
         let outcome = await monetization.presentIfEligibleAtSetExit()
@@ -631,6 +734,9 @@ final class GrowthSystemsTests: XCTestCase {
         monetization.onAdEligible = { eligible.append(($0, $1)) }
         monetization.onAdDismissed = { dismissed.append(($0, $1)) }
 
+        // Phase 11: a second foreground session — the install's first carries
+        // no interstitial (portfolio `initialSessionInterstitials: 0`).
+        monetization.noteForegroundSessionBegan()
         monetization.noteForegroundSessionBegan()
         for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
 

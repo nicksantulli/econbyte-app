@@ -124,6 +124,13 @@ enum TelemetrySchema {
         // 1.1.3: the anchored banner on Home and in a card session. Which slot
         // filled, nothing else — no unit id, no size, no revenue.
         "banner_impression_v1": ["placement"],
+        // Phase 11 (2026-09-14): the banner's fill funnel and a click on any ad
+        // format. `banner_impression_v1` now fires on the SDK's recorded
+        // impression (every refresh), `banner_load_finished_v1` once per slot
+        // when the fill outcome changes, `ad_clicked_v1` on the SDK's recorded
+        // click. Placement and outcome only — no unit id, size or revenue.
+        "banner_load_finished_v1": ["placement", "outcome"],
+        "ad_clicked_v1": ["placement"],
         "streak_day_credited_v1": ["streak_bucket"],
         "notification_permission_result_v1": ["granted"],
         "review_request_attempted_v1": ["app_version", "launch_count_bucket"],
@@ -168,7 +175,10 @@ enum TelemetrySchema {
                                     "bookmarks", "settings", "paywall",
                                     "session_complete", "course", "brief",
                                     // 1.1.4 shell: the Pro tab's inline paywall.
-                                    "pro_tab"]),
+                                    "pro_tab",
+                                    // Phase 11: a purchase started from the
+                                    // App Store product page (promoted IAP).
+                                    "app_store_promotion"]),
         "direction": .enumerated(["forward", "back"]),
         "reason": .enumerated(["completed", "user_exit"]),
         "action": .enumerated(["added", "removed"]),
@@ -195,7 +205,8 @@ enum TelemetrySchema {
         // banner slots. Declared as a vocabulary rather than a token so a new
         // placement cannot appear without a schema change — this line IS that
         // change for the banner.
-        "placement": .enumerated(["daily_set_exit", "home", "card"]),
+        // Phase 11 adds `browse` (the anchored banner under Browse at rest).
+        "placement": .enumerated(["daily_set_exit", "home", "card", "browse"]),
         "access_state": .enumerated(["free", "unlocked", "locked"]),
 
         "install_age_bucket": .enumerated(Bucket.installAge),

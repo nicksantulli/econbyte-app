@@ -7,8 +7,9 @@ import StoreKit
 /// preview (title + first sentence of each definition, verbatim from the
 /// catalog), a buy button carrying the localized StoreKit price, and Restore
 /// (App Review: Restore wherever a purchase is offered). No price literal
-/// anywhere — `PurchasePresentation` renders "—" and disables the control
-/// until StoreKit has supplied one.
+/// anywhere: the button reads "Loading price…" while StoreKit fetches, and
+/// "Unlock <pack>" (disabled) with "Prices unavailable — Try again" when it
+/// gave no price (Phase 11 — never "Unlock <pack> — —").
 ///
 /// Owned: the pack's four topics as tiles, opened exactly like core topics.
 ///
@@ -17,7 +18,7 @@ import StoreKit
 /// (D19). Unlock All never opens a pack (D18).
 struct PackOfferView: View {
     let pack: EconPack
-    /// Where the offer is shown, for `pack_shown_v1`.
+    /// Where the offer is shown, for `pack_shown_v1` and the purchase funnel.
     var entryPoint: EBEntryPoint = .home
     let onOpenTopic: (EconTopic) -> Void
 
@@ -27,21 +28,22 @@ struct PackOfferView: View {
 
     @State private var working = false
     @State private var didRecordShown = false
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var showAlert = false
+    @State private var alert: PurchaseAlertCopy.Alert?
 
     private var productID: PurchaseManager.ProductID? {
         PurchaseManager.ProductID(rawValue: pack.productID)
     }
-    private var product: Product? { productID.flatMap { store.product(for: $0) } }
+    private var priceState: PurchasePresentation.PriceState {
+        productID.map { store.priceState(for: $0) } ?? .unavailable
+    }
+    private var pending: Bool { productID.map { store.isPending($0) } ?? false }
     /// Owned outright (verified entitlement for this pack's own product).
     private var ownedOutright: Bool { store.isPackPurchased(productID: pack.productID) }
     /// Readable: owned outright or included by an active Pro subscription (D19).
     private var owned: Bool { store.hasAccess(packProductID: pack.productID) }
     private var canBuy: Bool {
-        productID != nil && PurchasePresentation.canPurchase(
-            displayPrice: product?.displayPrice, isWorking: working, isLoading: store.isLoadingProducts)
+        productID != nil && !pending && PurchasePresentation.canPurchase(
+            displayPrice: priceState.displayPrice, isWorking: working, isLoading: store.isLoadingProducts)
     }
 
     var body: some View {
@@ -70,11 +72,7 @@ struct PackOfferView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("pack-\(pack.id)")
         .onAppear { recordShownOnce() }
-        .alert(alertTitle, isPresented: $showAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(alertMessage)
-        }
+        .purchaseAlert($alert)
     }
 
     // MARK: Pieces
@@ -89,10 +87,17 @@ struct PackOfferView: View {
                 .font(.system(size: 17, weight: .heavy, design: .rounded))
                 .foregroundColor(Econ.white)
             Spacer()
-            Text(ownedOutright ? "Owned ✓" : (owned ? "Included with Pro ✓" : "\(pack.cards.count) cards"))
+            Text(ownedLabel)
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundColor(owned ? Econ.sky : Econ.subtext)
         }
+    }
+
+    private var ownedLabel: String {
+        if ownedOutright {
+            return store.familySharedProductIDs.contains(pack.productID) ? "Family Sharing ✓" : "Owned ✓"
+        }
+        return owned ? "Included with Pro ✓" : "\(pack.cards.count) cards"
     }
 
     private var topicLine: some View {
@@ -135,13 +140,19 @@ struct PackOfferView: View {
                 if working {
                     ProgressView().tint(Econ.ink)
                 } else {
-                    Text("Unlock \(pack.name) — \(PurchasePresentation.priceText(product?.displayPrice))")
+                    Text(PurchasePresentation.buyTitle("Unlock \(pack.name)", priceState, pending: pending))
                 }
             }
             .buttonStyle(PrimaryButton())
             .disabled(!canBuy)
             .opacity(canBuy ? 1 : 0.55)
             .accessibilityIdentifier("pack-\(pack.id)-buy")
+
+            if priceState == .unavailable {
+                PricesUnavailableNotice(identifier: "pack-\(pack.id)-pricesUnavailable") {
+                    Task { await store.loadProducts() }
+                }
+            }
 
             Button("Restore Purchases") { restore() }
                 .font(.system(size: 14, weight: .medium, design: .rounded))
@@ -179,16 +190,16 @@ struct PackOfferView: View {
         growth.monetization.setBlocker(.purchase, active: true)
         growth.review.noteNegativeSessionEvent(.purchase)
         Task {
-            let result = await store.purchase(productID, from: .home)
+            // Phase 11: the real entry point (was hard-coded `.home`, so every
+            // Browse purchase was attributed to Home).
+            let result = await store.purchase(productID, from: entryPoint)
             working = false
             growth.monetization.setBlocker(.purchase, active: false)
             growth.syncEntitlements(from: store)
-            if case .success = result {
-                // `purchase_finished_v1` already recorded the outcome.
-            } else {
+            if case .success = result {} else {
                 growth.review.noteNegativeSessionEvent(.purchaseFailure)
             }
-            handle(result, successTitle: "Unlocked")
+            show(result, kind: .purchase)
         }
     }
 
@@ -197,7 +208,7 @@ struct PackOfferView: View {
         growth.monetization.setBlocker(.restore, active: true)
         growth.review.noteNegativeSessionEvent(.restore)
         Task {
-            let result = await store.restorePurchases(from: .home)
+            let result = await store.restorePurchases(from: entryPoint)
             working = false
             growth.monetization.setBlocker(.restore, active: false)
             growth.syncEntitlements(from: store)
@@ -205,35 +216,14 @@ struct PackOfferView: View {
                 growth.review.noteNegativeSessionEvent(.restoreFailure)
                 growth.diagnosticLog.capture(.restoreFailed)
             }
-            handle(result, successTitle: "Restored")
+            show(result, kind: .restore)
         }
     }
 
-    private func handle(_ result: PurchaseManager.PurchaseResult, successTitle: String) {
-        switch result {
-        case .success:
-            if !owned {
-                present(title: successTitle,
-                        message: "Your purchase is processing. If the pack stays locked, tap Restore Purchases.")
-            }
-        case .cancelled:
-            break
-        case .pending:
-            present(title: "Purchase Pending",
-                    message: "Your purchase needs approval. You'll get access once it's approved.")
-        case .productUnavailable:
-            present(title: "Purchase Unavailable",
-                    message: store.productsLoadError ?? "We couldn't reach the App Store. Check your connection and try again.")
-            Task { await store.loadProducts() }
-        case .failed(let message):
-            present(title: "Something Went Wrong", message: message)
-        }
-    }
-
-    private func present(title: String, message: String) {
+    private func show(_ result: PurchaseManager.PurchaseResult, kind: PurchaseAlertCopy.Kind) {
+        if result == .productUnavailable { Task { await store.loadProducts() } }
+        guard let next = PurchaseAlertCopy.alert(for: result, kind: kind, accessGranted: owned) else { return }
         growth.review.noteNegativeSessionEvent(.errorShown)
-        alertTitle = title
-        alertMessage = message
-        showAlert = true
+        alert = next
     }
 }

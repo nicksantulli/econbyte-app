@@ -6,11 +6,14 @@ import StoreKit
 /// Built to App Review 3.1.2: the billed price is the most prominent element on
 /// the screen (the large figure in the plan card and the subscribe button); the
 /// free-trial line is smaller, sits under it, and appears ONLY when StoreKit
-/// says this Apple ID is eligible for the introductory offer; what the
-/// subscriber gets, the duration and price per period, auto-renewal terms,
-/// Terms of Use (Apple's standard EULA), Privacy Policy, and Restore are all on
-/// the page. Prices are StoreKit `displayPrice` values, never literals — until
-/// the products load there is no price and no live buy control.
+/// says this Apple ID is eligible for the introductory offer; the title of the
+/// subscription, what the subscriber gets, the duration and price per period,
+/// auto-renewal terms, Terms of Use (Apple's standard EULA), Privacy Policy,
+/// and Restore are all on the page. Prices are StoreKit `displayPrice` values,
+/// never literals. While StoreKit fetches, the tiles and the button say
+/// "Loading price…"; if it gave no price they say "Price unavailable" /
+/// "Subscribe" (disabled) with "Prices unavailable — Try again" (Phase 11 — no
+/// bare "—" and never "Subscribe for —").
 ///
 /// The Unlock All paywall (`PaywallView`) is untouched and still titled
 /// "Purchases": the one-time products remain independent of each other (D4)
@@ -60,9 +63,8 @@ struct ProPaywallContent<Interlude: View>: View {
     @EnvironmentObject private var growth: EconGrowth
     @State private var selected: PurchaseManager.ProductID = .proAnnual
     @State private var working = false
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var showAlert = false
+    @State private var alert: PurchaseAlertCopy.Alert?
+    @State private var showManageSubscriptions = false
 
     init(entryPoint: EconEntryPoint, @ViewBuilder interlude: @escaping () -> Interlude) {
         self.entryPoint = entryPoint
@@ -70,13 +72,15 @@ struct ProPaywallContent<Interlude: View>: View {
     }
 
     private var product: Product? { store.product(for: selected) }
+    private var priceState: PurchasePresentation.PriceState { store.priceState(for: selected) }
+    private var pending: Bool { PurchaseManager.ProductID.subscriptions.contains { store.isPending($0) } }
     private var trialPeriod: Product.SubscriptionPeriod? {
-        guard store.isEligibleForTrial == true else { return nil }
+        guard store.isEligibleForTrial == true, priceState.displayPrice != nil else { return nil }
         return store.freeTrialPeriod(for: selected)
     }
     private var canBuy: Bool {
-        PurchasePresentation.canPurchase(displayPrice: product?.displayPrice,
-                                         isWorking: working, isLoading: store.isLoadingProducts)
+        !pending && PurchasePresentation.canPurchase(displayPrice: priceState.displayPrice,
+                                                     isWorking: working, isLoading: store.isLoadingProducts)
     }
 
     var body: some View {
@@ -92,11 +96,8 @@ struct ProPaywallContent<Interlude: View>: View {
             benefits
             legal
         }
-        .alert(alertTitle, isPresented: $showAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(alertMessage)
-        }
+        .purchaseAlert($alert)
+        .manageSubscriptions(isPresented: $showManageSubscriptions, store: store)
         .onAppear {
             growth.monetization.setBlocker(.paywall, active: true)
             growth.review.noteNegativeSessionEvent(.paywall)
@@ -140,19 +141,27 @@ struct ProPaywallContent<Interlude: View>: View {
         .accessibilityElement(children: .contain)
     }
 
+    private func planName(_ id: PurchaseManager.ProductID) -> String {
+        id == .proAnnual ? "Pro Yearly" : "Pro Monthly"
+    }
+
     private func planCard(_ id: PurchaseManager.ProductID, badge: String?) -> some View {
         let product = store.product(for: id)
+        let state = store.priceState(for: id)
+        let period = Self.perPeriod(product, fallback: id)
         let isSelected = selected == id
         return Button {
             selected = id
         } label: {
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text(id == .proAnnual ? "Yearly" : "Monthly")
-                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                    Text(planName(id).uppercased())
+                        .font(.system(size: 12, weight: .bold, design: .rounded))
                         .foregroundColor(Econ.subtext)
-                        .tracking(1)
-                    Spacer()
+                        .tracking(0.8)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    Spacer(minLength: 4)
                     if let badge {
                         Text(badge)
                             .font(.system(size: 10, weight: .bold, design: .rounded))
@@ -162,20 +171,42 @@ struct ProPaywallContent<Interlude: View>: View {
                             .cornerRadius(4)
                     }
                 }
-                // The billed price: the largest text on the screen.
-                Text(PurchasePresentation.priceText(product?.displayPrice))
-                    .font(.system(size: 30, weight: .heavy, design: .rounded))
-                    .foregroundColor(Econ.white)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
-                Text(Self.perPeriod(product))
-                    .font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.8))
-                if id == .proAnnual, let monthly = Self.monthlyEquivalent(product) {
-                    Text("\(monthly) a month, billed once a year")
-                        .font(.system(size: 11, design: .rounded))
-                        .foregroundColor(Econ.subtext)
-                        .fixedSize(horizontal: false, vertical: true)
+                switch state {
+                case .ready(let price):
+                    // The billed price: the largest text on the screen.
+                    Text(price)
+                        .font(.system(size: 30, weight: .heavy, design: .rounded))
+                        .foregroundColor(Econ.white)
+                        .minimumScaleFactor(0.6)
+                        .lineLimit(1)
+                    Text(period)
+                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .foregroundColor(Econ.white.opacity(0.8))
+                    if id == .proAnnual, let monthly = Self.monthlyEquivalent(product) {
+                        Text("\(monthly) a month, billed once a year")
+                            .font(.system(size: 11, design: .rounded))
+                            .foregroundColor(Econ.subtext)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                case .loading:
+                    HStack(spacing: 6) {
+                        ProgressView().tint(Econ.sky).scaleEffect(0.8)
+                        Text(PurchasePresentation.loadingPriceText)
+                            .font(.system(size: 13, weight: .medium, design: .rounded))
+                            .foregroundColor(Econ.white.opacity(0.75))
+                    }
+                    .frame(minHeight: 36, alignment: .leading)
+                    Text(period == "/ year" ? "Billed yearly" : "Billed monthly")
+                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .foregroundColor(Econ.white.opacity(0.6))
+                case .unavailable:
+                    Text("Price unavailable")
+                        .font(.system(size: 15, weight: .semibold, design: .rounded))
+                        .foregroundColor(Econ.white.opacity(0.75))
+                        .frame(minHeight: 36, alignment: .leading)
+                    Text(period == "/ year" ? "Billed yearly" : "Billed monthly")
+                        .font(.system(size: 13, weight: .medium, design: .rounded))
+                        .foregroundColor(Econ.white.opacity(0.6))
                 }
             }
             .padding(14)
@@ -188,34 +219,21 @@ struct ProPaywallContent<Interlude: View>: View {
         .buttonStyle(.plain)
         .accessibilityIdentifier("proPaywallPlan-\(id == .proAnnual ? "annual" : "monthly")")
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
-        .accessibilityLabel(Text("\(id == .proAnnual ? "Yearly" : "Monthly") plan, \(PurchasePresentation.priceText(product?.displayPrice)) \(Self.perPeriod(product))"))
+        .accessibilityLabel(Text(Self.planAccessibilityLabel(planName(id), state, period: period)))
+    }
+
+    /// "Pro Yearly plan, $29.99 / year" · "Pro Yearly plan, Loading price…" ·
+    /// "Pro Yearly plan, Price unavailable".
+    static func planAccessibilityLabel(_ name: String, _ state: PurchasePresentation.PriceState, period: String) -> String {
+        switch state {
+        case .ready(let price): return "\(name) plan, \(price) \(period)"
+        case .loading: return "\(name) plan, \(PurchasePresentation.loadingPriceText)"
+        case .unavailable: return "\(name) plan, Price unavailable"
+        }
     }
 
     private var subscribeBlock: some View {
         VStack(spacing: 10) {
-            if store.isLoadingProducts {
-                ProgressView("Loading prices…")
-                    .tint(Econ.sky)
-                    .foregroundColor(Econ.white.opacity(0.8))
-            } else if !store.productsReady {
-                VStack(spacing: 10) {
-                    Text(store.productsLoadError ?? "Subscriptions are temporarily unavailable.")
-                        .font(.system(size: 14, design: .rounded))
-                        .foregroundColor(Econ.white.opacity(0.7))
-                        .multilineTextAlignment(.center)
-                    Button("Try Again") { Task { await store.loadProducts() } }
-                        .buttonStyle(SecondaryButton())
-                }
-            } else if product == nil {
-                // Other products loaded but this plan did not: say so rather
-                // than leave a bare "—" on a disabled button.
-                Text("Subscription prices aren't available right now.")
-                    .font(.system(size: 13, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.7))
-                    .multilineTextAlignment(.center)
-                    .accessibilityIdentifier("proPaywallPriceUnavailable")
-            }
-
             Button {
                 subscribe()
             } label: {
@@ -223,7 +241,9 @@ struct ProPaywallContent<Interlude: View>: View {
                     ProgressView().tint(Econ.ink)
                 } else {
                     // Price first, again the largest element of the control.
-                    Text("Subscribe for \(PurchasePresentation.priceText(product?.displayPrice)) \(Self.perPeriod(product))")
+                    Text(PurchasePresentation.subscribeTitle(priceState,
+                                                             period: Self.perPeriod(product, fallback: selected),
+                                                             pending: pending))
                 }
             }
             .buttonStyle(PrimaryButton())
@@ -231,9 +251,18 @@ struct ProPaywallContent<Interlude: View>: View {
             .opacity(canBuy ? 1 : 0.55)
             .accessibilityIdentifier("proPaywallSubscribeButton")
 
+            if priceState == .unavailable {
+                PricesUnavailableNotice(identifier: "proPaywallPricesUnavailable") {
+                    Task {
+                        await store.loadProducts()
+                        await store.refreshTrialEligibility()
+                    }
+                }
+            }
+
             // Subordinate trial line: smaller, under the price, eligible users only.
-            if let trialPeriod {
-                Text("\(Self.trialText(trialPeriod)) free trial, then \(PurchasePresentation.priceText(product?.displayPrice)) \(Self.perPeriod(product)). Cancel anytime.")
+            if let trialPeriod, let price = priceState.displayPrice {
+                Text("\(Self.trialText(trialPeriod)) free trial, then \(price) \(Self.perPeriod(product, fallback: selected)). Cancel anytime.")
                     .font(.system(size: 13, design: .rounded))
                     .foregroundColor(Econ.white.opacity(0.75))
                     .multilineTextAlignment(.center)
@@ -249,15 +278,18 @@ struct ProPaywallContent<Interlude: View>: View {
 
     private var activeState: some View {
         VStack(spacing: 10) {
-            Text("You're a Pro subscriber ✓")
+            Text(store.proEntitlement?.state.hasBillingIssue == true
+                 ? "Pro — payment issue" : "You're a Pro subscriber ✓")
                 .font(.system(size: 17, weight: .semibold, design: .rounded))
-                .foregroundColor(Econ.sky)
-            if let expiration = store.proExpiration {
-                Text("Current period ends \(expiration.formatted(date: .abbreviated, time: .omitted)).")
-                    .font(.system(size: 13, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.7))
+                .foregroundColor(store.proEntitlement?.state.hasBillingIssue == true ? Econ.amber : Econ.sky)
+            if let pro = store.proEntitlement {
+                ForEach(ProStatusCopy.rows(for: pro).filter { $0.title != "Status" }) { row in
+                    Text("\(row.title): \(row.value)")
+                        .font(.system(size: 13, design: .rounded))
+                        .foregroundColor(Econ.white.opacity(0.7))
+                }
             }
-            Link("Manage Subscription", destination: PurchaseManager.manageSubscriptionsURL)
+            Button("Manage Subscription") { showManageSubscriptions = true }
                 .font(.system(size: 15, weight: .medium, design: .rounded))
                 .foregroundColor(Econ.sky)
         }
@@ -297,7 +329,7 @@ struct ProPaywallContent<Interlude: View>: View {
 
     private var legal: some View {
         VStack(spacing: 10) {
-            Text("Payment is charged to your Apple ID account when you confirm the purchase, or when a free trial ends. The subscription renews automatically at the price shown unless you cancel at least 24 hours before the end of the current period. You can manage or cancel it in your Apple ID settings. Packs you bought separately stay yours whether or not you subscribe. Content is educational and is not investment advice.")
+            Text("EconByte Pro is an auto-renewing subscription, billed monthly or yearly at the price shown. Payment is charged to your Apple ID account when you confirm the purchase, or when a free trial ends. The subscription renews automatically unless you cancel at least 24 hours before the end of the current period; your account is charged for renewal within 24 hours before the period ends. You can manage or cancel it in your Apple ID settings. Packs you bought separately stay yours whether or not you subscribe. Content is educational and is not investment advice.")
                 .font(.system(size: 11, design: .rounded))
                 .foregroundColor(Econ.subtext)
                 .multilineTextAlignment(.center)
@@ -328,6 +360,13 @@ struct ProPaywallContent<Interlude: View>: View {
         case (.day, let n):   return "/ \(n) days"
         @unknown default:     return ""
         }
+    }
+
+    /// The period StoreKit reports, or the plan's contracted period when the
+    /// product has not loaded (a duration, never a price).
+    static func perPeriod(_ product: Product?, fallback id: PurchaseManager.ProductID) -> String {
+        let reported = perPeriod(product)
+        return reported.isEmpty ? PurchasePresentation.periodSuffix(for: id) : reported
     }
 
     static func trialText(_ period: Product.SubscriptionPeriod) -> String {
@@ -367,7 +406,7 @@ struct ProPaywallContent<Interlude: View>: View {
             if case .success = result {} else {
                 growth.review.noteNegativeSessionEvent(.purchaseFailure)
             }
-            handle(result, successTitle: "Welcome to Pro")
+            show(result, kind: .purchase)
         }
     }
 
@@ -384,36 +423,16 @@ struct ProPaywallContent<Interlude: View>: View {
                 growth.review.noteNegativeSessionEvent(.restoreFailure)
                 growth.diagnosticLog.capture(.restoreFailed)
             }
-            handle(result, successTitle: "Restored")
+            show(result, kind: .restore)
         }
     }
 
-    private func handle(_ result: PurchaseManager.PurchaseResult, successTitle: String) {
-        switch result {
-        case .success:
-            if !store.isProActive {
-                present(title: successTitle,
-                        message: "Your subscription is processing. If Pro content stays locked, tap Restore Purchases.")
-            }
-        case .cancelled:
-            break
-        case .pending:
-            present(title: "Purchase Pending",
-                    message: "Your purchase needs approval. You'll get access once it's approved.")
-        case .productUnavailable:
-            present(title: "Subscription Unavailable",
-                    message: store.productsLoadError ?? "We couldn't reach the App Store. Check your connection and try again.")
-            Task { await store.loadProducts() }
-        case .failed(let message):
-            present(title: "Something Went Wrong", message: message)
-        }
-    }
-
-    private func present(title: String, message: String) {
+    private func show(_ result: PurchaseManager.PurchaseResult, kind: PurchaseAlertCopy.Kind) {
+        if result == .productUnavailable { Task { await store.loadProducts() } }
+        guard let next = PurchaseAlertCopy.alert(for: result, kind: kind,
+                                                 accessGranted: store.isProActive) else { return }
         growth.review.noteNegativeSessionEvent(.errorShown)
-        alertTitle = title
-        alertMessage = message
-        showAlert = true
+        alert = next
     }
 }
 

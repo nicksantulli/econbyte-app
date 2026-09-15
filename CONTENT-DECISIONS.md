@@ -969,3 +969,30 @@ mailto:support@dudleyapps.com, Rate EconByte, Version — which opens the Dudley
 studio sheet). Every footer is one short sentence; the multi-paragraph
 explanations are gone. The Debug section is DEBUG-only.
 
+
+## D23 — Ads + IAP audit: placement matrix, portfolio caps, verified-only access (1.1.4, Phase 11)
+
+Full table: `docs/audit/2026-09-14-ads-iap-audit.md`.
+
+- **Placement matrix (`EconAdSurface`).** Banners only on Home, Browse at rest, and under a card
+  session; never on search, the Daily Brief (teaser or full), the Pro tab/paywalls, courses, lessons,
+  quizzes, bookmarks or a bookmarks review, Settings, the set-complete screen, or during the studio
+  intro / first-launch prompts. The one interstitial stays the set exit.
+- **Pacing aligned to the portfolio cap policy** (EconByte declares no override): no interstitial in
+  the install's first foreground session, one per foreground session (was two, D16), two per calendar
+  day and per rolling 24 h. Guardrail: D1 of ad-eligible installs >15 % below entitled installs ⇒
+  spec83 pacing.
+- **Launch hold.** The ad SDK does not start until the first-launch ATT + notifications flow has run
+  or been skipped, so no banner can load under a system prompt (upgrader case).
+- **Access only from verified StoreKit data.** UserDefaults mirrors no longer open topics, packs,
+  courses or the brief; the Remove Ads / Pro mirrors only keep ads off until StoreKit's first answer.
+  Grace period and billing retry keep Pro (group statuses read); refunds, revocations, upgrades-away
+  and unverified transactions grant nothing; every transaction is finished.
+- **Purchase UI.** No placeholder dash: "Loading price…", a disabled-but-readable action and
+  "Prices unavailable — Try again"; Ask to Buy shows "Waiting for approval"; one alert copy for every
+  surface; in-app Manage Subscriptions sheet; promoted IAPs handled.
+- **Subscription ranking.** `EconByte.storekit`: Pro Annual level 1, Pro Monthly level 2 — the Owner
+  must create the ASC group with the same order.
+- **Not shipped (Owner decisions):** personalized ads for ATT-authorized readers (portfolio policy
+  revision), a rewarded ad (recommended against for the brief), Switzerland in the no-ads list
+  (recommended yes).

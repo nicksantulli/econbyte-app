@@ -11,31 +11,68 @@ import SwiftUI
 /// Auto-renewable subscriptions (1.1.4, subscription group "EconByte Pro";
 /// exist only in `EconByte.storekit` until the Owner creates them in ASC — the
 /// ids below are the contract, so no code changes when that happens):
-///   • `com.nsantulli.econbyte.pro.monthly` — $4.99 / month, 7-day free trial
-///   • `com.nsantulli.econbyte.pro.annual`  — $29.99 / year, 7-day free trial
+///   • `com.nsantulli.econbyte.pro.annual`  — $29.99 / year, 7-day free trial (level 1)
+///   • `com.nsantulli.econbyte.pro.monthly` — $4.99 / month, 7-day free trial (level 2)
 ///
-/// Entitlements are read from `Transaction.currentEntitlements` (the source of
-/// truth, restored automatically across devices via the Apple ID) and mirrored
-/// into UserDefaults so gating decisions are synchronous on cold launch before
-/// StoreKit finishes its async refresh. For the subscription, StoreKit's
-/// current-entitlements stream already accounts for grace periods and billing
-/// retry — a transaction that is present and unrevoked means Pro is active.
+/// Phase 11 audit (2026-09-14) — what this type guarantees, each with a test in
+/// `StoreEntitlementsTests` / `StoreKitSessionTests`:
+///   • Access comes ONLY from verified StoreKit data: `Transaction.currentEntitlements`
+///     plus the subscription group's statuses, resolved by `EntitlementResolver`.
+///     The UserDefaults mirrors are read for one thing — keeping ads OFF for a
+///     paying reader in the second before StoreKit answers on a cold launch.
+///     They never open a topic, a pack, a course or the brief.
+///   • Grace period and billing retry keep Pro; refunds and revocations remove
+///     access on the next refresh (the `Transaction.updates` listener starts at
+///     launch, from `EconByteApp`'s `@StateObject`).
+///   • Every transaction is finished, verified or not; an unverified one never
+///     grants anything.
+///   • `.pending` (Ask to Buy) is remembered for the run so the buy control
+///     reads "Waiting for approval" instead of inviting a second request.
+///   • Restore distinguishes restored / nothing to restore / cancelled / failed.
+///   • App Store promoted purchases (`PurchaseIntent`) are handled.
+///   • Product loading is single-flight and retried on foreground.
+
 /// How a purchase control reads while StoreKit has not delivered a price.
 ///
 /// There is no fallback price literal anywhere in the UI. A hardcoded "$0.99" is
 /// wrong in every non-US storefront, wrong the moment the tier changes, and
 /// wrong when the product is simply unavailable — and it is exactly the shape
 /// App Review has objected to on a Dudley build before. When there is no price
-/// there is no price shown, and the control that would spend money is disabled.
+/// the control says so in words ("Loading price…" / the action alone, disabled,
+/// with "Prices unavailable — Try again" beside it); it never renders a bare
+/// placeholder dash (Phase 11: "Subscribe for —", "Unlock X — —").
 enum PurchasePresentation {
 
-    /// Shown in place of a price that StoreKit has not supplied. Deliberately
-    /// not a currency string: it must be impossible to read as an amount.
+    /// Legacy placeholder. Kept only so older tests can prove it is not a
+    /// currency string; no view renders it any more.
     static let unavailablePrice = "—"
+
+    static let loadingPriceText = "Loading price…"
+    static let pricesUnavailableText = "Prices unavailable"
+    static let retryText = "Try again"
+    static let unavailableShortText = "Unavailable"
+    static let waitingForApprovalText = "Waiting for approval"
+
+    /// What StoreKit has told us about one product's price.
+    enum PriceState: Equatable {
+        case loading
+        case unavailable
+        case ready(String)
+
+        var displayPrice: String? {
+            if case .ready(let price) = self { return price }
+            return nil
+        }
+    }
 
     static func priceText(_ displayPrice: String?) -> String {
         guard let displayPrice, !displayPrice.isEmpty else { return unavailablePrice }
         return displayPrice
+    }
+
+    static func priceState(displayPrice: String?, isLoading: Bool, hasAttemptedLoad: Bool) -> PriceState {
+        if let displayPrice, !displayPrice.isEmpty { return .ready(displayPrice) }
+        return (isLoading || !hasAttemptedLoad) ? .loading : .unavailable
     }
 
     /// A buy control may only be live when there is a real, StoreKit-formatted
@@ -44,11 +81,58 @@ enum PurchasePresentation {
         guard let displayPrice, !displayPrice.isEmpty else { return false }
         return !isWorking && !isLoading
     }
+
+    /// The label of a buy button: "Unlock Markets — $1.99" when priced,
+    /// "Loading price…" while fetching, and the bare action (disabled) when the
+    /// App Store gave no price. Never a dangling or doubled dash.
+    static func buyTitle(_ action: String, _ state: PriceState, pending: Bool = false) -> String {
+        if pending { return waitingForApprovalText }
+        switch state {
+        case .ready(let price): return "\(action) — \(price)"
+        case .loading: return loadingPriceText
+        case .unavailable: return action
+        }
+    }
+
+    /// The subscribe button: "Subscribe for $29.99 / year" when priced,
+    /// "Loading price…" while fetching, "Subscribe" (disabled) without a price.
+    static func subscribeTitle(_ state: PriceState, period: String, pending: Bool = false) -> String {
+        if pending { return waitingForApprovalText }
+        switch state {
+        case .ready(let price):
+            return "Subscribe for \(price) \(period)".trimmingCharacters(in: .whitespaces)
+        case .loading: return loadingPriceText
+        case .unavailable: return "Subscribe"
+        }
+    }
+
+    /// A plan's contracted billing period, for when StoreKit has not loaded the
+    /// product. A duration, never a price.
+    static func periodSuffix(for id: PurchaseManager.ProductID) -> String {
+        id == .proAnnual ? "/ year" : "/ month"
+    }
+
+    /// A price shown on its own (a Settings row, a plan tile).
+    static func priceLabel(_ state: PriceState) -> String {
+        switch state {
+        case .ready(let price): return price
+        case .loading: return loadingPriceText
+        case .unavailable: return unavailableShortText
+        }
+    }
 }
 
 @MainActor
 final class PurchaseManager: ObservableObject {
-    static let shared = PurchaseManager()
+    /// When the app is only the host process for the unit-test bundle, the
+    /// shared instance stays inert: no product load, no listener, no
+    /// entitlement read at launch. StoreKit binds the process to an environment
+    /// on its first call, and a host that has already talked to the sandbox
+    /// App Store would shadow the tests' `SKTestSession` (Phase 11).
+    static let shared: PurchaseManager = {
+        let unitTestHost = InstrumentationContext.current.isUnitTestRun
+        return PurchaseManager(observesStore: !unitTestHost, inertUnitTestHost: unitTestHost)
+    }()
 
     enum ProductID: String, CaseIterable {
         case unlockAll = "com.nsantulli.econbyte.unlockall"
@@ -70,6 +154,11 @@ final class PurchaseManager: ObservableObject {
         static let subscriptions: [ProductID] = [.proMonthly, .proAnnual]
         var isPack: Bool { Self.packs.contains(self) }
         var isSubscription: Bool { Self.subscriptions.contains(self) }
+
+        static let catalog = StoreCatalogIDs(unlockAll: ProductID.unlockAll.rawValue,
+                                             removeAds: ProductID.removeAds.rawValue,
+                                             packs: Set(packs.map(\.rawValue)),
+                                             subscriptions: Set(subscriptions.map(\.rawValue)))
 
         /// The bucketed family name analytics is allowed to see. The product id
         /// itself is a prohibited property — a StoreKit identifier never leaves.
@@ -94,22 +183,28 @@ final class PurchaseManager: ObservableObject {
         case cancelled
         case pending
         case productUnavailable
+        /// Restore only: the sync worked and this Apple ID owns nothing.
+        case nothingToRestore
+        /// Carries reader-facing copy from `PurchaseFailureReason`, never
+        /// StoreKit's own error text.
         case failed(String)
     }
 
     @Published private(set) var isUnlockAllPurchased = false
     @Published private(set) var isRemoveAdsPurchased = false
-    /// Pack product ids with a verified, unrevoked entitlement. Mirrored to
-    /// UserDefaults like the other two so cold-launch gating is synchronous.
+    /// Pack product ids with a verified, unrevoked entitlement.
     @Published private(set) var ownedPackProductIDs: Set<String> = []
-    /// EconByte Pro: a verified, unrevoked auto-renewable transaction is in
-    /// `Transaction.currentEntitlements` (that stream already excludes expired
-    /// subscriptions and includes grace/billing-retry periods).
+    /// EconByte Pro: subscribed, in its grace period, or in billing retry.
     @Published private(set) var isProActive = false
-    /// The current period's expiration, when StoreKit reports one. Display only.
-    @Published private(set) var proExpiration: Date?
-    /// Which Pro product is active (monthly or annual), for Settings.
-    @Published private(set) var proProductID: String?
+    /// The resolved subscription (plan, state, renewal) when Pro is active.
+    @Published private(set) var proEntitlement: ProEntitlement?
+    @Published private(set) var familySharedProductIDs: Set<String> = []
+    /// False until StoreKit has answered once this run. Until then content
+    /// stays locked (mirrors never grant) and ads stay off for a reader whose
+    /// last verified state was entitled.
+    @Published private(set) var hasVerifiedEntitlements = false
+    /// Products awaiting Ask to Buy approval, this run.
+    @Published private(set) var pendingProductIDs: Set<String> = []
     /// Whether this Apple ID may still take the introductory free trial. `nil`
     /// until StoreKit has answered; the paywall shows the trial line only on a
     /// definite `true` (App Review 3.1.2: never advertise a trial to someone
@@ -117,14 +212,22 @@ final class PurchaseManager: ObservableObject {
     @Published private(set) var isEligibleForTrial: Bool?
     @Published private(set) var products: [Product] = []
     @Published private(set) var isLoadingProducts = false
+    @Published private(set) var hasAttemptedProductLoad = false
     @Published private(set) var productsLoadError: String?
 
-    private let unlockAllKey = "iap.unlockAll.purchased"
-    private let removeAdsKey  = "iap.removeAds.purchased"
-    private let ownedPacksKey = "iap.packs.purchased"
-    private let proActiveKey  = "iap.pro.active"
+    var proExpiration: Date? { proEntitlement?.expirationDate }
+    var proProductID: String? { proEntitlement?.productID }
+
+    static let removeAdsMirrorKey = "iap.removeAds.purchased"
+    static let proMirrorKey  = "iap.pro.active"
+
+    private let defaults: UserDefaults
+    /// The last verified ad-relevant state, read once at launch. Ads only.
+    private let mirroredAdsSuppression: Bool
 
     private var updates: Task<Void, Never>?
+    private var promotedPurchases: Task<Void, Never>?
+    private var loadTask: Task<Void, Never>?
     /// Restore is single-flight: `AppStore.sync()` is only ever called from an
     /// explicit user action, and never twice concurrently (design section 8).
     private var restoreTask: Task<PurchaseResult, Never>?
@@ -150,8 +253,20 @@ final class PurchaseManager: ObservableObject {
     /// The core curriculum: Unlock All ∨ Pro (D19).
     var coreTopicsUnlocked: Bool { isUnlockAllPurchased || isProActive }
 
+    /// Before StoreKit's first answer this run, the last verified ad state
+    /// keeps a paying reader ad-free. It can only ever SUPPRESS ads.
+    var provisionalAdsSuppression: Bool { !hasVerifiedEntitlements && mirroredAdsSuppression }
+
     /// Ads are off for a Remove Ads owner and for an active Pro subscriber.
-    var adsSuppressed: Bool { isRemoveAdsPurchased || isProActive }
+    var adsSuppressed: Bool { isRemoveAdsPurchased || isProActive || provisionalAdsSuppression }
+
+    func isPending(_ id: ProductID) -> Bool { pendingProductIDs.contains(id.rawValue) }
+
+    func priceState(for id: ProductID) -> PurchasePresentation.PriceState {
+        PurchasePresentation.priceState(displayPrice: product(for: id)?.displayPrice,
+                                        isLoading: isLoadingProducts,
+                                        hasAttemptedLoad: hasAttemptedProductLoad)
+    }
 
     #if DEBUG
     /// DEBUG-only: `-econDebugPro` (or the Settings debug toggle) reports Pro as
@@ -161,25 +276,34 @@ final class PurchaseManager: ObservableObject {
     private var debugForcedPro = ProcessInfo.processInfo.arguments.contains("-econDebugPro")
     #endif
 
-    private init() {
-        // Synchronous seed from cache so the first render gates correctly.
-        isUnlockAllPurchased = UserDefaults.standard.bool(forKey: unlockAllKey)
-        isRemoveAdsPurchased  = UserDefaults.standard.bool(forKey: removeAdsKey)
-        isProActive = UserDefaults.standard.bool(forKey: proActiveKey)
+    /// `observesStore: false` builds an inert instance for tests: no listener,
+    /// no product load, no promoted-purchase handler.
+    private let inertUnitTestHost: Bool
+
+    init(defaults: UserDefaults = .standard, observesStore: Bool = true, inertUnitTestHost: Bool = false) {
+        self.defaults = defaults
+        self.inertUnitTestHost = inertUnitTestHost
+        mirroredAdsSuppression = defaults.bool(forKey: Self.removeAdsMirrorKey)
+            || defaults.bool(forKey: Self.proMirrorKey)
         #if DEBUG
-        if debugForcedPro { isProActive = true }
+        if debugForcedPro {
+            isProActive = true
+            proEntitlement = Self.debugProEntitlement()
+        }
         #endif
-        // Only ids the catalog still sells are honoured from the cache.
-        let cachedPacks = Set(UserDefaults.standard.stringArray(forKey: ownedPacksKey) ?? [])
-        ownedPackProductIDs = cachedPacks.intersection(ProductID.packs.map(\.rawValue))
+        guard observesStore else { return }
         updates = Task { [weak self] in await self?.listenForTransactions() }
+        promotedPurchases = Task { [weak self] in await self?.listenForPromotedPurchases() }
         Task { [weak self] in
             await self?.loadProducts()
             await self?.updatePurchasedProducts()
         }
     }
 
-    deinit { updates?.cancel() }
+    deinit {
+        updates?.cancel()
+        promotedPurchases?.cancel()
+    }
 
     func product(for id: ProductID) -> Product? {
         products.first { $0.id == id.rawValue }
@@ -187,27 +311,48 @@ final class PurchaseManager: ObservableObject {
 
     // MARK: - Load
 
+    /// Single-flight: every surface calls this from its `.task`, and a second
+    /// caller joins the fetch in flight instead of starting another one (which
+    /// used to flip `isLoadingProducts` off while a fetch was still running).
     func loadProducts() async {
+        if let loadTask {
+            await loadTask.value
+            return
+        }
+        let task = Task { await self.performProductLoad() }
+        loadTask = task
+        await task.value
+        loadTask = nil
+    }
+
+    private func performProductLoad() async {
         isLoadingProducts = true
         productsLoadError = nil
-        defer { isLoadingProducts = false }
-
+        defer {
+            isLoadingProducts = false
+            hasAttemptedProductLoad = true
+        }
         do {
             let loaded = try await Product.products(for: ProductID.allCases.map(\.rawValue))
-            products = loaded
             if loaded.isEmpty {
-                productsLoadError = "Store products are not available right now. Check your connection and try again."
+                // Keep anything loaded earlier this run rather than blanking
+                // prices that were correct a minute ago.
+                if products.isEmpty {
+                    productsLoadError = PurchaseFailureReason.network.message
+                }
                 NSLog("[PurchaseManager] product load returned empty set")
                 EBEvents.productsLoaded(outcome: .unavailable)
             } else {
-                NSLog("[PurchaseManager] loaded \(loaded.count) product(s): \(loaded.map(\.id).joined(separator: ", "))")
+                products = loaded
+                NSLog("[PurchaseManager] loaded \(loaded.count) product(s)")
                 EBEvents.productsLoaded(outcome: .loaded)
                 await refreshTrialEligibility()
             }
         } catch {
-            products = []
-            productsLoadError = error.localizedDescription
-            NSLog("[PurchaseManager] product load failed: \(error)")
+            if products.isEmpty {
+                productsLoadError = (PurchaseFailureReason.classify(error) ?? .network).message
+            }
+            NSLog("[PurchaseManager] product load failed")
             // Outcome only — never `error.localizedDescription`, which is a
             // third-party string and a prohibited property.
             EBEvents.productsLoaded(outcome: .failed)
@@ -237,7 +382,11 @@ final class PurchaseManager: ObservableObject {
     @discardableResult
     func purchase(_ id: ProductID, from entryPoint: EBEntryPoint) async -> PurchaseResult {
         EBEvents.purchaseStarted(family: id.family, entryPoint: entryPoint)
-        if products.isEmpty { await loadProducts() }
+        guard AppStore.canMakePayments else {
+            EBEvents.purchaseFinished(family: id.family, outcome: .failed)
+            return .failed(PurchaseFailureReason.notAllowed.message)
+        }
+        if product(for: id) == nil { await loadProducts() }
         guard let product = product(for: id) else {
             NSLog("[PurchaseManager] no product for \(id.rawValue)")
             EBEvents.purchaseFinished(family: id.family, outcome: .unavailable)
@@ -247,33 +396,51 @@ final class PurchaseManager: ObservableObject {
             let result = try await product.purchase()
             switch result {
             case .success(let verification):
-                let transaction = try checkVerified(verification)
-                await updatePurchasedProducts()
-                await transaction.finish()
-                EBEvents.purchaseFinished(family: id.family, outcome: .completed)
-                if id.isSubscription {
-                    if Self.isIntroductoryTrial(transaction) {
-                        EBEvents.proTrialStarted(family: id.family)
-                    } else {
-                        EBEvents.proSubscribed(family: id.family)
+                switch verification {
+                case .verified(let transaction):
+                    pendingProductIDs.remove(id.rawValue)
+                    await updatePurchasedProducts()
+                    await transaction.finish()
+                    EBEvents.purchaseFinished(family: id.family, outcome: .completed)
+                    if id.isSubscription {
+                        if Self.isIntroductoryTrial(transaction) {
+                            EBEvents.proTrialStarted(family: id.family)
+                        } else {
+                            EBEvents.proSubscribed(family: id.family)
+                        }
+                        await refreshTrialEligibility()
                     }
-                    await refreshTrialEligibility()
+                    return .success
+                case .unverified(let transaction, _):
+                    // Never grants. Finished so StoreKit stops re-delivering it.
+                    onDiagnostic?(.transactionUnverified)
+                    await transaction.finish()
+                    EBEvents.purchaseFinished(family: id.family, outcome: .failed)
+                    return .failed(PurchaseFailureReason.verification.message)
                 }
-                return .success
             case .userCancelled:
                 EBEvents.purchaseFinished(family: id.family, outcome: .cancelled)
                 return .cancelled
             case .pending:
+                pendingProductIDs.insert(id.rawValue)
                 EBEvents.purchaseFinished(family: id.family, outcome: .pending)
                 return .pending
             @unknown default:
                 EBEvents.purchaseFinished(family: id.family, outcome: .failed)
-                return .failed("Purchase could not be completed.")
+                return .failed(PurchaseFailureReason.unknown.message)
             }
         } catch {
-            NSLog("[PurchaseManager] purchase failed: \(error)")
+            NSLog("[PurchaseManager] purchase threw")
+            guard let reason = PurchaseFailureReason.classify(error) else {
+                EBEvents.purchaseFinished(family: id.family, outcome: .cancelled)
+                return .cancelled
+            }
+            if reason == .productUnavailable || reason == .notAvailableInStorefront {
+                EBEvents.purchaseFinished(family: id.family, outcome: .unavailable)
+                return reason == .productUnavailable ? .productUnavailable : .failed(reason.message)
+            }
             EBEvents.purchaseFinished(family: id.family, outcome: .failed)
-            return .failed(error.localizedDescription)
+            return .failed(reason.message)
         }
     }
 
@@ -289,7 +456,7 @@ final class PurchaseManager: ObservableObject {
 
     // MARK: - Restore
 
-    /// The three restore outcomes are distinguished HERE, where the branch is
+    /// The four restore outcomes are distinguished HERE, where the branch is
     /// known, rather than by matching on a user-facing message at the call site.
     /// Restore stays single-flight (lineage A, design section 8): `AppStore.sync()`
     /// is only ever called from an explicit user action and never twice
@@ -306,12 +473,17 @@ final class PurchaseManager: ObservableObject {
                     return .success
                 }
                 EBEvents.restoreFinished(outcome: .nothingToRestore, entryPoint: entryPoint)
-                return .failed("No previous purchases were found for this Apple ID.")
+                return .nothingToRestore
             } catch {
-                NSLog("[PurchaseManager] restore failed: \(error)")
+                guard let reason = PurchaseFailureReason.classify(error) else {
+                    // The reader dismissed the Apple ID sign-in sheet.
+                    EBEvents.restoreFinished(outcome: .cancelled, entryPoint: entryPoint)
+                    return .cancelled
+                }
+                NSLog("[PurchaseManager] restore failed")
                 onDiagnostic?(.restoreFailed)
                 EBEvents.restoreFinished(outcome: .failed, entryPoint: entryPoint)
-                return .failed(error.localizedDescription)
+                return .failed(reason.message)
             }
         }
         restoreTask = task
@@ -322,60 +494,135 @@ final class PurchaseManager: ObservableObject {
 
     // MARK: - Entitlements
 
+    /// Reads StoreKit's current entitlements and, when a subscription product
+    /// has loaded, the group's statuses (the only place billing retry is
+    /// visible), resolves them, and publishes the result.
     func updatePurchasedProducts() async {
-        var unlockAll = false
-        var removeAds = false
-        var packs = Set<String>()
-        var pro = false
-        var expiration: Date?
-        var proID: String?
-        let packIDs = Set(ProductID.packs.map(\.rawValue))
-        let subscriptionIDs = Set(ProductID.subscriptions.map(\.rawValue))
+        guard !inertUnitTestHost else { return }
+        var snapshots: [StoreTransactionSnapshot] = []
         for await result in Transaction.currentEntitlements {
-            guard case .verified(let transaction) = result else { continue }
-            guard transaction.revocationDate == nil else { continue }
-            switch transaction.productID {
-            case ProductID.unlockAll.rawValue: unlockAll = true
-            case ProductID.removeAds.rawValue:  removeAds = true
-            case let id where packIDs.contains(id): packs.insert(id)
-            case let id where subscriptionIDs.contains(id):
-                // Belt and braces: the stream should not carry an expired
-                // subscription, but a stale expiration date is never honoured.
-                if let expires = transaction.expirationDate, expires <= Date() { continue }
-                pro = true
-                proID = id
-                if let expires = transaction.expirationDate {
-                    expiration = max(expiration ?? .distantPast, expires)
-                }
-            default: break
-            }
+            snapshots.append(Self.snapshot(result))
         }
-        #if DEBUG
-        if debugForcedPro { pro = true; proID = proID ?? ProductID.proMonthly.rawValue }
-        #endif
-        isUnlockAllPurchased = unlockAll
-        isRemoveAdsPurchased  = removeAds
-        ownedPackProductIDs   = packs
-        isProActive = pro
-        proExpiration = pro ? expiration : nil
-        proProductID = pro ? proID : nil
-        UserDefaults.standard.set(unlockAll, forKey: unlockAllKey)
-        UserDefaults.standard.set(removeAds, forKey: removeAdsKey)
-        UserDefaults.standard.set(packs.sorted(), forKey: ownedPacksKey)
-        UserDefaults.standard.set(pro, forKey: proActiveKey)
+        let statuses = await subscriptionStatusSnapshots()
+        apply(EntitlementResolver.resolve(transactions: snapshots,
+                                          statuses: statuses,
+                                          catalog: ProductID.catalog,
+                                          now: Date()))
     }
 
-    // MARK: - Transaction listener
+    /// Publishes a resolution. Internal so tests can drive the published state
+    /// (and the mirror rule) without StoreKit.
+    func apply(_ resolved: ResolvedEntitlements) {
+        var resolved = resolved
+        #if DEBUG
+        if debugForcedPro, resolved.pro == nil { resolved.pro = Self.debugProEntitlement() }
+        #endif
+        isUnlockAllPurchased = resolved.unlockAll
+        isRemoveAdsPurchased = resolved.removeAds
+        ownedPackProductIDs = resolved.packProductIDs
+        isProActive = resolved.isProActive
+        proEntitlement = resolved.pro
+        familySharedProductIDs = resolved.familySharedProductIDs
+        hasVerifiedEntitlements = true
+        pendingProductIDs.subtract(ownedProductIDs(resolved))
+        // Mirrors: ad state only. Nothing reads them to grant access.
+        defaults.set(resolved.removeAds, forKey: Self.removeAdsMirrorKey)
+        defaults.set(resolved.isProActive, forKey: Self.proMirrorKey)
+    }
+
+    private func ownedProductIDs(_ resolved: ResolvedEntitlements) -> Set<String> {
+        var ids = resolved.packProductIDs
+        if resolved.unlockAll { ids.insert(ProductID.unlockAll.rawValue) }
+        if resolved.removeAds { ids.insert(ProductID.removeAds.rawValue) }
+        if resolved.isProActive { ids.formUnion(ProductID.subscriptions.map(\.rawValue)) }
+        return ids
+    }
+
+    private func subscriptionStatusSnapshots() async -> [StoreSubscriptionStatusSnapshot]? {
+        guard let info = ProductID.subscriptions.lazy.compactMap({ self.product(for: $0)?.subscription }).first else {
+            return nil
+        }
+        do {
+            return try await info.status.map(Self.snapshot)
+        } catch {
+            return nil
+        }
+    }
+
+    static func snapshot(_ result: VerificationResult<StoreKit.Transaction>) -> StoreTransactionSnapshot {
+        let transaction = result.unsafePayloadValue
+        var verified = false
+        if case .verified = result { verified = true }
+        return StoreTransactionSnapshot(productID: transaction.productID,
+                                        isVerified: verified,
+                                        revocationDate: transaction.revocationDate,
+                                        expirationDate: transaction.expirationDate,
+                                        isUpgraded: transaction.isUpgraded,
+                                        ownership: transaction.ownershipType == .familyShared ? .familyShared : .purchased)
+    }
+
+    static func snapshot(_ status: Product.SubscriptionInfo.Status) -> StoreSubscriptionStatusSnapshot {
+        let state: StoreSubscriptionState
+        switch status.state {
+        case .subscribed: state = .subscribed
+        case .expired: state = .expired
+        case .inBillingRetryPeriod: state = .inBillingRetryPeriod
+        case .inGracePeriod: state = .inGracePeriod
+        case .revoked: state = .revoked
+        default: state = .unknown
+        }
+        let transaction = snapshot(status.transaction)
+        var willAutoRenew: Bool?
+        var autoRenewProductID: String?
+        var graceEnds: Date?
+        var renewalVerified = false
+        if case .verified(let renewal) = status.renewalInfo {
+            renewalVerified = true
+            willAutoRenew = renewal.willAutoRenew
+            autoRenewProductID = renewal.autoRenewPreference
+            graceEnds = renewal.gracePeriodExpirationDate
+        }
+        return StoreSubscriptionStatusSnapshot(state: state,
+                                               productID: transaction.productID,
+                                               isVerified: transaction.isVerified && renewalVerified,
+                                               expirationDate: transaction.expirationDate,
+                                               revocationDate: transaction.revocationDate,
+                                               willAutoRenew: willAutoRenew,
+                                               autoRenewProductID: autoRenewProductID,
+                                               gracePeriodExpirationDate: graceEnds,
+                                               ownership: transaction.ownership)
+    }
+
+    // MARK: - Listeners
 
     private func listenForTransactions() async {
         for await result in Transaction.updates {
-            guard case .verified(let transaction) = result else {
-                // Unverified transactions never grant an entitlement.
-                onDiagnostic?(.transactionUnverified)
-                continue
-            }
+            await handle(transactionUpdate: result)
+        }
+    }
+
+    /// Refunds, revocations, renewals, Ask to Buy approvals, purchases made on
+    /// another device and family-sharing changes all arrive here.
+    func handle(transactionUpdate result: VerificationResult<StoreKit.Transaction>) async {
+        switch result {
+        case .verified(let transaction):
+            pendingProductIDs.remove(transaction.productID)
             await updatePurchasedProducts()
             await transaction.finish()
+        case .unverified(let transaction, _):
+            // Unverified transactions never grant an entitlement. Finished so
+            // the queue does not replay it on every launch.
+            onDiagnostic?(.transactionUnverified)
+            await transaction.finish()
+        }
+    }
+
+    /// A purchase started from the App Store product page (promoted IAP).
+    private func listenForPromotedPurchases() async {
+        guard #available(iOS 16.4, *) else { return }
+        for await intent in PurchaseIntent.intents {
+            guard let id = ProductID(rawValue: intent.product.id) else { continue }
+            _ = await purchase(id, from: .appStorePromotion)
         }
     }
 
@@ -392,8 +639,8 @@ final class PurchaseManager: ObservableObject {
 // MARK: - Subscription presentation
 
 extension PurchaseManager {
-    /// Apple's account subscriptions page — the standard "Manage subscription"
-    /// destination, which also lets a subscriber cancel.
+    /// Apple's account subscriptions page — the fallback when the in-app
+    /// `manageSubscriptionsSheet` is unavailable.
     static let manageSubscriptionsURL = URL(string: "https://apps.apple.com/account/subscriptions")!
     /// Apple's standard EULA, the Terms of Use every paywall must link to
     /// (App Review 3.1.2) unless the app supplies its own.
@@ -410,31 +657,55 @@ extension PurchaseManager {
     }
 }
 
+/// Opens Apple's in-app Manage Subscriptions sheet (`showManageSubscriptions`)
+/// and refreshes entitlements when it closes, so a cancellation, a plan change
+/// or a resubscribe shows up without a relaunch.
+struct ManageSubscriptionModifier: ViewModifier {
+    @Binding var isPresented: Bool
+    @ObservedObject var store: PurchaseManager
+
+    func body(content: Content) -> some View {
+        content
+            .manageSubscriptionsSheet(isPresented: $isPresented)
+            .onChange(of: isPresented) { showing in
+                guard !showing else { return }
+                Task { await store.updatePurchasedProducts() }
+            }
+    }
+}
+
+extension View {
+    func manageSubscriptions(isPresented: Binding<Bool>, store: PurchaseManager) -> some View {
+        modifier(ManageSubscriptionModifier(isPresented: isPresented, store: store))
+    }
+}
+
 #if DEBUG
 extension PurchaseManager {
+    static func debugProEntitlement() -> ProEntitlement {
+        ProEntitlement(productID: ProductID.proMonthly.rawValue, state: .active,
+                       expirationDate: Date().addingTimeInterval(30 * 24 * 60 * 60),
+                       willAutoRenew: true, renewalProductID: ProductID.proMonthly.rawValue)
+    }
+
     /// DEBUG-only: flip entitlements without a real StoreKit purchase, so the
     /// gated/unlocked experience is testable in the plain Simulator (where the
     /// local .storekit config doesn't attach outside an Xcode scheme run) and
     /// on a device installed with `devicectl` rather than run from Xcode.
     func debugSetUnlockAll(_ value: Bool) {
         isUnlockAllPurchased = value
-        UserDefaults.standard.set(value, forKey: unlockAllKey)
     }
     func debugSetRemoveAds(_ value: Bool) {
         isRemoveAdsPurchased = value
-        UserDefaults.standard.set(value, forKey: removeAdsKey)
     }
     func debugSetPack(_ id: ProductID, _ value: Bool) {
         guard id.isPack else { return }
         if value { ownedPackProductIDs.insert(id.rawValue) } else { ownedPackProductIDs.remove(id.rawValue) }
-        UserDefaults.standard.set(ownedPackProductIDs.sorted(), forKey: ownedPacksKey)
     }
     func debugSetPro(_ value: Bool) {
         debugForcedPro = value
         isProActive = value
-        proProductID = value ? ProductID.proMonthly.rawValue : nil
-        proExpiration = value ? Date().addingTimeInterval(30 * 24 * 60 * 60) : nil
-        UserDefaults.standard.set(value, forKey: proActiveKey)
+        proEntitlement = value ? Self.debugProEntitlement() : nil
     }
 }
 #endif

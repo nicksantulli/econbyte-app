@@ -29,9 +29,8 @@ struct SettingsView: View {
     @State private var workingRemoveAds = false
     @State private var workingRestore = false
     @State private var workingPack: PurchaseManager.ProductID?
-    @State private var alertTitle = ""
-    @State private var alertMessage = ""
-    @State private var showAlert = false
+    @State private var alert: PurchaseAlertCopy.Alert?
+    @State private var showManageSubscriptions = false
     @State private var analyticsEnabled = false
     @State private var diagnosticsEnabled = false
     /// The anonymous analytics id the transport is actually stamping on events,
@@ -44,8 +43,6 @@ struct SettingsView: View {
     static let privacyPolicyURL = URL(string: "https://dudleyapps.com/privacy/")!
     static let supportURL = URL(string: "mailto:support@dudleyapps.com")!
 
-    private var removeAdsProduct: Product? { store.product(for: .removeAds) }
-    private var unlockAllProduct: Product? { store.product(for: .unlockAll) }
     private var anyWorking: Bool { workingRemoveAds || workingRestore || workingPack != nil }
 
     var body: some View {
@@ -86,11 +83,8 @@ struct SettingsView: View {
                         .foregroundColor(Econ.sky)
                 }
             }
-            .alert(alertTitle, isPresented: $showAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(alertMessage)
-            }
+            .purchaseAlert($alert)
+            .manageSubscriptions(isPresented: $showManageSubscriptions, store: store)
             .sheet(isPresented: $showSources) { SourcesPolicyView() }
             .sheet(isPresented: $showStudio) { DudleyAboutSheet() }
         }
@@ -101,25 +95,26 @@ struct SettingsView: View {
 
     private var proSection: some View {
         Section {
-            if store.isProActive {
+            if store.isProActive, let pro = store.proEntitlement {
                 HStack {
                     SettingsRowLabel(title: "EconByte Pro", icon: "graduationcap.fill", tint: Econ.amber)
                     Spacer()
                     // Identifier on the leaf value, not the row: a List row's
                     // container identifier is not reliably exposed to XCUITest.
-                    Text("Active ✓").foregroundColor(Econ.sky)
+                    Text(pro.state.hasBillingIssue ? "Payment issue" : "Active ✓")
+                        .foregroundColor(pro.state.hasBillingIssue ? Econ.amber : Econ.sky)
                         .accessibilityIdentifier("settingsProStatusRow")
                 }
                 .settingsRow()
-                if let plan = store.proProductID {
-                    SettingsValueRow(title: "Plan",
-                                     value: plan == PurchaseManager.ProductID.proAnnual.rawValue ? "Yearly" : "Monthly")
+                // Plan, Renews / Ends, a scheduled plan change, Family Sharing.
+                ForEach(ProStatusCopy.rows(for: pro).filter { $0.title != "Status" }) { row in
+                    SettingsValueRow(title: row.title, value: row.value)
                 }
-                if let expiration = store.proExpiration {
-                    SettingsValueRow(title: "Current period ends",
-                                     value: expiration.formatted(date: .abbreviated, time: .omitted))
-                }
-                Link(destination: PurchaseManager.manageSubscriptionsURL) {
+                // Apple's in-app sheet (`showManageSubscriptions`): change plan,
+                // cancel, resubscribe — entitlements refresh when it closes.
+                Button {
+                    showManageSubscriptions = true
+                } label: {
                     SettingsRowLabel(title: "Manage Subscription", icon: "creditcard.fill", tint: Econ.tide)
                 }
                 .settingsRow()
@@ -132,11 +127,7 @@ struct SettingsView: View {
                     HStack {
                         SettingsRowLabel(title: "EconByte Pro", icon: "graduationcap.fill", tint: Econ.amber)
                         Spacer()
-                        if let monthly = store.product(for: .proMonthly)?.displayPrice {
-                            Text("from \(monthly)/mo").foregroundColor(Econ.amber)
-                        } else {
-                            Text(PurchasePresentation.unavailablePrice).foregroundColor(Econ.amber)
-                        }
+                        proPriceAccessory
                     }
                 }
                 .disabled(anyWorking)
@@ -158,34 +149,66 @@ struct SettingsView: View {
         } header: {
             SettingsHeader(text: "EconByte Pro")
         } footer: {
-            SettingsFooter(text: store.isProActive
-                           ? "Cancel anytime in Manage Subscription."
-                           : "Courses, the Daily Brief, every pack, and no ads.")
+            SettingsFooter(text: ProStatusCopy.footer(for: store.isProActive ? store.proEntitlement : nil))
+        }
+    }
+
+    /// The Pro row's trailing text. The row opens the paywall (which has its
+    /// own retry), so without a price it says "See plans" — never a dash.
+    @ViewBuilder
+    private var proPriceAccessory: some View {
+        switch store.priceState(for: .proMonthly) {
+        case .ready(let monthly):
+            Text("from \(monthly)/mo").foregroundColor(Econ.amber)
+        case .loading:
+            ProgressView()
+        case .unavailable:
+            Text("See plans").foregroundColor(Econ.subtext)
         }
     }
 
     // MARK: - Purchases
+
+    private var oneTimeIDs: [PurchaseManager.ProductID] { [.removeAds, .unlockAll] + PurchaseManager.ProductID.packs }
+
+    /// A completed fetch left at least one unowned one-time product unpriced.
+    private var someOneTimePriceUnavailable: Bool {
+        oneTimeIDs.contains { id in
+            !isOwned(id) && store.priceState(for: id) == .unavailable
+        }
+    }
+
+    private func isOwned(_ id: PurchaseManager.ProductID) -> Bool {
+        switch id {
+        case .removeAds: return store.isRemoveAdsPurchased
+        case .unlockAll: return store.isUnlockAllPurchased
+        default: return store.isPackPurchased(productID: id.rawValue)
+        }
+    }
 
     /// Deliberately not labelled "Pro": the one-time products are independent
     /// purchases, not a bundle (design section 8, D18, D19).
     private var purchasesSection: some View {
         Section {
             if store.isRemoveAdsPurchased {
-                ownedRow("Remove Ads", icon: "rectangle.slash")
+                ownedRow("Remove Ads", icon: "rectangle.slash", productID: PurchaseManager.ProductID.removeAds.rawValue)
             } else {
+                let state = store.priceState(for: .removeAds)
+                let pending = store.isPending(.removeAds)
                 Button {
                     purchaseRemoveAds()
                 } label: {
                     priceRow("Remove Ads", icon: "rectangle.slash",
-                             price: removeAdsProduct?.displayPrice, working: workingRemoveAds)
+                             state: state, working: workingRemoveAds, pending: pending)
                 }
-                .disabled(anyWorking || store.isLoadingProducts)
+                .disabled(pending || !PurchasePresentation.canPurchase(
+                    displayPrice: state.displayPrice, isWorking: anyWorking, isLoading: store.isLoadingProducts))
                 .settingsRow()
                 .accessibilityIdentifier("settingsRemoveAdsButton")
             }
 
             if store.isUnlockAllPurchased {
-                ownedRow("Unlock All Topics", icon: "lock.open.fill")
+                ownedRow("Unlock All Topics", icon: "lock.open.fill", productID: PurchaseManager.ProductID.unlockAll.rawValue)
             } else {
                 Button {
                     EBEvents.lockedTopicTapped(entryPoint: .settings)
@@ -193,7 +216,8 @@ struct SettingsView: View {
                     dismiss()
                 } label: {
                     priceRow("Unlock All Topics", icon: "lock.open.fill",
-                             price: unlockAllProduct?.displayPrice, working: false)
+                             state: store.priceState(for: .unlockAll), working: false,
+                             pending: store.isPending(.unlockAll))
                 }
                 .disabled(anyWorking)
                 .settingsRow()
@@ -207,33 +231,50 @@ struct SettingsView: View {
         } header: {
             SettingsHeader(text: "Purchases")
         } footer: {
-            if store.isLoadingProducts {
+            if store.isLoadingProducts && !store.productsReady {
                 SettingsFooter(text: "Loading prices from the App Store…")
-            } else if let error = store.productsLoadError, !store.productsReady {
-                SettingsFooter(text: error)
+            } else if store.hasAttemptedProductLoad && !store.isLoadingProducts && someOneTimePriceUnavailable {
+                PricesUnavailableNotice(identifier: "settingsPricesUnavailable") {
+                    Task { await store.loadProducts() }
+                }
             } else {
                 SettingsFooter(text: "One-time purchases; packs are separate from Unlock All.")
             }
         }
     }
 
-    private func ownedRow(_ title: String, icon: String) -> some View {
+    private func ownedRow(_ title: String, icon: String, productID: String) -> some View {
         HStack {
             SettingsRowLabel(title: title, icon: icon, tint: Econ.tide)
             Spacer()
-            Text("Purchased ✓").foregroundColor(Econ.sky)
+            Text(store.familySharedProductIDs.contains(productID) ? "Family Sharing ✓" : "Purchased ✓")
+                .foregroundColor(Econ.sky)
         }
         .settingsRow()
     }
 
-    private func priceRow(_ title: String, icon: String, price: String?, working: Bool) -> some View {
+    /// Price, "Loading…" spinner, "Unavailable", or "Waiting for approval" —
+    /// never a bare placeholder.
+    private func priceRow(_ title: String, icon: String,
+                          state: PurchasePresentation.PriceState,
+                          working: Bool, pending: Bool) -> some View {
         HStack {
             SettingsRowLabel(title: title, icon: icon, tint: Econ.tide)
             Spacer()
             if working {
                 ProgressView()
+            } else if pending {
+                Text(PurchasePresentation.waitingForApprovalText).foregroundColor(Econ.subtext)
             } else {
-                Text(PurchasePresentation.priceText(price)).foregroundColor(Econ.amber)
+                switch state {
+                case .ready(let price):
+                    Text(price).foregroundColor(Econ.amber)
+                case .loading:
+                    ProgressView()
+                        .accessibilityLabel(Text(PurchasePresentation.loadingPriceText))
+                case .unavailable:
+                    Text(PurchasePresentation.unavailableShortText).foregroundColor(Econ.subtext)
+                }
             }
         }
     }
@@ -241,17 +282,19 @@ struct SettingsView: View {
     @ViewBuilder
     private func packRow(_ pack: EconPack) -> some View {
         if store.isPackPurchased(productID: pack.productID) {
-            ownedRow(pack.name, icon: pack.icon)
+            ownedRow(pack.name, icon: pack.icon, productID: pack.productID)
                 .accessibilityIdentifier("settingsPack-\(pack.id)-owned")
         } else if let productID = PurchaseManager.ProductID(rawValue: pack.productID) {
-            let price = store.product(for: productID)?.displayPrice
+            let state = store.priceState(for: productID)
+            let pending = store.isPending(productID)
             Button {
                 purchasePack(productID)
             } label: {
-                priceRow(pack.name, icon: pack.icon, price: price, working: workingPack == productID)
+                priceRow(pack.name, icon: pack.icon, state: state,
+                         working: workingPack == productID, pending: pending)
             }
-            .disabled(anyWorking || !PurchasePresentation.canPurchase(
-                displayPrice: price, isWorking: anyWorking, isLoading: store.isLoadingProducts))
+            .disabled(pending || !PurchasePresentation.canPurchase(
+                displayPrice: state.displayPrice, isWorking: anyWorking, isLoading: store.isLoadingProducts))
             .settingsRow()
             .accessibilityIdentifier("settingsPack-\(pack.id)-buy")
             .onAppear { EBEvents.packShown(family: productID.family, entryPoint: .settings) }
@@ -445,7 +488,7 @@ struct SettingsView: View {
             growth.monetization.setBlocker(.purchase, active: false)
             growth.syncEntitlements(from: store)
             recordPurchaseTelemetry(result, productID: .removeAds)
-            handlePurchaseResult(result, purchased: store.isRemoveAdsPurchased)
+            handlePurchaseResult(result, kind: .purchase, accessGranted: store.isRemoveAdsPurchased)
         }
     }
 
@@ -460,7 +503,7 @@ struct SettingsView: View {
             growth.monetization.setBlocker(.purchase, active: false)
             growth.syncEntitlements(from: store)
             recordPurchaseTelemetry(result, productID: id)
-            handlePurchaseResult(result, purchased: store.isPackPurchased(productID: id.rawValue))
+            handlePurchaseResult(result, kind: .purchase, accessGranted: store.isPackPurchased(productID: id.rawValue))
         }
     }
 
@@ -477,8 +520,7 @@ struct SettingsView: View {
                 growth.review.noteNegativeSessionEvent(.restoreFailure)
                 growth.diagnosticLog.capture(.restoreFailed)
             }
-            handlePurchaseResult(result, purchased: store.isUnlockAllPurchased || store.isRemoveAdsPurchased
-                                     || !store.ownedPackProductIDs.isEmpty || store.isProActive)
+            handlePurchaseResult(result, kind: .restore, accessGranted: true)
         }
     }
 
@@ -491,41 +533,22 @@ struct SettingsView: View {
         switch result {
         case .success:
             break
-        case .cancelled, .pending, .productUnavailable, .failed:
+        case .cancelled, .pending, .productUnavailable, .nothingToRestore, .failed:
             growth.review.noteNegativeSessionEvent(.purchaseFailure)
         }
     }
 
-    private func handlePurchaseResult(_ result: PurchaseManager.PurchaseResult, purchased: Bool) {
-        switch result {
-        case .success:
-            if !purchased {
-                presentAlert(title: "Restore Complete",
-                             message: "No previous purchases were found for this Apple ID.")
-            }
-        case .cancelled:
-            break
-        case .pending:
-            presentAlert(title: "Purchase Pending",
-                         message: "Your purchase needs approval. You'll get access once it's approved.")
-        case .productUnavailable:
-            presentAlert(
-                title: "Purchase Unavailable",
-                message: store.productsLoadError ?? "We couldn't reach the App Store. Check your connection and try again."
-            )
+    private func handlePurchaseResult(_ result: PurchaseManager.PurchaseResult,
+                                      kind: PurchaseAlertCopy.Kind,
+                                      accessGranted: Bool) {
+        if result == .productUnavailable {
             growth.diagnosticLog.capture(.storeProductsUnavailable)
             Task { await store.loadProducts() }
-        case .failed(let message):
-            presentAlert(title: "Something Went Wrong", message: message)
         }
-    }
-
-    private func presentAlert(title: String, message: String) {
+        guard let next = PurchaseAlertCopy.alert(for: result, kind: kind, accessGranted: accessGranted) else { return }
         // A user-facing error is a bad moment to ask for a rating (rules-v2).
         growth.review.noteNegativeSessionEvent(.errorShown)
-        alertTitle = title
-        alertMessage = message
-        showAlert = true
+        alert = next
     }
 }
 
@@ -536,7 +559,7 @@ extension PurchaseManager.PurchaseResult {
         case .success: return .success
         case .cancelled: return .cancelled
         case .pending: return .pending
-        case .productUnavailable: return .unavailable
+        case .productUnavailable, .nothingToRestore: return .unavailable
         case .failed: return .provider
         }
     }

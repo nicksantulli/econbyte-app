@@ -34,7 +34,7 @@ struct HomeTabView: View {
         // Remove Ads owner or Pro subscriber, an EEA/UK reader, or before the
         // ATT decision (`EconMonetization.canRequestAds`).
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            AdBannerSlot(placement: .bannerHome, monetization: growth.monetization)
+            AdBannerSlot(surface: .home, monetization: growth.monetization)
         }
     }
 

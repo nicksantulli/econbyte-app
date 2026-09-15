@@ -23,6 +23,8 @@
 		UT00000000000000000000B1 /* GrowthAuditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000B0 /* GrowthAuditTests.swift */; };
 		UT00000000000000000000D1 /* FirstLaunchPermissionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000D0 /* FirstLaunchPermissionsTests.swift */; };
 		UT0000000000000000000021 /* EconTelemetryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000020 /* EconTelemetryTests.swift */; };
+		UT00000000000000000000F1 /* StoreEntitlementsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000F0 /* StoreEntitlementsTests.swift */; };
+		UT00000000000000000000F3 /* StoreKitSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000F2 /* StoreKitSessionTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		UT00000000000000000000B0 /* GrowthAuditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAuditTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000D0 /* FirstLaunchPermissionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLaunchPermissionsTests.swift; sourceTree = "<group>"; };
 		UT0000000000000000000020 /* EconTelemetryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EconTelemetryTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000000F0 /* StoreEntitlementsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreEntitlementsTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000000F2 /* StoreKitSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitSessionTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4C6 /* GrowthFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthFlowTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000E0 /* ShellRedesignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellRedesignTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4D7 /* AccessibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityTests.swift; sourceTree = "<group>"; };
@@ -143,6 +147,8 @@
 				1A0000000000000000000002 /* CurriculumCatalogTests.swift */,
 				1A0000000000000000000012 /* GrowthSystemsTests.swift */,
 				UT00000000000000000000C0 /* ProCoursesBriefTests.swift */,
+				UT00000000000000000000F0 /* StoreEntitlementsTests.swift */,
+				UT00000000000000000000F2 /* StoreKitSessionTests.swift */,
 			);
 			path = EconByteTests;
 			sourceTree = "<group>";
@@ -324,6 +330,8 @@
 				1A0000000000000000000004 /* CurriculumCatalogTests.swift in Sources */,
 				1A0000000000000000000014 /* GrowthSystemsTests.swift in Sources */,
 				UT00000000000000000000C1 /* ProCoursesBriefTests.swift in Sources */,
+				UT00000000000000000000F1 /* StoreEntitlementsTests.swift in Sources */,
+				UT00000000000000000000F3 /* StoreKitSessionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

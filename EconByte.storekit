@@ -23,7 +23,7 @@
       "internalID": "EB000000000002",
       "localizations": [
         {
-          "description": "Remove all interstitial ads from EconByte. One-time purchase, restores across devices.",
+          "description": "Remove all ads from EconByte — banners and interstitials. One-time purchase, restores across devices.",
           "displayName": "Remove Ads",
           "locale": "en_US"
         }
@@ -146,7 +146,7 @@
           "codeOffers": [],
           "displayPrice": "4.99",
           "familyShareable": false,
-          "groupNumber": 1,
+          "groupNumber": 2,
           "internalID": "EB000000000101",
           "introductoryOffer": {
             "internalID": "EB000000000111",
