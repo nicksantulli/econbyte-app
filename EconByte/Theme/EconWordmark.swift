@@ -29,9 +29,17 @@ enum EconBrand {
 struct EconWordmark: View {
     /// Point size of the letterforms. The top bar uses 30.
     var fontSize: CGFloat = 30
+    /// Colour of "Econ". White on the navy top bar (the app never changes
+    /// this); the app icon draws the same mark on its white card, where the
+    /// icon generator (`scripts/icon/`) passes `EconBrand.navy`.
+    var econColor: Color = EconBrand.white
+    /// Extra swoosh weight, as a fraction of `fontSize`, stroked around the
+    /// filled arc. 0 in the app; only the icon generator raises it, so the arc
+    /// survives the home-screen downscale.
+    var swooshBoost: CGFloat = 0
 
     var body: some View {
-        letters(Text("\(Text("Econ").foregroundColor(EconBrand.white))\(Text("Byte").foregroundColor(EconBrand.gold))"))
+        letters(Text("\(Text("Econ").foregroundColor(econColor))\(Text("Byte").foregroundColor(EconBrand.gold))"))
             // Room under the baseline for the swoosh's low start, and to the
             // right for its tail, without the swoosh changing the layout box.
             .padding(.bottom, fontSize * 0.36)
@@ -63,6 +71,13 @@ struct EconWordmark: View {
             EconSwoosh()
                 .fill(LinearGradient(colors: [EconBrand.goldDeep, EconBrand.gold],
                                      startPoint: .leading, endPoint: .trailing))
+            if swooshBoost > 0 {
+                EconSwoosh()
+                    .stroke(LinearGradient(colors: [EconBrand.goldDeep, EconBrand.gold],
+                                           startPoint: .leading, endPoint: .trailing),
+                            style: StrokeStyle(lineWidth: fontSize * swooshBoost,
+                                               lineCap: .round, lineJoin: .round))
+            }
             // Only where the tail climbs behind the final "e": under the rest
             // of the word the arc passes clear, and a halo there would only
             // bite a notch out of it below the "y".
