@@ -30,11 +30,17 @@ final class Phase13ContentEvidenceTests: XCTestCase {
         add(attachment)
     }
 
+    /// Scrolls down until the element is hittable; if it was passed on the way
+    /// (a block that sits above the one just captured), scrolls back up for it.
     @discardableResult
     private func scrollTo(_ element: XCUIElement, in app: XCUIApplication, attempts: Int = 16) -> Bool {
         for _ in 0..<attempts {
             if element.exists && element.isHittable { return true }
             app.swipeUp()
+        }
+        for _ in 0..<(attempts * 2) {
+            if element.exists && element.isHittable { return true }
+            app.swipeDown()
         }
         return element.exists && element.isHittable
     }
@@ -86,27 +92,30 @@ final class Phase13ContentEvidenceTests: XCTestCase {
     }
 
     func testEveryPhase13DiagramRendersInItsLessonWithChartAndQuiz() {
-        let lessons: [(course: String, lesson: String, diagram: String, chartAndQuiz: Bool)] = [
-            ("investing-approaches", "ia-08", "rebalance-bands", true),
-            ("reading-price-charts", "rpc-08", "trendline-anchors", false),
-            ("reading-price-charts", "rpc-09", "base-rate-grid", true),
-            ("bonds-rates-yield-curve", "bry-07", "credit-spread-stack", true),
-            ("bonds-rates-yield-curve", "bry-08", "breakeven-split", false),
+        let lessons: [(course: String, lesson: String, diagram: String, labelPrefix: String, hasChart: Bool)] = [
+            ("investing-approaches", "ia-08", "rebalance-bands", "Diagram of one category's share of a mix", true),
+            ("reading-price-charts", "rpc-08", "trendline-anchors", "Diagram of a rising price path with three marked lows", true),
+            ("reading-price-charts", "rpc-09", "base-rate-grid", "Diagram of 100 illustrative past cases", false),
+            ("bonds-rates-yield-curve", "bry-07", "credit-spread-stack", "Diagram of three yield bars", true),
+            ("bonds-rates-yield-curve", "bry-08", "breakeven-split", "Diagram of two yield bars for the same maturity", true),
         ]
         for entry in lessons {
             let app = launchPro()
             let any = app.descendants(matching: .any)
             openLesson(entry.lesson, course: entry.course, in: app)
-            let diagram = any["diagram-\(entry.diagram)"]
+            // DiagramView is one image element whose label describes the drawing
+            // (`DiagramView.accessibilityDescription`); the wrapper identifier is not exposed.
+            let diagram = app.images.matching(NSPredicate(format: "label BEGINSWITH %@", entry.labelPrefix)).firstMatch
             XCTAssertTrue(scrollTo(diagram, in: app), "\(entry.lesson) renders \(entry.diagram)")
             capture("p13-diagram-\(entry.diagram)-\(entry.lesson)")
-            if entry.chartAndQuiz {
+            if entry.hasChart {
                 let chart = any.matching(NSPredicate(format: "identifier BEGINSWITH 'chart-\(entry.lesson)' AND NOT identifier ENDSWITH '-note'")).firstMatch
-                if chart.exists || scrollTo(chart, in: app) {
-                    capture("p13-lesson-chart-\(entry.lesson)")
-                }
+                XCTAssertTrue(scrollTo(chart, in: app, attempts: 20), "\(entry.lesson) renders its chart")
+                capture("p13-lesson-chart-\(entry.lesson)")
+            }
+            do {
                 let quiz = any["quiz"]
-                XCTAssertTrue(scrollTo(quiz, in: app), "\(entry.lesson) has its quiz")
+                XCTAssertTrue(scrollTo(quiz, in: app, attempts: 20), "\(entry.lesson) has its quiz")
                 app.buttons["quizChoice-0"].tap()
                 XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 10), "answering reveals the explanation")
                 _ = scrollTo(any["quizExplanation"], in: app, attempts: 3)
