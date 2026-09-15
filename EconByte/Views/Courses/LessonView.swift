@@ -110,6 +110,10 @@ struct LessonView: View {
                             }
                         })
                 }
+                // The page id sits on the scroll view, its own accessibility
+                // node: on a container it would overwrite the id of a page's
+                // only child (a check beat without a picture lost "quiz").
+                .accessibilityIdentifier("storyPage-\(page)")
                 .id(page)
                 .transition(pageTransition)
                 .simultaneousGesture(
@@ -166,12 +170,8 @@ struct LessonView: View {
                                   proxy.scrollTo(StoryCheckView.feedbackAnchor, anchor: .bottom)
                               }
                           })
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("storyPage-\(page)")
         } else {
             cover
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("storyPage-0")
         }
     }
 
