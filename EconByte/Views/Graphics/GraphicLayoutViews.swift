@@ -4,7 +4,6 @@ import SwiftUI
 
 struct FlowGraphicView: View {
     let flow: FlowGraphic
-    let size: GraphicSize
     let palette: GraphicPalette
     let height: CGFloat
 
@@ -18,7 +17,7 @@ struct FlowGraphicView: View {
             }
         case .cycle:
             FlowCycleView(steps: flow.steps.map(\.title), palette: palette)
-                .frame(height: size == .regular ? max(height, 128) : max(height, 104))
+                .frame(height: max(height, 128))
         }
     }
 
@@ -26,15 +25,15 @@ struct FlowGraphicView: View {
         HStack(spacing: 4) {
             ForEach(Array(flow.steps.enumerated()), id: \.offset) { index, step in
                 Text(step.title)
-                    .font(.system(size == .regular ? .caption : .caption2, design: .rounded).weight(.semibold))
+                    .font(.system(.caption, design: .rounded).weight(.semibold))
                     .foregroundColor(palette.ink)
                     .multilineTextAlignment(.center)
                     .lineLimit(4)
                     .minimumScaleFactor(0.85)
                     .padding(.horizontal, 6)
-                    .padding(.vertical, size == .regular ? 10 : 6)
+                    .padding(.vertical, 10)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .background(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous)
                         .fill(index == flow.steps.count - 1 ? palette.accent.opacity(0.22) : palette.chip))
                 if index < flow.steps.count - 1 {
                     Image(systemName: "arrow.right")
@@ -56,11 +55,11 @@ struct FlowGraphicView: View {
                         .alignmentGuide(.firstTextBaseline) { d in d[VerticalAlignment.center] + 3 }
                     VStack(alignment: .leading, spacing: 1) {
                         Text(step.title)
-                            .font(.system(size == .regular ? .caption : .caption2, design: .rounded).weight(.semibold))
+                            .font(.system(.caption, design: .rounded).weight(.semibold))
                             .foregroundColor(palette.ink)
                             .lineLimit(2)
                             .fixedSize(horizontal: false, vertical: true)
-                        if let detail = step.detail, size == .regular {
+                        if let detail = step.detail {
                             Text(detail)
                                 .font(.system(.caption2, design: .rounded))
                                 .foregroundColor(palette.secondary)
@@ -70,12 +69,12 @@ struct FlowGraphicView: View {
                     }
                 }
                 .padding(.horizontal, 10)
-                .padding(.vertical, size == .regular ? 5 : 3)
+                .padding(.vertical, 5)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(palette.chip))
+                .background(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous).fill(palette.chip))
                 if index < flow.steps.count - 1 {
                     Image(systemName: "arrow.down")
-                        .font(.system(size: 9, weight: .bold))
+                        .font(.caption2.weight(.bold))
                         .foregroundColor(palette.primary)
                         .frame(maxWidth: .infinity)
                 }
@@ -119,8 +118,8 @@ private struct FlowCycleView: View {
                         .minimumScaleFactor(0.8)
                         .padding(.horizontal, 6)
                         .frame(width: chip.width, height: chip.height)
-                        .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(palette.chip))
-                        .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(palette.plateOpaque))
+                        .background(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous).fill(palette.chip))
+                        .background(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous).fill(palette.plateOpaque))
                         .position(position(angles[i]))
                 }
             }
@@ -149,13 +148,12 @@ private struct FlowCycleView: View {
 
 struct CompareGraphicView: View {
     let compare: CompareGraphic
-    let size: GraphicSize
     let palette: GraphicPalette
 
     private var hasLabels: Bool { compare.rows.contains { !$0.label.isEmpty } }
 
     var body: some View {
-        Grid(alignment: .leading, horizontalSpacing: 8, verticalSpacing: size == .regular ? 5 : 3) {
+        Grid(alignment: .leading, horizontalSpacing: 8, verticalSpacing: 5) {
             GridRow {
                 if hasLabels { Color.clear.gridCellUnsizedAxes([.horizontal, .vertical]) }
                 ForEach(Array(compare.columns.enumerated()), id: \.offset) { index, column in
@@ -186,7 +184,7 @@ struct CompareGraphicView: View {
                         Text(value)
                             .font(.system(.caption2, design: .rounded))
                             .foregroundColor(palette.ink)
-                            .lineLimit(size == .regular ? 3 : 2)
+                            .lineLimit(3)
                             .minimumScaleFactor(0.9)
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -201,7 +199,6 @@ struct CompareGraphicView: View {
 
 struct TimelineGraphicView: View {
     let timeline: TimelineGraphic
-    let size: GraphicSize
     let palette: GraphicPalette
     /// Estimated width of one bold caption2 character; scales with Dynamic Type.
     @ScaledMetric(relativeTo: .caption2) private var charWidth: CGFloat = 6.6
@@ -218,7 +215,7 @@ struct TimelineGraphicView: View {
             ForEach(Array(timeline.events.enumerated()), id: \.offset) { index, event in
                 HStack(alignment: .center, spacing: 8) {
                     Text(event.when)
-                        .font(.system(.caption2, design: .rounded).weight(.bold))
+                        .font(EconType.micro)
                         .monospacedDigit()
                         .foregroundColor(palette.primary)
                         .lineLimit(1)
@@ -235,11 +232,11 @@ struct TimelineGraphicView: View {
                     }
                     .frame(width: 8)
                     Text(event.label)
-                        .font(.system(size == .regular ? .caption : .caption2, design: .rounded))
+                        .font(.system(.caption, design: .rounded))
                         .foregroundColor(palette.ink)
                         .lineLimit(3)
                         .fixedSize(horizontal: false, vertical: true)
-                        .padding(.vertical, size == .regular ? 3 : 1)
+                        .padding(.vertical, 3)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .fixedSize(horizontal: false, vertical: true)
@@ -252,21 +249,20 @@ struct TimelineGraphicView: View {
 
 struct FormulaGraphicView: View {
     let formula: FormulaGraphic
-    let size: GraphicSize
     let palette: GraphicPalette
 
     var body: some View {
-        VStack(alignment: .leading, spacing: size == .regular ? 6 : 4) {
+        VStack(alignment: .leading, spacing: 6) {
             Text(formula.expression)
-                .font(.system(size == .regular ? .body : .subheadline, design: .rounded).weight(.semibold))
+                .font(EconType.bodyEmphasis)
                 .foregroundColor(palette.ink)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.8)
-                .padding(.vertical, size == .regular ? 7 : 4)
+                .padding(.vertical, 7)
                 .padding(.horizontal, 8)
                 .frame(maxWidth: .infinity)
-                .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(palette.chip))
+                .background(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous).fill(palette.chip))
             VStack(alignment: .leading, spacing: 2) {
                 ForEach(Array(formula.terms.enumerated()), id: \.offset) { _, term in
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -284,7 +280,7 @@ struct FormulaGraphicView: View {
                     }
                 }
             }
-            if let example = formula.example, size == .regular {
+            if let example = formula.example {
                 Text(example)
                     .font(.system(.caption2, design: .rounded).weight(.medium))
                     .italic()
@@ -300,7 +296,6 @@ struct FormulaGraphicView: View {
 
 struct IconsGraphicView: View {
     let icons: IconsGraphic
-    let size: GraphicSize
     let palette: GraphicPalette
     @ScaledMetric(relativeTo: .caption) private var chipSize: CGFloat = 44
 
@@ -309,10 +304,9 @@ struct IconsGraphicView: View {
             ForEach(Array(icons.items.enumerated()), id: \.offset) { index, item in
                 VStack(spacing: 5) {
                     Image(systemName: item.symbol)
-                        .font(.system(size == .regular ? .title3 : .body))
+                        .font(.system(.title3))
                         .foregroundColor(palette.primary)
-                        .frame(width: size == .regular ? chipSize : chipSize * 0.75,
-                               height: size == .regular ? chipSize : chipSize * 0.75)
+                        .frame(width: chipSize, height: chipSize)
                         .background(Circle().fill(palette.chip))
                     Text(item.label)
                         .font(.system(.caption2, design: .rounded).weight(.semibold))
@@ -325,7 +319,7 @@ struct IconsGraphicView: View {
                 .frame(maxWidth: .infinity)
                 if index < icons.items.count - 1 {
                     connector
-                        .frame(height: size == .regular ? chipSize : chipSize * 0.75)
+                        .frame(height: chipSize)
                 }
             }
         }
@@ -339,7 +333,7 @@ struct IconsGraphicView: View {
         case .equals: Image(systemName: "equal").font(.caption.weight(.bold)).foregroundColor(palette.secondary)
         case .versus:
             Text("vs")
-                .font(.system(.caption2, design: .rounded).weight(.bold))
+                .font(EconType.micro)
                 .foregroundColor(palette.secondary)
         case .none:   EmptyView()
         }

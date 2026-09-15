@@ -6,7 +6,6 @@ import Charts
 /// Horizontal labelled bars: label, bar, value on one row each.
 struct BarsGraphicView: View {
     let bars: BarsGraphic
-    let size: GraphicSize
     let palette: GraphicPalette
     /// Estimated width of one caption character; scales with Dynamic Type.
     @ScaledMetric(relativeTo: .caption) private var charWidth: CGFloat = 6.4
@@ -17,7 +16,7 @@ struct BarsGraphicView: View {
 
     /// The value column fits this graphic's longest value; the label column
     /// takes what is left, never so much that the bar track drops below ~70 pt
-    /// of a ~298 pt plate. At large text labels wrap instead of squeezing bars.
+    /// of the ~290 pt plate content (iPhone 17). At large text labels wrap instead of squeezing bars.
     private var valueWidth: CGFloat {
         let longest = CGFloat(bars.items.map { text(for: $0).count }.max() ?? 4)
         return min(max(longest * charWidth + 6, 44), 132)
@@ -26,25 +25,25 @@ struct BarsGraphicView: View {
 
     var body: some View {
         let maxValue = max(bars.items.map(\.value).max() ?? 1, 1e-9)
-        VStack(alignment: .leading, spacing: size == .regular ? 7 : 4) {
+        VStack(alignment: .leading, spacing: 7) {
             ForEach(Array(bars.items.enumerated()), id: \.offset) { _, item in
                 HStack(spacing: 8) {
                     Text(item.label)
-                        .font(.system(size == .regular ? .caption : .caption2, design: .rounded))
+                        .font(.system(.caption, design: .rounded))
                         .foregroundColor(palette.ink)
                         .lineLimit(3)
                         .minimumScaleFactor(0.8)
                         .frame(width: labelWidth, alignment: .leading)
                     GeometryReader { geo in
                         let width = max(3, geo.size.width * CGFloat(item.value / maxValue))
-                        RoundedRectangle(cornerRadius: 3, style: .continuous)
+                        RoundedRectangle(cornerRadius: EconRadius.mark, style: .continuous)
                             .fill(item.emphasis == true ? palette.accent : palette.primary)
                             .frame(width: width, height: geo.size.height)
                             .frame(maxHeight: .infinity, alignment: .center)
                     }
-                    .frame(height: size == .regular ? 12 : 9)
+                    .frame(height: 12)
                     Text(text(for: item))
-                        .font(.system(size == .regular ? .caption : .caption2, design: .rounded).weight(.semibold))
+                        .font(.system(.caption, design: .rounded).weight(.semibold))
                         .monospacedDigit()
                         .foregroundColor(palette.ink)
                         .lineLimit(1)
@@ -117,7 +116,7 @@ struct LineGraphicView: View {
                 HStack(spacing: 10) {
                     ForEach(Array(line.series.enumerated()), id: \.offset) { index, series in
                         HStack(spacing: 4) {
-                            RoundedRectangle(cornerRadius: 1.5)
+                            RoundedRectangle(cornerRadius: EconRadius.mark)
                                 .fill(palette.series[index % palette.series.count])
                                 .frame(width: 12, height: 3)
                             Text(series.name)
@@ -243,7 +242,7 @@ struct GraphicTag: View {
             .fixedSize()
             .padding(.horizontal, 4)
             .padding(.vertical, 1)
-            .background(RoundedRectangle(cornerRadius: 3).fill(palette.plateOpaque))
+            .background(RoundedRectangle(cornerRadius: EconRadius.mark).fill(palette.plateOpaque))
     }
 }
 
@@ -257,7 +256,6 @@ extension GraphicPalette {
 
 struct ProportionGraphicView: View {
     let proportion: ProportionGraphic
-    let size: GraphicSize
     let palette: GraphicPalette
     let height: CGFloat
 
@@ -287,10 +285,10 @@ struct ProportionGraphicView: View {
     }
 
     private var legend: some View {
-        VStack(alignment: .leading, spacing: size == .regular ? 4 : 2) {
+        VStack(alignment: .leading, spacing: 4) {
             ForEach(shares) { share in
                 HStack(spacing: 6) {
-                    RoundedRectangle(cornerRadius: 2).fill(share.color).frame(width: 10, height: 10)
+                    RoundedRectangle(cornerRadius: EconRadius.mark).fill(share.color).frame(width: 10, height: 10)
                     Text(share.label)
                         .font(.system(.caption2, design: .rounded))
                         .foregroundColor(palette.ink)
@@ -325,9 +323,9 @@ struct ProportionGraphicView: View {
                             .frame(width: max(2, usable * CGFloat(share.value / proportion.total)))
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous))
             }
-            .frame(height: size == .regular ? 20 : 14)
+            .frame(height: 20)
             legend
         }
     }
@@ -341,7 +339,7 @@ struct ProportionGraphicView: View {
             for share in shares { out += Array(repeating: share.color, count: Int(share.value.rounded())) }
             return Array((out + Array(repeating: palette.remainder, count: max(0, total - out.count))).prefix(total))
         }()
-        let gridHeight = size == .regular ? min(height, CGFloat(rows) * 14) : min(height * 0.9, CGFloat(rows) * 9)
+        let gridHeight = min(height, CGFloat(rows) * 14)
         let cell = (gridHeight - CGFloat(rows - 1) * 2) / CGFloat(rows)
         return HStack(alignment: .center, spacing: 14) {
             VStack(spacing: 2) {

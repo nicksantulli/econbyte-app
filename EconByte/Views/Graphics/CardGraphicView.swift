@@ -4,170 +4,103 @@ import SwiftUI
 ///
 /// The plate owns its background, so it reads on any card surface in light and
 /// dark. It is one accessibility element whose label is the generated summary.
-/// If the card's text leaves too little room, the plate first drops to a
-/// compact size, then collapses to a one-line button that opens the full
-/// graphic in a sheet, so the definition is never pushed off the card.
+///
+/// The concept face scrolls (1.1.5 design system), so the plate always renders
+/// in full at its natural height: there is no smaller plate and no "show
+/// graphic" button. The face's stack supplies the side gutter, so the plate
+/// adds none of its own.
 struct CardGraphicView: View {
     let spec: CardGraphicSpec
-    @State private var showsSheet = false
 
     var body: some View {
         if spec.isRenderable {
-            ViewThatFits(in: .vertical) {
-                GraphicPlate(spec: spec, size: .regular)
-                GraphicPlate(spec: spec, size: .compact)
-                collapsed
-            }
-            .sheet(isPresented: $showsSheet) {
-                GraphicSheet(spec: spec)
-            }
-            .padding(.horizontal, 20)
-            // Last, so the card's stack sees it: the card's own text is measured
-            // first and the graphic takes what is left (full, compact, or the
-            // one-line button).
-            .layoutPriority(-1)
+            GraphicPlate(spec: spec)
         }
-    }
-
-    private var collapsed: some View {
-        Button { showsSheet = true } label: {
-            GraphicCollapsedLabel(spec: spec)
-                .dynamicTypeSize(...GraphicPlate.largestTypeSize)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("Show graphic: \(spec.title)"))
-        .accessibilityIdentifier("cardGraphicCollapsed")
     }
 }
 
 // MARK: - Plate
 
-enum GraphicSize { case regular, compact }
-
 struct GraphicPlate: View {
+    /// Graphic text scales with Dynamic Type up to this size. A ~314 pt plate
+    /// cannot hold accessibility-size chart labels without clipping them; the
+    /// card's own title and definition keep scaling around it.
     static let largestTypeSize = DynamicTypeSize.xxxLarge
     let spec: CardGraphicSpec
-    let size: GraphicSize
+
+    var body: some View {
+        // The cap wraps the content, so every scaled metric inside it (the
+        // chart height included) also stops growing at `largestTypeSize`.
+        GraphicPlateContent(spec: spec)
+            .dynamicTypeSize(...GraphicPlate.largestTypeSize)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(spec.accessibilitySummary))
+            .accessibilityAddTraits(.isImage)
+            .accessibilityIdentifier("cardGraphic-\(spec.kind.rawValue)")
+    }
+}
+
+private struct GraphicPlateContent: View {
+    let spec: CardGraphicSpec
     @Environment(\.colorScheme) private var colorScheme
     @ScaledMetric(relativeTo: .caption) private var chartHeight: CGFloat = 132
-    @ScaledMetric(relativeTo: .caption) private var compactChartHeight: CGFloat = 100
 
     var body: some View {
         let palette = GraphicPalette.palette(for: colorScheme)
         VStack(alignment: .leading, spacing: 6) {
+            // Title and footnote wrap in full: the face scrolls, so nothing here
+            // is ever cut short (the footnote carries the basis and the hedges).
             Text(spec.title)
-                .font(.system(.footnote, design: .rounded).weight(.semibold))
+                .font(EconType.footnote.weight(.semibold))
                 .foregroundColor(palette.ink)
-                .lineLimit(size == .regular ? 2 : 1)
                 .fixedSize(horizontal: false, vertical: true)
-            GraphicBody(spec: spec, size: size, palette: palette,
-                        chartHeight: size == .regular ? chartHeight : compactChartHeight)
+            GraphicBody(spec: spec, palette: palette, chartHeight: chartHeight)
             if let footnote = spec.footnote {
                 Text(footnote)
                     .font(.system(.caption2, design: .rounded))
                     .italic()
                     .foregroundColor(palette.secondary)
-                    // The footnote carries the basis and the card's hedges: never cut it short.
-                    .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, size == .regular ? 10 : 7)
+        .padding(.horizontal, EconSpace.s)
+        .padding(.vertical, 10)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(palette.plate))
-        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(palette.rim, lineWidth: 1))
-        // Labels scale with Dynamic Type up to the largest standard size. The
-        // card's own text uses fixed sizes, and a 320 pt plate cannot hold
-        // accessibility-size chart labels without clipping them.
-        .dynamicTypeSize(...GraphicPlate.largestTypeSize)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(spec.accessibilitySummary))
-        .accessibilityAddTraits(.isImage)
-        .accessibilityIdentifier("cardGraphic-\(spec.kind.rawValue)")
+        .background(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous).fill(palette.plate))
+        .overlay(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous).stroke(palette.rim, lineWidth: 1))
     }
 }
 
 /// Switches to the drawing for `spec.kind`.
 struct GraphicBody: View {
     let spec: CardGraphicSpec
-    let size: GraphicSize
     let palette: GraphicPalette
     let chartHeight: CGFloat
 
     var body: some View {
         switch spec.kind {
         case .bars:
-            if let bars = spec.bars { BarsGraphicView(bars: bars, size: size, palette: palette) }
+            if let bars = spec.bars { BarsGraphicView(bars: bars, palette: palette) }
         case .line:
             if let line = spec.line { LineGraphicView(line: line, palette: palette).frame(height: chartHeight) }
         case .diagram:
             // A schematic's labels need room; it never shrinks below 120 pt.
             if let diagram = spec.diagram { DiagramGraphicView(diagram: diagram, palette: palette).frame(height: max(chartHeight, 120)) }
         case .flow:
-            if let flow = spec.flow { FlowGraphicView(flow: flow, size: size, palette: palette, height: chartHeight) }
+            if let flow = spec.flow { FlowGraphicView(flow: flow, palette: palette, height: chartHeight) }
         case .compare:
-            if let compare = spec.compare { CompareGraphicView(compare: compare, size: size, palette: palette) }
+            if let compare = spec.compare { CompareGraphicView(compare: compare, palette: palette) }
         case .timeline:
-            if let timeline = spec.timeline { TimelineGraphicView(timeline: timeline, size: size, palette: palette) }
+            if let timeline = spec.timeline { TimelineGraphicView(timeline: timeline, palette: palette) }
         case .formula:
-            if let formula = spec.formula { FormulaGraphicView(formula: formula, size: size, palette: palette) }
+            if let formula = spec.formula { FormulaGraphicView(formula: formula, palette: palette) }
         case .proportion:
             if let proportion = spec.proportion {
-                ProportionGraphicView(proportion: proportion, size: size, palette: palette, height: chartHeight)
+                ProportionGraphicView(proportion: proportion, palette: palette, height: chartHeight)
             }
         case .icons:
-            if let icons = spec.icons { IconsGraphicView(icons: icons, size: size, palette: palette) }
+            if let icons = spec.icons { IconsGraphicView(icons: icons, palette: palette) }
         }
-    }
-}
-
-private struct GraphicCollapsedLabel: View {
-    let spec: CardGraphicSpec
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        let palette = GraphicPalette.palette(for: colorScheme)
-        HStack(spacing: 8) {
-            Image(systemName: GraphicPalette.symbol(for: spec.kind))
-                .foregroundColor(palette.primary)
-            Text(spec.title)
-                .font(.system(.footnote, design: .rounded).weight(.semibold))
-                .foregroundColor(palette.ink)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 4)
-            Image(systemName: "arrow.up.left.and.arrow.down.right")
-                .font(.caption)
-                .foregroundColor(palette.secondary)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .frame(minHeight: 44)
-        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(palette.plate))
-        .contentShape(Rectangle())
-    }
-}
-
-private struct GraphicSheet: View {
-    let spec: CardGraphicSpec
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Text("Graphic")
-                    .font(.system(.headline, design: .rounded))
-                Spacer()
-                Button("Done") { dismiss() }
-                    .font(.system(.body, design: .rounded).weight(.semibold))
-                    .accessibilityIdentifier("cardGraphicSheetDone")
-            }
-            GraphicPlate(spec: spec, size: .regular)
-            Spacer(minLength: 0)
-        }
-        .padding(20)
-        .presentationDetents([.medium, .large])
     }
 }
 
@@ -192,9 +125,9 @@ struct GraphicPalette {
     }
 
     static let light = GraphicPalette(
-        plate: Econ.tide.opacity(0.07), rim: Econ.tide.opacity(0.14), ink: Econ.ink, secondary: Econ.subtext,
-        grid: Econ.subtext.opacity(0.22), primary: Econ.tide, accent: Econ.amber, muted: Econ.subtext.opacity(0.7),
-        chip: Econ.tide.opacity(0.12), third: Econ.sky, remainder: Econ.subtext.opacity(0.2))
+        plate: Econ.tide.opacity(0.07), rim: Econ.tide.opacity(0.14), ink: Econ.ink, secondary: EconColor.onCardSecondary,
+        grid: EconColor.onCardSecondary.opacity(0.22), primary: Econ.tide, accent: Econ.amber, muted: EconColor.onCardSecondary.opacity(0.7),
+        chip: Econ.tide.opacity(0.12), third: Econ.sky, remainder: EconColor.onCardSecondary.opacity(0.2))
 
     static let dark = GraphicPalette(
         plate: Econ.ocean, rim: Econ.tide.opacity(0.45), ink: Econ.white, secondary: Econ.mist.opacity(0.78),

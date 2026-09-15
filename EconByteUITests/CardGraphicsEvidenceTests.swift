@@ -72,7 +72,7 @@ final class CardGraphicsEvidenceTests: XCTestCase {
                 capture(String(format: "%@-%02d", prefix, index))
             }
             if index < count {
-                let next = app.buttons["Next →"]
+                let next = app.buttons["Next"]
                 XCTAssertTrue(next.waitForExistence(timeout: 10))
                 next.tap()
             }
@@ -103,6 +103,10 @@ final class CardGraphicsEvidenceTests: XCTestCase {
         captureDeck(app, prefix: "p20-free-banner-inflation", count: 12)
     }
 
+    /// iOS 26 ignores the content-size launch argument. For real large-text
+    /// evidence, set the simulator's own size first
+    /// (`xcrun simctl ui <device> content_size accessibility-extra-extra-extra-large`)
+    /// and restore it afterwards.
     func testLargeDynamicType() {
         let app = launch(pro: true, ads: false, contentSize: "UICTContentSizeCategoryAccessibilityL")
         openTopic("inflation", in: app)

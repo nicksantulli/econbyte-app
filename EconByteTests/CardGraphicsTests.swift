@@ -152,13 +152,14 @@ final class CardGraphicsTests: XCTestCase {
         }
     }
 
-    /// No two diagram labels overlap at the sizes the card draws them (regular
-    /// and compact plates at iPhone width), for every diagram in both catalogs.
+    /// No two diagram labels overlap at the size the card draws them (the
+    /// plate's plot at iPhone 17 width on the scrolling card face), for every
+    /// diagram in both catalogs.
     func testDiagramLabelsNeverOverlap() throws {
         var failures: [String] = []
         for card in try allCards() {
             guard let diagram = card.graphic?.diagram else { continue }
-            for size in [CGSize(width: 298, height: 132), CGSize(width: 298, height: 120)] {
+            for size in [CGSize(width: 290, height: 132)] {
                 let placed = DiagramLabelLayout.place(diagram, in: size)
                 for (i, a) in placed.enumerated() {
                     for b in placed[(i + 1)...] where a.rect.intersects(b.rect) {
@@ -245,8 +246,8 @@ final class CardGraphicsTests: XCTestCase {
                     ("light", .light, .large), ("dark", .dark, .large), ("ax", .dark, .accessibility3),
                 ]
                 for (name, scheme, typeSize) in variants {
-                    let view = GraphicPlate(spec: spec, size: .regular)
-                        .frame(width: 322)
+                    let view = GraphicPlate(spec: spec)
+                        .frame(width: 314)
                         .padding(10)
                         .background(scheme == .dark ? Econ.ocean.opacity(0.35) : Econ.page)
                         .environment(\.colorScheme, scheme)
@@ -255,19 +256,48 @@ final class CardGraphicsTests: XCTestCase {
                     renderer.scale = 2
                     let image = try XCTUnwrap(renderer.uiImage, "\(id) \(name) did not render")
                     XCTAssertGreaterThan(image.size.height, 60, "\(id) \(name) rendered empty")
-                    XCTAssertEqual(image.size.width, 342, accuracy: 1, "\(id) \(name)")
+                    XCTAssertEqual(image.size.width, 334, accuracy: 1, "\(id) \(name)")
                     if let snapshotDir, let png = image.pngData() {
                         try png.write(to: URL(fileURLWithPath: snapshotDir).appendingPathComponent("\(kind.rawValue)-\(id)-\(name).png"))
                     }
                 }
-                // The collapsed and compact fallbacks draw too.
-                let compact = ImageRenderer(content: GraphicPlate(spec: spec, size: .compact).frame(width: 322))
-                XCTAssertNotNil(compact.uiImage, "\(id) compact")
+                // The plate caps its text and chart metrics at `largestTypeSize`,
+                // so the largest accessibility size draws exactly like that cap.
+                let capped = try Self.renderedHeight(spec, typeSize: GraphicPlate.largestTypeSize)
+                let largest = try Self.renderedHeight(spec, typeSize: .accessibility5)
+                XCTAssertEqual(largest, capped, accuracy: 0.5, "\(id) grows past the xxxLarge cap")
             }
         }
     }
 
+    /// 1.1.5 integration: the concept face scrolls, so the graphic always shows
+    /// in full (no smaller plate, no "show graphic" button, no sheet) and sits
+    /// in the face's graphic slot above the concept title.
+    func testGraphicShowsInFullInTheCardFaceSlot() throws {
+        let root = URL(fileURLWithPath: "\(#filePath)").deletingLastPathComponent().deletingLastPathComponent()
+        let graphic = try String(contentsOf: root.appendingPathComponent("EconByte/Views/Graphics/CardGraphicView.swift"))
+        for banned in ["ViewThatFits", "layoutPriority", ".sheet(", "GraphicSize", "cardGraphicCollapsed"] {
+            XCTAssertFalse(graphic.contains(banned), "the graphic no longer shrinks or collapses: found \(banned)")
+        }
+        let card = try String(contentsOf: root.appendingPathComponent("EconByte/Views/CardView.swift"))
+        let slot = try XCTUnwrap(card.range(of: "PHASE 20 GRAPHIC SLOT"))
+        let hook = try XCTUnwrap(card.range(of: "CardGraphicView(spec: graphic)"))
+        let title = try XCTUnwrap(card.range(of: "Text(card.concept)"))
+        XCTAssertLessThan(slot.lowerBound, hook.lowerBound, "the hook is in the graphic slot")
+        XCTAssertLessThan(hook.lowerBound, title.lowerBound, "the graphic sits above the concept title")
+        XCTAssertTrue(card.contains("$0.accessibilitySummary"), "VoiceOver reads the graphic through the card label")
+    }
+
     // MARK: - Helpers
+
+    @MainActor
+    private static func renderedHeight(_ spec: CardGraphicSpec, typeSize: DynamicTypeSize) throws -> CGFloat {
+        let view = CardGraphicView(spec: spec)
+            .frame(width: 314)
+            .environment(\.colorScheme, .dark)
+            .environment(\.dynamicTypeSize, typeSize)
+        return try XCTUnwrap(ImageRenderer(content: view).uiImage, "\(spec.title) at \(typeSize)").size.height
+    }
 
     private static func spread<T>(_ items: [T], count: Int) -> [T] {
         guard items.count > count else { return items }
