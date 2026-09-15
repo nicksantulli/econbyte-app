@@ -268,11 +268,15 @@ struct HomeTabView: View {
 
     // MARK: Featured pack
 
-    /// One pack a day, from the packs this reader cannot read yet (every pack,
-    /// once all are readable).
+    /// One pack a day, from the packs this reader cannot read yet — preferring
+    /// those the App Store has priced, so Home never features a disabled offer
+    /// while a buyable one exists (every pack, once all are readable).
     private var featuredPack: EconPack? {
         let locked = content.packs.filter { !store.hasAccess(packProductID: $0.productID) }
-        let pool = locked.isEmpty ? content.packs : locked
+        let priced = locked.filter { pack in
+            PurchaseManager.ProductID(rawValue: pack.productID).flatMap { store.product(for: $0) } != nil
+        }
+        let pool = !priced.isEmpty ? priced : (locked.isEmpty ? content.packs : locked)
         guard !pool.isEmpty else { return nil }
         let day = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 0
         return pool[day % pool.count]

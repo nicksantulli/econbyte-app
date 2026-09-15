@@ -252,6 +252,8 @@ struct EconTabScaffold<Content: View>: View {
             }
         }
         .coordinateSpace(name: scrollSpace)
+        // Browse's search keyboard must never strand the tab bar behind it.
+        .scrollDismissesKeyboard(.immediately)
         .onPreferenceChange(EconScrollOffsetKey.self) { minY in
             let isScrolled = minY < -1
             if isScrolled != scrolled {

@@ -391,7 +391,7 @@ struct SettingsView: View {
 
             Button { showStudio = true } label: {
                 HStack {
-                    SettingsRowLabel(title: "Version", icon: "app.fill", tint: Econ.tide)
+                    SettingsRowLabel(title: "Version", icon: "hammer.fill", tint: Econ.tide)
                     Spacer()
                     Text("\(Bundle.main.shortVersion) (\(Bundle.main.buildNumber))")
                         .foregroundColor(Econ.subtext)

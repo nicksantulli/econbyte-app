@@ -206,6 +206,14 @@ struct ProPaywallContent<Interlude: View>: View {
                     Button("Try Again") { Task { await store.loadProducts() } }
                         .buttonStyle(SecondaryButton())
                 }
+            } else if product == nil {
+                // Other products loaded but this plan did not: say so rather
+                // than leave a bare "—" on a disabled button.
+                Text("Subscription prices aren't available right now.")
+                    .font(.system(size: 13, design: .rounded))
+                    .foregroundColor(Econ.white.opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .accessibilityIdentifier("proPaywallPriceUnavailable")
             }
 
             Button {

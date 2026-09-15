@@ -80,6 +80,10 @@ final class ShellRedesignTests: XCTestCase {
                         .firstMatch.waitForExistence(timeout: 10), "search finds cards by title")
         capture("p10-06-browse-search")
         app.buttons["browseSearchClearButton"].tap()
+        // Dismiss the keyboard (it covers the tab bar) by scrolling the page.
+        app.swipeDown()
+        XCTAssertTrue(app.tabBars.buttons["News"].waitForExistence(timeout: 5)
+                        && app.tabBars.buttons["News"].isHittable, "the tab bar is reachable again")
 
         // News.
         app.tabBars.buttons["News"].tap()
@@ -171,11 +175,13 @@ final class ShellRedesignTests: XCTestCase {
         XCTAssertTrue(att.waitForExistence(timeout: 40), "Apple's ATT prompt appears after the intro")
         XCTAssertFalse(springboard.alerts.containing(NSPredicate(format: "label CONTAINS[c] 'notifications'")).firstMatch.exists,
                        "ATT comes first")
+        sleep(1)   // let the system alert finish animating in
         capture("p10-first-01-att-\(mode)")
         att.buttons[allow ? "Allow" : "Ask App Not to Track"].tap()
 
         let notifications = springboard.alerts.containing(NSPredicate(format: "label CONTAINS[c] 'notifications'")).firstMatch
         XCTAssertTrue(notifications.waitForExistence(timeout: 20), "Apple's notifications prompt follows")
+        sleep(1)
         capture("p10-first-02-notifications-\(mode)")
         let buttons = notifications.buttons
         let target = allow ? buttons["Allow"] : buttons.matching(NSPredicate(format: "label BEGINSWITH 'Don'")).firstMatch
