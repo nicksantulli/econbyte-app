@@ -179,3 +179,27 @@ proposes unlimited height, so a card graphic is never squeezed or collapsed. The
 face's body stack, above the concept title (`PHASE 20 GRAPHIC SLOT`). Card mode's swipe now follows only mostly
 horizontal drags (minimum 20 pt), leaving vertical drags to the card. `DesignSystemTests.testCardFaceAlwaysScrollsAndKeepsTheGraphicSlot`
 pins all three.
+
+## 10. Phase 24 — Pro lessons polish (same tokens, less chrome)
+
+Owner, after testing 1.1.5 (20): "continue improving the new lessons/courses under pro with additional graphics and
+tightening up the UI." No new tokens; every change uses §3.
+
+| Surface | Change | Why |
+|---|---|---|
+| Story chrome | One row: segmented progress plus close (44 pt). The course overline moved to the cover, as "Course · Lesson N of M". | Less chrome on every beat; the picture gets the space |
+| Cover | No Back button, so Start is full width. Smaller icon (56 pt). Overline with the course and lesson number. | Nothing to go back to |
+| Beat layout | Idea and term beats sit centered, picture above text. Checks and the recap start at the top. A bottom fade and scroll-indicator flash when a page scrolls. | Short beats read as one composition; long pages say "more below" |
+| Pictures | Lesson graphics (the Phase 20 spec on a lesson plate), diagrams, charts, stats and compare cards all sit on `EconColor.surface` with `EconRadius.control`. The centerpiece is taller. | One ground for every picture; the key concept is emphasized |
+| Quick check | The picture sits above the question at a compact size (diagram 200 pt, chart 170 pt). Feedback is an inset card with a verdict icon. After a tap the page scrolls to the feedback once it exists, so it always clears the fixed Next button. | The answered-check picture and explanation had sat under the controls |
+| Recap | A "Recap" title with a seal icon. Items in a card. Sources and the not-advice notice grouped under it. | Clearer end of the lesson |
+| Lesson charts | Line and candle plots scale to their data. Multi-series bars are grouped, never stacked. Categories appear as axis labels. Title and data note cap at xxxLarge. | Flat lines on a zero baseline; stacked bars drew meaningless totals; overlapping marker labels |
+| Course detail | The header card no longer repeats the title (the navigation bar has it). It shows a progress ring, "N of M lessons" and minutes, plus one primary action: Start, Continue, Next lesson, Start free lesson, Read again or See EconByte Pro. Rows say "In progress". | A single obvious next step |
+| Pro tab | A subscriber sees "Your courses" first and the unchanged plan card after it. A subscriber's course row shows "N/M · Next: lesson". A non-subscriber sees the offer first, as before. | A subscriber came for the courses; paywall content and compliance items are untouched |
+
+Accessibility:
+- Graphic plates, diagrams and charts are each one VoiceOver element with a generated summary.
+- The centerpiece container keeps the picture's own identifier.
+- Plates cap their text at xxxLarge, diagram labels at xLarge; story text scales to AX5.
+- Reduce Motion keeps the cross-fade.
+- The progress fill animates only without Reduce Motion.
