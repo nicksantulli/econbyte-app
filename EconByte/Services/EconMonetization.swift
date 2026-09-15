@@ -2,66 +2,190 @@ import Foundation
 import StoreKit
 import UIKit
 
-// MARK: - Region policy (DUD-224)
+// MARK: - Region policy (DUD-224, revised by the Owner 2026-09-15)
 //
-// Owner decision (DUD-224, 2026-06-14): do NOT serve ads to EEA/UK users.
-// Suppressing the ad request in those regions sidesteps GDPR consent entirely —
-// no consent form, no Google UMP SDK call. Version 1.1 keeps that decision; see
-// `CONTENT-DECISIONS.md` D1 for the divergence from the written design, which
-// specified UMP. The check uses the device's *region setting* (privacy-friendly:
-// no location permission, no IP lookup) and fails CLOSED — an undeterminable
-// region is treated as restricted.
+// Owner decision DUD-224 (2026-06-14): do NOT serve ads in the EEA/UK.
+// Suppressing the request there sidesteps GDPR consent entirely — no consent
+// form, no Google UMP SDK. See `CONTENT-DECISIONS.md` D1.
+//
+// Revised 2026-09-15 (Phase 25, Owner: "no ads in EEA/UK/CH, literally
+// everywhere else gets ads"):
+//   * The block list is the EEA — EU 27 + Iceland, Liechtenstein, Norway, and
+//     the EU outermost regions that carry their own ISO 3166 codes
+//     (Guadeloupe GP, Martinique MQ, French Guiana GF, Réunion RE, Mayotte YT,
+//     Saint-Martin MF) — plus the United Kingdom (GB) and Switzerland (CH).
+//     Table Talk carries the identical list (`AdRegion`).
+//   * Jersey (JE), Guernsey (GG), the Isle of Man (IM) and Gibraltar (GI) are
+//     NOT blocked. Each has its own GDPR-style data-protection law, but none is
+//     on the Owner's list and none is covered by the UK or EEA codes above, so
+//     they are served (non-personalized unless the reader allowed tracking).
+//     Revisit if counsel advises otherwise.
+//   * The region is read from the App Store storefront first (the country of
+//     the reader's App Store account, which is what the store's own legal
+//     posture follows) and only then from the device's region setting. No
+//     location permission, no IP lookup.
+//   * An UNKNOWN region no longer blocks ads. It is served, but every request
+//     is forced non-personalized (`npa=1`, `rdp=1`), whatever the ATT answer.
 
 public enum EconAdRegionState: Equatable {
     case allowed
     case restricted
     case unknown
 
-    public var permitsAdRequests: Bool { self == .allowed }
+    /// Only a region KNOWN to be on the block list stops ad requests.
+    public var permitsAdRequests: Bool { self != .restricted }
+
+    /// Personalized requests need a region known to be outside the block list.
+    public var permitsPersonalizedAds: Bool { self == .allowed }
+}
+
+/// Where a resolved region came from (diagnostics and tests only).
+public enum EconAdRegionSource: String, Equatable {
+    case storefront
+    case locale
+    case none
+}
+
+public struct EconAdRegionResolution: Equatable {
+    public var state: EconAdRegionState
+    public var source: EconAdRegionSource
 }
 
 public enum EconAdRegion {
-    /// EEA member states plus the United Kingdom.
+    /// ISO 3166-1 alpha-2 codes of the no-ads territories (38).
     public static let restrictedRegionCodes: Set<String> = [
         // EU 27
         "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
         "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
         "SI", "ES", "SE",
+        // EU outermost regions with their own ISO codes
+        "GP", "MQ", "GF", "RE", "YT", "MF",
         // EEA (non-EU)
         "IS", "LI", "NO",
         // United Kingdom
         "GB",
+        // Switzerland (added to EconByte 2026-09-15; Table Talk had it since 1.1)
+        "CH",
     ]
 
+    /// The same territories as ISO 3166-1 alpha-3, which is what the App Store
+    /// storefront reports (`Storefront.countryCode`, e.g. "USA", "DEU").
+    public static let restrictedStorefrontCodes: Set<String> = [
+        "AUT", "BEL", "BGR", "HRV", "CYP", "CZE", "DNK", "EST", "FIN", "FRA", "DEU", "GRC",
+        "HUN", "IRL", "ITA", "LVA", "LTU", "LUX", "MLT", "NLD", "POL", "PRT", "ROU", "SVK",
+        "SVN", "ESP", "SWE",
+        "GLP", "MTQ", "GUF", "REU", "MYT", "MAF",
+        "ISL", "LIE", "NOR",
+        "GBR",
+        "CHE",
+    ]
+
+    /// Classifies one code. Two ASCII letters are read as alpha-2, three as
+    /// alpha-3; anything else (empty, numeric UN M49 regions such as "419")
+    /// is `.unknown`.
     public static func state(for code: String?) -> EconAdRegionState {
-        guard let code = code?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !code.isEmpty
+        guard let raw = code?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased(),
+              raw.allSatisfy({ $0.isASCII && $0.isLetter })
         else { return .unknown }
-        return restrictedRegionCodes.contains(code.uppercased()) ? .restricted : .allowed
+        switch raw.count {
+        case 2: return restrictedRegionCodes.contains(raw) ? .restricted : .allowed
+        case 3: return restrictedStorefrontCodes.contains(raw) ? .restricted : .allowed
+        default: return .unknown
+        }
+    }
+
+    /// Storefront first, then the device region setting, else unknown.
+    public static func resolve(storefrontCountryCode: String?,
+                               localeRegionCode: String?) -> EconAdRegionResolution {
+        let storefront = state(for: storefrontCountryCode)
+        if storefront != .unknown { return EconAdRegionResolution(state: storefront, source: .storefront) }
+        let locale = state(for: localeRegionCode)
+        if locale != .unknown { return EconAdRegionResolution(state: locale, source: .locale) }
+        return EconAdRegionResolution(state: .unknown, source: .none)
+    }
+
+    public static var localeRegionCode: String? {
+        Locale.current.region?.identifier
     }
 
     public static var current: EconAdRegionState {
-        if #available(iOS 16, *) {
-            return state(for: Locale.current.region?.identifier)
+        resolve(storefrontCountryCode: EconStorefrontRegion.shared.countryCode,
+                localeRegionCode: localeRegionCode).state
+    }
+}
+
+/// The App Store storefront's country, cached. `Storefront.current` is async, so
+/// it is read once at launch and kept current from `Storefront.updates`; until
+/// it has answered, the region falls back to the device setting.
+public final class EconStorefrontRegion: @unchecked Sendable {
+    public static let shared = EconStorefrontRegion()
+
+    private let lock = NSLock()
+    private var cached: String?
+    private var observing = false
+
+    public var countryCode: String? {
+        lock.lock(); defer { lock.unlock() }
+        return cached
+    }
+
+    func store(_ code: String?) {
+        lock.lock(); defer { lock.unlock() }
+        if let code, !code.isEmpty { cached = code }
+    }
+
+    /// Idempotent. Never blocks the caller.
+    public func startObserving() {
+        lock.lock()
+        let already = observing
+        observing = true
+        lock.unlock()
+        guard !already else { return }
+        Task.detached(priority: .utility) { [weak self] in
+            if let code = await Storefront.current?.countryCode { self?.store(code) }
+            for await storefront in Storefront.updates { self?.store(storefront.countryCode) }
         }
-        return state(for: Locale.current.regionCode)
+    }
+}
+
+// MARK: - Personalization (Owner decision 2026-09-15)
+
+/// The one place that decides whether an ad request may be personalized.
+///
+/// Apple's ATT prompt is the only opt-in (Owner: "use an iOS native pop up for
+/// opt in"). A request is personalized only when the region is KNOWN to be
+/// outside the block list AND the reader tapped Allow. Denied, restricted, not
+/// determined, or an unknown region: non-personalized, `npa=1` + `rdp=1`.
+/// The status is read live for every request, so turning Tracking on or off in
+/// iOS Settings takes effect on the next request without a relaunch.
+public struct EconAdPersonalization: Equatable {
+    public let personalized: Bool
+
+    public static func decide(region: EconAdRegionState,
+                              tracking: EconTrackingStatus) -> EconAdPersonalization {
+        EconAdPersonalization(personalized: region.permitsPersonalizedAds
+                                && tracking.providerWouldPermitPersonalizedAds)
+    }
+
+    /// `npa` requests non-personalized delivery; `rdp` restricts data
+    /// processing (US state privacy laws). Both, or neither.
+    public var extras: [String: String] {
+        personalized ? [:] : ["npa": "1", "rdp": "1"]
     }
 }
 
 // MARK: - Request configuration
 
-/// Every ad request is contextual. 1.1.2 build 13 restores the ATT prompt (App
-/// Review 5.1.2(i); see `EconTrackingAuthorization.swift` for why), but the
-/// *request* is unchanged: `npa=1` and `rdp=1` on every one of them, whatever
-/// the reader answered. Personalizing for authorized readers is a portfolio
-/// policy revision, not an EconByte edit — see
-/// `EconTrackingStatus.providerWouldPermitPersonalizedAds`.
 public struct EconAdRequestPolicy: Equatable {
     /// What the reader answered, carried so the request is a function of the
     /// decision rather than of when it happened to be built.
     public var trackingStatus: EconTrackingStatus = .notDetermined
-    public var usesPersonalizedAds = false
+    /// The region the request is for. Defaults to `.unknown`, so a policy built
+    /// without one can never be personalized.
+    public var region: EconAdRegionState = .unknown
     public var requestsAppTrackingAuthorization = true
+    /// EconByte is rated 4+ on the App Store (appInfo `appStoreAgeRating`
+    /// FOUR_PLUS), so the ceiling stays "G" (`.general`).
     public var maxAdContentRating = "G"
 
     /// Declared deny-list for a finance-education audience. AdMob enforces
@@ -86,15 +210,19 @@ public struct EconAdRequestPolicy: Equatable {
         "violence",
     ]
 
-    /// `npa` requests non-personalized delivery; `rdp` restricts data
-    /// processing. Both are set on EVERY request, including an ATT-authorized
-    /// one — the portfolio invariant is non-personalized everywhere, and it is
-    /// gate-enforced outside this repo. Asserted for all four statuses in
-    /// `TrackingAuthorizationTests`, so relaxing it here cannot pass unnoticed.
-    public var extras: [String: String] { ["npa": "1", "rdp": "1"] }
+    public var personalization: EconAdPersonalization {
+        EconAdPersonalization.decide(region: region, tracking: trackingStatus)
+    }
 
-    public init(trackingStatus: EconTrackingStatus = .notDetermined) {
+    public var usesPersonalizedAds: Bool { personalization.personalized }
+
+    /// Registered on every request: `npa=1` + `rdp=1` unless personalized.
+    public var extras: [String: String] { personalization.extras }
+
+    public init(trackingStatus: EconTrackingStatus = .notDetermined,
+                region: EconAdRegionState = .unknown) {
         self.trackingStatus = trackingStatus
+        self.region = region
     }
 }
 
@@ -189,6 +317,10 @@ public enum EconAdBlocker: String, CaseIterable, Equatable {
 
 public enum EconAdDecision: Equatable {
     case eligible
+    /// Phase 25: an exit was eligible, but no stable screen to present from
+    /// appeared in time after the card session closed (or the armed break went
+    /// stale). Nothing is shown and no cap is consumed.
+    case presenterUnavailable
     case suppressedEntitled
     case suppressedRegion(EconAdRegionState)
     case setNotCompletedNormally
@@ -391,6 +523,33 @@ public protocol EconInterstitialAdapting: AnyObject {
     func present() async -> Bool
 }
 
+// MARK: - Presentation hand-off (Phase 25)
+
+/// Whether an interstitial can be presented right now without being torn down:
+/// the scene is active, nothing is presented over the window's root, and no
+/// presentation transition is running.
+///
+/// 1.1.2–1.1.5 presented the set-exit interstitial from inside the card-mode
+/// full-screen cover and then dismissed that cover on the same turn, which tore
+/// the ad down as it appeared. The break is now ARMED on the completion screen
+/// and PRESENTED by the shell once this environment reports the cover is gone.
+@MainActor
+public protocol EconAdPresentationEnvironment: AnyObject {
+    var isReadyToPresentInterstitial: Bool { get }
+}
+
+/// For callers already on a stable presenter.
+@MainActor
+public final class EconImmediatePresentationEnvironment: EconAdPresentationEnvironment {
+    public init() {}
+    public var isReadyToPresentInterstitial: Bool { true }
+}
+
+/// A set exit that passed every rule and is waiting for a stable presenter.
+public struct EconPendingSetExitBreak: Equatable {
+    public let armedAt: Date
+}
+
 // MARK: - Coordinator
 
 @MainActor
@@ -441,6 +600,39 @@ public final class EconMonetization: ObservableObject {
     /// Raised when a presented interstitial closes, cleanly or otherwise.
     public var onAdDismissed: ((EconAdPlacement, EconResultClass) -> Void)?
 
+    /// Phase 25: the set exit armed on the completion screen, presented by the
+    /// shell once the card cover has gone (`presentPendingSetExitBreak`).
+    public private(set) var pendingSetExitBreak: EconPendingSetExitBreak?
+
+    /// An armed break older than this is dropped rather than shown late on an
+    /// unrelated screen.
+    public nonisolated static let pendingBreakLifetime: TimeInterval = 15
+    /// How long the shell waits for the cover's dismissal to finish.
+    public nonisolated static let presenterReadyTimeout: TimeInterval = 5
+    /// Once the presenter is stable, let Home's layout settle before the ad.
+    public nonisolated static let presenterSettleDelay: TimeInterval = 0.35
+    nonisolated static let presenterPollInterval: TimeInterval = 0.05
+
+    /// The live ATT status as last observed, re-read on every foreground
+    /// (`refreshRequestPolicyForForeground`). Published so a banner slot
+    /// rebuilds its request when the reader changes Tracking in iOS Settings.
+    @Published public private(set) var observedTrackingStatus: EconTrackingStatus
+
+    /// The policy the most recent SDK start or preload carried.
+    public private(set) var lastRequestedPolicy: EconAdRequestPolicy?
+
+    #if DEBUG
+    /// DEBUG-only probe for the set-exit UI test: idle → armed → presented →
+    /// dismissed (or a failure word). Never compiled into Release.
+    @Published public private(set) var debugSetExitAdState = "idle"
+    #endif
+
+    private let presentationSleep: @MainActor (TimeInterval) async -> Void
+
+    private static func realSleep(_ seconds: TimeInterval) async {
+        try? await Task.sleep(nanoseconds: UInt64(max(0, seconds) * 1_000_000_000))
+    }
+
     private let adapter: EconInterstitialAdapting
     private let defaults: UserDefaults
     private let calendar: Calendar
@@ -454,7 +646,7 @@ public final class EconMonetization: ObservableObject {
     /// always carries the *current* tracking decision rather than the one that
     /// held when the coordinator was constructed.
     private var requestPolicy: EconAdRequestPolicy {
-        EconAdRequestPolicy(trackingStatus: tracking.status)
+        EconAdRequestPolicy(trackingStatus: tracking.status, region: region())
     }
 
     public init(adapter: EconInterstitialAdapting,
@@ -463,7 +655,8 @@ public final class EconMonetization: ObservableObject {
                 now: @escaping () -> Date = Date.init,
                 region: @escaping () -> EconAdRegionState = { EconAdRegion.current },
                 tracking: EconTrackingAuthorizing = EconTrackingAuthorization.shared,
-                thresholds: EconAdThresholds = EconAdThresholds()) {
+                thresholds: EconAdThresholds = EconAdThresholds(),
+                presentationSleep: (@MainActor (TimeInterval) async -> Void)? = nil) {
         self.adapter = adapter
         self.defaults = defaults
         self.calendar = calendar
@@ -471,6 +664,8 @@ public final class EconMonetization: ObservableObject {
         self.region = region
         self.tracking = tracking
         self.policy = EconAdPolicy(thresholds: thresholds)
+        self.presentationSleep = presentationSleep ?? { await EconMonetization.realSleep($0) }
+        self.observedTrackingStatus = tracking.status
         self.didRequestTrackingPrompt = defaults.bool(forKey: Key.trackingPromptRequested)
 
         state.completedSetsLifetime = defaults.integer(forKey: Key.completedSets)
@@ -489,7 +684,15 @@ public final class EconMonetization: ObservableObject {
         rollDayIfNeeded()
 
         adapter.onAdDismissed = { [weak self] presentedCleanly in
-            self?.onAdDismissed?(.dailySetExit, presentedCleanly ? .success : .provider)
+            guard let self else { return }
+            #if DEBUG
+            self.debugSetExitAdState = presentedCleanly ? "dismissed" : "failed-to-present"
+            #endif
+            self.onAdDismissed?(.dailySetExit, presentedCleanly ? .success : .provider)
+            // Re-preload with the request policy as it stands NOW (the ATT
+            // answer can have changed since the last load). The adapter's own
+            // follow-up preload is then a no-op while this one is loading.
+            self.preloadIfPermitted()
         }
     }
 
@@ -612,6 +815,7 @@ public final class EconMonetization: ObservableObject {
         guard adRequestsPermitted else { return }
         didStartSDK = true
         let policy = requestPolicy
+        lastRequestedPolicy = policy
         adapter.startSDK(policy: policy)
         adapter.preload(policy: policy)
     }
@@ -620,10 +824,27 @@ public final class EconMonetization: ObservableObject {
     /// bypassed by a path that only wants "one more" request.
     private func preloadIfPermitted() {
         guard didStartSDK, adRequestsPermitted else { return }
-        adapter.preload(policy: requestPolicy)
+        let policy = requestPolicy
+        lastRequestedPolicy = policy
+        adapter.preload(policy: policy)
+    }
+
+    /// Re-reads the ATT status on every foreground. If the reader changed
+    /// Tracking in iOS Settings so that requests flip between personalized and
+    /// non-personalized, a held interstitial requested under the old answer is
+    /// discarded and the next request carries the new one — no relaunch.
+    public func refreshRequestPolicyForForeground() {
+        let live = tracking.status
+        if observedTrackingStatus != live { observedTrackingStatus = live }
+        guard didStartSDK, let last = lastRequestedPolicy else { return }
+        guard last.usesPersonalizedAds != requestPolicy.usesPersonalizedAds else { return }
+        adapter.discardLoadedAd()
+        preloadIfPermitted()
     }
 
     public func noteForegroundSessionBegan() {
+        // A break armed before the app left the foreground is never shown.
+        pendingSetExitBreak = nil
         state.shownThisSession = 0
         state.foregroundSessionsLifetime += 1
         rollDayIfNeeded()
@@ -660,23 +881,107 @@ public final class EconMonetization: ObservableObject {
                              dayKey: EconAdState.dayKey(for: moment, calendar: calendar))
     }
 
-    /// Presents the one allowed interstitial if every rule passes. Failure and
-    /// no-fill are silent, return straight to Home, and never consume a cap.
-    public func presentIfEligibleAtSetExit() async -> EconAdOutcome {
+    /// Step 1 of the set-exit hand-off, called on the completion screen BEFORE
+    /// it is dismissed: decides with that screen's blockers (review request,
+    /// consent offer, notification prompt) still active, and arms the break
+    /// only if every rule passes. Nothing is presented here — the card cover is
+    /// about to go away, and an ad presented on it would go with it.
+    @discardableResult
+    public func armSetExitBreak() -> EconAdDecision {
+        pendingSetExitBreak = nil
         let decision = decisionAtSetExit()
-        guard decision == .eligible else { return .notEligible(decision) }
+        guard decision == .eligible else {
+            #if DEBUG
+            debugSetExitAdState = "not-eligible"
+            #endif
+            return decision
+        }
         // Every local rule passed. Recorded before any provider call, so the
         // eligible -> impression -> dismissed funnel has a real denominator
         // (design section 15.2).
         onAdEligible?(.dailySetExit, state.setsSinceLastAd)
+        pendingSetExitBreak = EconPendingSetExitBreak(armedAt: now())
+        // The dismissal gives a missing ad a moment to arrive.
+        if !adapter.isAdLoaded { preloadIfPermitted() }
+        #if DEBUG
+        debugSetExitAdState = "armed"
+        #endif
+        return decision
+    }
+
+    /// Step 2, called by the shell once the card cover has closed: waits
+    /// (bounded) until nothing is presented over the root and no transition is
+    /// running, lets the screen settle, re-checks the rules (a purchase or a
+    /// paywall may have arrived in between), then presents. Returns nil when no
+    /// break was armed. Failure and no-fill are silent and never consume a cap.
+    public func presentPendingSetExitBreak(
+        environment: EconAdPresentationEnvironment,
+        settleDelay: TimeInterval = EconMonetization.presenterSettleDelay
+    ) async -> EconAdOutcome? {
+        guard let pending = pendingSetExitBreak else { return nil }
+        pendingSetExitBreak = nil
+
+        var waited: TimeInterval = 0
+        var settled = false
+        while true {
+            if environment.isReadyToPresentInterstitial {
+                if settled || settleDelay <= 0 { break }
+                await presentationSleep(settleDelay)
+                waited += settleDelay
+                settled = true
+                continue
+            }
+            settled = false
+            guard waited < Self.presenterReadyTimeout else {
+                return finishWithoutPresenting(.notEligible(.presenterUnavailable))
+            }
+            await presentationSleep(Self.presenterPollInterval)
+            waited += Self.presenterPollInterval
+        }
+
+        guard now().timeIntervalSince(pending.armedAt) <= Self.pendingBreakLifetime + waited else {
+            return finishWithoutPresenting(.notEligible(.presenterUnavailable))
+        }
+        let decision = decisionAtSetExit()
+        guard decision == .eligible else { return finishWithoutPresenting(.notEligible(decision)) }
+        return await presentLoadedInterstitial()
+    }
+
+    /// Arms and presents in one call, for a caller that is already on a stable
+    /// presenter (the unit tests of the pacing rules). The app itself always
+    /// goes through `armSetExitBreak` + `presentPendingSetExitBreak`.
+    public func presentIfEligibleAtSetExit() async -> EconAdOutcome {
+        let decision = armSetExitBreak()
+        guard decision == .eligible else { return .notEligible(decision) }
+        return await presentPendingSetExitBreak(environment: EconImmediatePresentationEnvironment(),
+                                                settleDelay: 0) ?? .notEligible(.presenterUnavailable)
+    }
+
+    private func finishWithoutPresenting(_ outcome: EconAdOutcome) -> EconAdOutcome {
+        #if DEBUG
+        debugSetExitAdState = "not-presented"
+        #endif
+        return outcome
+    }
+
+    private func presentLoadedInterstitial() async -> EconAdOutcome {
         guard adapter.isAdLoaded else {
             preloadIfPermitted()
+            #if DEBUG
+            debugSetExitAdState = "no-ad"
+            #endif
             return .noAdAvailable
         }
         guard await adapter.present() else {
             preloadIfPermitted()
+            #if DEBUG
+            debugSetExitAdState = "present-failed"
+            #endif
             return .presentationFailed
         }
+        #if DEBUG
+        debugSetExitAdState = "presented"
+        #endif
         let moment = now()
         rollDayIfNeeded()
         state.shownThisSession += 1
@@ -713,6 +1018,18 @@ public final class EconMonetization: ObservableObject {
             defaults.removeObject(forKey: Key.lastShownAt)
         }
     }
+
+    #if DEBUG
+    /// DEBUG-only (`-econSeedAdEligibleInstall`): an install that has finished
+    /// two sets in an earlier foreground session and never seen an ad, so one
+    /// more completed set is an eligible set exit. Used by the set-exit
+    /// interstitial UI test; compiled out of Release.
+    public static func debugSeedAdEligibleInstall(in defaults: UserDefaults = .standard) {
+        defaults.set(2, forKey: Key.completedSets)
+        defaults.set(1, forKey: Key.setsSinceLastAd)
+        defaults.set(1, forKey: Key.foregroundSessions)
+    }
+    #endif
 
     /// DEBUG-only reset used by the UI-test harness so every rendered-flow run
     /// starts from a fresh-install posture. Compiled out of Release.
@@ -773,7 +1090,15 @@ final class EconGrowth: ObservableObject {
         if ProcessInfo.processInfo.arguments.contains("-econResetGrowthState") {
             EconGrowth.resetPersistedState(in: defaults)
         }
+        if ProcessInfo.processInfo.arguments.contains("-econSeedAdEligibleInstall") {
+            EconMonetization.debugSeedAdEligibleInstall(in: defaults)
+            // The consent offer raises a blocker at the exit it appears on.
+            ConsentPromptPolicy.noteShown(in: defaults)
+        }
         #endif
+
+        // Phase 25: the ad region is read from the App Store storefront first.
+        EconStorefrontRegion.shared.startObserving()
 
         let environment = EconTelemetryEnvironment.current
         self.environment = environment
@@ -831,11 +1156,26 @@ final class EconGrowth: ObservableObject {
         monetization.noteForegroundSessionBegan()
         review.noteForegroundSessionBegan()
         notifications.reconcileOnForeground()
+        // Phase 25: re-read ATT so a Tracking change in iOS Settings reaches
+        // the next ad request without a relaunch.
+        monetization.refreshRequestPolicyForForeground()
         monetization.startAdsIfPermitted()
         // Cold launches only: `app_opened_v1` carries the install-age and
         // launch-count buckets that `EBEvents.recordLaunch` maintains, and a
         // warm foreground is not a launch.
         if isColdLaunch { EBEvents.recordLaunch() }
+    }
+
+    /// Phase 25: presents the set-exit interstitial armed on the completion
+    /// screen, from the window's root, once the card cover has finished
+    /// dismissing. Called by the shell when the cover's session ends.
+    func resolvePendingSetExitBreak(environment: EconAdPresentationEnvironment? = nil) async {
+        let presenter = environment ?? LiveAdPresentationEnvironment.shared
+        guard let outcome = await monetization.presentPendingSetExitBreak(environment: presenter) else { return }
+        if outcome == .presented {
+            // An ad disqualifies this session for a later rating request.
+            review.noteNegativeSessionEvent(.ad)
+        }
     }
 
     /// Entitlement changes must reach ad behaviour and content access on the same

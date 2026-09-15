@@ -235,6 +235,19 @@ struct SettingsView: View {
             .settingsRow()
             .accessibilityIdentifier("settingsDiagnosticsToggle")
 
+            // Phase 25 (Owner 2026-09-15): Apple's ATT prompt is the only ad
+            // personalization opt-in; this row opens the app's page in iOS
+            // Settings, where the Tracking switch lives.
+            Button {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                SettingsRowLabel(title: "Manage tracking", icon: "hand.tap.fill", tint: Econ.tide)
+            }
+            .settingsRow()
+            .accessibilityIdentifier("settingsManageTrackingButton")
+
             Link(destination: Self.privacyPolicyURL) {
                 SettingsRowLabel(title: "Privacy Policy", icon: "hand.raised.fill", tint: Econ.tide)
             }

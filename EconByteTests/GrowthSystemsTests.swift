@@ -324,28 +324,131 @@ final class GrowthSystemsTests: XCTestCase {
 
     // MARK: - 2. Region gate (DUD-224)
 
-    func testRestrictedRegionsCoverTheEEAAndUnitedKingdom() {
-        for code in ["DE", "FR", "IE", "IT", "ES", "NL", "SE", "PL", "NO", "IS", "LI", "GB"] {
+    /// Owner 2026-09-15: EEA (EU 27 + IS/LI/NO + the EU outermost regions with
+    /// their own codes) + GB + CH. Identical to Table Talk's `AdRegion`.
+    func testRestrictedRegionsAreTheEEAUnitedKingdomAndSwitzerland() {
+        for code in ["DE", "FR", "IE", "IT", "ES", "NL", "SE", "PL", "NO", "IS", "LI", "GB", "CH",
+                     "GP", "MQ", "GF", "RE", "YT", "MF"] {
             XCTAssertEqual(EconAdRegion.state(for: code), .restricted,
-                           "\(code) must be ad-restricted under DUD-224")
+                           "\(code) must be ad-restricted")
         }
-        XCTAssertEqual(EconAdRegion.restrictedRegionCodes.count, 31,
-                       "EU 27 + Iceland, Liechtenstein, Norway + United Kingdom")
+        XCTAssertEqual(EconAdRegion.restrictedRegionCodes.count, 38,
+                       "EU 27 + 6 outermost regions + Iceland, Liechtenstein, Norway + UK + Switzerland")
+        XCTAssertEqual(EconAdRegion.restrictedStorefrontCodes.count, 38,
+                       "the storefront (alpha-3) list names exactly the same territories")
+        for code in ["DEU", "FRA", "GBR", "CHE", "NOR", "REU", "MAF", "GLP"] {
+            XCTAssertEqual(EconAdRegion.state(for: code), .restricted, "\(code) storefront")
+        }
+    }
+
+    /// Jersey, Guernsey, the Isle of Man and Gibraltar are served (Owner list;
+    /// documented at `EconAdRegion`).
+    func testCrownDependenciesAndGibraltarGetAds() {
+        for code in ["JE", "GG", "IM", "GI", "JEY", "GGY", "IMN", "GIB"] {
+            XCTAssertEqual(EconAdRegion.state(for: code), .allowed, "\(code) is not on the block list")
+        }
     }
 
     func testAllowedRegionIsAllowed() {
         XCTAssertEqual(EconAdRegion.state(for: "US"), .allowed)
         XCTAssertEqual(EconAdRegion.state(for: "us"), .allowed)
+        XCTAssertEqual(EconAdRegion.state(for: "USA"), .allowed)
+        XCTAssertEqual(EconAdRegion.state(for: " ng "), .allowed)
     }
 
-    /// An undeterminable region fails closed — no ads rather than an untested
-    /// consent posture.
-    func testUnknownRegionFailsClosed() {
-        XCTAssertEqual(EconAdRegion.state(for: nil), .unknown)
-        XCTAssertEqual(EconAdRegion.state(for: ""), .unknown)
-        XCTAssertFalse(EconAdRegionState.unknown.permitsAdRequests)
+    /// Phase 25: an undeterminable region is SERVED, but never personalized.
+    func testAnUnknownRegionIsServedButNeverPersonalized() {
+        for code in [nil, "", "419", "001", "U", "USAA", "U1"] as [String?] {
+            XCTAssertEqual(EconAdRegion.state(for: code), .unknown, "\(String(describing: code))")
+        }
+        XCTAssertTrue(EconAdRegionState.unknown.permitsAdRequests)
+        XCTAssertFalse(EconAdRegionState.unknown.permitsPersonalizedAds)
         XCTAssertFalse(EconAdRegionState.restricted.permitsAdRequests)
         XCTAssertTrue(EconAdRegionState.allowed.permitsAdRequests)
+        XCTAssertTrue(EconAdRegionState.allowed.permitsPersonalizedAds)
+    }
+
+    /// Storefront first, then the device region, else unknown.
+    func testTheRegionResolverPrefersTheStorefrontThenTheLocale() {
+        XCTAssertEqual(EconAdRegion.resolve(storefrontCountryCode: "DEU", localeRegionCode: "US"),
+                       EconAdRegionResolution(state: .restricted, source: .storefront))
+        XCTAssertEqual(EconAdRegion.resolve(storefrontCountryCode: "USA", localeRegionCode: "DE"),
+                       EconAdRegionResolution(state: .allowed, source: .storefront),
+                       "a US App Store account travelling in Germany is served")
+        XCTAssertEqual(EconAdRegion.resolve(storefrontCountryCode: nil, localeRegionCode: "CH"),
+                       EconAdRegionResolution(state: .restricted, source: .locale))
+        XCTAssertEqual(EconAdRegion.resolve(storefrontCountryCode: "", localeRegionCode: "NG"),
+                       EconAdRegionResolution(state: .allowed, source: .locale))
+        XCTAssertEqual(EconAdRegion.resolve(storefrontCountryCode: "12", localeRegionCode: "GB"),
+                       EconAdRegionResolution(state: .restricted, source: .locale),
+                       "an unreadable storefront falls through to the locale")
+        XCTAssertEqual(EconAdRegion.resolve(storefrontCountryCode: nil, localeRegionCode: "419"),
+                       EconAdRegionResolution(state: .unknown, source: .none))
+    }
+
+    // MARK: - 2b. Personalization decision (Owner 2026-09-15)
+
+    /// Region × ATT → npa/rdp. Personalized only for a known allowed region AND
+    /// an ATT "Allow"; otherwise both `npa=1` and `rdp=1`.
+    func testThePersonalizationMatrix() {
+        for region in [EconAdRegionState.allowed, .restricted, .unknown] {
+            for status in EconTrackingStatus.allCases {
+                let decision = EconAdPersonalization.decide(region: region, tracking: status)
+                let expected = region == .allowed && status == .authorized
+                XCTAssertEqual(decision.personalized, expected, "\(region) × \(status)")
+                XCTAssertEqual(decision.extras, expected ? [:] : ["npa": "1", "rdp": "1"],
+                               "\(region) × \(status)")
+                let policy = EconAdRequestPolicy(trackingStatus: status, region: region)
+                XCTAssertEqual(policy.usesPersonalizedAds, expected)
+                XCTAssertEqual(policy.extras, decision.extras)
+            }
+        }
+    }
+
+    @MainActor
+    func testTheCoordinatorBuildsItsRequestFromTheLiveRegionAndStatus() {
+        let tracking = DecidedTracking(.authorized)
+        var region = EconAdRegionState.allowed
+        let monetization = EconMonetization(adapter: SpyInterstitialAdapter(), defaults: defaults,
+                                            region: { region }, tracking: tracking)
+        XCTAssertTrue(monetization.currentRequestPolicy.usesPersonalizedAds)
+        region = .unknown
+        XCTAssertEqual(monetization.currentRequestPolicy.extras, ["npa": "1", "rdp": "1"],
+                       "an unknown region forces non-personalized even after Allow")
+        region = .allowed
+        tracking.status = .denied
+        XCTAssertEqual(monetization.currentRequestPolicy.extras, ["npa": "1", "rdp": "1"])
+    }
+
+    /// Turning Tracking off (or on) in iOS Settings reaches the next request on
+    /// the next foreground, without a relaunch; a held ad requested under the
+    /// old answer is replaced.
+    @MainActor
+    func testATrackingChangeOnForegroundUpdatesTheNextRequest() {
+        let adapter = SpyInterstitialAdapter()
+        let tracking = DecidedTracking(.authorized)
+        let monetization = EconMonetization(adapter: adapter, defaults: defaults,
+                                            region: { .allowed }, tracking: tracking)
+        monetization.startAdsIfPermitted()
+        XCTAssertEqual(adapter.lastPolicy?.usesPersonalizedAds, true)
+        XCTAssertEqual(adapter.preloadCount, 1)
+
+        // Same answer on foreground: nothing is discarded or re-requested.
+        monetization.refreshRequestPolicyForForeground()
+        XCTAssertEqual(adapter.discardCount, 0)
+        XCTAssertEqual(adapter.preloadCount, 1)
+
+        tracking.status = .denied
+        monetization.refreshRequestPolicyForForeground()
+        XCTAssertEqual(monetization.observedTrackingStatus, .denied)
+        XCTAssertEqual(adapter.discardCount, 1, "the personalized ad is not shown after a revocation")
+        XCTAssertEqual(adapter.preloadCount, 2)
+        XCTAssertEqual(adapter.lastPolicy?.extras, ["npa": "1", "rdp": "1"])
+
+        tracking.status = .authorized
+        monetization.refreshRequestPolicyForForeground()
+        XCTAssertEqual(adapter.preloadCount, 3)
+        XCTAssertEqual(adapter.lastPolicy?.extras, [:], "Allow again: the next request is personalized")
     }
 
     @MainActor
@@ -776,6 +879,187 @@ final class GrowthSystemsTests: XCTestCase {
         monetization.noteSetCompleted(normally: true)
         _ = await monetization.presentIfEligibleAtSetExit()
         XCTAssertEqual(eligible, 0)
+    }
+
+    // MARK: - 5b. Set-exit hand-off (Phase 25)
+    //
+    // 1.1.2–1.1.5 presented the interstitial from the card-mode cover and then
+    // dismissed that cover on the same turn, tearing the ad down. The exit is
+    // now armed on the completion screen and presented only after the cover is
+    // gone. These doubles model the cover and record the order of events.
+
+    @MainActor
+    private final class CoverEnvironment: EconAdPresentationEnvironment {
+        var coverIsUp = true
+        var log: [String] = []
+        var isReadyToPresentInterstitial: Bool { !coverIsUp }
+    }
+
+    @MainActor
+    private final class OrderedAdapter: EconInterstitialAdapting {
+        var isAdLoaded = true
+        var onAdDismissed: ((Bool) -> Void)?
+        let environment: CoverEnvironment
+        private(set) var presentCount = 0
+        private(set) var presentedWhileCoverWasUp: Bool?
+        init(environment: CoverEnvironment) { self.environment = environment }
+        func startSDK(policy: EconAdRequestPolicy) {}
+        func preload(policy: EconAdRequestPolicy) {}
+        func discardLoadedAd() { isAdLoaded = false }
+        func present() async -> Bool {
+            presentCount += 1
+            presentedWhileCoverWasUp = environment.coverIsUp
+            environment.log.append("ad.present")
+            return true
+        }
+    }
+
+    /// An install at an eligible set exit, in its second foreground session.
+    @MainActor
+    private func eligibleExit(adapter: EconInterstitialAdapting,
+                              now: @escaping () -> Date,
+                              sleep: @escaping @MainActor (TimeInterval) async -> Void) -> EconMonetization {
+        let monetization = EconMonetization(adapter: adapter, defaults: defaults, now: now,
+                                            region: { .allowed }, tracking: DecidedTracking(),
+                                            presentationSleep: sleep)
+        monetization.noteForegroundSessionBegan()
+        monetization.noteForegroundSessionBegan()
+        for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
+        return monetization
+    }
+
+    @MainActor
+    func testTheSetExitAdIsPresentedOnlyAfterTheDismissingCoverIsGone() async {
+        let environment = CoverEnvironment()
+        let adapter = OrderedAdapter(environment: environment)
+        var sleeps = 0
+        let monetization = eligibleExit(adapter: adapter,
+                                        now: { self.date("2026-09-01T12:00:00Z") },
+                                        sleep: { _ in
+                                            sleeps += 1
+                                            // The cover's dismissal animation ends a few polls in.
+                                            if sleeps == 4 {
+                                                environment.log.append("cover.dismissed")
+                                                environment.coverIsUp = false
+                                            }
+                                        })
+
+        // The completion screen decides and arms — nothing is presented yet.
+        XCTAssertEqual(monetization.armSetExitBreak(), .eligible)
+        XCTAssertNotNil(monetization.pendingSetExitBreak)
+        XCTAssertEqual(adapter.presentCount, 0, "arming must never present")
+        environment.log.append("cover.dismiss")
+
+        // The shell resolves the break once the cover's session has ended.
+        let outcome = await monetization.presentPendingSetExitBreak(environment: environment)
+        XCTAssertEqual(outcome, .presented)
+        XCTAssertEqual(environment.log, ["cover.dismiss", "cover.dismissed", "ad.present"],
+                       "the ad request is presented only after the dismissing view is gone")
+        XCTAssertEqual(adapter.presentedWhileCoverWasUp, false)
+        XCTAssertEqual(monetization.state.shownThisSession, 1)
+        XCTAssertNil(monetization.pendingSetExitBreak)
+
+        let again = await monetization.presentPendingSetExitBreak(environment: environment)
+        XCTAssertNil(again, "a break is presented at most once")
+        XCTAssertEqual(adapter.presentCount, 1)
+    }
+
+    @MainActor
+    func testAPresenterThatNeverSettlesShowsNothingAndConsumesNoCap() async {
+        let environment = CoverEnvironment()
+        let adapter = OrderedAdapter(environment: environment)
+        var slept: TimeInterval = 0
+        let monetization = eligibleExit(adapter: adapter,
+                                        now: { self.date("2026-09-01T12:00:00Z") },
+                                        sleep: { slept += $0 })
+        monetization.armSetExitBreak()
+        let outcome = await monetization.presentPendingSetExitBreak(environment: environment)
+        XCTAssertEqual(outcome, .notEligible(.presenterUnavailable))
+        XCTAssertEqual(adapter.presentCount, 0)
+        XCTAssertEqual(monetization.state.shownThisSession, 0)
+        XCTAssertEqual(monetization.state.shownToday, 0)
+        XCTAssertLessThanOrEqual(slept, EconMonetization.presenterReadyTimeout + 0.1,
+                                 "the wait is bounded")
+    }
+
+    /// A rating request (or consent offer, or notification prompt) raised on the
+    /// completion screen still suppresses the ad even though the screen clears
+    /// its blockers before the cover is dismissed.
+    @MainActor
+    func testABlockerOnTheCompletionScreenStillSuppressesTheHandedOffAd() async {
+        let environment = CoverEnvironment()
+        environment.coverIsUp = false
+        let adapter = OrderedAdapter(environment: environment)
+        let monetization = eligibleExit(adapter: adapter,
+                                        now: { self.date("2026-09-01T12:00:00Z") },
+                                        sleep: { _ in })
+        monetization.setBlocker(.review, active: true)
+        XCTAssertEqual(monetization.armSetExitBreak(), .blocked(.review))
+        monetization.setBlocker(.review, active: false)
+        let outcome = await monetization.presentPendingSetExitBreak(environment: environment)
+        XCTAssertNil(outcome, "nothing was armed")
+        XCTAssertEqual(adapter.presentCount, 0)
+    }
+
+    /// A purchase that lands between the exit and the presentation wins.
+    @MainActor
+    func testAPurchaseBetweenArmingAndPresentingSuppressesTheAd() async {
+        let environment = CoverEnvironment()
+        environment.coverIsUp = false
+        let adapter = OrderedAdapter(environment: environment)
+        let monetization = eligibleExit(adapter: adapter,
+                                        now: { self.date("2026-09-01T12:00:00Z") },
+                                        sleep: { _ in })
+        XCTAssertEqual(monetization.armSetExitBreak(), .eligible)
+        monetization.update(entitlements: EconEntitlements(removeAds: true))
+        let outcome = await monetization.presentPendingSetExitBreak(environment: environment)
+        XCTAssertEqual(outcome, .notEligible(.suppressedEntitled))
+        XCTAssertEqual(adapter.presentCount, 0)
+    }
+
+    /// An armed break never surfaces late: not after the app left the
+    /// foreground, and not after it went stale.
+    @MainActor
+    func testAnArmedBreakIsDroppedByANewSessionOrWhenStale() async {
+        let environment = CoverEnvironment()
+        environment.coverIsUp = false
+        let adapter = OrderedAdapter(environment: environment)
+        var clock = date("2026-09-01T12:00:00Z")
+        let monetization = eligibleExit(adapter: adapter, now: { clock }, sleep: { _ in })
+
+        XCTAssertEqual(monetization.armSetExitBreak(), .eligible)
+        monetization.noteForegroundSessionBegan()
+        let afterBackground = await monetization.presentPendingSetExitBreak(environment: environment)
+        XCTAssertNil(afterBackground)
+
+        monetization.noteSetCompleted(normally: true)
+        XCTAssertEqual(monetization.armSetExitBreak(), .eligible)
+        clock = clock.addingTimeInterval(EconMonetization.pendingBreakLifetime + 60)
+        let stale = await monetization.presentPendingSetExitBreak(environment: environment)
+        XCTAssertEqual(stale, .notEligible(.presenterUnavailable))
+        XCTAssertEqual(adapter.presentCount, 0)
+    }
+
+    /// Eligibility is reported once, at the exit, before any provider call.
+    @MainActor
+    func testArmingReportsEligibilityOnceAndPreloadsAMissingAd() {
+        let adapter = SpyInterstitialAdapter()
+        adapter.isAdLoaded = false
+        var eligible = 0
+        let monetization = EconMonetization(adapter: adapter, defaults: defaults,
+                                            now: { self.date("2026-09-01T12:00:00Z") },
+                                            region: { .allowed }, tracking: DecidedTracking())
+        monetization.onAdEligible = { _, _ in eligible += 1 }
+        monetization.noteForegroundSessionBegan()
+        monetization.noteForegroundSessionBegan()
+        for _ in 0..<3 { monetization.noteSetCompleted(normally: true) }
+        monetization.startAdsIfPermitted()
+        let preloads = adapter.preloadCount
+        XCTAssertEqual(monetization.armSetExitBreak(), .eligible)
+        XCTAssertEqual(eligible, 1)
+        XCTAssertEqual(adapter.preloadCount, preloads + 1,
+                       "the dismissal window is used to fetch a missing ad")
+        XCTAssertEqual(adapter.presentCount, 0)
     }
 
     // MARK: - 6/7. Telemetry schema and consent — MOVED, not dropped

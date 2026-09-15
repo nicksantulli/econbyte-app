@@ -1,6 +1,24 @@
 {
-  "originHash" : "c17d8ad104080aee8016befe5dd3e05f09a9c15771d34dd77d76772f34f44b98",
+  "originHash" : "1306a645de360fd39c9dbef4472373825fa56a2146f1e2cdc631efb5aa3b3db2",
   "pins" : [
+    {
+      "identity" : "fbaudiencenetwork",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/facebook/FBAudienceNetwork.git",
+      "state" : {
+        "revision" : "3e98441be0aef2148a9604e7b8bac238fa886f45",
+        "version" : "6.21.0"
+      }
+    },
+    {
+      "identity" : "googleads-mobile-ios-mediation-meta",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/googleads/googleads-mobile-ios-mediation-meta",
+      "state" : {
+        "revision" : "84949110bd8b3ad2d49136678486a16e470d6a3d",
+        "version" : "6.21.0"
+      }
+    },
     {
       "identity" : "posthog-ios",
       "kind" : "remoteSourceControl",

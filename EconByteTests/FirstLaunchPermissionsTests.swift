@@ -549,11 +549,11 @@ final class FirstLaunchPermissionsTests: XCTestCase {
 
     /// Build 15 skipped these readers, which is invisible to a reviewer. Build
     /// 16's hardening asks them both prompts; DUD-224, Remove Ads and Pro still
-    /// mean no ad SDK.
+    /// mean no ad SDK. (Phase 25: an UNKNOWN region is now served,
+    /// non-personalized — see `testAnUnknownRegionIsAskedAndServedNonPersonalized`.)
     func testReadersWithoutAdsAreStillAskedBothPromptsButGetNoAd() async {
         let cases: [(String, EconAdRegionState, EconEntitlements)] = [
-            ("EEA/UK", .restricted, EconEntitlements()),
-            ("region unknown", .unknown, EconEntitlements()),
+            ("EEA/UK/CH", .restricted, EconEntitlements()),
             ("Pro", .allowed, EconEntitlements(pro: true)),
             ("Remove Ads", .allowed, EconEntitlements(removeAds: true)),
         ]
@@ -567,6 +567,19 @@ final class FirstLaunchPermissionsTests: XCTestCase {
             XCTAssertTrue(outcome.askedNotifications, name)
             XCTAssertEqual(f.adapter.starts, 0, "\(name): no ad SDK")
         }
+    }
+
+    /// Phase 25 (Owner 2026-09-15): a reader whose region cannot be read is
+    /// asked both prompts like everyone else and IS served once they resolve —
+    /// always non-personalized, even after "Allow".
+    func testAnUnknownRegionIsAskedAndServedNonPersonalized() async {
+        let f = makeFixture(region: .unknown)
+        let outcome = await f.coordinator.runIfNeeded(arguments: noArguments)
+        XCTAssertTrue(outcome.askedTracking)
+        XCTAssertTrue(outcome.askedNotifications)
+        XCTAssertEqual(f.adapter.starts, 1, "an unknown region is served")
+        XCTAssertEqual(f.monetization.currentRequestPolicy.extras, ["npa": "1", "rdp": "1"],
+                       "…and never personalized")
     }
 
     // MARK: - 7. One question, one answer

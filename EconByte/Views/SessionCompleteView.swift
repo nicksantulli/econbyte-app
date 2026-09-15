@@ -3,6 +3,9 @@ import SwiftUI
 struct SessionCompleteView: View {
     let title: String
     let cardsCount: Int
+    /// False where the placement matrix allows no interstitial (a bookmarks
+    /// review is saved reading), so nothing is armed at that exit.
+    var offersSetExitAd = true
     let onDone: () -> Void
 
     @EnvironmentObject private var streak: StreakManager
@@ -200,35 +203,32 @@ struct SessionCompleteView: View {
     /// The one 1.1 interstitial placement: after the session-complete state and
     /// before returning to Home.
     ///
-    /// 1.1.2–1.1.3 also asked ATT here; 1.1.4 moved that ask to first launch.
-    /// Ordering still holds: the primers are removed first, and no ad may be
-    /// requested for an install whose tracking decision is outstanding.
+    /// Phase 25: the exit is DECIDED here and PRESENTED by the shell. 1.1.2–1.1.5
+    /// presented the interstitial from inside the card cover and then called
+    /// `onDone()` (which dismisses that cover) on the same turn, so the ad was
+    /// torn down as it appeared. Now the break is armed while this screen's
+    /// blockers (a rating request, the consent offer, a notification prompt)
+    /// still count, the blockers are cleared, the cover is dismissed, and
+    /// `RootTabView` presents from the window's root once the cover has gone
+    /// (`EconGrowth.resolvePendingSetExitBreak`).
+    ///
+    /// 1.1.4: ATT is asked at first launch, never here. An install that has not
+    /// answered it still gets no ad: `startAdsIfPermitted` and the decision are
+    /// both gated on it.
     private func finish() {
         guard !exiting else { return }
         exiting = true
         showConsentPrompt = false
         showPrimer = false
-        Task {
-            // 1.1.4: ATT is asked at first launch (FirstLaunchPermissionsCoordinator),
-            // never here. An install that has not answered it still gets no ad:
-            // `startAdsIfPermitted` and the decision below are both gated on it.
-            growth.monetization.startAdsIfPermitted()
-            let outcome = await growth.monetization.presentIfEligibleAtSetExit()
-            switch outcome {
-            case .presented:
-                growth.review.noteNegativeSessionEvent(.ad)
-                // `ad_impression_v1` is emitted by the adapter at the moment the
-                // interstitial is actually presented, so it cannot report an
-                // impression the provider declined to show.
-            case .notEligible, .noAdAvailable, .presentationFailed:
-                break
-            }
-            growth.monetization.setBlocker(.review, active: false)
-            growth.monetization.setBlocker(.notification, active: false)
-            growth.monetization.setBlocker(.consent, active: false)
-            growth.monetization.setBlocker(.systemPrompt, active: false)
-            onDone()
+        growth.monetization.startAdsIfPermitted()
+        if offersSetExitAd {
+            growth.monetization.armSetExitBreak()
         }
+        growth.monetization.setBlocker(.review, active: false)
+        growth.monetization.setBlocker(.notification, active: false)
+        growth.monetization.setBlocker(.consent, active: false)
+        growth.monetization.setBlocker(.systemPrompt, active: false)
+        onDone()
     }
 
 }

@@ -273,6 +273,87 @@ final class GrowthFlowTests: XCTestCase {
                       "the set exit returns to Home with no ad on a fresh install")
     }
 
+    /// Phase 25: an eligible set exit shows Google's TEST interstitial AFTER the
+    /// card session has closed — from the window's root, not from the card
+    /// cover that 1.1.2–1.1.5 presented it on and then dismissed — and closing
+    /// the ad lands the reader on Home.
+    ///
+    /// DEBUG harness: `-econSeedAdEligibleInstall` (two sets finished in an
+    /// earlier session, consent offer spent), `-econTrackingAnswered` (ads may
+    /// start without a system prompt). Debug builds can only request Google's
+    /// public test unit. Needs network for the test fill.
+    func testAnEligibleSetExitPresentsTheTestInterstitialFromHomeAndClosesCleanly() {
+        let app = XCUIApplication()
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-econResetGrowthState",
+                                "-econSeedAdEligibleInstall", "-econTrackingAnswered"]
+        app.launch()
+        let wordmark = app.descendants(matching: .any)["econWordmark"]
+        XCTAssertTrue(wordmark.waitForExistence(timeout: 15), "Home should render on cold launch")
+        // Give the test unit a moment to fill before the exit.
+        _ = app.descendants(matching: .any)["ad.banner.banner_home"].waitForExistence(timeout: 10)
+
+        completeASet(in: app)
+        let probe = app.descendants(matching: .any)["debug.setExitAdState"]
+        func probeState() -> String? { probe.exists ? probe.value as? String : nil }
+
+        app.buttons["sessionCompleteDoneButton"].tap()
+
+        // The ad covers the shell, so the probe may be unreachable while it is up.
+        var sawAd = false
+        let presentDeadline = Date().addingTimeInterval(25)
+        while Date() < presentDeadline {
+            if let state = probeState() {
+                if state.hasPrefix("presented") { sawAd = true; break }
+                for failure in ["not-eligible", "not-presented", "no-ad", "present-failed"]
+                    where state.hasPrefix(failure) {
+                    XCTFail("the eligible exit did not present: \(state)")
+                    return
+                }
+            }
+            if app.webViews.count > 0 && !wordmark.isHittable { sawAd = true; break }
+            _ = app.webViews.firstMatch.waitForExistence(timeout: 0.5)
+        }
+        XCTAssertTrue(sawAd, "Google's test interstitial should appear after the card session closes "
+                              + "(state: \(probeState() ?? "hidden"))")
+        let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        shot.name = "p25-set-exit-interstitial"
+        shot.lifetime = .keepAlways
+        add(shot)
+
+        // The ad must still be up a moment later: the 1.1.2–1.1.5 defect tore it
+        // down as it appeared.
+        _ = app.webViews.firstMatch.waitForExistence(timeout: 2)
+        XCTAssertFalse(probeState()?.hasPrefix("dismissed") ?? false,
+                       "the interstitial was dismissed without the reader closing it")
+
+        // Close it the way a reader would.
+        let close = app.buttons.matching(NSPredicate(
+            format: "label CONTAINS[c] 'close' OR identifier CONTAINS[c] 'close'")).firstMatch
+        if close.waitForExistence(timeout: 10), close.isHittable {
+            close.tap()
+        } else {
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.07)).tap()
+        }
+
+        let dismissedDeadline = Date().addingTimeInterval(15)
+        while Date() < dismissedDeadline, !(probeState()?.hasPrefix("dismissed") ?? false) {
+            _ = probe.waitForExistence(timeout: 0.5)
+        }
+        let finalState = probeState() ?? "hidden"
+        XCTAssertTrue(finalState.hasPrefix("dismissed"), "the ad should close cleanly (state: \(finalState))")
+        XCTAssertFalse(finalState.hasSuffix("impressions=0"),
+                       "the SDK should have recorded the impression (state: \(finalState))")
+
+        XCTAssertTrue(wordmark.waitForExistence(timeout: 10))
+        XCTAssertTrue(wordmark.isHittable, "the reader lands on Home")
+        XCTAssertTrue(app.tabBars.buttons["Home"].isSelected, "Home is the selected tab")
+        XCTAssertFalse(app.buttons["sessionCompleteDoneButton"].exists, "the card session is gone")
+        let home = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        home.name = "p25-set-exit-back-home"
+        home.lifetime = .keepAlways
+        add(home)
+    }
+
     /// Design section 10.1: each consent choice is presented after the first
     /// completed set, never on first launch, and never blocking.
     func testConsentChoicesArePresentedAtTheFirstCompletedSet() {

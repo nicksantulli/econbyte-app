@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AD0000000000000000000004 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = AD0000000000000000000006 /* GoogleMobileAds */; };
+		MA0000000000000000000004 /* MetaAdapterTarget in Frameworks */ = {isa = PBXBuildFile; productRef = MA0000000000000000000006 /* MetaAdapterTarget */; };
 		PH0000000000000000000004 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = PH0000000000000000000006 /* PostHog */; };
 		SE0000000000000000000004 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = SE0000000000000000000006 /* Sentry */; };
 		A2C3D4E5F6A7B8C9D0E1F2A3 /* EconByteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4B5 /* EconByteUITests.swift */; };
@@ -110,6 +111,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AD0000000000000000000004 /* GoogleMobileAds in Frameworks */,
+				MA0000000000000000000004 /* MetaAdapterTarget in Frameworks */,
 				PH0000000000000000000004 /* PostHog in Frameworks */,
 				SE0000000000000000000004 /* Sentry in Frameworks */,
 			);
@@ -199,6 +201,7 @@
 			name = EconByte;
 			packageProductDependencies = (
 				AD0000000000000000000006 /* GoogleMobileAds */,
+				MA0000000000000000000006 /* MetaAdapterTarget */,
 				PH0000000000000000000006 /* PostHog */,
 				SE0000000000000000000006 /* Sentry */,
 			);
@@ -275,6 +278,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				AD0000000000000000000005 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				MA0000000000000000000005 /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */,
 				PH0000000000000000000005 /* XCRemoteSwiftPackageReference "posthog-ios" */,
 				SE0000000000000000000005 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
@@ -626,6 +630,14 @@
 				version = 8.58.4;
 			};
 		};
+		MA0000000000000000000005 /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/googleads-mobile-ios-mediation-meta";
+			requirement = {
+				kind = exactVersion;
+				version = 6.21.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -643,6 +655,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = SE0000000000000000000005 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
+		};
+		MA0000000000000000000006 /* MetaAdapterTarget */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = MA0000000000000000000005 /* XCRemoteSwiftPackageReference "googleads-mobile-ios-mediation-meta" */;
+			productName = MetaAdapterTarget;
 		};
 /* End XCSwiftPackageProductDependency section */
 
