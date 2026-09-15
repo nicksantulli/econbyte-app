@@ -147,6 +147,23 @@ final class ShellRedesignTests: XCTestCase {
         return XCTWaiter().wait(for: [expectation(for: predicate, evaluatedWith: element)], timeout: timeout) == .completed
     }
 
+    /// Drags the content so `element`'s top edge sits just under the top bar,
+    /// for review screenshots that show one whole offer card.
+    private func pinToTop(_ element: XCUIElement, in app: XCUIApplication, top: CGFloat = 130) {
+        for _ in 0..<6 {
+            guard element.exists else { return }
+            let delta = element.frame.minY - top
+            if abs(delta) < 12 { return }
+            let window = app.windows.firstMatch
+            let height = window.frame.height
+            let step = max(-height * 0.35, min(height * 0.35, delta))
+            let startY = height * 0.55
+            let start = window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: startY / height))
+            let end = window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: (startY - step) / height))
+            start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .slow, thenHoldForDuration: 0.3)
+        }
+    }
+
     private func reveal(_ element: XCUIElement, in app: XCUIApplication, swipes: Int = 12) {
         for _ in 0..<swipes where !(element.exists && element.isHittable) { app.swipeUp() }
     }
@@ -258,6 +275,7 @@ final class ShellRedesignTests: XCTestCase {
         XCTAssertEqual(bundle.label, "Unlock · $5.99")
         XCTAssertTrue(app.staticTexts["All Packs Bundle"].exists, "named exactly as in App Store Connect")
         XCTAssertTrue(app.buttons["packBundle-restore"].exists)
+        pinToTop(any["packBundle"], in: app)
         sleep(1)
         capture("a2-browse-bundle")
         capture("review-com.nsantulli.econbyte.pack.bundle")
@@ -271,10 +289,10 @@ final class ShellRedesignTests: XCTestCase {
             XCTAssertEqual(buy.frame.height, bundleHeight, accuracy: 1, "\(id): identical button size")
             XCTAssertTrue(any["pack-\(id)-preview"].exists, id)
             if ["history", "world", "systems", "personalfinance"].contains(id) {
-                // Scroll the card's header into view for the review frame.
-                app.swipeUp(velocity: .slow)
-                let header = any["pack-\(id)"]
-                if !(header.exists && header.isHittable) { app.swipeDown(velocity: .slow) }
+                // One whole card per review frame: header at the top, buy button below.
+                let card = any["pack-\(id)"]
+                pinToTop(card, in: app)
+                XCTAssertTrue(buy.isHittable, "\(id): the buy button is in the review frame")
                 sleep(1)
                 capture("review-com.nsantulli.econbyte.pack.\(id)")
             }
