@@ -78,7 +78,7 @@
          </TestableReference>
       </Testables>
       <StoreKitConfigurationFileReference
-         identifier = "../EconByte.storekit">
+         identifier = "../../EconByte.storekit">
       </StoreKitConfigurationFileReference>
    </TestAction>
    <LaunchAction
@@ -102,7 +102,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <StoreKitConfigurationFileReference
-         identifier = "../EconByte.storekit">
+         identifier = "../../EconByte.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

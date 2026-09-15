@@ -214,7 +214,14 @@ struct BriefView: View {
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.dateFormat = "yyyy-MM-dd"
         guard let date = formatter.date(from: iso) else { return iso }
-        return date.formatted(.dateTime.weekday(.wide).month(.wide).day().year())
+        // Same UTC calendar on the way out: the brief date is a calendar day,
+        // and formatting it in the device's zone shifted it a day west.
+        let output = DateFormatter()
+        output.calendar = formatter.calendar
+        output.locale = .current
+        output.timeZone = formatter.timeZone
+        output.setLocalizedDateFormatFromTemplate("EEEEMMMMdyyyy")
+        return output.string(from: date)
     }
 }
 

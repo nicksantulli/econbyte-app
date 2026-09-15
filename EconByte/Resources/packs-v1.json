@@ -3595,20 +3595,27 @@
               "topicID": "market-economies",
               "title": "What a Market Economy Is",
               "definition": "A market economy is a system in which individuals and private businesses own most resources - land, labor, and capital - and decide how to use them through voluntary exchanges in markets. Government plays a comparatively small role. Two forces do most of the coordinating: self-interest, which motivates people to produce and trade, and competition, which restrains what any one seller can charge or get away with. No central office decides what, how, or for whom to produce.",
-              "example": "A loaf of bread reaches a shelf through at least 5 separate businesses - a farm, a mill, a bakery, a trucking firm, and a grocer - none of them instructed by a bread ministry. Each acts for its own gain, yet the chain delivers the loaf. Adam Smith called this coordination the 'invisible hand' more than 200 years ago.",
+              "example": "A loaf of bread reaches a shelf through at least 5 separate businesses - a farm, a mill, a bakery, a trucking firm, and a grocer - none of them instructed by a bread ministry. Each acts for its own gain, yet the chain delivers the loaf. In a 2005 lecture in Adam Smith's hometown of Kirkcaldy, the Federal Reserve chairman recalled Smith's point that we get our dinner not from the baker's benevolence but from his regard for his own interest, guided by an 'invisible hand'.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
-                "organization": "Federal Reserve Education (Federal Reserve System)",
-                "documentTitle": "The Role of Self-Interest and Competition in a Market Economy",
-                "url": "https://www.federalreserveeducation.org/teaching-resources/economics/markets/the-role-of-self-interest-and-competition-in-a-market-economy-podcast",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "organization": "Board of Governors of the Federal Reserve System",
+                "documentTitle": "Remarks by Chairman Alan Greenspan: Adam Smith (Adam Smith Memorial Lecture, Kirkcaldy, Scotland)",
+                "url": "https://www.federalreserve.gov/boarddocs/speeches/2005/20050206/default.htm",
+                "publicationDate": "2005-02-06",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
                 "status": "verified",
                 "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "count of businesses in an illustrative supply chain",
+                "geography": "illustrative (any market economy)",
+                "claimKind": "illustration",
+                "observationPeriod": "Smith's butcher-brewer-baker passage as quoted in the 2005 lecture",
+                "retrievalDate": "2026-09-14"
               }
             },
             {
@@ -4021,20 +4028,27 @@
               "topicID": "planned-economies",
               "title": "What Central Planning Is",
               "definition": "Every economy must answer three questions: what to produce, how to produce it, and who receives it. A command or planned economy answers them through a central authority rather than through prices. The state owns most productive assets, planners set output targets for factories and farms, and prices are administered rather than discovered in exchange. Economists contrast this with a market economy along a spectrum; real systems have mixed the two, and the balance has moved over time.",
-              "example": "The Federal Reserve's education service uses an infographic to contrast command and market systems on exactly those 3 questions. In a pure command system a planning ministry decides how many tractors and how many shoes to make and assigns the inputs; in a pure market system thousands of separate producers decide, each watching prices. Most countries in the 20th century sat somewhere between the 2 poles.",
+              "example": "In a 1997 speech titled 'The Embrace of Free Markets', the Federal Reserve chairman described the fall of the Berlin Wall in 1989 as a natural experiment between the 2 systems: planned economies, lacking price signals, produced surpluses of goods nobody wanted beside shortages of goods people needed, and used 5 to 7 times as much energy per unit of output as Western economies. His verdict on rigid central planning: unequivocally negative.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
-                "organization": "Federal Reserve Education (Federal Reserve System)",
-                "documentTitle": "Economic Systems Infographic",
-                "url": "https://www.federalreserveeducation.org/teaching-resources/economics/market-structure/economic-systems-infographic",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "organization": "Board of Governors of the Federal Reserve System",
+                "documentTitle": "Remarks by Chairman Alan Greenspan: The Embrace of Free Markets (Woodrow Wilson Award Dinner)",
+                "url": "https://www.federalreserve.gov/boarddocs/speeches/1997/19970610.htm",
+                "publicationDate": "1997-06-10",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
                 "status": "verified",
                 "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "ratio of energy used per unit of output, Eastern bloc vs Western economies (as stated in the speech)",
+                "geography": "Eastern Europe and the former Soviet Union vs Western economies",
+                "claimKind": "observation",
+                "observationPeriod": "pre-1989 comparison cited in the June 1997 speech",
+                "retrievalDate": "2026-09-14"
               }
             },
             {

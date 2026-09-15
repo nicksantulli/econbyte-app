@@ -164,8 +164,7 @@
           "recurringSubscriptionPeriod": "P1M",
           "referenceName": "EconByte Pro Monthly",
           "subscriptionGroupID": "EB00000000000G01",
-          "type": "RecurringSubscription",
-          "winbackOffers": []
+          "type": "RecurringSubscription"
         },
         {
           "adHocOffers": [],
@@ -190,8 +189,7 @@
           "recurringSubscriptionPeriod": "P1Y",
           "referenceName": "EconByte Pro Annual",
           "subscriptionGroupID": "EB00000000000G01",
-          "type": "RecurringSubscription",
-          "winbackOffers": []
+          "type": "RecurringSubscription"
         }
       ]
     }

@@ -34,6 +34,7 @@ struct ChartBlockView: View {
         .padding(14)
         .background(Econ.ocean.opacity(0.7))
         .cornerRadius(12)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("chart-\(spec.chartID)")
     }
 

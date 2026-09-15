@@ -892,9 +892,13 @@ Editorial: same schema and policy as D18; every card cites a public primary
 source verified 2026-09-14 (history draws heavily on federalreservehistory.org,
 the Bank of England and Reserve Bank publications; world on the World Bank, IMF
 alternatives where imf.org refused non-browser clients, ECB, national offices;
-systems on Fed education material, the World Bank and OECD; personal finance on
-CFPB, IRS, FTC, FDIC, MyMoney.gov). Approved hosts grew accordingly (the list in
-`scripts/validate_content.mjs` and `PackCatalogTests.approvedSourceHosts`). One
+systems on Federal Reserve Board speeches, the National Archives, the Library of Congress, the St. Louis Fed and the World Bank; personal finance on
+CFPB, IRS, FTC, FDIC, MyMoney.gov). Approved hosts grew by seven primary publishers — archives.gov, loc.gov,
+bankofengland.co.uk, ec.europa.eu, unctad.org, stats.gov.cn, pbc.gov.cn — with a
+one-line rationale each in `PackCatalogTests.approvedSourceHosts` (mirrored in
+`scripts/validate_content.mjs`). federalreserveeducation.org was deliberately NOT
+added: a teaching site is not a primary publisher, so the two cards that cited it
+were re-sourced to Federal Reserve Board speeches and re-verified. One
 transparency note: `tsb-002…004` cite a St. Louis Fed Page One Economics essay
 whose real title contains the word "Bitcoin" (its tulip-bubble section is the
 source); no brand word appears in any card's prose.

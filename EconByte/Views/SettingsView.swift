@@ -118,9 +118,11 @@ struct SettingsView: View {
                 HStack {
                     Text("EconByte Pro")
                     Spacer()
+                    // Identifier on the leaf value, not the row: a List row's
+                    // container identifier is not reliably exposed to XCUITest.
                     Text("Active ✓").foregroundColor(Econ.sky)
+                        .accessibilityIdentifier("settingsProStatusRow")
                 }
-                .accessibilityIdentifier("settingsProStatusRow")
                 if let plan = store.proProductID {
                     HStack {
                         Text("Plan")

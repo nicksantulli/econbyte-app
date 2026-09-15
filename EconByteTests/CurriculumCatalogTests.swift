@@ -783,6 +783,14 @@ final class PackCatalogTests: XCTestCase {
         "www.bostonfed.org", "www.richmondfed.org", "www.dallasfed.org",
         "www.minneapolisfed.org", "www.sf.frb.org", "www.frbsf.org", "www.pbgc.gov",
         "www.usa.gov", "www.ftc.gov", "consumer.ftc.gov", "www.mymoney.gov",
+        // 1.1.4 (history / world / systems packs), each a primary publisher:
+        "www.archives.gov",        // U.S. National Archives — the statutes and executive documents themselves
+        "www.loc.gov",             // Library of Congress — primary historical documents and official country studies
+        "www.bankofengland.co.uk", // Bank of England — central bank, Open Government Licence
+        "ec.europa.eu",            // European Commission / Eurostat — official EU statistics and treaty texts
+        "unctad.org",              // UN Trade and Development — UN statistical publications
+        "www.stats.gov.cn",        // National Bureau of Statistics of China — the official statistical office
+        "www.pbc.gov.cn",          // People's Bank of China — the central bank's own releases
     ]
 
     private static let canonicalDisclaimer =

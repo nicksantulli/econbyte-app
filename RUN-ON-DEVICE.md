@@ -35,7 +35,20 @@ subscription.
 **A. Run from Xcode (StoreKit configuration attached — use this to test the
 trial and the subscription).** Xcode applies the scheme's `.storekit` file to a
 device run exactly as it does to a simulator run (StoreKit Testing in Xcode,
-Xcode 12+). Plug in the iPhone 17 Pro, pick it as the destination, **⌘R**. Then:
+Xcode 12+). Plug in the iPhone 17 Pro, pick it as the destination, **⌘R**.
+
+> **Known limit (2026-09-14, unverified from the GUI):** on the build Mac,
+> `xcodebuild test` did **not** attach the scheme's StoreKit configuration — a
+> sentinel price written into the file (7.77) never reached the app; the four
+> products that priced came from the App Store *sandbox*, which means the local
+> config was never active in any lane's command-line run (1.1.3 included). The
+> scheme's reference was also pointing one level too shallow
+> (`../EconByte.storekit` resolved inside the `.xcodeproj`); it is now the
+> Xcode-conventional `../../EconByte.storekit`. Until an Xcode **⌘R** run confirms
+> the config attaches, treat "buy the trial on the phone" as **not yet proven**.
+> Xcode → Product → Scheme → Edit Scheme → Run → Options → StoreKit
+> Configuration should show `EconByte.storekit`; if it shows "None", pick it.
+> Then:
 
 1. Home → the **ECONBYTE PRO** section → "Try EconByte Pro free for 7 days" (the
    trial line appears only because the local config reports you eligible).

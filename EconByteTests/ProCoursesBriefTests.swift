@@ -12,7 +12,7 @@ final class ProCoursesBriefTests: XCTestCase {
         "Educational content only. EconByte does not provide financial, investment, or tax advice."
 
     private static let approvedSourceHosts: Set<String> = [
-        "www.federalreserve.gov", "www.federalreservehistory.org", "www.federalreserveeducation.org",
+        "www.federalreserve.gov", "www.federalreservehistory.org",
         "www.newyorkfed.org", "www.philadelphiafed.org", "fred.stlouisfed.org", "www.stlouisfed.org",
         "www.chicagofed.org", "www.clevelandfed.org", "www.atlantafed.org", "www.kansascityfed.org",
         "www.bostonfed.org", "www.richmondfed.org", "www.dallasfed.org", "www.minneapolisfed.org",

@@ -22,7 +22,7 @@ record the retrieval date; never cite a page you have not seen.
 - **Primary sources only.** Every card and lesson cites a public primary source from the approved
   host list in the validator (federal agencies, Reserve Banks, Treasury, SEC/investor.gov, CFPB,
   FDIC, CBO, IMF, World Bank, OECD, BIS, ECB, Bank of England, ONS, Eurostat, StatCan, archives.gov,
-  loc.gov, federalreserveeducation.org). `https`, no query string, no fragment, a real document
+  loc.gov; not federalreserveeducation.org, which is a teaching site rather than a primary publisher). `https`, no query string, no fragment, a real document
   title, `publicationDate` ≤ `verificationDate` = the catalog's `verifiedOn` (2026-09-14).
   `datePrecision` ∈ `stated-on-page` | `observed-last-modified` | `observed-on-verification-date`.
 - **Plain English.** Short sentences. Define every term the first time it appears. A reader with

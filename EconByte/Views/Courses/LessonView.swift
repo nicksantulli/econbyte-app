@@ -390,6 +390,9 @@ struct QuizBlockView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Econ.tide.opacity(0.14))
         .cornerRadius(12)
+        // `.contain`: a plain container's identifier would override the
+        // choices' own ids (SwiftUI propagation); contained children keep theirs.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("quiz")
         .onAppear {
             // A re-opened lesson shows the recorded first answer's verdict.

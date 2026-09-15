@@ -52,9 +52,10 @@ export const APPROVED_HOSTS = new Set([
   'www.usa.gov', 'www.ftc.gov', 'consumer.ftc.gov', 'www.mymoney.gov',
   // 1.1.4 additions (public primary sources for the history / world / systems
   // packs and the courses): national statistical offices and central banks
-  // with open reuse terms, the Fed's own education site, and archives.gov.
+  // with open reuse terms, and archives.gov / loc.gov. NOT federalreserveeducation.org:
+// a teaching site is not a primary publisher — cite the Board or federalreservehistory.org.
   'www.bankofengland.co.uk', 'ec.europa.eu', 'www.ons.gov.uk',
-  'www150.statcan.gc.ca', 'www.statcan.gc.ca', 'www.federalreserveeducation.org',
+  'www150.statcan.gc.ca', 'www.statcan.gc.ca',
   'www.archives.gov', 'www.loc.gov', 'www.stats.gov.cn', 'www.pbc.gov.cn',
   'www.rba.gov.au', 'www.snb.ch', 'www.riksbank.se', 'www.norges-bank.no',
   'www.un.org', 'unctad.org', 'www.eia.gov', 'www.usitc.gov', 'www.fdicoig.gov',
