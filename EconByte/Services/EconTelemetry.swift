@@ -195,7 +195,7 @@ enum TelemetrySchema {
         "product_family": .enumerated(["unlock_all", "remove_ads",
                                        "pack_markets", "pack_personal", "pack_history",
                                        "pack_world", "pack_systems", "pack_personalfinance",
-                                       "pro_monthly", "pro_annual"]),
+                                       "pack_bundle", "pro_monthly", "pro_annual"]),
         // The three Pro courses, as a closed vocabulary rather than a course id
         // token, so a fourth course cannot be measured without a schema change.
         "course_family": .enumerated(["investing", "charts", "bonds"]),

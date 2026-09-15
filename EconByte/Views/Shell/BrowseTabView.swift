@@ -257,6 +257,11 @@ struct BrowseTabView: View {
                         .font(.system(size: 13, weight: .medium, design: .rounded))
                         .foregroundColor(Econ.subtext)
                 }
+                if PackBundleOfferView.isOffered(bundleOwned: store.isPackBundlePurchased,
+                                                 allPacksReadable: store.allPacksReadable) {
+                    PackBundleOfferView(entryPoint: .topicGrid)
+                        .id("browsePackBundle")
+                }
                 ForEach(content.packs) { pack in
                     PackOfferView(pack: pack, entryPoint: .topicGrid) { topic in
                         router.openPackTopic(topic, content: content, store: store, entryPoint: .topicGrid)

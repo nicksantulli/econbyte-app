@@ -139,8 +139,11 @@ final class GrowthSystemsTests: XCTestCase {
                        "com.nsantulli.econbyte.pack.markets")
         XCTAssertEqual(PurchaseManager.ProductID.packPersonal.rawValue,
                        "com.nsantulli.econbyte.pack.personal")
-        XCTAssertEqual(PurchaseManager.ProductID.allCases.count, 10,
-                       "two approved non-consumables + six topic packs + the two EconByte Pro subscriptions (1.1.4)")
+        XCTAssertEqual(PurchaseManager.ProductID.allCases.count, 11,
+                       "two approved non-consumables + six topic packs + the All Packs Bundle + the two EconByte Pro subscriptions (1.1.4)")
+        XCTAssertEqual(PurchaseManager.ProductID.packBundle.rawValue, "com.nsantulli.econbyte.pack.bundle")
+        XCTAssertFalse(PurchaseManager.ProductID.packBundle.isPack, "the bundle is not itself a pack row")
+        XCTAssertFalse(PurchaseManager.ProductID.packBundle.isSubscription)
         XCTAssertEqual(PurchaseManager.ProductID.packs,
                        [.packMarkets, .packPersonal, .packHistory, .packWorld, .packSystems, .packPersonalFinance])
         XCTAssertEqual(PurchaseManager.ProductID.subscriptions, [.proMonthly, .proAnnual])
@@ -232,7 +235,8 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(TelemetrySchema.allowedProperties["pack_shown_v1"], ["product_family", "entry_point"])
         let families = TelemetrySchema.allowedValues["product_family"] ?? []
         XCTAssertEqual(families, ["unlock_all", "remove_ads", "pack_markets", "pack_personal", "pack_history",
-                                  "pack_world", "pack_systems", "pack_personalfinance", "pro_monthly", "pro_annual"])
+                                  "pack_world", "pack_systems", "pack_personalfinance", "pack_bundle",
+                                  "pro_monthly", "pro_annual"])
         XCTAssertEqual(TelemetryValidator.validate(TelemetryEvent("pack_shown_v1", [
             "product_family": .string("pack_markets"), "entry_point": .string("home"),
         ])), .accepted)

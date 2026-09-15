@@ -1,21 +1,18 @@
 import SwiftUI
 import StoreKit
 
-/// One topic pack (1.1.3; Home's featured pack and the Browse tab in 1.1.4).
+/// One topic pack as an `OfferCard` (Home's featured pack and the Browse tab).
 ///
-/// Locked: the pack's name and summary, its four topic names, a three-card
+/// Locked: name, topic and card counts, the four topic names, a three-card
 /// preview (title + first sentence of each definition, verbatim from the
-/// catalog), a buy button carrying the localized StoreKit price, and Restore
-/// (App Review: Restore wherever a purchase is offered). No price literal
-/// anywhere: the button reads "Loading price…" while StoreKit fetches, and
-/// "Unlock <pack>" (disabled) with "Prices unavailable — Try again" when it
-/// gave no price (Phase 11 — never "Unlock <pack> — —").
+/// catalog), the `PurchaseButton` ("Unlock · $1.99") and Restore.
+/// Readable: the four topics as tiles, opened exactly like core topics, and the
+/// button in its owned state — "Owned" (bought, or via the All Packs Bundle) or
+/// "Included with Pro".
 ///
-/// Owned: the pack's four topics as tiles, opened exactly like core topics.
-///
-/// Access is read from `PurchaseManager.hasAccess(packProductID:)` — a verified
-/// StoreKit entitlement for the pack itself, or an active Pro subscription
-/// (D19). Unlock All never opens a pack (D18).
+/// Access is `PurchaseManager.hasAccess(packProductID:)`: a verified
+/// entitlement for the pack or the bundle, or an active Pro subscription (D19).
+/// Unlock All never opens a pack (D18).
 struct PackOfferView: View {
     let pack: EconPack
     /// Where the offer is shown, for `pack_shown_v1` and the purchase funnel.
@@ -33,78 +30,58 @@ struct PackOfferView: View {
     private var productID: PurchaseManager.ProductID? {
         PurchaseManager.ProductID(rawValue: pack.productID)
     }
-    private var priceState: PurchasePresentation.PriceState {
-        productID.map { store.priceState(for: $0) } ?? .unavailable
+    private var readable: Bool { store.hasAccess(packProductID: pack.productID) }
+
+    static func ownedLabel(ownsOutright: Bool, familyShared: Bool, readable: Bool) -> String? {
+        if ownsOutright { return familyShared ? "Family Sharing" : "Owned" }
+        return readable ? "Included with Pro" : nil
     }
-    private var pending: Bool { productID.map { store.isPending($0) } ?? false }
-    /// Owned outright (verified entitlement for this pack's own product).
-    private var ownedOutright: Bool { store.isPackPurchased(productID: pack.productID) }
-    /// Readable: owned outright or included by an active Pro subscription (D19).
-    private var owned: Bool { store.hasAccess(packProductID: pack.productID) }
-    private var canBuy: Bool {
-        productID != nil && !pending && PurchasePresentation.canPurchase(
-            displayPrice: priceState.displayPrice, isWorking: working, isLoading: store.isLoadingProducts)
+
+    private var model: PurchaseButtonModel {
+        let owned = Self.ownedLabel(ownsOutright: store.ownsPack(productID: pack.productID),
+                                    familyShared: store.familySharedProductIDs.contains(pack.productID)
+                                        || (store.isPackBundlePurchased
+                                            && store.familySharedProductIDs.contains(PurchaseManager.ProductID.packBundle.rawValue)),
+                                    readable: readable)
+        return PurchaseButtonModel.make(action: "Unlock",
+                                        price: productID.map { store.priceState(for: $0) } ?? .unavailable,
+                                        ownedLabel: owned,
+                                        pending: productID.map { store.isPending($0) } ?? false,
+                                        working: working,
+                                        isLoadingProducts: store.isLoadingProducts)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            header
-            Text(pack.summary)
-                .font(.system(size: 14, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.75))
-                .fixedSize(horizontal: false, vertical: true)
-
-            if owned {
+        OfferCard(icon: pack.icon,
+                  title: pack.name,
+                  subtitle: "\(pack.topics.count) topics · \(pack.cards.count) cards",
+                  highlighted: !readable,
+                  identifier: "pack-\(pack.id)",
+                  button: PurchaseButton(model: model,
+                                         identifier: "pack-\(pack.id)-buy",
+                                         unavailableIdentifier: "pack-\(pack.id)-pricesUnavailable",
+                                         onRetry: { Task { await store.loadProducts() } },
+                                         action: buy),
+                  restoreIdentifier: "pack-\(pack.id)-restore",
+                  onRestore: readable ? nil : restore,
+                  restoreDisabled: working) {
+            if readable {
                 topicGrid
             } else {
                 topicLine
                 preview
-                buyRow
             }
         }
-        .padding(18)
-        .background(Econ.tide.opacity(owned ? 0.15 : 0.10))
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Econ.amber.opacity(owned ? 0 : 0.35), lineWidth: 1)
-        )
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("pack-\(pack.id)")
         .onAppear { recordShownOnce() }
         .purchaseAlert($alert)
     }
 
     // MARK: Pieces
 
-    private var header: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Image(systemName: pack.icon)
-                .font(.title3)
-                .foregroundColor(owned ? Econ.sky : Econ.amber)
-                .accessibilityHidden(true)
-            Text(pack.name)
-                .font(.system(size: 17, weight: .heavy, design: .rounded))
-                .foregroundColor(Econ.white)
-            Spacer()
-            Text(ownedLabel)
-                .font(.system(size: 13, weight: .medium, design: .rounded))
-                .foregroundColor(owned ? Econ.sky : Econ.subtext)
-        }
-    }
-
-    private var ownedLabel: String {
-        if ownedOutright {
-            return store.familySharedProductIDs.contains(pack.productID) ? "Family Sharing ✓" : "Owned ✓"
-        }
-        return owned ? "Included with Pro ✓" : "\(pack.cards.count) cards"
-    }
-
     private var topicLine: some View {
         Text(pack.topics.map(\.name).joined(separator: " · "))
-            .font(.system(size: 12, weight: .semibold, design: .rounded))
+            .font(.system(.caption, design: .rounded).weight(.semibold))
             .foregroundColor(Econ.subtext)
-            .tracking(0.5)
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityLabel("Topics: \(pack.topics.map(\.name).joined(separator: ", "))")
     }
@@ -116,13 +93,14 @@ struct PackOfferView: View {
             ForEach(pack.preview) { card in
                 VStack(alignment: .leading, spacing: 3) {
                     Text(card.concept)
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .font(.system(.subheadline, design: .rounded).weight(.semibold))
                         .foregroundColor(Econ.white)
                     Text(ContentStore.firstSentence(of: card.conceptBody))
-                        .font(.system(size: 13, design: .rounded))
+                        .font(.system(.footnote, design: .rounded))
                         .foregroundColor(Econ.white.opacity(0.7))
                         .fixedSize(horizontal: false, vertical: true)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityElement(children: .combine)
             }
         }
@@ -130,36 +108,6 @@ struct PackOfferView: View {
         .background(Econ.ocean.opacity(0.6))
         .cornerRadius(12)
         .accessibilityIdentifier("pack-\(pack.id)-preview")
-    }
-
-    private var buyRow: some View {
-        VStack(spacing: 10) {
-            Button {
-                buy()
-            } label: {
-                if working {
-                    ProgressView().tint(Econ.ink)
-                } else {
-                    Text(PurchasePresentation.buyTitle("Unlock \(pack.name)", priceState, pending: pending))
-                }
-            }
-            .buttonStyle(PrimaryButton())
-            .disabled(!canBuy)
-            .opacity(canBuy ? 1 : 0.55)
-            .accessibilityIdentifier("pack-\(pack.id)-buy")
-
-            if priceState == .unavailable {
-                PricesUnavailableNotice(identifier: "pack-\(pack.id)-pricesUnavailable") {
-                    Task { await store.loadProducts() }
-                }
-            }
-
-            Button("Restore Purchases") { restore() }
-                .font(.system(size: 14, weight: .medium, design: .rounded))
-                .foregroundColor(Econ.sky)
-                .disabled(working)
-                .accessibilityIdentifier("pack-\(pack.id)-restore")
-        }
     }
 
     private var topicGrid: some View {
@@ -176,10 +124,10 @@ struct PackOfferView: View {
         }
     }
 
-    // MARK: Plumbing (mirrors SettingsView / PaywallView)
+    // MARK: Plumbing
 
     private func recordShownOnce() {
-        guard !owned, !didRecordShown, let productID else { return }
+        guard !readable, !didRecordShown, let productID else { return }
         didRecordShown = true
         EBEvents.packShown(family: productID.family, entryPoint: entryPoint)
     }
@@ -187,43 +135,91 @@ struct PackOfferView: View {
     private func buy() {
         guard let productID else { return }
         working = true
-        growth.monetization.setBlocker(.purchase, active: true)
-        growth.review.noteNegativeSessionEvent(.purchase)
         Task {
-            // Phase 11: the real entry point (was hard-coded `.home`, so every
-            // Browse purchase was attributed to Home).
-            let result = await store.purchase(productID, from: entryPoint)
+            let next = await PurchaseFlow.buy(productID, from: entryPoint, store: store, growth: growth,
+                                              accessGranted: { store.hasAccess(packProductID: pack.productID) })
             working = false
-            growth.monetization.setBlocker(.purchase, active: false)
-            growth.syncEntitlements(from: store)
-            if case .success = result {} else {
-                growth.review.noteNegativeSessionEvent(.purchaseFailure)
-            }
-            show(result, kind: .purchase)
+            alert = next
         }
     }
 
     private func restore() {
         working = true
-        growth.monetization.setBlocker(.restore, active: true)
-        growth.review.noteNegativeSessionEvent(.restore)
         Task {
-            let result = await store.restorePurchases(from: entryPoint)
+            let next = await PurchaseFlow.restore(from: entryPoint, store: store, growth: growth)
             working = false
-            growth.monetization.setBlocker(.restore, active: false)
-            growth.syncEntitlements(from: store)
-            if case .failed = result {
-                growth.review.noteNegativeSessionEvent(.restoreFailure)
-                growth.diagnosticLog.capture(.restoreFailed)
+            alert = next
+        }
+    }
+}
+
+/// The All Packs Bundle (`com.nsantulli.econbyte.pack.bundle`, 1.1.4): every
+/// topic pack in one non-consumable. Shown above the packs on Browse while at
+/// least one pack is still locked, and as "Owned" once bought. Not offered to
+/// a Pro subscriber who has every pack through Pro.
+struct PackBundleOfferView: View {
+    var entryPoint: EBEntryPoint = .topicGrid
+
+    @EnvironmentObject private var content: ContentStore
+    @EnvironmentObject private var store: PurchaseManager
+    @EnvironmentObject private var growth: EconGrowth
+
+    @State private var working = false
+    @State private var didRecordShown = false
+    @State private var alert: PurchaseAlertCopy.Alert?
+
+    static func isOffered(bundleOwned: Bool, allPacksReadable: Bool) -> Bool {
+        bundleOwned || !allPacksReadable
+    }
+
+    private var owned: Bool { store.isPackBundlePurchased }
+
+    var body: some View {
+        let id = PurchaseManager.ProductID.packBundle
+        let model = PurchaseButtonModel.make(
+            action: "Unlock",
+            price: store.priceState(for: id),
+            ownedLabel: owned ? (store.familySharedProductIDs.contains(id.rawValue) ? "Family Sharing" : "Owned") : nil,
+            pending: store.isPending(id),
+            working: working,
+            isLoadingProducts: store.isLoadingProducts)
+        return OfferCard(icon: "square.stack.3d.up.fill",
+                         title: "All Packs Bundle",
+                         subtitle: "All \(content.packs.count) packs · \(content.packCards.count) cards",
+                         highlighted: !owned,
+                         identifier: "packBundle",
+                         button: PurchaseButton(model: model,
+                                                identifier: "packBundle-buy",
+                                                unavailableIdentifier: "packBundle-pricesUnavailable",
+                                                onRetry: { Task { await store.loadProducts() } },
+                                                action: buy),
+                         restoreIdentifier: "packBundle-restore",
+                         onRestore: owned ? nil : restore,
+                         restoreDisabled: working)
+            .onAppear {
+                guard !owned, !didRecordShown else { return }
+                didRecordShown = true
+                EBEvents.packShown(family: .packBundle, entryPoint: entryPoint)
             }
-            show(result, kind: .restore)
+            .purchaseAlert($alert)
+    }
+
+    private func buy() {
+        working = true
+        Task {
+            let next = await PurchaseFlow.buy(.packBundle, from: entryPoint, store: store, growth: growth,
+                                              accessGranted: { store.isPackBundlePurchased })
+            working = false
+            alert = next
         }
     }
 
-    private func show(_ result: PurchaseManager.PurchaseResult, kind: PurchaseAlertCopy.Kind) {
-        if result == .productUnavailable { Task { await store.loadProducts() } }
-        guard let next = PurchaseAlertCopy.alert(for: result, kind: kind, accessGranted: owned) else { return }
-        growth.review.noteNegativeSessionEvent(.errorShown)
-        alert = next
+    private func restore() {
+        working = true
+        Task {
+            let next = await PurchaseFlow.restore(from: entryPoint, store: store, growth: growth)
+            working = false
+            alert = next
+        }
     }
 }

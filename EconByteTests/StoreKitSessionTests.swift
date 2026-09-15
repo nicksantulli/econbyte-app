@@ -88,7 +88,7 @@ final class StoreKitSessionTests: XCTestCase {
             + [ID.packPersonalFinance.rawValue, ID.packSystems.rawValue]
         guard localOnly.allSatisfy({ id in store.products.contains { $0.id == id } }) else {
             throw XCTSkip("SKTestSession is not attached under xcodebuild on this Mac: StoreKit returned "
-                          + "\(store.products.count) sandbox product(s) instead of the 10 in EconByte.storekit "
+                          + "\(store.products.count) sandbox product(s) instead of the 11 in EconByte.storekit "
                           + "(SKInternalErrorDomain Code=3 on session init). Run in Xcode (⌘U); the state "
                           + "matrix is covered by StoreEntitlementsTests.")
         }
@@ -131,10 +131,12 @@ final class StoreKitSessionTests: XCTestCase {
 
     func testEveryProductLoadsWithAStoreKitPriceAndTheTrialIsOffered() {
         XCTAssertEqual(Set(store.products.map(\.id)), Set(ID.allCases.map(\.rawValue)))
-        XCTAssertEqual(store.priceState(for: .proAnnual), .ready("$29.99"))
+        XCTAssertEqual(store.priceState(for: .proAnnual), .ready("$39.99"))
+        XCTAssertEqual(store.priceState(for: .packBundle), .ready("$5.99"))
         XCTAssertEqual(store.priceState(for: .packPersonalFinance), .ready("$1.99"))
         XCTAssertEqual(store.isEligibleForTrial, true, "a fresh Apple ID may take the 7-day trial")
-        XCTAssertNotNil(store.freeTrialPeriod(for: .proMonthly))
+        XCTAssertNotNil(store.freeTrialPeriod(for: .proAnnual))
+        XCTAssertNil(store.freeTrialPeriod(for: .proMonthly), "monthly has no trial (2026-09-15 pricing)")
     }
 
     // MARK: Purchase / cancel / failure

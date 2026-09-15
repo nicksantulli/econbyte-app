@@ -175,7 +175,7 @@ final class StoreEntitlementsTests: XCTestCase {
                                [status(.subscribed, .proAnnual, expiresIn: 40 * day, renewsInto: .proMonthly)])
         XCTAssertEqual(resolved.pro?.pendingPlanChangeProductID, ID.proMonthly.rawValue)
         let rows = ProStatusCopy.rows(for: resolved.pro!, formatDate: { _ in "DATE" })
-        XCTAssertEqual(rows, [ProStatusRow(title: "Plan", value: "Yearly"),
+        XCTAssertEqual(rows, [ProStatusRow(title: "Plan", value: "Annual"),
                               ProStatusRow(title: "Renews", value: "DATE"),
                               ProStatusRow(title: "Switches to", value: "Monthly")])
     }
@@ -188,6 +188,61 @@ final class StoreEntitlementsTests: XCTestCase {
         let rows = ProStatusCopy.rows(for: resolved.pro!, formatDate: { _ in "DATE" })
         XCTAssertEqual(rows.map(\.title), ["Plan", "Ends"])
         XCTAssertEqual(ProStatusCopy.footer(for: resolved.pro), "Pro stays on until the end date; resubscribe anytime.")
+    }
+
+    // MARK: - All Packs Bundle (1.1.4)
+
+    func testTheBundleOpensEveryPackAndNothingElse() {
+        let resolved = resolve([tx(.packBundle)])
+        for pack in ID.packs {
+            XCTAssertTrue(resolved.hasAccess(packProductID: pack.rawValue), pack.rawValue)
+        }
+        XCTAssertFalse(resolved.coreTopicsUnlocked, "the bundle is packs only, not Unlock All")
+        XCTAssertFalse(resolved.adsSuppressed, "the bundle does not remove ads")
+        XCTAssertFalse(resolved.isProActive)
+        XCTAssertTrue(resolved.ownsAnything, "restore reports the bundle as restored")
+        XCTAssertTrue(resolved.packProductIDs.isEmpty, "no individual pack is recorded as bought")
+    }
+
+    func testARefundedOrUnverifiedBundleGrantsNothing() {
+        XCTAssertFalse(resolve([tx(.packBundle, revoked: true)]).ownsAnything, "a refund removes the bundle")
+        XCTAssertFalse(resolve([tx(.packBundle, verified: false)]).hasAccess(packProductID: ID.packHistory.rawValue))
+    }
+
+    func testBundlePacksSurviveAProLapseAndTheStorePublishesThem() {
+        let lapsed = resolve([tx(.packBundle), tx(.proMonthly, expiresIn: -day)],
+                             [status(.expired, .proMonthly, expiresIn: -day)])
+        XCTAssertFalse(lapsed.isProActive)
+        XCTAssertTrue(lapsed.hasAccess(packProductID: ID.packWorld.rawValue), "bought packs outlive Pro")
+
+        let suite = "eb.bundle.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = PurchaseManager(defaults: defaults, observesStore: false)
+        store.apply(lapsed)
+        XCTAssertTrue(store.isPackBundlePurchased)
+        for pack in ID.packs {
+            XCTAssertTrue(store.ownsPack(productID: pack.rawValue), pack.rawValue)
+            XCTAssertFalse(store.isPackPurchased(productID: pack.rawValue), "owned via the bundle, not bought alone")
+        }
+        XCTAssertFalse(store.ownsPack(productID: ID.unlockAll.rawValue))
+        XCTAssertTrue(store.allPacksReadable)
+        XCTAssertFalse(store.coreTopicsUnlocked)
+        XCTAssertFalse(store.adsSuppressed)
+        XCTAssertFalse(PackBundleOfferView.isOffered(bundleOwned: false, allPacksReadable: true),
+                       "no bundle offer when every pack is already readable")
+        XCTAssertTrue(PackBundleOfferView.isOffered(bundleOwned: true, allPacksReadable: true), "shown as Owned")
+        XCTAssertTrue(PackBundleOfferView.isOffered(bundleOwned: false, allPacksReadable: false))
+
+        store.apply(ResolvedEntitlements())
+        XCTAssertFalse(store.allPacksReadable, "a refund removes the bundle on the next refresh")
+    }
+
+    func testPackOwnedLabels() {
+        XCTAssertEqual(PackOfferView.ownedLabel(ownsOutright: true, familyShared: false, readable: true), "Owned")
+        XCTAssertEqual(PackOfferView.ownedLabel(ownsOutright: true, familyShared: true, readable: true), "Family Sharing")
+        XCTAssertEqual(PackOfferView.ownedLabel(ownsOutright: false, familyShared: false, readable: true), "Included with Pro")
+        XCTAssertNil(PackOfferView.ownedLabel(ownsOutright: false, familyShared: false, readable: false))
     }
 
     // MARK: - Mirrors never grant
@@ -238,7 +293,8 @@ final class StoreEntitlementsTests: XCTestCase {
                 labels.append(PurchasePresentation.subscribeTitle(state, period: "/ year", pending: pending))
             }
             labels.append(PurchasePresentation.priceLabel(state))
-            labels.append(ProPaywallContent<EmptyView>.planAccessibilityLabel("Pro Yearly", state, period: "/ year"))
+            labels.append(ProPaywallContent<EmptyView>.planAccessibilityLabel(
+                "Annual", state, billed: state.displayPrice.map { "\($0) per year" }, perMonth: nil, badge: nil))
         }
         for label in labels {
             XCTAssertFalse(label.contains("— —"), "doubled dash: \(label)")
@@ -332,5 +388,177 @@ final class StoreEntitlementsTests: XCTestCase {
         XCTAssertEqual(EconAdErrorClassifier.outcome(for: NSError(domain: "com.google.admob", code: 2)), .failed)
         XCTAssertEqual(EconAdErrorClassifier.outcome(for: NSError(domain: NSURLErrorDomain, code: 1)), .failed)
         XCTAssertEqual(EconAdErrorClassifier.maximumInterstitialAge, 55 * 60)
+    }
+}
+
+// MARK: - Pricing copy and the one purchase button (1.1.4 release scope)
+
+/// Checklist A lines 1, 2, 3, 5, 9, 10 as pure functions.
+@MainActor
+final class PricingAndPurchaseButtonTests: XCTestCase {
+
+    private typealias ID = PurchaseManager.ProductID
+    private let usd = Decimal.FormatStyle.Currency(code: "USD", locale: Locale(identifier: "en_US"))
+
+    private func offer(_ id: ID, _ price: String, period: BillingTerm? = nil, trial: BillingTerm? = nil,
+                       style: Decimal.FormatStyle.Currency? = nil) -> StoreOffer {
+        let value = Decimal(string: price, locale: Locale(identifier: "en_US_POSIX"))!
+        let format = style ?? usd
+        return StoreOffer(id: id, displayPrice: value.formatted(format), price: value,
+                          priceFormatStyle: format, period: period, freeTrial: trial)
+    }
+    private var annual: StoreOffer {
+        offer(.proAnnual, "39.99", period: BillingTerm(unit: .year, value: 1), trial: BillingTerm(unit: .week, value: 1))
+    }
+    private var monthly: StoreOffer { offer(.proMonthly, "9.99", period: BillingTerm(unit: .month, value: 1)) }
+
+    func testBilledPriceIsTheFullAmountAndPeriodInWords() {
+        XCTAssertEqual(PlanCopy.billedPrice(annual), "$39.99 per year")
+        XCTAssertEqual(PlanCopy.billedPrice(monthly), "$9.99 per month")
+        XCTAssertEqual(PlanCopy.billedPrice(offer(.packBundle, "5.99")), "$5.99")
+        XCTAssertEqual(BillingTerm(unit: .month, value: 3).perPhrase, "every 3 months")
+        for text in [PlanCopy.billedPrice(annual), PlanCopy.billedPrice(monthly)] {
+            XCTAssertFalse(text.contains("/"), "no abbreviated period: \(text)")
+        }
+    }
+
+    func testPerMonthAndSavingsAreDerivedFromStoreKitPricesAndNeverOverstated() {
+        XCTAssertEqual(PlanCopy.perMonth(annual), "$3.33 per month")
+        XCTAssertNil(PlanCopy.perMonth(monthly), "a monthly plan shows no per-month equivalent")
+        XCTAssertEqual(PlanCopy.savingsPercent(plan: annual, comparedWith: monthly), 66,
+                       "$39.99 vs 12 × $9.99 saves 66.6% — rounded down, never overstated")
+        XCTAssertEqual(PlanCopy.savingsBadge(plan: annual, comparedWith: monthly), "Save 66%")
+        XCTAssertNil(PlanCopy.savingsPercent(plan: monthly, comparedWith: annual))
+
+        let eur = Decimal.FormatStyle.Currency(code: "EUR", locale: Locale(identifier: "de_DE"))
+        let annualEUR = offer(.proAnnual, "39.99", period: BillingTerm(unit: .year, value: 1), style: eur)
+        XCTAssertNil(PlanCopy.savingsPercent(plan: annualEUR, comparedWith: monthly), "different currencies are never compared")
+        XCTAssertEqual(PlanCopy.perMonth(annualEUR)?.contains("3,33"), true, "the storefront's own currency format")
+
+        // A price change in App Store Connect changes the copy with no code change.
+        let cheaper = offer(.proAnnual, "29.99", period: BillingTerm(unit: .year, value: 1))
+        XCTAssertEqual(PlanCopy.perMonth(cheaper), "$2.50 per month")
+        XCTAssertEqual(PlanCopy.savingsPercent(plan: cheaper, comparedWith: monthly), 74)
+        let noSaving = offer(.proAnnual, "119.88", period: BillingTerm(unit: .year, value: 1))
+        XCTAssertNil(PlanCopy.savingsPercent(plan: noSaving, comparedWith: monthly))
+    }
+
+    func testTrialLineOnlyForEligibleReadersAndAlwaysComplete() {
+        XCTAssertEqual(PlanCopy.trialLine(annual, eligible: true),
+                       "Free for 7 days, then $39.99 per year. Cancel anytime in Settings at least 24 hours before the trial ends.")
+        XCTAssertNil(PlanCopy.trialLine(annual, eligible: false), "not eligible: no trial wording")
+        XCTAssertNil(PlanCopy.trialLine(annual, eligible: nil), "unknown eligibility: no trial wording")
+        XCTAssertNil(PlanCopy.trialLine(monthly, eligible: true), "monthly has no trial")
+        XCTAssertNil(PlanCopy.trialLine(nil, eligible: true), "no product: no trial wording")
+        XCTAssertEqual(BillingTerm(unit: .day, value: 3).duration, "3 days")
+        XCTAssertEqual(BillingTerm(unit: .month, value: 1).adjective, "1-month")
+    }
+
+    func testSubscribeActionReflectsPlanEligibilityAndCurrentPlan() {
+        typealias Action = PlanCopy.Action
+        XCTAssertEqual(PlanCopy.subscribeAction(for: .proAnnual, offer: annual, eligible: true, currentPlan: nil),
+                       Action(action: "Start 7-day free trial", priceText: "then $39.99 per year", ownedLabel: nil))
+        XCTAssertEqual(PlanCopy.subscribeAction(for: .proAnnual, offer: annual, eligible: false, currentPlan: nil),
+                       Action(action: "Subscribe", priceText: "$39.99 per year", ownedLabel: nil))
+        XCTAssertEqual(PlanCopy.subscribeAction(for: .proMonthly, offer: monthly, eligible: true, currentPlan: nil),
+                       Action(action: "Subscribe", priceText: "$9.99 per month", ownedLabel: nil))
+        XCTAssertEqual(PlanCopy.subscribeAction(for: .proAnnual, offer: annual, eligible: false, currentPlan: .proAnnual),
+                       Action(action: "Current plan", priceText: nil, ownedLabel: "Current plan"))
+        XCTAssertEqual(PlanCopy.subscribeAction(for: .proMonthly, offer: monthly, eligible: false, currentPlan: .proAnnual),
+                       Action(action: "Switch to Monthly", priceText: "$9.99 per month", ownedLabel: nil))
+        XCTAssertEqual(PlanCopy.subscribeAction(for: .proAnnual, offer: nil, eligible: true, currentPlan: nil),
+                       Action(action: "Subscribe", priceText: nil, ownedLabel: nil))
+    }
+
+    func testOnePurchaseButtonModelForEveryProductAndState() {
+        let ready = PurchaseButtonModel.make(action: "Unlock", price: .ready("$1.99"))
+        XCTAssertEqual(ready.label, "Unlock · $1.99")
+        XCTAssertTrue(ready.isEnabled)
+        XCTAssertEqual(ready.style, .primary)
+        XCTAssertFalse(ready.showsPricesUnavailable)
+
+        let loading = PurchaseButtonModel.make(action: "Unlock", price: .loading)
+        XCTAssertEqual(loading.label, "Loading price…")
+        XCTAssertFalse(loading.isEnabled)
+        XCTAssertTrue(loading.showsSpinner)
+
+        let unavailable = PurchaseButtonModel.make(action: "Unlock", price: .unavailable)
+        XCTAssertEqual(unavailable.label, "Unlock", "without a price the disabled button still says what it does")
+        XCTAssertFalse(unavailable.isEnabled)
+        XCTAssertTrue(unavailable.showsPricesUnavailable, "Prices unavailable — Try again")
+
+        XCTAssertEqual(PurchaseButtonModel.make(action: "Unlock", price: .ready("$1.99"), pending: true).label,
+                       "Waiting for approval")
+        let working = PurchaseButtonModel.make(action: "Unlock", price: .ready("$1.99"), working: true)
+        XCTAssertFalse(working.isEnabled)
+        XCTAssertTrue(working.showsSpinner)
+        XCTAssertFalse(PurchaseButtonModel.make(action: "Unlock", price: .ready("$1.99"), isLoadingProducts: true).isEnabled)
+
+        let owned = PurchaseButtonModel.make(action: "Unlock", price: .ready("$1.99"), ownedLabel: "Owned")
+        XCTAssertEqual(owned.label, "Owned")
+        XCTAssertFalse(owned.isEnabled)
+        XCTAssertEqual(owned.style, .owned)
+
+        XCTAssertEqual(PurchaseButtonModel.make(action: "Start 7-day free trial", price: .ready("$39.99"),
+                                                priceText: "then $39.99 per year").label,
+                       "Start 7-day free trial · then $39.99 per year")
+
+        for state in [PurchasePresentation.PriceState.loading, .unavailable, .ready("$5.99"), .ready("¥800")] {
+            for pending in [false, true] {
+                for isWorking in [false, true] {
+                    let label = PurchaseButtonModel.make(action: "Unlock", price: state,
+                                                         pending: pending, working: isWorking).label
+                    XCTAssertFalse(label.isEmpty)
+                    XCTAssertFalse(label.contains("—"), "no placeholder dash: \(label)")
+                    XCTAssertFalse(label.hasSuffix("·"), "no dangling separator: \(label)")
+                }
+            }
+        }
+    }
+
+    func testPaywallBenefitsAreCountedFromTheBundledCatalogs() {
+        let content = ContentStore.shared
+        let benefits = PaywallBenefits.current(content: content)
+        XCTAssertEqual(benefits.courses, CourseCatalog.expectedCourseCount)
+        XCTAssertEqual(benefits.lessons, CourseCatalog.expectedCourseCount * CourseCatalog.expectedLessonsPerCourse)
+        XCTAssertEqual(benefits.packs, PackCatalog.expectedPackCount)
+        XCTAssertEqual(benefits.packCards, PackCatalog.expectedCardCount)
+        XCTAssertEqual(benefits.coreTopics, content.topics.count)
+        let texts = benefits.rows.map(\.text)
+        XCTAssertTrue(texts.contains("\(benefits.courses) courses, \(benefits.lessons) lessons with charts and quizzes"))
+        XCTAssertTrue(texts.contains("All \(benefits.packs) topic packs (\(benefits.packCards) cards) and all \(benefits.coreTopics) core topics"))
+        XCTAssertTrue(texts.contains("The Daily Brief, \(BriefStore.cadenceDescription)"))
+        XCTAssertTrue(texts.contains("No ads"))
+        var grown = benefits
+        grown.courses = 4
+        grown.lessons = 36
+        XCTAssertTrue(grown.rows.map(\.text).contains("4 courses, 36 lessons with charts and quizzes"),
+                      "the copy follows the catalog, it is never hard-coded")
+    }
+
+    func testAutoRenewDisclosureCoversChargeRenewalAndCancellation() {
+        for phrase in ["Apple ID", "when a free trial ends", "renews automatically", "at least 24 hours",
+                       "Settings → Apple ID → Subscriptions"] {
+            XCTAssertTrue(PlanCopy.autoRenewDisclosure.contains(phrase), phrase)
+        }
+    }
+
+    /// No purchase surface carries a price literal or a trial toggle.
+    func testPurchaseViewsHaveNoPriceLiteralAndThePaywallHasNoToggle() throws {
+        let views = URL(fileURLWithPath: "\(#filePath)").deletingLastPathComponent()
+            .deletingLastPathComponent().appendingPathComponent("EconByte/Views")
+        let walker = try XCTUnwrap(FileManager.default.enumerator(at: views, includingPropertiesForKeys: nil))
+        let literal = try NSRegularExpression(pattern: "\\$\\s?[0-9]+[.,][0-9]{2}")
+        var scanned = 0
+        for case let url as URL in walker where url.pathExtension == "swift" {
+            let code = InstrumentationPrivacyTests.strippingComments(try String(contentsOf: url, encoding: .utf8))
+            let range = NSRange(code.startIndex..., in: code)
+            XCTAssertEqual(literal.numberOfMatches(in: code, range: range), 0, "\(url.lastPathComponent) has a price literal")
+            if url.lastPathComponent == "ProPaywallView.swift" {
+                XCTAssertFalse(code.contains("Toggle("), "no toggle paywall (checklist A3)")
+            }
+            scanned += 1
+        }
+        XCTAssertGreaterThan(scanned, 10)
     }
 }

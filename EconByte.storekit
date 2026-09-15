@@ -3,12 +3,12 @@
   "nonRenewingSubscriptions": [],
   "products": [
     {
-      "displayPrice": "0.99",
+      "displayPrice": "2.99",
       "familyShareable": false,
       "internalID": "EB000000000001",
       "localizations": [
         {
-          "description": "Unlock every EconByte topic — GDP, Labor Markets, Trade & Tariffs, Recessions and more. One-time purchase, restores across devices.",
+          "description": "Every core EconByte topic, yours to keep. One-time purchase; restores on all your devices.",
           "displayName": "Unlock All Topics",
           "locale": "en_US"
         }
@@ -18,12 +18,12 @@
       "type": "NonConsumable"
     },
     {
-      "displayPrice": "0.99",
+      "displayPrice": "1.99",
       "familyShareable": false,
       "internalID": "EB000000000002",
       "localizations": [
         {
-          "description": "Remove all ads from EconByte — banners and interstitials. One-time purchase, restores across devices.",
+          "description": "No ads in EconByte. One-time purchase; restores on all your devices.",
           "displayName": "Remove Ads",
           "locale": "en_US"
         }
@@ -121,6 +121,21 @@
       "productID": "com.nsantulli.econbyte.pack.personalfinance",
       "referenceName": "Personal Finance",
       "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "5.99",
+      "familyShareable": false,
+      "internalID": "EB000000000009",
+      "localizations": [
+        {
+          "description": "All six topic packs — 24 topics, 288 sourced cards. One-time purchase; restores on all your devices.",
+          "displayName": "All Packs Bundle",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nsantulli.econbyte.pack.bundle",
+      "referenceName": "All Packs Bundle",
+      "type": "NonConsumable"
     }
   ],
   "settings": {
@@ -134,7 +149,7 @@
       "id": "EB00000000000G01",
       "localizations": [
         {
-          "description": "Courses, the Daily Economic Brief, every topic pack, and no ads.",
+          "description": "Courses, the Daily Brief, every topic pack and core topic, and no ads.",
           "displayName": "EconByte Pro",
           "locale": "en_US"
         }
@@ -144,32 +159,7 @@
         {
           "adHocOffers": [],
           "codeOffers": [],
-          "displayPrice": "4.99",
-          "familyShareable": false,
-          "groupNumber": 2,
-          "internalID": "EB000000000101",
-          "introductoryOffer": {
-            "internalID": "EB000000000111",
-            "paymentMode": "free",
-            "subscriptionPeriod": "P1W"
-          },
-          "localizations": [
-            {
-              "description": "Courses, the Daily Economic Brief, every topic pack, and no ads. Billed monthly; 7-day free trial for new subscribers.",
-              "displayName": "EconByte Pro Monthly",
-              "locale": "en_US"
-            }
-          ],
-          "productID": "com.nsantulli.econbyte.pro.monthly",
-          "recurringSubscriptionPeriod": "P1M",
-          "referenceName": "EconByte Pro Monthly",
-          "subscriptionGroupID": "EB00000000000G01",
-          "type": "RecurringSubscription"
-        },
-        {
-          "adHocOffers": [],
-          "codeOffers": [],
-          "displayPrice": "29.99",
+          "displayPrice": "39.99",
           "familyShareable": false,
           "groupNumber": 1,
           "internalID": "EB000000000102",
@@ -180,7 +170,7 @@
           },
           "localizations": [
             {
-              "description": "Courses, the Daily Economic Brief, every topic pack, and no ads. Billed yearly; 7-day free trial for new subscribers.",
+              "description": "Courses, the Daily Brief, every pack and topic, no ads. Billed yearly; 7-day free trial for new subscribers.",
               "displayName": "EconByte Pro Annual",
               "locale": "en_US"
             }
@@ -188,6 +178,27 @@
           "productID": "com.nsantulli.econbyte.pro.annual",
           "recurringSubscriptionPeriod": "P1Y",
           "referenceName": "EconByte Pro Annual",
+          "subscriptionGroupID": "EB00000000000G01",
+          "type": "RecurringSubscription"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "9.99",
+          "familyShareable": false,
+          "groupNumber": 2,
+          "internalID": "EB000000000101",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Courses, the Daily Brief, every pack and topic, no ads. Billed monthly.",
+              "displayName": "EconByte Pro Monthly",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.nsantulli.econbyte.pro.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "EconByte Pro Monthly",
           "subscriptionGroupID": "EB00000000000G01",
           "type": "RecurringSubscription"
         }

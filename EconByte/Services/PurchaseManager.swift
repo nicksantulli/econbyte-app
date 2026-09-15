@@ -7,12 +7,18 @@ import SwiftUI
 ///   • `com.nsantulli.econbyte.unlockall` — unlocks every locked core topic
 ///   • `com.nsantulli.econbyte.removeads`  — hides all ads
 ///   • `com.nsantulli.econbyte.pack.<packID>` — one topic pack each (D18)
+///   • `com.nsantulli.econbyte.pack.bundle` — the All Packs Bundle (1.1.4):
+///     every topic pack, nothing else
 ///
-/// Auto-renewable subscriptions (1.1.4, subscription group "EconByte Pro";
-/// exist only in `EconByte.storekit` until the Owner creates them in ASC — the
-/// ids below are the contract, so no code changes when that happens):
-///   • `com.nsantulli.econbyte.pro.annual`  — $29.99 / year, 7-day free trial (level 1)
-///   • `com.nsantulli.econbyte.pro.monthly` — $4.99 / month, 7-day free trial (level 2)
+/// Auto-renewable subscriptions (1.1.4, subscription group "EconByte Pro"):
+///   • `com.nsantulli.econbyte.pro.annual`  — 1 year, 7-day free trial (level 1)
+///   • `com.nsantulli.econbyte.pro.monthly` — 1 month, no introductory offer (level 2)
+///
+/// US prices (`econbyte-pricing-2026-09-15.md`) live ONLY in App Store Connect
+/// and `EconByte.storekit`: annual $39.99, monthly $9.99, bundle $5.99, pack
+/// $1.99, Unlock All $2.99, Remove Ads $1.99. No view ever shows a literal; every
+/// price on screen is StoreKit's `displayPrice` (or derived from `price` with
+/// the product's own `priceFormatStyle`, see `StoreOffer`).
 ///
 /// Phase 11 audit (2026-09-14) — what this type guarantees, each with a test in
 /// `StoreEntitlementsTests` / `StoreKitSessionTests`:
@@ -145,6 +151,9 @@ final class PurchaseManager: ObservableObject {
         case packWorld    = "com.nsantulli.econbyte.pack.world"
         case packSystems  = "com.nsantulli.econbyte.pack.systems"
         case packPersonalFinance = "com.nsantulli.econbyte.pack.personalfinance"
+        /// The All Packs Bundle (1.1.4): every pack in `packs`. Not itself a
+        /// pack (`isPack` is false) — it never appears as a pack row.
+        case packBundle = "com.nsantulli.econbyte.pack.bundle"
         /// EconByte Pro (1.1.4). One subscription group, two durations.
         case proMonthly = "com.nsantulli.econbyte.pro.monthly"
         case proAnnual  = "com.nsantulli.econbyte.pro.annual"
@@ -158,6 +167,7 @@ final class PurchaseManager: ObservableObject {
         static let catalog = StoreCatalogIDs(unlockAll: ProductID.unlockAll.rawValue,
                                              removeAds: ProductID.removeAds.rawValue,
                                              packs: Set(packs.map(\.rawValue)),
+                                             packBundle: ProductID.packBundle.rawValue,
                                              subscriptions: Set(subscriptions.map(\.rawValue)))
 
         /// The bucketed family name analytics is allowed to see. The product id
@@ -172,6 +182,7 @@ final class PurchaseManager: ObservableObject {
             case .packWorld:    return .packWorld
             case .packSystems:  return .packSystems
             case .packPersonalFinance: return .packPersonalFinance
+            case .packBundle:   return .packBundle
             case .proMonthly:   return .proMonthly
             case .proAnnual:    return .proAnnual
             }
@@ -194,6 +205,8 @@ final class PurchaseManager: ObservableObject {
     @Published private(set) var isRemoveAdsPurchased = false
     /// Pack product ids with a verified, unrevoked entitlement.
     @Published private(set) var ownedPackProductIDs: Set<String> = []
+    /// A verified, unrevoked All Packs Bundle entitlement (1.1.4).
+    @Published private(set) var isPackBundlePurchased = false
     /// EconByte Pro: subscribed, in its grace period, or in billing retry.
     @Published private(set) var isProActive = false
     /// The resolved subscription (plan, state, renewal) when Pro is active.
@@ -244,10 +257,23 @@ final class PurchaseManager: ObservableObject {
         ownedPackProductIDs.contains(productID)
     }
 
-    /// Access to a pack: owned outright ∨ Pro active (D19). A pack bought
-    /// outright stays owned after Pro lapses; Pro access ends with it.
+    /// Owned as a one-time purchase: the pack itself or the All Packs Bundle.
+    /// Survives a Pro lapse.
+    func ownsPack(productID: String) -> Bool {
+        isPackPurchased(productID: productID)
+            || (isPackBundlePurchased && ProductID.packs.contains { $0.rawValue == productID })
+    }
+
+    /// Access to a pack: owned outright ∨ the bundle ∨ Pro active (D19). A pack
+    /// bought outright (or via the bundle) stays owned after Pro lapses; Pro
+    /// access ends with it.
     func hasAccess(packProductID: String) -> Bool {
-        isPackPurchased(productID: packProductID) || isProActive
+        ownsPack(productID: packProductID) || isProActive
+    }
+
+    /// Every pack is readable (bundle, all six bought, or Pro).
+    var allPacksReadable: Bool {
+        ProductID.packs.allSatisfy { hasAccess(packProductID: $0.rawValue) }
     }
 
     /// The core curriculum: Unlock All ∨ Pro (D19).
@@ -263,7 +289,7 @@ final class PurchaseManager: ObservableObject {
     func isPending(_ id: ProductID) -> Bool { pendingProductIDs.contains(id.rawValue) }
 
     func priceState(for id: ProductID) -> PurchasePresentation.PriceState {
-        PurchasePresentation.priceState(displayPrice: product(for: id)?.displayPrice,
+        PurchasePresentation.priceState(displayPrice: offer(for: id)?.displayPrice,
                                         isLoading: isLoadingProducts,
                                         hasAttemptedLoad: hasAttemptedProductLoad)
     }
@@ -274,6 +300,12 @@ final class PurchaseManager: ObservableObject {
     /// plain Simulator run or on a device installed with `devicectl`, where the
     /// local `.storekit` configuration is not attached. Compiled out of Release.
     private var debugForcedPro = ProcessInfo.processInfo.arguments.contains("-econDebugPro")
+    /// DEBUG-only fixed offers for the paywall state screenshots (see
+    /// `DebugStoreScenario`). `nil` in every normal run.
+    private let debugStoreScenario = DebugStoreScenario.current
+    /// DEBUG-only: `-econDebugOwnAll` reports Unlock All, Remove Ads and the
+    /// All Packs Bundle as owned, for the "Owned" button state.
+    private let debugOwnsAll = ProcessInfo.processInfo.arguments.contains("-econDebugOwnAll")
     #endif
 
     /// `observesStore: false` builds an inert instance for tests: no listener,
@@ -286,9 +318,19 @@ final class PurchaseManager: ObservableObject {
         mirroredAdsSuppression = defaults.bool(forKey: Self.removeAdsMirrorKey)
             || defaults.bool(forKey: Self.proMirrorKey)
         #if DEBUG
+        if let scenario = debugStoreScenario {
+            hasAttemptedProductLoad = true
+            isEligibleForTrial = scenario.trialEligible
+            if scenario == .subscribed { debugForcedPro = true }
+        }
         if debugForcedPro {
             isProActive = true
-            proEntitlement = Self.debugProEntitlement()
+            proEntitlement = debugProEntitlement()
+        }
+        if debugOwnsAll {
+            isUnlockAllPurchased = true
+            isRemoveAdsPurchased = true
+            isPackBundlePurchased = true
         }
         #endif
         guard observesStore else { return }
@@ -309,12 +351,30 @@ final class PurchaseManager: ObservableObject {
         products.first { $0.id == id.rawValue }
     }
 
+    /// What StoreKit reported for a product, as a value (`StoreOffer`). Every
+    /// price on screen comes from here.
+    func offer(for id: ProductID) -> StoreOffer? {
+        #if DEBUG
+        if let debugStoreScenario { return debugStoreScenario.offer(for: id) }
+        #endif
+        return product(for: id).flatMap(StoreOffer.init(product:))
+    }
+
+    /// The subscription plan the reader is on, when Pro is active.
+    var currentPlan: ProductID? {
+        guard isProActive, let id = proEntitlement?.productID else { return nil }
+        return ProductID(rawValue: id)
+    }
+
     // MARK: - Load
 
     /// Single-flight: every surface calls this from its `.task`, and a second
     /// caller joins the fetch in flight instead of starting another one (which
     /// used to flip `isLoadingProducts` off while a fetch was still running).
     func loadProducts() async {
+        #if DEBUG
+        if debugStoreScenario != nil { hasAttemptedProductLoad = true; return }
+        #endif
         if let loadTask {
             await loadTask.value
             return
@@ -363,6 +423,9 @@ final class PurchaseManager: ObservableObject {
     /// product answers for both. Stays `nil` if no subscription product loaded
     /// (for example, before the ASC products exist) — then no trial is shown.
     func refreshTrialEligibility() async {
+        #if DEBUG
+        if debugStoreScenario != nil { return }
+        #endif
         guard let subscription = ProductID.subscriptions.compactMap({ product(for: $0) }).first,
               let info = subscription.subscription else {
             isEligibleForTrial = nil
@@ -468,7 +531,8 @@ final class PurchaseManager: ObservableObject {
             do {
                 try await AppStore.sync()
                 await updatePurchasedProducts()
-                if isUnlockAllPurchased || isRemoveAdsPurchased || !ownedPackProductIDs.isEmpty || isProActive {
+                if isUnlockAllPurchased || isRemoveAdsPurchased || !ownedPackProductIDs.isEmpty
+                    || isPackBundlePurchased || isProActive {
                     EBEvents.restoreFinished(outcome: .completed, entryPoint: entryPoint)
                     return .success
                 }
@@ -515,11 +579,17 @@ final class PurchaseManager: ObservableObject {
     func apply(_ resolved: ResolvedEntitlements) {
         var resolved = resolved
         #if DEBUG
-        if debugForcedPro, resolved.pro == nil { resolved.pro = Self.debugProEntitlement() }
+        if debugForcedPro, resolved.pro == nil { resolved.pro = debugProEntitlement() }
+        if debugOwnsAll {
+            resolved.unlockAll = true
+            resolved.removeAds = true
+            resolved.packBundle = true
+        }
         #endif
         isUnlockAllPurchased = resolved.unlockAll
         isRemoveAdsPurchased = resolved.removeAds
         ownedPackProductIDs = resolved.packProductIDs
+        isPackBundlePurchased = resolved.packBundle
         isProActive = resolved.isProActive
         proEntitlement = resolved.pro
         familySharedProductIDs = resolved.familySharedProductIDs
@@ -534,6 +604,7 @@ final class PurchaseManager: ObservableObject {
         var ids = resolved.packProductIDs
         if resolved.unlockAll { ids.insert(ProductID.unlockAll.rawValue) }
         if resolved.removeAds { ids.insert(ProductID.removeAds.rawValue) }
+        if resolved.packBundle { ids.insert(ProductID.packBundle.rawValue) }
         if resolved.isProActive { ids.formUnion(ProductID.subscriptions.map(\.rawValue)) }
         return ids
     }
@@ -682,10 +753,12 @@ extension View {
 
 #if DEBUG
 extension PurchaseManager {
-    static func debugProEntitlement() -> ProEntitlement {
-        ProEntitlement(productID: ProductID.proMonthly.rawValue, state: .active,
-                       expirationDate: Date().addingTimeInterval(30 * 24 * 60 * 60),
-                       willAutoRenew: true, renewalProductID: ProductID.proMonthly.rawValue)
+    /// Monthly for `-econDebugPro`; yearly for `-econDebugStore subscribed`.
+    func debugProEntitlement() -> ProEntitlement {
+        let id: ProductID = debugStoreScenario == .subscribed ? .proAnnual : .proMonthly
+        return ProEntitlement(productID: id.rawValue, state: .active,
+                              expirationDate: Date().addingTimeInterval(30 * 24 * 60 * 60),
+                              willAutoRenew: true, renewalProductID: id.rawValue)
     }
 
     /// DEBUG-only: flip entitlements without a real StoreKit purchase, so the
@@ -702,10 +775,13 @@ extension PurchaseManager {
         guard id.isPack else { return }
         if value { ownedPackProductIDs.insert(id.rawValue) } else { ownedPackProductIDs.remove(id.rawValue) }
     }
+    func debugSetPackBundle(_ value: Bool) {
+        isPackBundlePurchased = value
+    }
     func debugSetPro(_ value: Bool) {
         debugForcedPro = value
         isProActive = value
-        proEntitlement = value ? Self.debugProEntitlement() : nil
+        proEntitlement = value ? debugProEntitlement() : nil
     }
 }
 #endif

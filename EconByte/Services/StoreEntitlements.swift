@@ -26,7 +26,8 @@ import StoreKit
 //     EconByte product is `familyShareable: false` today; if the Owner turns it
 //     on in App Store Connect nothing here has to change).
 //   * Precedence: Pro ⇒ core topics + every pack + no ads; Unlock All ⇒ core
-//     topics only (D18); a pack ⇒ that pack; Remove Ads ⇒ no ads.
+//     topics only (D18); the All Packs Bundle (1.1.4) ⇒ every pack, nothing
+//     else; a pack ⇒ that pack; Remove Ads ⇒ no ads.
 //   * UserDefaults mirrors never grant access (see `PurchaseManager`).
 
 enum StoreOwnership: String, Equatable {
@@ -103,6 +104,8 @@ struct StoreCatalogIDs: Equatable {
     var unlockAll: String
     var removeAds: String
     var packs: Set<String>
+    /// The All Packs Bundle non-consumable (1.1.4): every pack in `packs`.
+    var packBundle: String
     var subscriptions: Set<String>
 }
 
@@ -110,6 +113,8 @@ struct ResolvedEntitlements: Equatable {
     var unlockAll = false
     var removeAds = false
     var packProductIDs: Set<String> = []
+    /// A verified, unrevoked All Packs Bundle purchase (1.1.4).
+    var packBundle = false
     var pro: ProEntitlement?
     /// Non-consumables this Apple ID holds through Family Sharing.
     var familySharedProductIDs: Set<String> = []
@@ -119,11 +124,14 @@ struct ResolvedEntitlements: Equatable {
     var coreTopicsUnlocked: Bool { unlockAll || isProActive }
     /// Remove Ads ∨ Pro.
     var adsSuppressed: Bool { removeAds || isProActive }
-    /// The pack bought outright ∨ Pro. Unlock All never opens a pack (D18).
+    /// The pack bought outright ∨ the All Packs Bundle ∨ Pro. Unlock All never
+    /// opens a pack (D18).
     func hasAccess(packProductID: String) -> Bool {
-        packProductIDs.contains(packProductID) || isProActive
+        packProductIDs.contains(packProductID) || packBundle || isProActive
     }
-    var ownsAnything: Bool { unlockAll || removeAds || !packProductIDs.isEmpty || isProActive }
+    var ownsAnything: Bool {
+        unlockAll || removeAds || !packProductIDs.isEmpty || packBundle || isProActive
+    }
 }
 
 enum EntitlementResolver {
@@ -141,6 +149,7 @@ enum EntitlementResolver {
             switch id {
             case catalog.unlockAll: resolved.unlockAll = true; isNonConsumable = true
             case catalog.removeAds: resolved.removeAds = true; isNonConsumable = true
+            case catalog.packBundle: resolved.packBundle = true; isNonConsumable = true
             case let pack where catalog.packs.contains(pack):
                 resolved.packProductIDs.insert(pack); isNonConsumable = true
             default: isNonConsumable = false
@@ -326,7 +335,7 @@ struct ProStatusRow: Equatable, Identifiable {
 enum ProStatusCopy {
 
     static func planName(_ productID: String?) -> String {
-        productID == PurchaseManager.ProductID.proAnnual.rawValue ? "Yearly" : "Monthly"
+        PlanCopy.planName(productID == PurchaseManager.ProductID.proAnnual.rawValue ? .proAnnual : .proMonthly)
     }
 
     /// Settings and the Pro tab show the same rows: plan, a billing problem if

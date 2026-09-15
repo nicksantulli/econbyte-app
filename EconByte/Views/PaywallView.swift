@@ -2,11 +2,10 @@ import SwiftUI
 import StoreKit
 
 /// Paywall shown when a free user taps a locked topic. Sells the
-/// `com.nsantulli.econbyte.unlockall` non-consumable. Price is read from
-/// StoreKit (`product.displayPrice`) — never hardcoded — per DUD-186. While
-/// StoreKit is fetching, the button reads "Loading price…"; when it gave no
-/// price, the button reads "Unlock All" (disabled) with "Prices unavailable —
-/// Try again" under it (Phase 11 — no bare placeholder dash).
+/// `com.nsantulli.econbyte.unlockall` non-consumable through the shared
+/// `OfferCard` + `PurchaseButton` ("Unlock · $2.99"; StoreKit price, never a
+/// literal — DUD-186; Phase 11 loading / unavailable states from
+/// `PurchaseButtonModel`).
 struct PaywallView: View {
     /// Where the reader came from, so `paywall_viewed` and the purchase events
     /// carry a real entry point rather than an assumed one.
@@ -18,17 +17,23 @@ struct PaywallView: View {
     @State private var working = false
     @State private var alert: PurchaseAlertCopy.Alert?
 
-    private var priceState: PurchasePresentation.PriceState { store.priceState(for: .unlockAll) }
-    private var pending: Bool { store.isPending(.unlockAll) }
-
     private var lockedTopicCount: Int {
-        let topics = ContentStore.shared.topics
-        return topics.filter { !ContentStore.shared.isTopicFree($0.id) }.count
+        let content = ContentStore.shared
+        return content.topics.filter { !content.isTopicFree($0.id) }.count
     }
 
-    private var canBuy: Bool {
-        !pending && PurchasePresentation.canPurchase(displayPrice: priceState.displayPrice,
-                                                     isWorking: working, isLoading: store.isLoadingProducts)
+    private var lockedCardCount: Int {
+        let content = ContentStore.shared
+        return content.allCards.filter { !content.isTopicFree($0.topicId) }.count
+    }
+
+    private var model: PurchaseButtonModel {
+        PurchaseButtonModel.make(action: "Unlock",
+                                 price: store.priceState(for: .unlockAll),
+                                 ownedLabel: store.isUnlockAllPurchased ? "Owned" : nil,
+                                 pending: store.isPending(.unlockAll),
+                                 working: working,
+                                 isLoadingProducts: store.isLoadingProducts)
     }
 
     var body: some View {
@@ -36,77 +41,34 @@ struct PaywallView: View {
             ZStack {
                 Econ.ocean.ignoresSafeArea()
                 ScrollView {
-                    VStack(spacing: 24) {
-                        Image(systemName: "lock.open.fill")
-                            .font(.system(size: 52))
-                            .foregroundColor(Econ.amber)
-                            .padding(.top, 24)
-                            .accessibilityHidden(true)
-
-                        Text("Unlock All Topics")
-                            .font(.system(size: 26, weight: .heavy, design: .rounded))
-                            .foregroundColor(Econ.white)
-
-                        Text("Inflation and Interest Rates are free. Unlock the remaining \(lockedTopicCount) topics — GDP, Labor Markets, Trade & Tariffs, Recessions and more — with a one-time purchase.")
-                            .font(.system(size: 15, design: .rounded))
-                            .foregroundColor(Econ.white.opacity(0.75))
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 28)
-
-                        VStack(spacing: 12) {
-                            featureRow("checkmark.circle.fill", "Every topic, unlocked forever")
-                            // D18 (1.1.3): Unlock All is the core curriculum. Topic
-                            // packs are separate purchases and are not promised here.
-                            featureRow("books.vertical.fill", "The full core curriculum, every topic in Browse Topics")
-                            featureRow("icloud.and.arrow.down.fill", "Restores across your devices")
-                        }
-                        .padding(.horizontal, 28)
-
-                        if store.isUnlockAllPurchased {
-                            Text("Already unlocked ✓")
-                                .font(.system(size: 17, weight: .semibold, design: .rounded))
-                                .foregroundColor(Econ.sky)
-                                .padding(.top, 8)
-                        } else {
-                            Button {
-                                buy()
-                            } label: {
-                                if working {
-                                    ProgressView().tint(Econ.ink)
-                                } else {
-                                    Text(PurchasePresentation.buyTitle("Unlock All", priceState, pending: pending))
-                                }
-                            }
-                            .buttonStyle(PrimaryButton())
-                            .disabled(!canBuy)
-                            .opacity(canBuy ? 1 : 0.55)
-                            .padding(.horizontal, 28)
-                            .padding(.top, 8)
-                            .accessibilityIdentifier("paywallUnlockButton")
-
-                            if priceState == .unavailable {
-                                PricesUnavailableNotice(identifier: "paywallPricesUnavailable") {
-                                    Task { await store.loadProducts() }
-                                }
-                            }
-
-                            Button("Restore Purchases") { restore() }
-                                .buttonStyle(SecondaryButton())
-                                .disabled(working)
-                                .padding(.horizontal, 28)
-                                .accessibilityIdentifier("paywallRestoreButton")
-                        }
-                    }
-                    .padding(.bottom, 40)
+                    // D18: Unlock All is the core curriculum. Topic packs are
+                    // separate purchases and are not promised here.
+                    OfferCard(icon: "lock.open.fill",
+                              title: "Unlock All Topics",
+                              subtitle: "\(lockedTopicCount) more core topics, \(lockedCardCount) cards. One-time purchase.",
+                              highlighted: !store.isUnlockAllPurchased,
+                              identifier: "unlockAllOffer",
+                              button: PurchaseButton(model: model,
+                                                     identifier: "paywallUnlockButton",
+                                                     unavailableIdentifier: "paywallPricesUnavailable",
+                                                     onRetry: { Task { await store.loadProducts() } },
+                                                     action: buy),
+                              restoreIdentifier: "paywallRestoreButton",
+                              onRestore: store.isUnlockAllPurchased ? nil : restore,
+                              restoreDisabled: working)
+                        .padding(20)
                 }
             }
-            // Deliberately not "EconByte Pro": the two products are separate
-            // one-time purchases, not a bundle (design section 8).
+            // Deliberately not "EconByte Pro": the one-time products are
+            // separate purchases, not a bundle (design section 8).
             .navigationTitle("Purchases")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Close") { dismiss() }.foregroundColor(Econ.sky)
+                    Button("Close") { dismiss() }
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                        .foregroundColor(Econ.sky)
+                        .accessibilityIdentifier("paywallCloseButton")
                 }
             }
             .onChange(of: store.isUnlockAllPurchased) { unlocked in
@@ -125,63 +87,26 @@ struct PaywallView: View {
         .onDisappear { growth.monetization.setBlocker(.paywall, active: false) }
     }
 
-    private func featureRow(_ icon: String, _ text: String) -> some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .foregroundColor(Econ.amber)
-                .frame(width: 24)
-                .accessibilityHidden(true)
-            Text(text)
-                .font(.system(size: 15, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.9))
-            Spacer()
-        }
-    }
-
+    // RECONCILED (1.1.2): purchase telemetry lives INSIDE `PurchaseManager`,
+    // where the StoreKit product id is reduced to its family before anything
+    // leaves. The view passes only where the tap happened.
     private func buy() {
         working = true
-        growth.monetization.setBlocker(.purchase, active: true)
-        growth.review.noteNegativeSessionEvent(.purchase)
-        // RECONCILED (1.1.2): purchase telemetry moved INTO `PurchaseManager`,
-        // where the branch is known and the StoreKit product id can be reduced
-        // to its family before anything leaves — the id itself is a prohibited
-        // property. The view passes only where the tap happened.
         Task {
-            let result = await store.purchase(.unlockAll, from: entryPoint.ebEntryPoint)
+            let next = await PurchaseFlow.buy(.unlockAll, from: entryPoint.ebEntryPoint, store: store, growth: growth,
+                                              accessGranted: { store.isUnlockAllPurchased })
             working = false
-            growth.monetization.setBlocker(.purchase, active: false)
-            growth.syncEntitlements(from: store)
-            if case .success = result {} else {
-                growth.review.noteNegativeSessionEvent(.purchaseFailure)
-            }
-            show(result, kind: .purchase)
+            alert = next
         }
     }
 
     private func restore() {
         working = true
-        growth.monetization.setBlocker(.restore, active: true)
-        growth.review.noteNegativeSessionEvent(.restore)
         Task {
-            let result = await store.restorePurchases(from: entryPoint.ebEntryPoint)
+            let next = await PurchaseFlow.restore(from: entryPoint.ebEntryPoint, store: store, growth: growth)
             working = false
-            growth.monetization.setBlocker(.restore, active: false)
-            growth.syncEntitlements(from: store)
-            if case .failed = result {
-                growth.review.noteNegativeSessionEvent(.restoreFailure)
-                growth.diagnosticLog.capture(.restoreFailed)
-            }
-            show(result, kind: .restore)
+            alert = next
         }
-    }
-
-    private func show(_ result: PurchaseManager.PurchaseResult, kind: PurchaseAlertCopy.Kind) {
-        if result == .productUnavailable { Task { await store.loadProducts() } }
-        guard let next = PurchaseAlertCopy.alert(for: result, kind: kind,
-                                                 accessGranted: store.isUnlockAllPurchased) else { return }
-        // A user-facing error is a bad moment to ask for a rating (rules-v2).
-        growth.review.noteNegativeSessionEvent(.errorShown)
-        alert = next
     }
 }
 

@@ -85,6 +85,8 @@ enum EBProductFamily: String {
     case packWorld = "pack_world"
     case packSystems = "pack_systems"
     case packPersonalFinance = "pack_personalfinance"
+    /// The All Packs Bundle (1.1.4).
+    case packBundle = "pack_bundle"
     /// EconByte Pro (1.1.4): the two durations in the one subscription group.
     case proMonthly = "pro_monthly"
     case proAnnual = "pro_annual"
