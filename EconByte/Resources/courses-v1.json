@@ -1283,7 +1283,7 @@
       "courseID": "reading-price-charts",
       "title": "Reading Price Charts",
       "icon": "chart.xyaxis.line",
-      "summary": "Learn to read candlesticks, trends, levels, patterns, and moving averages as a vocabulary for describing past prices - and understand why the research says they are descriptions, not forecasts.",
+      "summary": "Learn to read candlesticks, trends, levels, patterns, and moving averages as a vocabulary for describing past prices - and understand why the evidence that they forecast prices is mixed and hard to use.",
       "level": "intermediate",
       "estimatedMinutes": 37,
       "lessons": [
@@ -1296,7 +1296,7 @@
           "blocks": [
             {
               "type": "paragraph",
-              "text": "A price chart is a record of past trades. The most common style is the candlestick chart. Each candle summarises one slice of time - a minute, a day, a week - with four numbers. The open is the first trade of the period. The close is the last trade. The high is the most anyone paid during the period, and the low is the least. Those four numbers are often shortened to OHLC."
+              "text": "A price chart is a record of past trades. The most common style is the candlestick chart. Each candle summarizes one slice of time - a minute, a day, a week - with four numbers. The open is the first trade of the period. The close is the last trade. The high is the most anyone paid during the period, and the low is the least. Those four numbers are often shortened to OHLC."
             },
             {
               "type": "diagram",
@@ -1305,7 +1305,7 @@
             },
             {
               "type": "paragraph",
-              "text": "The body shows where the period started and finished. If the close is above the open, the candle is an up candle and is usually drawn hollow or in a lighter colour. If the close is below the open, it is a down candle and is usually drawn filled or in a darker colour. The wicks show how far trading strayed from the body before coming back. A long wick means the price visited that level but did not stay there."
+              "text": "The body shows where the period started and finished. If the close is above the open, the candle is an up candle; if the close is below the open, it is a down candle. Color conventions vary between charting tools. In this app's charts, up candles are blue and down candles are amber. The wicks show how far trading strayed from the body before coming back. A long wick means the price visited that level but did not stay there."
             },
             {
               "type": "chart",
@@ -1411,7 +1411,7 @@
             },
             {
               "type": "paragraph",
-              "text": "Timeframe is the length of time each candle covers. A weekly candle is not a new set of facts; it is five daily candles squeezed into one. Its open is Monday's open, its close is Friday's close, and its high and low are the highest high and lowest low of the whole week. That is why a choppy week of daily candles can become a single calm-looking weekly candle."
+              "text": "Timeframe is the length of time each candle covers. A weekly candle is not a new set of facts; it is that week's daily candles, usually five, squeezed into one. Its open is the first trading day's open, its close is the last trading day's close, and its high and low are the highest high and lowest low of the whole week. That is why a choppy week of daily candles can become a single calm-looking weekly candle."
             },
             {
               "type": "keyTerms",
@@ -1426,7 +1426,7 @@
                 },
                 {
                   "term": "Wick",
-                  "definition": "The thin line above or below the body showing how far price travelled beyond the open and close."
+                  "definition": "The thin line above or below the body showing how far price traveled beyond the open and close."
                 },
                 {
                   "term": "Timeframe",
@@ -1707,7 +1707,7 @@
             },
             {
               "type": "paragraph",
-              "text": "This is why people who talk about a trend usually say which timeframe they mean. The SEC describes the stock market as the organised trading of shares through exchanges, over-the-counter dealers, and electronic venues; the chart is simply a drawing of the trades that flowed through those venues. The trades are the facts. The trend label is an interpretation laid on top, and it changes with the lens."
+              "text": "This is why people who talk about a trend usually say which timeframe they mean. The SEC describes the stock market as the organized trading of stocks through exchanges, over-the-counter, and computerized trading venues; the chart is simply a drawing of the trades that flowed through those venues. The trades are the facts. The trend label is an interpretation laid on top, and it changes with the lens."
             },
             {
               "type": "keyTerms",
@@ -1979,7 +1979,7 @@
               "type": "callout",
               "style": "caution",
               "title": "Descriptive, not predictive",
-              "text": "A support line is a summary of past turns. It says the price turned here before; it does not say the price must turn here again. Prices break through support and resistance all the time, and when they do, chart readers simply redraw the lines. Treat these lines as a way to organise what you see, not as a barrier that the market has agreed to respect."
+              "text": "A support line is a summary of past turns. It says the price turned here before; it does not say the price must turn here again. Prices break through support and resistance all the time, and when they do, chart readers simply redraw the lines. Treat these lines as a way to organize what you see, not as a barrier that the market has agreed to respect."
             },
             {
               "type": "paragraph",
@@ -2039,8 +2039,8 @@
             },
             {
               "organization": "U.S. Securities and Exchange Commission, Investor.gov",
-              "documentTitle": "Glossary: Stock",
-              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/stock",
+              "documentTitle": "Glossary: Limit Orders",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/limit-orders",
               "publicationDate": "2026-09-14",
               "datePrecision": "observed-on-verification-date",
               "verificationDate": "2026-09-14"
@@ -2056,7 +2056,7 @@
           "blocks": [
             {
               "type": "paragraph",
-              "text": "Three common candle shapes show how the vocabulary works. A doji has an open and close that are almost equal, so the body is a thin line and the wicks do the talking; it describes a period that ended where it began. A hammer has a small body near the top and a long lower wick and appears after a decline; it describes a period in which the price fell hard, then recovered most of the drop before the close."
+              "text": "Three common candle shapes show how the vocabulary works. A doji has an open and close that are almost equal, so the body is a thin line and the wicks do the talking; it describes a period that ended where it began. A hammer appears after a decline and has a small body near the top of its range, a lower wick at least about twice as long as the body, and little or no upper wick; it describes a period in which the price fell hard, then recovered most of the drop before the close."
             },
             {
               "type": "paragraph",
@@ -2205,7 +2205,7 @@
                 },
                 {
                   "term": "Hammer",
-                  "definition": "A candle with a small body near its high and a long lower wick, seen after a decline."
+                  "definition": "A candle seen after a decline, with a small body near its high, a lower wick at least about twice the body's length, and little or no upper wick."
                 },
                 {
                   "term": "Engulfing pattern",
@@ -2213,19 +2213,19 @@
                 },
                 {
                   "term": "Technical analysis",
-                  "definition": "The practice of studying past prices and volume, often through charts, to describe market behaviour."
+                  "definition": "The practice of studying past prices and volume, often through charts, to describe market behavior."
                 }
               ]
             },
             {
               "type": "paragraph",
-              "text": "Researchers have tested whether these shapes say anything about what happens next. In a National Bureau of Economic Research working paper issued in March 2000, Andrew Lo, Harry Mamaysky, and Jiang Wang used a computer method to detect classic chart patterns in U.S. stock prices from 1962 to 1996 and asked whether the days after a pattern differed statistically from ordinary days. They reported that several patterns carried some incremental information. They did not claim the patterns made money."
+              "text": "Researchers have tested whether chart shapes say anything about what happens next. In a National Bureau of Economic Research working paper issued in March 2000, Andrew Lo, Harry Mamaysky, and Jiang Wang used a computer method to detect classic multi-day chart patterns, such as head-and-shoulders and double bottoms, in U.S. stock prices from 1962 to 1996 and asked whether the days after a pattern differed statistically from ordinary days. They reported that several patterns carried some incremental information and may have some practical value. Their test did not cover single-candle shapes such as the hammer, and it measured statistical differences, not profits after trading costs."
             },
             {
               "type": "callout",
               "style": "caution",
               "title": "Information is not profit",
-              "text": "A pattern can shift the odds a little and still be useless in practice, because acting on it costs money: commissions, the spread between buying and selling prices, and taxes. Tests of trading rules across many markets have found effects that are small, unstable from period to period, and that often shrink or vanish after costs or after publication. The honest summary is that the evidence on forecasting power is mixed at best, which makes patterns fine for reading a chart and poor as a reason to act."
+              "text": "A pattern can shift the odds a little and still be useless in practice, because acting on it costs money: commissions, the spread between buying and selling prices, and taxes. The wider evidence cuts both ways. Research on simple trading rules in currency markets found some predictive value, but one study found it shrank sharply once periods of central bank intervention were set aside. A study of many stock-return patterns found that few high-turnover strategies stayed statistically significant after trading costs. That makes patterns fine for reading a chart and a weak reason to act."
             },
             {
               "type": "quiz",
@@ -2243,7 +2243,7 @@
               "type": "takeaways",
               "items": [
                 "A doji, hammer, or engulfing candle is a name for a specific OHLC shape.",
-                "Academic tests find at most small, unstable information in chart patterns.",
+                "Academic tests find some information in certain chart patterns, but the evidence is mixed and effects can fade.",
                 "Information in a pattern is not the same as profit after costs.",
                 "Learn the vocabulary to read charts, not as a reason to trade."
               ]
@@ -2255,6 +2255,22 @@
               "documentTitle": "Foundations of Technical Analysis: Computational Algorithms, Statistical Inference, and Empirical Implementation (Working Paper 7613)",
               "url": "https://www.nber.org/papers/w7613",
               "publicationDate": "2000-03-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Technical Trading Rule Profitability and Foreign Exchange Intervention (Working Paper 5505)",
+              "url": "https://www.nber.org/papers/w5505",
+              "publicationDate": "1996-03-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "A Taxonomy of Anomalies and Their Trading Costs (Working Paper 20721)",
+              "url": "https://www.nber.org/papers/w20721",
+              "publicationDate": "2014-12-01",
               "datePrecision": "stated-on-page",
               "verificationDate": "2026-09-14"
             }
@@ -3023,7 +3039,7 @@
             },
             {
               "type": "paragraph",
-              "text": "The SEC's investor education site describes day trading - rapid buying and selling within one day to catch short moves - as extremely risky and able to produce large losses very quickly. FINRA adds that frequent intraday trading, especially on borrowed money, can end in losing some or all of what was put in. The SEC also warns of pump-and-dump schemes, where false hype lifts a price before insiders sell. A chart never tells you why the price moved."
+              "text": "The SEC's investor education site describes day trading - rapid buying and selling within one day to catch short moves - as extremely risky and able to produce large losses very quickly. FINRA adds that frequent intraday trading, especially on borrowed money, can end in losing some or all of what was put in. The SEC also warns of pump-and-dump schemes, where fraudsters spread false or misleading hype to lift a price, then sell their own shares. A chart never tells you why the price moved."
             },
             {
               "type": "callout",
