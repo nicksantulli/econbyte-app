@@ -467,7 +467,10 @@ final class ShellRedesignTests: XCTestCase {
         func waitForBanner(_ id: String, timeout: Int = 30) -> XCUIElement? {
             let banner = any[id]
             for _ in 0..<timeout {
-                if banner.exists, banner.frame.height > 10 { return banner }
+                // The slot's frame appears before the ad loads; wait for the
+                // loaded ad height the slot reports (DEBUG accessibility value).
+                let loaded = Double(banner.value as? String ?? "") ?? Double(banner.frame.height)
+                if banner.exists, banner.frame.height > 10, loaded > 10 { return banner }
                 sleep(1)
             }
             return nil
