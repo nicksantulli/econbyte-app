@@ -4455,19 +4455,19 @@
               "markers": [
                 {
                   "x": 3,
-                  "label": "Low 97.0"
+                  "label": "97.0"
                 },
                 {
                   "x": 9,
-                  "label": "Low 98.8"
+                  "label": "98.8"
                 },
                 {
                   "x": 15,
-                  "label": "Low 99.4"
+                  "label": "99.4"
                 },
                 {
                   "x": 20,
-                  "label": "Intraday dip only"
+                  "label": "Intraday dip"
                 }
               ]
             },

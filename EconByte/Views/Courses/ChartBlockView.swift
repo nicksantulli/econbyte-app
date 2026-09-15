@@ -16,7 +16,10 @@ struct ChartBlockView: View {
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundColor(Econ.white)
             chart
-                .frame(height: 220)
+                // Marker labels sit above the plot; reserve their rows so they never
+                // cover the title (two rows when labels alternate).
+                .padding(.top, markerHeadroom)
+                .frame(height: 220 + markerHeadroom)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text("\(spec.title). \(spec.caption)"))
                 .accessibilityValue(Text(accessibilitySummary))
@@ -100,13 +103,29 @@ struct ChartBlockView: View {
         .modifier(ChartStyle(xLabel: spec.xLabel, yLabel: spec.yLabel))
     }
 
+    /// Extra space above the plot for marker labels: one row, or two when
+    /// several markers alternate rows so neighboring labels do not collide.
+    private var markerHeadroom: CGFloat {
+        let count = spec.markers?.count ?? 0
+        return count == 0 ? 0 : (count > 1 ? 30 : 14)
+    }
+
+    /// Labels for markers in the right half of the plot extend leftward so they
+    /// stay inside the chart (iOS 16 has no annotation overflow resolution).
+    private func markerAlignment(for x: Double) -> Alignment {
+        let xs = (spec.candles?.map(\.x) ?? []) + (spec.series ?? []).flatMap { $0.points.map(\.x) }
+        guard let low = xs.min(), let high = xs.max(), high > low else { return .leading }
+        return (x - low) / (high - low) > 0.5 ? .trailing : .leading
+    }
+
     @ChartContentBuilder
     private var markers: some ChartContent {
-        ForEach(spec.markers ?? [], id: \.x) { marker in
+        ForEach(Array((spec.markers ?? []).enumerated()), id: \.offset) { index, marker in
             RuleMark(x: .value("Marker", marker.x))
                 .foregroundStyle(Econ.mist.opacity(0.6))
                 .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
-                .annotation(position: .top, alignment: .leading) {
+                .annotation(position: .top, alignment: markerAlignment(for: marker.x),
+                            spacing: index % 2 == 1 ? 16 : 2) {
                     Text(marker.label)
                         .font(.system(size: 10, weight: .semibold, design: .rounded))
                         .foregroundColor(Econ.mist)
