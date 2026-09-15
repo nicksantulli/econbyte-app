@@ -60,8 +60,10 @@ final class StoryLessonsTests: XCTestCase {
     }
 
     func testCheckOrdinalsCountChecksInOrder() throws {
-        let lesson = try XCTUnwrap(try loadCourses().allLessons.first { $0.checks.count == 2 }
-                                   ?? (try loadCourses().allLessons.first))
+        let lessons = try loadCourses().allLessons
+        let twoChecks = lessons.first(where: { $0.checks.count == 2 })
+        let lesson = try XCTUnwrap(twoChecks ?? lessons.first)
+        XCTAssertNotNil(twoChecks, "at least one story has two quick checks")
         let checkIndices = lesson.beats.indices.filter { lesson.beats[$0].kind == .check }
         for (ordinal, index) in checkIndices.enumerated() {
             XCTAssertEqual(lesson.checkOrdinal(forBeat: index), ordinal)
@@ -109,7 +111,7 @@ final class StoryLessonsTests: XCTestCase {
         XCTAssertEqual(beats[7].items, ["One", "Two"])
 
         // Words on screen: heading + text + flow steps; a check counts question + choices.
-        XCTAssertEqual(beats[0].wordCount, 2 + 4 + 4)
+        XCTAssertEqual(beats[0].wordCount, 2 + 4 + 5)
         XCTAssertEqual(beats[6].wordCount, 1 + 3)
         XCTAssertEqual(beats[1].wordCount, 2 + 1 + 1)
 

@@ -141,9 +141,9 @@ struct CardView: View {
         }
     }
 
-    private func face<Header: View, Body: View, Footer: View>(
+    private func face<Header: View, FaceBody: View, Footer: View>(
         @ViewBuilder header: () -> Header,
-        @ViewBuilder body: () -> Body,
+        @ViewBuilder body: () -> FaceBody,
         @ViewBuilder footer: () -> Footer) -> some View {
         let stack = VStack(spacing: EconSpace.m) { body() }
             .padding(.horizontal, EconSpace.xl)
