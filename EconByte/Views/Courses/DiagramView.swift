@@ -520,7 +520,7 @@ private struct TrendlineAnchorsDiagram: View {
                 DiagramLabel(text: "Line A", color: Econ.amberLight)
                     .position(x: x1 - 22, y: lineA(1.0).y + 12)
                 DiagramLabel(text: "Line B", color: Econ.sky)
-                    .position(x: x1 - 22, y: lineB(1.0).y + 12)
+                    .position(x: x1 - 18, y: lineB(1.0).y + 22)
                 DiagramLabel(text: "A break of one line, not the other", color: Econ.white.opacity(0.85))
                     .frame(width: 130)
                     .multilineTextAlignment(.center)
@@ -672,7 +672,8 @@ private struct BreakevenSplitDiagram: View {
             let unit = plotBottom - plotTop
             let nominalH = unit * 0.86, realH = unit * 0.38
             let barW = min(w * 0.2, 84)
-            let nominalX = 34 + w * 0.16, realX = 34 + w * 0.42
+            let nominalX = 34 + w * 0.13, realX = 34 + w * 0.43
+            let labelW = min(barW + 30, realX - nominalX - 8)
             let bracketX = realX + barW / 2 + 12
             ZStack(alignment: .topLeading) {
                 Path { p in
@@ -707,11 +708,11 @@ private struct BreakevenSplitDiagram: View {
                     .frame(width: max(w - bracketX - 16, 80), alignment: .leading)
                     .position(x: bracketX + 8 + max(w - bracketX - 16, 80) / 2, y: plotBottom - (nominalH + realH) / 2)
                 DiagramLabel(text: "Nominal Treasury")
-                    .frame(width: barW + 30).multilineTextAlignment(.center)
-                    .position(x: nominalX, y: plotBottom + 14)
+                    .frame(width: labelW).multilineTextAlignment(.center)
+                    .position(x: nominalX, y: plotBottom + 16)
                 DiagramLabel(text: "TIPS real yield")
-                    .frame(width: barW + 30).multilineTextAlignment(.center)
-                    .position(x: realX, y: plotBottom + 14)
+                    .frame(width: labelW).multilineTextAlignment(.center)
+                    .position(x: realX, y: plotBottom + 16)
             }
         }
     }

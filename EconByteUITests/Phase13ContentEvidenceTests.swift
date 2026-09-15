@@ -107,6 +107,12 @@ final class Phase13ContentEvidenceTests: XCTestCase {
             // (`DiagramView.accessibilityDescription`); the wrapper identifier is not exposed.
             let diagram = app.images.matching(NSPredicate(format: "label BEGINSWITH %@", entry.labelPrefix)).firstMatch
             XCTAssertTrue(scrollTo(diagram, in: app), "\(entry.lesson) renders \(entry.diagram)")
+            // Bring the whole drawing (and its caption) on screen before capturing.
+            let window = app.windows.firstMatch.frame
+            for _ in 0..<4 where diagram.frame.maxY > window.maxY * 0.72 {
+                app.swipeUp(velocity: .slow)
+            }
+            XCTAssertTrue(diagram.isHittable, "\(entry.diagram) stays on screen")
             capture("p13-diagram-\(entry.diagram)-\(entry.lesson)")
             if entry.hasChart {
                 let chart = any.matching(NSPredicate(format: "identifier BEGINSWITH 'chart-\(entry.lesson)' AND NOT identifier ENDSWITH '-note'")).firstMatch
