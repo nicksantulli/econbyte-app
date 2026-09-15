@@ -2656,7 +2656,7 @@
       "name": "Economies Around the World",
       "productID": "com.nsantulli.econbyte.pack.world",
       "icon": "globe.americas.fill",
-      "summary": "The United States, the euro area, China and the emerging world through their own official statistics: how each measures output, prices, jobs and debt, and what makes each one work differently.",
+      "summary": "The United States, the euro area, China and the emerging world through official national and international statistics: how each measures output, prices, jobs and debt, and what makes each one work differently.",
       "topics": [
         {
           "topicID": "us-economy",
@@ -2903,7 +2903,7 @@
               "difficulty": "intro",
               "source": {
                 "organization": "European Central Bank",
-                "documentTitle": "The euro",
+                "documentTitle": "Our money",
                 "url": "https://www.ecb.europa.eu/euro/intro/html/index.en.html",
                 "publicationDate": "2026-09-14",
                 "datePrecision": "observed-on-verification-date",
@@ -2946,7 +2946,7 @@
               "cardID": "eur-003",
               "topicID": "eurozone",
               "title": "The Rules for Joining",
-              "definition": "Before a country can adopt the euro it must meet convergence criteria written into the EU Treaty. The idea is that economies sharing one interest rate should already look alike: low inflation, sound public finances, a stable exchange rate and long-term interest rates close to the best performers. The criteria are tested when a country applies for membership, not enforced afterwards, which is one reason the tests are strict.",
+              "definition": "Before a country can adopt the euro it must meet convergence criteria written into the EU Treaty. The idea is that economies sharing one interest rate should already look alike: low inflation, sound public finances, a stable exchange rate and long-term interest rates close to the best performers. The criteria are tested before a country is allowed in; once it has joined it can no longer devalue or set its own interest rate, which is one reason the entry tests are strict.",
               "example": "The tests: inflation no more than 1.5 percentage points above the average of the 3 lowest-inflation members; a government deficit within 3 percent of GDP and debt within 60 percent of GDP; at least 2 years in the exchange rate mechanism without devaluing; and long-term rates no more than 2 percentage points above the 3 best performers.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
@@ -2980,7 +2980,7 @@
               "difficulty": "intermediate",
               "source": {
                 "organization": "European Central Bank",
-                "documentTitle": "Price stability",
+                "documentTitle": "Two per cent inflation target",
                 "url": "https://www.ecb.europa.eu/mopo/strategy/pricestab/html/index.en.html",
                 "publicationDate": "2026-09-14",
                 "datePrecision": "observed-on-verification-date",
@@ -3092,7 +3092,7 @@
               "difficulty": "advanced",
               "source": {
                 "organization": "European Central Bank",
-                "documentTitle": "The euro",
+                "documentTitle": "Our money",
                 "url": "https://www.ecb.europa.eu/euro/intro/html/index.en.html",
                 "publicationDate": "2026-09-14",
                 "datePrecision": "observed-on-verification-date",
@@ -3111,7 +3111,7 @@
           "icon": "yensign.circle.fill",
           "order": 3,
           "access": "pack",
-          "summary": "The world's second-largest economy in its own official statistics: growth since 1978, the 2025 numbers, a shrinking population, a managed currency, and how its central bank works.",
+          "summary": "The world's second-largest economy in official Chinese and World Bank statistics: growth since 1978, the 2025 numbers, a shrinking population, a managed currency, and how its central bank works.",
           "cards": [
             {
               "cardID": "chn-001",
@@ -3146,7 +3146,7 @@
               "topicID": "china-economy",
               "title": "Four Decades of Catch-up",
               "definition": "Economic reform in China began in 1978, opening the economy to markets and trade. The result was one of the fastest sustained expansions on record, which moved the country through the World Bank's income groups and pulled hundreds of millions of people above the extreme poverty line. The pace has slowed as the population ages and the easy gains from moving farm workers into factories have been taken.",
-              "example": "GDP growth averaged more than 9 percent a year from 1978 into the 2020s, and almost 800 million people were lifted out of extreme poverty. China moved from the low-income group to the upper-middle-income group. The World Bank's 2026 update projected growth easing to 4.4 percent in 2026 as aging and weaker demand weigh.",
+              "example": "GDP growth averaged more than 9 percent a year from 1978 into the 2020s, and almost 800 million people were lifted out of extreme poverty. China moved from the low-income group to the upper-middle-income group. The World Bank's July 2026 China Economic Update projected growth slowing to 4.4 percent in 2026, citing weak domestic demand and a long property downturn.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -3165,7 +3165,7 @@
                 "units": "percent average annual GDP growth; million people leaving extreme poverty; percent projected growth",
                 "geography": "China",
                 "claimKind": "observation",
-                "observationPeriod": "1978 to 2026",
+                "observationPeriod": "1978 to 2025, with a World Bank projection for 2026",
                 "retrievalDate": "2026-09-14"
               }
             },
@@ -3202,7 +3202,7 @@
               "topicID": "china-economy",
               "title": "Three Sectors",
               "definition": "Statisticians split an economy into primary industry (farming, forestry, fishing), secondary industry (manufacturing, mining, construction) and tertiary industry (services). As economies mature, services grow fastest and take the largest share. China's figures show that shift under way, with construction, long a growth engine, contracting even as services expanded. Watching the three sectors separately shows where growth is actually coming from, which a single GDP number hides.",
-              "example": "In 2025 primary industry added 9.93 trillion yuan of value, up 3.9 percent; secondary industry 49.97 trillion yuan, up 4.5 percent; and tertiary industry 80.89 trillion yuan, up 5.4 percent. Within secondary industry, construction shrank 1.1 percent. Services were both the largest sector and the fastest growing.",
+              "example": "In 2025 primary industry added 9.33 trillion yuan of value, up 3.9 percent; secondary industry 49.97 trillion yuan, up 4.5 percent; and tertiary industry 80.89 trillion yuan, up 5.4 percent. Within secondary industry, construction shrank 1.1 percent. Services were both the largest sector and the fastest growing.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -3257,7 +3257,7 @@
               "cardID": "chn-006",
               "topicID": "china-economy",
               "title": "A Managed Float",
-              "definition": "A managed floating exchange rate lets the currency move with market supply and demand inside limits set by the central bank. China's version references a basket of currencies rather than the U.S. dollar alone, and the central bank publishes a daily central parity around which trading may move within a band. It is neither a hard peg nor a free float.",
+              "definition": "A managed floating exchange rate lets the currency move with market supply and demand inside limits set by the central bank. China's version references a basket of currencies rather than the U.S. dollar alone, and a daily central parity is set around which trading may move within a band. It is neither a hard peg nor a free float.",
               "example": "China unified its dual exchange rates on January 1, 1994 and on July 21, 2005 moved to a managed float based on market supply and demand with reference to a basket of currencies. The daily band against the dollar was 0.3 percent at the 2005 reform and was widened to 0.5 percent in 2007.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -3408,7 +3408,7 @@
               "topicID": "emerging-markets",
               "title": "Remittances",
               "definition": "Remittances are money that migrants send home to family. For many developing countries they are a larger and steadier source of foreign currency than investment by foreign firms or aid from governments, because migrants keep sending even when the home economy is weak. The cost of sending money matters: every percentage point of fees is income that never arrives, which is why lowering that cost is a development goal in itself.",
-              "example": "Remittances to low- and middle-income countries reached $669 billion in 2023, up 3.8 percent, and exceeded foreign direct investment and official aid combined. The largest recipients were India at $125 billion, Mexico $67 billion, China $50 billion, the Philippines $40 billion and Egypt $24 billion. Sending $200 cost 6.2 percent on average in the second quarter of 2023.",
+              "example": "Remittances to low- and middle-income countries were estimated at $669 billion in 2023, up 3.8 percent, and exceeded foreign direct investment and official aid combined. The largest recipients were India at $125 billion, Mexico $67 billion, China $50 billion, the Philippines $40 billion and Egypt $24 billion. Sending $200 cost 6.2 percent on average in the second quarter of 2023.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -3491,7 +3491,7 @@
               "cardID": "emg-006",
               "topicID": "emerging-markets",
               "title": "The Lost Decade and the Brady Plan",
-              "definition": "A debt crisis becomes a lost decade when the cure, austerity to keep paying, chokes growth for years. Debt reduction breaks the cycle by writing part of the debt off in exchange for new bonds the borrower can service. Lenders accept a loss because a smaller debt that gets paid is worth more than a larger one that does not. Regulators first had to be sure the banks could absorb the write-offs.",
+              "definition": "A debt crisis becomes a lost decade when the cure, austerity to keep paying, chokes growth for years. Debt reduction breaks the cycle by writing part of the debt off in exchange for new bonds the borrower can service. Lenders accept a loss because a smaller debt that gets paid is worth more than a larger one that does not. Banks first had to set aside enough loss reserves to absorb the write-offs.",
               "example": "By 1982 the 9 largest U.S. banks held Latin American debt equal to 176 percent of their capital. The years 1982 to 1989 brought high unemployment, falling incomes per person and stagnant growth. The Brady plan of 1989 offered permanent relief: between 1989 and 1994 private lenders forgave $61 billion, about one-third of the debt.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -3519,7 +3519,7 @@
               "cardID": "emg-007",
               "topicID": "emerging-markets",
               "title": "When a Peg Breaks: Asia, 1997",
-              "definition": "A currency peg fixes the exchange rate to the dollar. It invites firms and banks to borrow in dollars, often short term, because the rate seems guaranteed. If foreign lenders lose confidence and pull out, the central bank runs short of reserves and the peg breaks. The currency falls, and every dollar debt suddenly costs far more in local money, pushing borrowers into insolvency.",
+              "definition": "A currency peg fixes the exchange rate to another currency, often the U.S. dollar. It invites firms and banks to borrow in dollars, often short term, because the rate seems guaranteed. If foreign lenders lose confidence and pull out, the central bank runs short of reserves and the peg breaks. The currency falls, and every dollar debt suddenly costs far more in local money, pushing borrowers into insolvency.",
               "example": "On July 2, 1997 Thailand devalued its currency against the dollar, and the crisis spread to Malaysia, the Philippines, Indonesia, Hong Kong and South Korea through December 1998. Firms saw the local value of their foreign debts jump. The IMF, World Bank, Asian Development Bank and governments mobilized $118 billion for Thailand, Indonesia and South Korea, with reforms as conditions.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -3707,7 +3707,7 @@
               "topicID": "market-economies",
               "title": "Regulating a Natural Monopoly",
               "definition": "Some services are cheapest when one network provides them - a rail line, a water system - so competition cannot discipline the price. Economists call this a natural monopoly. Market economies usually respond with regulation instead of competition: a public commission sets or reviews rates, requires equal treatment of customers, and demands reports. The trade-off is documented on both sides. Regulation limits the abuse of a captive market, but a commission can also be slow, captured, or simply wrong about costs.",
-              "example": "The Interstate Commerce Act of 1887 made railroads the first industry under federal regulation. Farmers on branch lines had faced 1 carrier, rebates for large shippers, and higher rates for short hauls than long ones. The act required 'just and reasonable' rates, banned rebates and short-haul discrimination, and created a 5-member Interstate Commerce Commission. Its own contradictory terms made it only partly effective.",
+              "example": "The Interstate Commerce Act of 1887 made railroads the first industry under federal regulation. Railroads competed for long hauls but not short ones, and large shippers won rebates that small farmers could not. The act required rates to be 'reasonable and just', banned rebates and charging more for a short haul than a long one on the same line, and created a 5-member Interstate Commerce Commission. Its contradictory terms left it not very effective in practice.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -3728,7 +3728,7 @@
               "topicID": "market-economies",
               "title": "Business Births and Deaths",
               "definition": "A market economy is constantly reshuffled. New establishments open, old ones close, and jobs are created at some firms while they disappear at others. This churn is how resources move from uses people value less to uses they value more; a closing is often the other side of an opening elsewhere. Statistical agencies track it because the pace of entry and exit says a great deal about competition and about how quickly an economy adapts.",
-              "example": "The Census Bureau's Business Dynamics Statistics measure exactly this churn: establishment births and deaths, firm startups and shutdowns, and job creation and destruction, published every year for the United States from 1978 through 2023 and broken out by industry, firm size, and firm age. The net change in employment at a location is what a headline jobs number shows; the gross flows underneath it are far larger.",
+              "example": "The Census Bureau's Business Dynamics Statistics measure exactly this churn: establishment births and deaths, firm startups and shutdowns, and job creation and destruction, published annually for the United States with data from 1978 through 2023, for the economy overall and by establishment and firm characteristics. A headline jobs report shows only the net change in employment; the gross flows of jobs created and destroyed underneath it are far larger.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -3774,7 +3774,7 @@
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "advanced",
               "source": {
-                "organization": "Federal Reserve History (Federal Reserve Bank of Richmond)",
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "The Great Inflation",
                 "url": "https://www.federalreservehistory.org/essays/great-inflation",
                 "publicationDate": "2026-09-14",
@@ -3815,7 +3815,7 @@
                 "organization": "U.S. Bureau of Economic Analysis",
                 "documentTitle": "Gross Domestic Product",
                 "url": "https://www.bea.gov/data/gdp/gross-domestic-product",
-                "publicationDate": "2026-09-02",
+                "publicationDate": "2026-08-26",
                 "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
@@ -3827,7 +3827,7 @@
                 "units": "percent (annualized real GDP growth, second estimate)",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "second quarter of 2026, as published by BEA on 2026-09-02",
+                "observationPeriod": "second quarter of 2026, as published by BEA on 2026-08-26",
                 "retrievalDate": "2026-09-14"
               }
             },
@@ -3917,7 +3917,7 @@
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
-                "organization": "Federal Reserve History (Federal Reserve Bank of Richmond)",
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Banking Act of 1933 (Glass-Steagall)",
                 "url": "https://www.federalreservehistory.org/essays/glass-steagall-act",
                 "publicationDate": "2026-09-14",
@@ -3941,7 +3941,7 @@
               "topicID": "mixed-economies",
               "title": "Rules for the Labor Market",
               "definition": "Labor is bought and sold in markets, but mixed economies set the rules of that market: who may organize, how disputes are settled, minimum standards for pay and hours. The economic argument for such rules is that individual workers and large employers do not bargain from equal positions and that some outcomes - unsafe conditions, child labor - impose costs others bear. The documented trade-off is that rules also raise employers’ costs and can shift jobs elsewhere.",
-              "example": "The National Labor Relations Act of July 5, 1935 guaranteed private-sector workers the right to form unions and bargain collectively, and created a 5-member National Labor Relations Board, assisted by 33 regional directors, to run union elections and rule on unfair labor practices. The Supreme Court upheld the law in 1937, and union membership surged in the years that followed.",
+              "example": "The National Labor Relations Act of July 5, 1935 guaranteed private-sector workers the right to form unions and bargain collectively, and created the National Labor Relations Board to run union elections and rule on unfair labor practices. The Supreme Court upheld the law in 1937, and the National Archives credits it with contributing to a dramatic surge in union membership.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -3990,7 +3990,7 @@
               "topicID": "mixed-economies",
               "title": "Public Investment in People",
               "definition": "Governments in mixed economies also spend on human capital - schooling, training, health - on the argument that an educated worker raises the productivity of others and pays taxes for decades, so the return is not captured by the student alone. Economists call this a positive spillover. Measuring the payoff is hard because the people who receive such benefits differ from those who do not, and because the gains arrive slowly and show up partly in other people’s incomes.",
-              "example": "The Servicemen's Readjustment Act of 1944, the G.I. Bill, paid tuition and living costs for veterans. Within 7 years about 8 million had used its education benefits; by 1956 the education portion had cost $14.5 billion, and 4.3 million home loans worth $33 billion had been guaranteed by 1955. The share of Americans holding a bachelor's degree rose from 4.6 percent in 1945 to 25 percent 50 years later.",
+              "example": "The Servicemen's Readjustment Act of 1944, the G.I. Bill, paid tuition and living costs for veterans. Within 7 years about 8 million had used its education benefits; by 1956 the education portion had cost $14.5 billion, and 4.3 million home loans worth $33 billion had been guaranteed by 1955. The share of Americans holding a bachelor's or advanced degree rose from 4.6 percent in 1945 to 25 percent 50 years later.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "advanced",
               "source": {
@@ -4028,7 +4028,7 @@
               "topicID": "planned-economies",
               "title": "What Central Planning Is",
               "definition": "Every economy must answer three questions: what to produce, how to produce it, and who receives it. A command or planned economy answers them through a central authority rather than through prices. The state owns most productive assets, planners set output targets for factories and farms, and prices are administered rather than discovered in exchange. Economists contrast this with a market economy along a spectrum; real systems have mixed the two, and the balance has moved over time.",
-              "example": "In a 1997 speech titled 'The Embrace of Free Markets', the Federal Reserve chairman described the fall of the Berlin Wall in 1989 as a natural experiment between the 2 systems: planned economies, lacking price signals, produced surpluses of goods nobody wanted beside shortages of goods people needed, and used 5 to 7 times as much energy per unit of output as Western economies. His verdict on rigid central planning: unequivocally negative.",
+              "example": "In a 1997 speech titled 'The Embrace of Free Markets', the Federal Reserve chairman called the division of Europe, which ended with the fall of the Berlin Wall in 1989, as close to a controlled experiment between the 2 systems as could be run. Planned economies, lacking price signals, produced surpluses of goods nobody wanted beside shortages of goods people needed, and used as much as 5 to 7 times more energy per unit of output than the West. His verdict on rigid central planning: unequivocally negative.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -4083,7 +4083,7 @@
               "cardID": "pln-003",
               "topicID": "planned-economies",
               "title": "Collectivization",
-              "definition": "Collectivization replaces individual farms with large state-directed collectives. The economic logic planners gave was scale and control: pooled land and machinery would raise yields, and the state could take the grain surplus to feed cities and pay for industry. The record shows the reverse in the Soviet case. Removing ownership removed the incentive to produce, resistance was met with force, and output collapsed. It is the clearest historical illustration of what happens when property rights in food are abolished.",
+              "definition": "Collectivization replaces individual farms with large state-directed collectives. The economic logic planners gave was scale and control: pooled land and machinery would raise yields, and the state could take the grain surplus to feed cities and pay for industry. The record shows the reverse in the Soviet case. Removing ownership removed the incentive to produce, resistance was met with force, and output collapsed. Historians often cite it as a stark case of what can follow when farmers lose ownership of what they grow.",
               "example": "The First Five-Year Plan called for collectivizing 20 percent of peasant households; by 1940 roughly 97 percent had been collectivized and private property nearly eliminated. About 1 million wealthier peasant households - some 5 million people - were deported and never heard from again, and forced collectivization produced a catastrophic famine in 1932 and 1933.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
@@ -4111,8 +4111,8 @@
               "cardID": "pln-004",
               "topicID": "planned-economies",
               "title": "Shortages and Queues",
-              "definition": "When a price is held below the level at which supply equals demand, more is wanted than is offered, and the gap is a shortage. In a market that shortage pushes the price up until some buyers drop out and sellers add supply. A planned economy fixes prices by decree, so the adjustment cannot happen through price. It happens instead through waiting: queues, waiting lists, connections, and informal markets at higher prices. Time, not money, becomes the rationing device.",
-              "example": "The St. Louis Fed's primer on prices describes the mechanism with a rent-control example: at a ceiling below the market rent, the number of apartments renters want exceeds the number landlords supply, and a shortage results. Administered prices in a planned economy are ceilings on nearly everything at once, so the queue for 1 good was matched by queues for dozens of others.",
+              "definition": "A planned economy sets prices by decree and changes them rarely, so when a fixed price sits below the level at which supply equals demand, the resulting shortage cannot close through a price rise as it would in a market. The gap is closed instead by waiting and access: queues, waiting lists, personal connections, and informal markets at higher prices. Time and influence, not money alone, become the rationing devices.",
+              "example": "The St. Louis Fed's primer on prices describes the mechanism with rent control: at a ceiling below the market rent, the quantity of apartments renters demand exceeds the quantity landlords supply, and a shortage results. Where a planner holds many prices below that level at once, the same gap opens in 1 market after another, so queues become a routine part of shopping rather than an exception.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -4133,7 +4133,7 @@
               "topicID": "planned-economies",
               "title": "Wartime Rationing",
               "definition": "Rationing is planned allocation inside an otherwise market economy. Instead of letting prices rise to clear a scarce good, the government issues coupons that cap how much each household may buy, so that supply is divided by rule rather than by ability to pay. It is usually paired with price controls and public appeals to conserve. Wartime governments accepted the costs - black markets, administration, mismatched allocations - to steer materials to the military and to spread the burden.",
-              "example": "During the Second World War the United States rationed gasoline, rubber, sugar, butter, and meat. National Archives posters from 1943 urged civilians to share rides and to save waste fats for explosives, explaining that shortages existed because the goods were going to the troops. The War Production Board's chairman put the priority bluntly: the military would get 'astronomical quantities of everything.'",
+              "example": "During the Second World War the United States rationed gasoline, rubber, sugar, butter, and meat. National Archives posters from 1943 urged civilians to share rides and to save waste fats for explosives, explaining that shortages existed because the goods were going to the troops. The War Production Board's chairman described the military's view of wartime industry as a demand for 'astronomical quantities of everything', with little regard for civilian needs.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -4241,7 +4241,7 @@
               "topicID": "welfare-states",
               "title": "What a Welfare State Is",
               "definition": "A welfare state is a market economy in which government takes responsibility for protecting people against major risks to income: old age, illness, disability, unemployment, and poverty. The World Bank groups the tools into three pillars - social assistance, paid from general taxes to people in need; social insurance, financed by contributions and paid out when an insured event occurs; and labor-market programs that help people find or keep work. Countries differ mainly in how large each pillar is and who qualifies.",
-              "example": "Coverage is far from universal worldwide. The World Bank's 2025 State of Social Protection report counts 2 billion people without adequate protection, and 3 out of 4 people in low-income countries without basic protection. The Bank reports $29.5 billion in social protection financing as of April 2025 and estimates that each dollar transferred to poor families generates about $2.50 of activity in the local economy.",
+              "example": "Coverage is far from universal worldwide. The World Bank reports that 2 billion people lack adequate social protection and that 3 out of 4 people in low-income countries lack basic protection; its State of Social Protection Report 2025 tracks these gaps. The Bank reports $29.5 billion in social protection financing as of April 2025 and estimates that each dollar transferred to poor families generates about $2.50 of activity in the local economy.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -4409,8 +4409,8 @@
                 "organization": "U.S. National Archives and Records Administration",
                 "documentTitle": "Social Security Act (1935)",
                 "url": "https://www.archives.gov/milestone-documents/social-security-act",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-last-modified",
+                "publicationDate": "2022-02-08",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
