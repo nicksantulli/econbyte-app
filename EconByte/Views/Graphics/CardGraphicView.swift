@@ -18,7 +18,6 @@ struct CardGraphicView: View {
                 GraphicPlate(spec: spec, size: .compact)
                 collapsed
             }
-            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .sheet(isPresented: $showsSheet) {
                 GraphicSheet(spec: spec)
             }
@@ -33,6 +32,7 @@ struct CardGraphicView: View {
     private var collapsed: some View {
         Button { showsSheet = true } label: {
             GraphicCollapsedLabel(spec: spec)
+                .dynamicTypeSize(...GraphicPlate.largestTypeSize)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Show graphic: \(spec.title)"))
@@ -45,6 +45,7 @@ struct CardGraphicView: View {
 enum GraphicSize { case regular, compact }
 
 struct GraphicPlate: View {
+    static let largestTypeSize = DynamicTypeSize.xxxLarge
     let spec: CardGraphicSpec
     let size: GraphicSize
     @Environment(\.colorScheme) private var colorScheme
@@ -75,6 +76,10 @@ struct GraphicPlate: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(palette.plate))
         .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(palette.rim, lineWidth: 1))
+        // Labels scale with Dynamic Type up to the largest standard size. The
+        // card's own text uses fixed sizes, and a 320 pt plate cannot hold
+        // accessibility-size chart labels without clipping them.
+        .dynamicTypeSize(...GraphicPlate.largestTypeSize)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(spec.accessibilitySummary))
         .accessibilityAddTraits(.isImage)
