@@ -141,7 +141,8 @@ final class ContentStore: ObservableObject {
                          conceptBody: card.definition,
                          exampleBody: card.example,
                          source: "\(card.source.organization) — \(card.source.documentTitle)",
-                         difficulty: card.difficulty.rawValue)
+                         difficulty: card.difficulty.rawValue,
+                         graphic: card.graphic)
             })
     }
 

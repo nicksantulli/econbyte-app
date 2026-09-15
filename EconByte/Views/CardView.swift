@@ -54,7 +54,7 @@ struct CardView: View {
             let source = card.source.isEmpty ? "No source listed." : "Source: \(card.source)."
             return Text("\(topic), \(place). Real-world example. \(card.exampleBody) \(source)")
         }
-        return Text("\(topic), \(place). Concept. \(card.concept). \(card.conceptBody)")
+        return Text("\(topic), \(place). Concept. \(card.concept). \(card.graphic.map { "\($0.accessibilitySummary) " } ?? "")\(card.conceptBody)")
     }
 
     private func flip() {
@@ -101,6 +101,11 @@ struct CardView: View {
                     .foregroundColor(Econ.ink)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 24)
+
+                if let graphic = card.graphic {
+                    CardGraphicView(spec: graphic)
+                        .padding(.horizontal, 20)
+                }
 
                 Text(card.conceptBody)
                     .font(.system(size: 17, design: .rounded))
