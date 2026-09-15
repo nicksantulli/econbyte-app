@@ -11,6 +11,10 @@ import SwiftUI
 /// Switch Control. On an unanswered check the page itself does not advance on a
 /// tap (a near-miss beside a choice must not skip the question) — Next still does.
 ///
+/// A check's verdict and explanation appear in a fixed panel directly above the
+/// controls (Phase 24), so the feedback is always on screen however long the
+/// question, its picture and its choices are.
+///
 /// The position is saved on every page, so a lesson reopens where it was left;
 /// reaching the last beat (the recap) completes it. The sources and the one
 /// "educational, not advice" notice sit on the recap. Reduce Motion replaces the
@@ -33,6 +37,8 @@ struct LessonView: View {
     @State private var forward = true
     @State private var didRestore = false
     @State private var showSources = false
+    /// The choice on screen for each check, by beat index.
+    @State private var checkChoices: [Int: Int] = [:]
 
     private var accessible: Bool { lesson.isPreview || store.isProActive }
     private var lastPage: Int { lesson.pageCount - 1 }
@@ -45,6 +51,12 @@ struct LessonView: View {
     private var awaitingAnswer: Bool {
         guard let beat, beat.kind == .check, let ordinal = lesson.checkOrdinal(forBeat: page - 1) else { return false }
         return progress.checkResult(lessonID: lesson.lessonID, ordinal: ordinal) == nil
+    }
+
+    /// The feedback for the check on screen, once a choice is made.
+    private var feedback: (correct: Bool, explanation: String)? {
+        guard let beat, beat.kind == .check, let quiz = beat.check, let chosen = checkChoices[page - 1] else { return nil }
+        return (chosen == quiz.answerIndex, quiz.explanation)
     }
 
     var body: some View {
@@ -93,38 +105,36 @@ struct LessonView: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
 
             GeometryReader { geo in
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        pageContent(proxy)
-                            .padding(.horizontal, EconSpace.gutter)
-                            .padding(.top, EconSpace.xs)
-                            // Room below the last line so it clears the fade.
-                            .padding(.bottom, EconSpace.xl)
-                            .frame(maxWidth: .infinity, minHeight: geo.size.height, alignment: pageAlignment)
-                            .contentShape(Rectangle())
-                            .gesture(SpatialTapGesture().onEnded { value in
-                                if value.location.x < geo.size.width / 3 {
-                                    go(to: page - 1)
-                                } else if !awaitingAnswer && page < lastPage {
-                                    go(to: page + 1)
-                                }
-                            })
-                    }
-                    // The page id sits on the scroll view, its own accessibility
-                    // node: on a container it would overwrite the id of a page's
-                    // only child (a check beat without a picture lost "quiz").
-                    .accessibilityIdentifier("storyPage-\(page)")
-                    .modifier(StoryScrollCue(trigger: page))
-                    .id(page)
-                    .transition(pageTransition)
-                    .simultaneousGesture(
-                        DragGesture(minimumDistance: 30).onEnded { value in
-                            let dx = value.translation.width, dy = value.translation.height
-                            guard abs(dx) > abs(dy) * 1.5, abs(dx) > 50 else { return }
-                            go(to: dx < 0 ? min(page + 1, lastPage) : page - 1)
-                        }
-                    )
+                ScrollView {
+                    pageContent
+                        .padding(.horizontal, EconSpace.gutter)
+                        .padding(.top, EconSpace.xs)
+                        // Room below the last line so it clears the fade.
+                        .padding(.bottom, EconSpace.xl)
+                        .frame(maxWidth: .infinity, minHeight: geo.size.height, alignment: pageAlignment)
+                        .contentShape(Rectangle())
+                        .gesture(SpatialTapGesture().onEnded { value in
+                            if value.location.x < geo.size.width / 3 {
+                                go(to: page - 1)
+                            } else if !awaitingAnswer && page < lastPage {
+                                go(to: page + 1)
+                            }
+                        })
                 }
+                // The page id sits on the scroll view, its own accessibility
+                // node: on a container it would overwrite the id of a page's
+                // only child (a check beat without a picture lost "quiz").
+                .accessibilityIdentifier("storyPage-\(page)")
+                .modifier(StoryScrollCue(trigger: page))
+                .id(page)
+                .transition(pageTransition)
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 30).onEnded { value in
+                        let dx = value.translation.width, dy = value.translation.height
+                        guard abs(dx) > abs(dy) * 1.5, abs(dx) > 50 else { return }
+                        go(to: dx < 0 ? min(page + 1, lastPage) : page - 1)
+                    }
+                )
             }
             .clipped()
             // A page taller than the screen fades into the controls, so a cut-off
@@ -137,8 +147,17 @@ struct LessonView: View {
                     .accessibilityHidden(true)
             }
 
+            if let feedback {
+                StoryCheckFeedback(correct: feedback.correct, explanation: feedback.explanation)
+                    .padding(.horizontal, EconSpace.gutter)
+                    .padding(.top, EconSpace.xs)
+                    .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
+            }
+
             controls
         }
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: feedback?.correct)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: feedback == nil)
         .accessibilityAction(named: Text("Next page")) { go(to: min(page + 1, lastPage)) }
         .accessibilityAction(named: Text("Previous page")) { go(to: page - 1) }
     }
@@ -178,15 +197,12 @@ struct LessonView: View {
     // MARK: Pages
 
     @ViewBuilder
-    private func pageContent(_ proxy: ScrollViewProxy) -> some View {
+    private var pageContent: some View {
         if let beat {
-            StoryBeatView(beat: beat, lesson: lesson, beatIndex: page - 1,
-                          onSources: { showSources = true },
-                          onReveal: {
-                              withAnimation(reduceMotion ? nil : .easeOut(duration: 0.25)) {
-                                  proxy.scrollTo(StoryCheckAnchor.feedback, anchor: .bottom)
-                              }
-                          })
+            let index = page - 1
+            StoryBeatView(beat: beat, lesson: lesson, beatIndex: index,
+                          choice: Binding(get: { checkChoices[index] }, set: { checkChoices[index] = $0 }),
+                          onSources: { showSources = true })
         } else {
             cover
         }
@@ -319,8 +335,8 @@ struct StoryBeatView: View {
     let beat: LessonBeat
     let lesson: Lesson
     let beatIndex: Int
+    @Binding var choice: Int?
     var onSources: () -> Void
-    var onReveal: () -> Void = {}
 
     var body: some View {
         VStack(alignment: .leading, spacing: EconSpace.l) {
@@ -333,10 +349,9 @@ struct StoryBeatView: View {
                 terms
             case .check:
                 if let check = beat.check, let ordinal = lesson.checkOrdinal(forBeat: beatIndex) {
-                    // The question's picture comes first, compact, so question,
-                    // choices and the revealed feedback all sit above the fixed
-                    // controls (the answer scrolls the feedback into view).
-                    StoryCheckView(quiz: check, lessonID: lesson.lessonID, ordinal: ordinal, onReveal: onReveal) {
+                    // The question's picture comes first, compact; the verdict and
+                    // explanation appear in the panel above the controls.
+                    StoryCheckView(quiz: check, lessonID: lesson.lessonID, ordinal: ordinal, chosen: $choice) {
                         if let visual = beat.visual {
                             StoryVisualView(visual: visual, lesson: lesson, size: .compact)
                         }
@@ -482,20 +497,17 @@ struct StoryBeatView: View {
 
 // MARK: - Quick check
 
-/// Single-answer multiple choice with immediate feedback. The first answer is
-/// recorded; the reader can tap other choices afterwards to see why they are
-/// wrong, without changing it.
+/// Single-answer multiple choice. The first answer is recorded; the reader can
+/// tap other choices afterwards to see why they are wrong, without changing it.
+/// The verdict and explanation are shown by `StoryCheckFeedback` above the
+/// story controls.
 struct StoryCheckView<Picture: View>: View {
     let quiz: Quiz
     let lessonID: String
     let ordinal: Int
-    var onReveal: () -> Void = {}
+    @Binding var chosen: Int?
     @ViewBuilder var picture: () -> Picture
     @EnvironmentObject private var progress: CourseProgressStore
-    @State private var chosen: Int?
-    /// Set by a tap on this screen; a check re-opened with a recorded answer
-    /// shows its verdict without jumping the page down.
-    @State private var answeredHere = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var revealed: Bool { chosen != nil }
@@ -511,11 +523,13 @@ struct StoryCheckView<Picture: View>: View {
             ForEach(Array(quiz.choices.enumerated()), id: \.offset) { index, choice in
                 Button {
                     let first = chosen == nil
-                    if first { answeredHere = true }
                     withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { chosen = index }
                     if first {
-                        progress.recordCheck(lessonID: lessonID, ordinal: ordinal, correct: index == quiz.answerIndex)
-                        UINotificationFeedbackGenerator().notificationOccurred(index == quiz.answerIndex ? .success : .warning)
+                        let correct = index == quiz.answerIndex
+                        progress.recordCheck(lessonID: lessonID, ordinal: ordinal, correct: correct)
+                        UINotificationFeedbackGenerator().notificationOccurred(correct ? .success : .warning)
+                        UIAccessibility.post(notification: .announcement,
+                                             argument: "\(correct ? "Correct" : "Not quite"). \(quiz.explanation)")
                     }
                 } label: {
                     HStack(spacing: EconSpace.s) {
@@ -538,43 +552,6 @@ struct StoryCheckView<Picture: View>: View {
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("quizChoice-\(index)")
                 .accessibilityValue(Text(accessibilityValue(for: index)))
-            }
-            if revealed {
-                let correct = chosen == quiz.answerIndex
-                HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
-                    Image(systemName: correct ? "checkmark.circle.fill" : "info.circle.fill")
-                        .font(EconType.headline)
-                        .foregroundColor(correct ? EconColor.interactive : EconColor.accentText)
-                        .accessibilityHidden(true)
-                    VStack(alignment: .leading, spacing: EconSpace.xxs) {
-                        Text(correct ? "Correct" : "Not quite")
-                            .font(EconType.headline)
-                            .foregroundColor(correct ? EconColor.interactive : EconColor.accentText)
-                        Text(quiz.explanation)
-                            .font(EconType.body)
-                            .foregroundColor(EconColor.textSecondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-                .padding(EconSpace.s)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(EconColor.surface)
-                .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
-                .accessibilityElement(children: .combine)
-                .accessibilityIdentifier("quizExplanation")
-                .transition(.opacity)
-                // The scroll target sits below the feedback, so the feedback
-                // itself lands clear of the page's bottom fade.
-                Color.clear
-                    .frame(height: EconSpace.xl)
-                    .id(StoryCheckAnchor.feedback)
-                    .accessibilityHidden(true)
-                    // Scroll once the anchor exists: asking before it is laid out
-                    // left the feedback under the controls on a long check.
-                    .onAppear {
-                        guard answeredHere else { return }
-                        DispatchQueue.main.async { onReveal() }
-                    }
             }
         }
         // `.contain`: a plain container's identifier would override the
@@ -611,9 +588,50 @@ struct StoryCheckView<Picture: View>: View {
     }
 }
 
-/// The scroll anchor of a check's revealed feedback.
-enum StoryCheckAnchor {
-    static let feedback = "storyCheckFeedback"
+/// A check's verdict and explanation, pinned above the story controls. A long
+/// explanation at a large text size scrolls inside the panel instead of pushing
+/// the controls off screen.
+struct StoryCheckFeedback: View {
+    let correct: Bool
+    let explanation: String
+    /// The panel never takes more than this share of the story's height.
+    static let maxHeight: CGFloat = 280
+
+    var body: some View {
+        ViewThatFits(in: .vertical) {
+            content
+            ScrollView { content }
+                .frame(maxHeight: Self.maxHeight)
+        }
+        .frame(maxHeight: Self.maxHeight)
+        .background(EconColor.surfaceRaised)
+        .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous)
+            .stroke((correct ? EconColor.interactive : EconColor.accentText).opacity(0.6), lineWidth: 1))
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("quizExplanation")
+    }
+
+    private var content: some View {
+        HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
+            Image(systemName: correct ? "checkmark.circle.fill" : "info.circle.fill")
+                .font(EconType.headline)
+                .foregroundColor(correct ? EconColor.interactive : EconColor.accentText)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: EconSpace.xxs) {
+                Text(correct ? "Correct" : "Not quite")
+                    .font(EconType.headline)
+                    .foregroundColor(correct ? EconColor.interactive : EconColor.accentText)
+                Text(explanation)
+                    .font(EconType.body)
+                    .foregroundColor(EconColor.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(EconSpace.s)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 }
 
 // MARK: - Supporting views

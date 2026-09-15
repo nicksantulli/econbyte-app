@@ -89,9 +89,11 @@ final class StoryLessonUITests: XCTestCase {
         app.buttons["quizChoice-0"].tap()
         let explanation = any["quizExplanation"]
         XCTAssertTrue(explanation.waitForExistence(timeout: 5), "answering gives immediate feedback")
-        sleep(1) // the reveal scrolls the feedback into view
+        sleep(1) // the feedback panel slides in above the controls
         XCTAssertLessThanOrEqual(explanation.frame.maxY, next.frame.minY,
                                  "the feedback sits above the fixed controls, never under them (Phase 24)")
+        XCTAssertGreaterThan(explanation.frame.minY, app.descendants(matching: .any)["storyProgressBar"].frame.maxY,
+                             "the feedback panel is on screen")
         capture("story-04-check-answered")
         next.tap()
         let resumeAt = currentPage(app) ?? 0

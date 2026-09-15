@@ -225,7 +225,16 @@ struct ChartBlockView: View {
         .chartYScale(domain: barYDomain)
         .chartForegroundStyleScale(range: palette)
         .chartLegend((spec.series?.count ?? 0) > 1 ? .visible : .hidden)
-        .modifier(ChartStyle(xLabel: categoryNames == nil ? spec.xLabel : "", yLabel: spec.yLabel))
+        .modifier(ChartStyle(xLabel: categoryNames == nil ? spec.xLabel : "", yLabel: spec.yLabel,
+                             categories: labeledCategories))
+    }
+
+    /// Axis labels for categories: names wrap onto two lines; more than seven
+    /// numeric positions (bids by yield) label every other one so they never run together.
+    private var labeledCategories: [String] {
+        let all = distinctX.map(category)
+        guard categoryNames == nil, all.count > 7 else { return all }
+        return all.enumerated().filter { $0.offset % 2 == 0 }.map(\.element)
     }
 
     // MARK: Markers
@@ -303,14 +312,32 @@ struct ChartBlockView: View {
 private struct ChartStyle: ViewModifier {
     let xLabel: String
     let yLabel: String
+    /// Category axis values to label (categorical bars); nil for a numeric axis.
+    var categories: [String]? = nil
+
     func body(content: Content) -> some View {
         content
             .chartXAxisLabel(xLabel, alignment: .center)
             .chartYAxisLabel(yLabel, position: .leading)
             .chartXAxis {
-                AxisMarks { _ in
-                    AxisGridLine().foregroundStyle(Econ.mist.opacity(0.15))
-                    AxisValueLabel().foregroundStyle(EconColor.textTertiary)
+                if let categories {
+                    AxisMarks(values: categories) { value in
+                        AxisValueLabel(centered: true) {
+                            if let name = value.as(String.self) {
+                                Text(name)
+                                    .font(EconType.micro)
+                                    .foregroundColor(EconColor.textTertiary)
+                                    .multilineTextAlignment(.center)
+                                    .lineLimit(2)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
+                } else {
+                    AxisMarks { _ in
+                        AxisGridLine().foregroundStyle(Econ.mist.opacity(0.15))
+                        AxisValueLabel().foregroundStyle(EconColor.textTertiary)
+                    }
                 }
             }
             .chartYAxis {
