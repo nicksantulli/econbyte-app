@@ -4498,7 +4498,7 @@
               "topicID": "paychecks-taxes",
               "title": "Form W-4",
               "definition": "Form W-4, the Employee's Withholding Certificate, is the form a worker gives an employer so that the right amount of federal income tax is withheld. It tells the employer about filing status, other jobs in the household, dependents, and any extra amount to withhold per paycheck. It is not filed with a tax return; the employer keeps it. The IRS suggests reviewing it each year and whenever circumstances change, because the form only reflects what the worker last reported.",
-              "example": "Two common triggers are a marriage and a second job. A couple who both work and both leave their W-4 set for a single earner with 1 job can end up under-withheld, because each employer assumes its paycheck is the only one. Filing a new W-4 within a few weeks of the change corrects the estimate for the remaining paychecks of the year.",
+              "example": "Two common triggers are a marriage and a second job. A couple who both work and each file a W-4 as married filing jointly without completing Step 2, for multiple jobs or a working spouse, can end up under-withheld, because each employer assumes its paycheck is the household's only income. Filing a new W-4 after the change corrects the estimate for the remaining paychecks of the year.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -4519,7 +4519,7 @@
               "topicID": "paychecks-taxes",
               "title": "Form W-2",
               "definition": "Form W-2, the Wage and Tax Statement, is the employer's annual report of what it paid an employee and what it withheld. Every employer that pays wages must file one for each employee from whom income, Social Security, or Medicare tax was withheld, or who would have had tax withheld absent an exemption. Copies go to the worker and to the government, so the numbers on a return can be matched against the employer's report.",
-              "example": "Someone who held 3 jobs during a year receives 3 W-2 forms, 1 from each employer, and adds the wage and withholding boxes together on the return. If an employer discovers an error after issuing the form, it files a corrected statement, Form W-2c, so that the worker’s record and the return can be matched. A missing form is requested from the employer, not the IRS.",
+              "example": "Someone who held 3 jobs during a year receives 3 W-2 forms, 1 from each employer, and adds the wage and withholding boxes together on the return. If an employer discovers an error after issuing the form, it files a corrected statement, Form W-2c, so that the worker's record and the return can be matched. A missing form is requested from the employer first.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -4588,7 +4588,7 @@
               "cardID": "pay-006",
               "topicID": "paychecks-taxes",
               "title": "Tax Brackets Are Marginal",
-              "definition": "Federal income tax is charged in layers called brackets. Each bracket's rate applies only to the slice of taxable income that falls inside it, not to the whole amount. Moving into a higher bracket therefore raises the tax on the next dollar earned, not on the dollars already taxed at lower rates. The rate on the last dollar is the marginal rate; total tax divided by total income is the average rate, and it is always lower than the marginal rate.",
+              "definition": "Federal income tax is charged in layers called brackets. Each bracket's rate applies only to the slice of taxable income that falls inside it, not to the whole amount. Moving into a higher bracket therefore raises the tax on the next dollar earned, not on the dollars already taxed at lower rates. The rate on the last dollar is the marginal rate; total tax divided by total income is the average rate, and once income reaches a second bracket the average rate is lower than the marginal rate.",
               "example": "For tax year 2025 a single filer's first $11,925 of taxable income is taxed at 10 percent, the next slice up to $48,475 at 12 percent, and the slice up to $103,350 at 22 percent. An illustrative single filer with $60,000 of taxable income owes $1,192.50 plus $4,386 plus $2,535.50, about $8,114 in total: a 22 percent marginal rate but an average rate near 13.5 percent.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -4638,7 +4638,7 @@
               "topicID": "paychecks-taxes",
               "title": "Self-Employment Tax",
               "definition": "Someone who works for themselves has no employer to withhold tax or to pay the employer half of Social Security and Medicare. Self-employment tax fills that gap: it is both halves combined, calculated on net earnings using Schedule SE and paid with the return, usually through quarterly estimated payments. Because an employee never sees the employer share, the combined rate looks large by comparison. The law offsets part of it by letting the self-employed deduct the employer-equivalent half when computing adjusted gross income.",
-              "example": "The self-employment tax rate is 15.3 percent: 12.4 percent for Social Security plus 2.9 percent for Medicare. It applies once net self-employment earnings reach $400 or more in a year. For 2024, the IRS page states, only the first $168,600 of combined wages and net earnings was subject to the Social Security part, while the Medicare part applied to all of it, with an extra 0.9 percent above a filing-status threshold.",
+              "example": "The self-employment tax rate is 15.3 percent: 12.4 percent for Social Security plus 2.9 percent for Medicare. It applies once net self-employment earnings reach $400 or more in a year. Only earnings up to the annual Social Security wage base, a limit shared with any wages from a job, are subject to the Social Security part, while the Medicare part applies to all of them, with an extra 0.9 percent above a filing-status threshold.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "advanced",
               "source": {
@@ -4654,10 +4654,10 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "percent of net earnings and U.S. dollars (self-employment tax rates, filing threshold, and 2024 wage base)",
+                "units": "percent of net earnings and U.S. dollars (self-employment tax rates and filing threshold)",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "2024 wage base as stated by the IRS (page updated 2026-06-27)",
+                "observationPeriod": "rates and threshold as published by the IRS (page updated 2026-06-27)",
                 "retrievalDate": "2026-09-14"
               }
             }
@@ -4669,14 +4669,14 @@
           "icon": "car.fill",
           "order": 2,
           "access": "pack",
-          "summary": "How auto loans, leases, and mortgages are priced and disclosed, and the mechanics of negative equity, down payments, PMI, the Loan Estimate, escrow, and renting versus owning.",
+          "summary": "How auto loans, leases, and mortgages are priced and disclosed, and the mechanics of negative equity, down payments, PMI, the Loan Estimate, escrow, and home equity.",
           "cards": [
             {
               "cardID": "byg-001",
               "topicID": "cars-and-homes",
               "title": "Reading the Loan Disclosure",
               "definition": "Before an auto loan is signed, the federal Truth in Lending Act requires the lender or dealer to hand over a disclosure that states the loan's cost in a standard way. Four numbers matter most: the annual percentage rate, which folds interest and mandatory fees into one yearly percentage; the finance charge, the total interest and fees over the life of the loan; the amount financed; and the total of payments. The monthly payment alone hides the last three.",
-              "example": "An illustrative $25,000 loan at a 7 percent rate costs about $599 a month over 48 months, a finance charge near $3,735 and a total of payments around $28,735. The same loan stretched to 72 months costs about $426 a month - but the finance charge rises to roughly $5,688 and the total to about $30,688. The disclosure puts those totals side by side; the sales pitch usually does not.",
+              "example": "An illustrative $25,000 loan at a 7 percent rate costs about $599 a month over 48 months, a finance charge near $3,735 and a total of payments around $28,735. The same loan stretched to 72 months costs about $426 a month - but the finance charge rises to roughly $5,688 and the total to about $30,688. Each disclosure states those totals in writing; a quoted monthly payment alone does not.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -4856,22 +4856,29 @@
             {
               "cardID": "byg-008",
               "topicID": "cars-and-homes",
-              "title": "Renting Versus Owning",
-              "definition": "The rent-or-own question is a comparison of two cost streams under uncertainty. Owning builds equity - the home's value minus the mortgage balance - but slowly at first, because early payments are mostly interest, and equity also moves with market prices. It carries transaction costs at purchase and sale, plus maintenance and repairs. Renting avoids those costs and preserves the option to move, at the price of building no equity. Calculators that compare the two depend heavily on assumed price growth.",
-              "example": "The CFPB's guide notes that someone who sells within the first few years may end up with no more equity than they started with after paying the transaction costs, and that when prices fell between 2007 and 2012 many owners lost some or all of their equity. Owners also bear repairs a landlord would otherwise cover, so the comparison must include more than a rent check against a mortgage payment.",
+              "title": "Home Equity",
+              "definition": "Home equity is the home's market value minus what is still owed on the mortgage. It grows two ways: as payments reduce the loan balance and as the home's price rises. Early payments are mostly interest, so the first route is slow at first, and the second can run in reverse when prices fall. Selling also costs money, so after a short stay the transaction costs can leave an owner with no more equity than at purchase.",
+              "example": "An illustrative buyer puts $30,000 down on a $300,000 home. If the price stays flat, 3 years of payments on the 30-year, $270,000 loan at 6.5 percent cut the balance by about $9,700; selling costs of $10,000 would leave about $29,700, slightly less than was put in. The CFPB notes that when prices fell between 2007 and 2012, many owners lost some or all of their equity.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "advanced",
               "source": {
                 "organization": "Consumer Financial Protection Bureau",
-                "documentTitle": "Making the decision to rent or buy (archived)",
+                "documentTitle": "Making the decision to rent or buy",
                 "url": "https://www.consumerfinance.gov/archive/blog/making-decision-rent-or-buy/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2017-05-02",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
                 "status": "verified",
                 "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative down payment, principal repaid, and selling costs)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "home equity as described by the CFPB",
+                "retrievalDate": "2026-09-14"
               }
             }
           ]
@@ -4889,7 +4896,7 @@
               "topicID": "credit-scores-scams",
               "title": "What Moves a Score",
               "definition": "A credit score is a prediction of repayment built from a credit report, and each scoring model weighs a handful of behaviors. Payment history counts most: paying every account on time as agreed. Next is utilization, how much of available credit is in use; models read balances near the limit as strain. Length of history helps because it gives the model more evidence. Recent applications for new credit count against a score because they can signal financial trouble.",
-              "example": "The CFPB relays a common guideline: keep balances at no more than 30 percent of total credit limits. Closing 2 unused cards can therefore lower a score if the same balances now sit on 1 card near its limit. Carrying a balance is not required; paying in full each month produces the strongest scores and the lowest interest cost.",
+              "example": "The CFPB relays a common guideline: keep balances at no more than 30 percent of total credit limits. Closing 2 unused cards can therefore lower a score if the same balances now sit on 1 card near its limit. Carrying a balance on a card is not required for a good score, and paying in full each month avoids interest charges.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -4917,15 +4924,15 @@
               "topicID": "credit-scores-scams",
               "title": "Free Credit Reports",
               "definition": "A credit report is the file a credit reporting company keeps on a person's accounts and payment history, and scores are computed from it. Federal law gives everyone the right to a free copy of their report from each of the 3 nationwide credit reporting companies once every 12 months, obtained through the single official website or phone line set up for that purpose. Additional free reports are available after a denial of credit, insurance, or employment based on a report.",
-              "example": "Because the 3 reports can be ordered separately, one approach the CFPB describes is to request 1 every 4 months to watch the file across the year. Beyond the free copies, a company may charge no more than $14.50 for a report. A denial notice gives 60 days to request a free report from the company named in it.",
+              "example": "Beyond the free copy the law guarantees every 12 months, the 3 nationwide credit reporting companies have permanently extended a program that offers each report free once a week through the official website set up for free reports. A denial notice gives 60 days to request an additional free report from the company named in it.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
-                "organization": "Consumer Financial Protection Bureau",
-                "documentTitle": "How do I get a free copy of my credit reports?",
-                "url": "https://www.consumerfinance.gov/ask-cfpb/how-do-i-get-a-free-copy-of-my-credit-reports-en-5/",
-                "publicationDate": "2023-08-28",
-                "datePrecision": "stated-on-page",
+                "organization": "Federal Trade Commission, Consumer Advice",
+                "documentTitle": "Free Credit Reports",
+                "url": "https://consumer.ftc.gov/articles/free-credit-reports",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -4933,10 +4940,10 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "U.S. dollars (statutory cap on the price of an additional credit report) and days",
+                "units": "days (window to request a free report after an adverse action notice) and report frequency",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "as published by the CFPB, page last reviewed 2023-08-28",
+                "observationPeriod": "as published by the FTC, page dated June 2026",
                 "retrievalDate": "2026-09-14"
               }
             },
@@ -4944,7 +4951,7 @@
               "cardID": "csc-003",
               "topicID": "credit-scores-scams",
               "title": "Disputing an Error",
-              "definition": "Errors in a credit report can lower a score and raise borrowing costs, and federal law gives the consumer a right to dispute them. A dispute goes to the credit reporting company, in writing with copies of supporting documents, and often also to the company that supplied the information, called the furnisher. The reporting company must investigate, forward the dispute and evidence to the furnisher, and report the result back; it may decline only disputes it reasonably finds frivolous.",
+              "definition": "Errors in a credit report can lower a score and raise borrowing costs, and federal law gives the consumer a right to dispute them. A dispute goes to the credit reporting company - online, by phone, or by mail with copies of supporting documents - and often also to the company that supplied the information, called the furnisher. The reporting company must investigate, forward the dispute and evidence to the furnisher, and report the result back; it may decline only disputes it reasonably finds frivolous.",
               "example": "The CFPB's checklist for a mailed dispute: full contact information, each item in question with its account number, a clear explanation of why it is wrong, a request to remove or correct it, a copy of the report page with the items circled, and copies - never originals - of documents. The same letter can go to all 3 companies if all 3 show the error, and certified mail with a return receipt creates a dated record.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -4965,7 +4972,7 @@
               "cardID": "csc-004",
               "topicID": "credit-scores-scams",
               "title": "How Long Information Stays",
-              "definition": "Credit reporting companies may report most negative information for a limited time, after which it must drop off the report even though the company may keep it on file. Positive information can stay longer, and an on-time history can remain after an account is closed, which helps scores that reward long histories. No one can lawfully remove accurate negative information early; companies that charge fees to 'repair' credit cannot do what a consumer can do alone for free, which is dispute actual errors.",
+              "definition": "Credit reporting companies may report most negative information for a limited time, after which it must drop off the report even though the company may keep it on file. Positive information can stay longer, and an on-time history can remain after an account is closed, which helps scores that reward long histories. No one can lawfully remove accurate negative information early; companies that charge fees to 'repair' credit can do nothing a consumer cannot do alone for free, which is to dispute actual errors.",
               "example": "The general limit is 7 years for late payments and most other negative items, and up to 10 years for bankruptcies; a judgment can stay 7 years or until the statute of limitations runs out, whichever is longer. The limits do not apply when a report is used for a job paying more than $75,000 a year or for credit or life insurance above $150,000.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -5001,8 +5008,8 @@
                 "organization": "USAGov, U.S. General Services Administration",
                 "documentTitle": "Identity theft",
                 "url": "https://www.usa.gov/identity-theft",
-                "publicationDate": "2026-09-10",
-                "datePrecision": "observed-last-modified",
+                "publicationDate": "2025-07-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -5036,14 +5043,14 @@
               "topicID": "credit-scores-scams",
               "title": "Imposter Scams and Fraud Losses",
               "definition": "An imposter scam is fraud by impersonation: the caller, texter, or emailer claims to be a government agency, a bank, a utility, a familiar company, or a relative in trouble, and uses that borrowed authority to extract money or personal information. The FTC collects fraud reports from consumers nationwide and publishes the totals each year. Reported losses understate the real figure, since many victims never report, but the pattern across categories and payment methods is informative.",
-              "example": "For 2024 the FTC reported more than $12.5 billion in losses to fraud, up 25 percent from the prior year, from about 2.6 million fraud reports. Imposter scams were the most commonly reported category, with $2.95 billion lost, and losses to government imposters alone reached $789 million. Investment scams cost the most, $5.7 billion. The share of reporters who lost money rose from 27 percent in 2023 to 38 percent in 2024.",
+              "example": "For 2025 the FTC reported $15.9 billion in fraud losses from 3 million fraud reports, up from 2.6 million reports and more than $12 billion in losses the year before. Imposter scams were the most frequently reported fraud, with more than 1 million reports and more than $3.5 billion lost. Investment scams cost the most, $7.9 billion.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "Federal Trade Commission",
-                "documentTitle": "New FTC Data Show a Big Jump in Reported Losses to Fraud to $12.5 Billion in 2024",
-                "url": "https://www.ftc.gov/news-events/news/press-releases/2025/03/new-ftc-data-show-big-jump-reported-losses-fraud-125-billion-2024",
-                "publicationDate": "2025-03-10",
+                "documentTitle": "FTC Testifies before the Joint Economic Committee on Agency’s Efforts to Combat Fraud",
+                "url": "https://www.ftc.gov/news-events/news/press-releases/2026/03/ftc-testifies-joint-economic-committee-agencys-efforts-combat-fraud",
+                "publicationDate": "2026-03-25",
                 "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
@@ -5052,10 +5059,10 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "U.S. dollars, percent, and number of reports (Consumer Sentinel Network fraud data)",
+                "units": "U.S. dollars and number of reports (Consumer Sentinel Network fraud data)",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "2024, as published by the FTC in March 2025",
+                "observationPeriod": "2025, as reported by the FTC on 2026-03-25",
                 "retrievalDate": "2026-09-14"
               }
             },
@@ -5121,15 +5128,15 @@
             {
               "cardID": "cmp-002",
               "topicID": "compounding-time",
-              "title": "Compound Interest",
-              "definition": "Compounding is interest earning interest. After the first period, the credited interest joins the principal, and the next period's interest is calculated on the larger sum. Early on the effect is barely visible - a few cents of interest on interest. But the extra amount itself compounds, so growth accelerates over time, and the final balance depends far more on how long the money was left than on the size of any single year's gain. The same mathematics works against a borrower who carries a balance.",
-              "example": "The SEC's classroom example: $100 earning 5 percent a year becomes $105 after 1 year and $110.25 after 2, the extra 25 cents being interest on the first year's $5. Left alone, the $100 grows to more than $162 after 10 years and to almost $340 after 25 years, without another cent deposited. Nearly all of the later gain is interest on earlier interest.",
+              "title": "Regular Deposits Over Time",
+              "definition": "Compounding also works on money added along the way. Each deposit starts earning interest once it is in the account, so a steady monthly amount builds a balance with two parts: the deposits themselves and the interest they have earned. Deposits made early have the longest to compound, so the interest share of the balance keeps growing the longer the schedule runs. The SEC's compound interest calculator asks for the same inputs: a starting amount, a monthly contribution, a number of years, a rate, and how often interest compounds.",
+              "example": "An illustrative  a month at 5 percent a year, compounded monthly, grows to about ,500 after 10 years, of which ,000 is deposits and about ,500 is interest. After 30 years the balance is about ,200 on ,000 of deposits, so interest makes up more than half of it. The rate is an assumption; real returns vary from year to year.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
                 "organization": "U.S. Securities and Exchange Commission, Investor.gov",
-                "documentTitle": "What is compound interest? (Teachers and Classroom Resources)",
-                "url": "https://www.investor.gov/additional-resources/information/youth/teachers-classroom-resources/what-compound-interest",
+                "documentTitle": "Compound Interest Calculator",
+                "url": "https://www.investor.gov/financial-tools-calculators/calculators/compound-interest-calculator",
                 "publicationDate": "2026-09-11",
                 "datePrecision": "observed-last-modified",
                 "verificationDate": "2026-09-14"
@@ -5139,27 +5146,27 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "U.S. dollars and percent (illustrative compound growth of $100 at 5 percent, as published by the SEC)",
+                "units": "U.S. dollars and percent (illustrative monthly deposits of $100 at 5 percent, compounded monthly)",
                 "geography": "United States",
                 "claimKind": "illustration",
-                "observationPeriod": "compound interest as described by the SEC's Office of Investor Education",
+                "observationPeriod": "future value of regular deposits, inputs as described by the SEC calculator",
                 "retrievalDate": "2026-09-14"
               }
             },
             {
               "cardID": "cmp-003",
               "topicID": "compounding-time",
-              "title": "Inflation and Purchasing Power",
-              "definition": "Inflation is a general rise in prices, which is the same thing as a fall in what a unit of money buys. A savings balance that stays fixed in dollars shrinks in purchasing power every year prices rise. Because it compounds like interest, even a low rate matters over decades. Central banks aim for a low, stable rate so that households and businesses can plan; the U.S. Federal Reserve states its objective as a specific number measured by a specific price index.",
-              "example": "The Federal Open Market Committee judges that inflation of 2 percent over the longer run, measured by the annual change in the price index for personal consumption expenditures, is most consistent with its mandate for price stability and maximum employment. At exactly that pace, prices double in roughly 35 years, so $100 set aside at the start buys about what $50 did.",
+              "title": "A Guaranteed Doubling",
+              "definition": "A Series EE savings bond is a U.S. Treasury bond that earns a fixed rate of interest for up to 30 years. Treasury adds one promise on top of the rate: the bond will double in value 20 years after purchase, and if the fixed rate has not done that by then, Treasury adds the difference at 20 years. Because the guarantee arrives only at that date, how long the bond is held matters as much as the rate printed on it.",
+              "example": "EE bonds issued from May 1 to October 31, 2026 earn a fixed 2.40 percent. At that rate alone, ,000 would grow to only about ,600 in 20 years, so Treasury makes up the rest to bring it to ,000. Doubling in 20 years works out to roughly 3.5 percent a year, paid in full only to an owner who waits the whole 20 years.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
-                "organization": "Board of Governors of the Federal Reserve System",
-                "documentTitle": "Why does the Federal Reserve aim for inflation of 2 percent over the longer run?",
-                "url": "https://www.federalreserve.gov/faqs/economy_14400.htm",
-                "publicationDate": "2026-07-08",
-                "datePrecision": "observed-last-modified",
+                "organization": "U.S. Department of the Treasury, TreasuryDirect",
+                "documentTitle": "EE bonds",
+                "url": "https://www.treasurydirect.gov/savings-bonds/ee-bonds/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -5167,10 +5174,10 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "percent (FOMC longer-run inflation objective; illustrative doubling period)",
+                "units": "percent (EE bond fixed rate and implied yearly rate) and U.S. dollars (illustrative $1,000 bond)",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "objective as published by the Federal Reserve, page updated 2026-07-08",
+                "observationPeriod": "EE bonds issued May 1 to October 31, 2026, as published by TreasuryDirect",
                 "retrievalDate": "2026-09-14"
               }
             },
@@ -5206,7 +5213,7 @@
               "cardID": "cmp-005",
               "topicID": "compounding-time",
               "title": "The Rule of 72",
-              "definition": "The Rule of 72 is a mental shortcut for compounding: dividing 72 by an annual growth rate gives the approximate number of years for an amount to double. It is an approximation, most accurate for rates in the single digits and steadily less so at higher rates, where it overstates the doubling time. It works in reverse too: dividing 72 by an inflation rate gives roughly how long until money buys half as much. It assumes a constant rate, which real returns rarely deliver.",
+              "definition": "The Rule of 72 is a mental shortcut for compounding: dividing 72 by an annual growth rate gives the approximate number of years for an amount to double. It is an approximation, most accurate for rates near 8 percent; it slightly overstates the doubling time at lower rates and understates it at higher ones. It works in reverse too: dividing 72 by an inflation rate gives roughly how long until money buys half as much. It assumes a constant rate, which real returns rarely deliver.",
               "example": "The SEC's classroom material uses 9 percent: 72 divided by 9 is 8, so a sum growing at 9 percent doubles in about 8 years, and the exact answer is also 8.0. At 2 percent the rule gives 36 years against an exact 35. At an illustrative 24 percent - a common credit card rate - the rule says 3 years while the true doubling time is about 3.2, close enough to show how fast a carried balance grows.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -5234,7 +5241,7 @@
               "cardID": "cmp-006",
               "topicID": "compounding-time",
               "title": "Savings Measured in Months",
-              "definition": "A useful way to size a cash reserve is in time rather than dollars: how many months of essential spending it would cover if income stopped. Measured that way, the target scales automatically with a household's costs, and it can be built in steps. The CFPB's guidance ties the amount to the person's own history of unexpected expenses and income swings rather than to a universal figure, and notes that a reserve of any size shortens recovery from a shock and reduces reliance on borrowing.",
+              "definition": "A cash reserve can also be measured in time rather than dollars: how many months of essential spending it would cover if income stopped. Measured that way, the target scales automatically with a household's costs, and it can be built in steps. The CFPB's guidance ties the amount to the person's own history of unexpected expenses and income swings rather than to a universal figure, and notes that a reserve of any size shortens recovery from a shock and reduces reliance on borrowing.",
               "example": "For an illustrative household spending $2,400 a month on essentials, 3 months of runway is $7,200 and 6 months is $14,400. Saving $200 a month reaches the 3-month mark in 36 months; adding part of a tax refund, one of the strategies the CFPB describes, shortens that. The unit is months of time bought, which is why the same dollar total means different things to different households.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
@@ -5242,8 +5249,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "An essential guide to building an emergency fund",
                 "url": "https://www.consumerfinance.gov/an-essential-guide-to-building-an-emergency-fund/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2025-10-29",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -5289,8 +5296,8 @@
             {
               "cardID": "cmp-008",
               "topicID": "compounding-time",
-              "title": "Real Return",
-              "definition": "The real return on savings is the interest rate minus the inflation rate: what the balance gains in purchasing power rather than in dollars. A deposit earning less than inflation loses ground even as its balance rises. The FDIC publishes a national deposit rate, the average of what insured banks and credit unions pay on common account types, weighted by each institution's share of deposits, which shows how far typical savings rates sit from the rates on other instruments.",
+              "title": "The National Deposit Rate",
+              "definition": "The FDIC publishes a national deposit rate for common account types: the average rate paid by insured banks and credit unions for which data is available, weighted by each institution's share of domestic deposits. It is a benchmark for what typical balances earn, not an offer from any institution. Set against inflation, it gives a rough real return - the deposit rate minus the inflation rate - which is negative whenever prices rise faster than the balance grows.",
               "example": "As of August 17, 2026 the FDIC's national deposit rate was 0.38 percent for savings accounts, 0.63 percent for money market accounts, and 1.71 percent for 12-month certificates of deposit. Against an illustrative 3 percent inflation rate, a savings balance earning 0.38 percent loses about 2.6 percent of its purchasing power in a year, while the 12-month certificate loses about 1.3 percent.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "advanced",
