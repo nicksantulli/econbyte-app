@@ -662,11 +662,18 @@ async function resolve(rep) {
   const results = [];
   for (const [url, where] of rep.urls) {
     try {
-      const res = await fetch(url, {
-        redirect: 'follow',
-        headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15', accept: 'text/html,*/*' },
-        signal: AbortSignal.timeout(20000),
-      });
+      // Some publishers (ftc.gov) answer a burst of sequential requests with a
+      // transient 429/5xx; retry those a few times, spaced out, before reporting.
+      let res;
+      for (let attempt = 0; attempt < 4; attempt++) {
+        if (attempt) await new Promise(r => setTimeout(r, 4000 * attempt));
+        res = await fetch(url, {
+          redirect: 'follow',
+          headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15', accept: 'text/html,*/*' },
+          signal: AbortSignal.timeout(20000),
+        });
+        if (!(res.status === 429 || res.status >= 500)) break;
+      }
       if (res.status === 200) results.push(['OK', url]);
       else if (res.status === 403 || res.status === 429) results.push(['UNVERIFIABLE', `${url} (HTTP ${res.status} from this box — verify by another client)`]);
       else results.push(['FAIL', `${url} → HTTP ${res.status} (cited by ${where})`]);

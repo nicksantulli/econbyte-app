@@ -839,8 +839,9 @@ observed on the pack price schedules).
 ## D20 — Courses and the Daily Brief: primary sources, synthetic charts, no aggregation (1.1.4)
 
 **Courses.** Three courses in `Resources/courses-v1.json` (Investing Approaches,
-Reading Price Charts, Bonds, Rates and the Yield Curve; 6 lessons each, 154
-blocks, 19 charts, 9 diagrams, 18 quizzes). Same editorial bar as the cards plus
+Reading Price Charts, Bonds, Rates and the Yield Curve; 9 lessons each since
+1.1.4 Phase 13 (6 before), 241 blocks, 28 charts, 14 diagram blocks drawing 14
+diagram types, 27 quizzes). Same editorial bar as the cards plus
 three more rules the validators enforce: **charts plot only synthetic,
 hand-designed series** carried in the block and labelled "Synthetic …" (the app
 has no market-data dependency and can never show a licensed or stale quote);

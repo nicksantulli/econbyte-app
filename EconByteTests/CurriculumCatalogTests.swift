@@ -549,10 +549,11 @@ final class CurriculumCatalogTests: XCTestCase {
         }
         // Pinned deliberately: a drift here means cards were reclassified
         // without anyone deciding to reclassify them.
-        XCTAssertEqual(counts[.intro], 39)
-        XCTAssertEqual(counts[.intermediate], 67)
-        XCTAssertEqual(counts[.advanced], 14)
-        XCTAssertEqual(counts.values.reduce(0, +), 120)
+        // 1.1 shipped 39 / 67 / 14 of 120; 1.1.4 Phase 13 added 60 cards.
+        XCTAssertEqual(counts[.intro], 54)
+        XCTAssertEqual(counts[.intermediate], 97)
+        XCTAssertEqual(counts[.advanced], 29)
+        XCTAssertEqual(counts.values.reduce(0, +), 180)
         for topic in catalog.topics {
             XCTAssertTrue(topic.cards.contains { $0.difficulty == .intro },
                           "topic \(topic.topicID) needs at least one intro card")

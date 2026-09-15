@@ -12,7 +12,7 @@ advice.
 - Freemium: Inflation + Interest Rates free; the other 13 topics behind
   **Unlock All Topics** (`com.nsantulli.econbyte.unlockall`, $0.99). **Remove
   Ads** (`com.nsantulli.econbyte.removeads`, $0.99) is a separate purchase.
-  Six **topic packs** at $1.99 each, four topics × eight sourced cards each in
+  Six **topic packs** at $1.99 each, four topics × twelve sourced cards each in
   `Resources/packs-v1.json`: Markets & Investing Basics (`pack.markets`),
   Personal Economics (`pack.personal`) from 1.1.3, plus Economic History
   (`pack.history`), Economies Around the World (`pack.world`), Economic Systems
@@ -47,11 +47,11 @@ links; Restore. Prices are StoreKit `displayPrice`, never literals. The Unlock
 All paywall (`PaywallView`, "Purchases") is unchanged.
 
 **Courses** (`Content/CourseCatalog.swift`, `Resources/courses-v1.json`): three
-courses — Investing Approaches (6 lessons), Reading Price Charts (6), Bonds,
-Rates and the Yield Curve (6) — each lesson an ordered list of blocks
+courses — Investing Approaches (9 lessons), Reading Price Charts (9), Bonds,
+Rates and the Yield Curve (9) — each lesson an ordered list of blocks
 (`paragraph`, `callout`, `keyTerms`, `diagram`, `chart`, `quiz`, `takeaways`).
 Charts are Swift Charts over **synthetic, labelled series** bundled in the block
-(no market data anywhere); diagrams are the nine SwiftUI drawings in
+(no market data anywhere); diagrams are the fourteen SwiftUI drawings in
 `Views/Courses/DiagramView.swift`. The first lesson of every course is free.
 Progress is local (`CourseProgressStore`). Loader and validator fail closed;
 editorial rules (approved hosts, no advice/prediction framing, no named
@@ -65,8 +65,8 @@ CBO and open-licence peers — the complete list is `DailyBrief.allowedHosts`),
 never a news site. The app fetches
 `https://dudleyapps.com/econbyte/brief/latest.json` (may 404 until the job
 exists), validates it fail-closed, caches the newest 30, and otherwise shows the
-bundled `Resources/brief-sample.json` (labelled SAMPLE, written from the
-2026-09-08…14 releases). Free readers see the headline and first item; Pro
+newest of the five bundled samples `Resources/brief-sample-YYYY-MM-DD.json`
+(labeled SAMPLE, one per recent business day; the older four fill the archive). Free readers see the headline and first item; Pro
 readers see everything. Server job spec: `docs/daily-brief/SERVER.md`.
 
 **Telemetry** (allowlisted, bucketed, tested): `pro_paywall_shown_v1`,

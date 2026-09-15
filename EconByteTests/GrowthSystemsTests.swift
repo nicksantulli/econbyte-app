@@ -216,10 +216,11 @@ final class GrowthSystemsTests: XCTestCase {
     func testCoreTotalsAreUnchangedByThePacks() {
         let store = ContentStore.shared
         XCTAssertEqual(store.topics.count, 15)
-        XCTAssertEqual(store.allCards.count, 120)
+        // 1.1.4 Phase 13: 15 x 12 core, 24 pack topics x 12.
+        XCTAssertEqual(store.allCards.count, 180)
         XCTAssertEqual(store.packTopics.count, 24)
-        XCTAssertEqual(store.packCards.count, 192)
-        XCTAssertEqual(store.everyCard.count, 312)
+        XCTAssertEqual(store.packCards.count, 288)
+        XCTAssertEqual(store.everyCard.count, 468)
         let ids = store.everyCard.map(\.id)
         XCTAssertEqual(Set(ids).count, ids.count, "no pack card id collides with a core card id")
         XCTAssertTrue(Set(store.packTopics.map(\.id)).isDisjoint(with: Set(store.topics.map(\.id))))
@@ -1459,7 +1460,7 @@ final class GrowthSystemsTests: XCTestCase {
     func testContentStoreServesTheValidatedVersion11Catalog() {
         let store = ContentStore.shared
         XCTAssertEqual(store.topics.count, 15)
-        XCTAssertEqual(store.allCards.count, 120)
+        XCTAssertEqual(store.allCards.count, CurriculumCatalog.expectedCardCount)
         XCTAssertEqual(Array(store.topics.prefix(3).map(\.id)),
                        ["inflation", "interest-rates", "gdp"])
     }
@@ -1514,8 +1515,8 @@ final class GrowthSystemsTests: XCTestCase {
                           "\(card.id) leaked into the free daily pool")
         }
         XCTAssertTrue(store.cards(for: "gdp", unlockedAll: false).isEmpty)
-        XCTAssertEqual(store.cards(for: "gdp", unlockedAll: true).count, 8)
-        XCTAssertEqual(store.cards(for: "economic-indicators", unlockedAll: true).count, 8,
+        XCTAssertEqual(store.cards(for: "gdp", unlockedAll: true).count, CurriculumCatalog.expectedCardsPerTopic)
+        XCTAssertEqual(store.cards(for: "economic-indicators", unlockedAll: true).count, CurriculumCatalog.expectedCardsPerTopic,
                        "the five new 1.1 topics must be reachable with Unlock All")
     }
 
