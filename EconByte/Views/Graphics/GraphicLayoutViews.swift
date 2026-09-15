@@ -161,7 +161,7 @@ struct CompareGraphicView: View {
                 ForEach(Array(compare.columns.enumerated()), id: \.offset) { index, column in
                     Text(column)
                         .font(.system(.caption, design: .rounded).weight(.bold))
-                        .foregroundColor(index == 0 ? palette.primary : (index == 1 ? palette.ink : palette.primary))
+                        .foregroundColor(palette.primary)
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -248,21 +248,22 @@ struct FormulaGraphicView: View {
             Text(formula.expression)
                 .font(.system(size == .regular ? .body : .subheadline, design: .rounded).weight(.semibold))
                 .foregroundColor(palette.ink)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
                 .padding(.vertical, size == .regular ? 7 : 4)
                 .padding(.horizontal, 8)
                 .frame(maxWidth: .infinity)
                 .background(RoundedRectangle(cornerRadius: 8, style: .continuous).fill(palette.chip))
             VStack(alignment: .leading, spacing: 2) {
-                ForEach(Array(formula.terms.prefix(size == .regular ? 5 : 3).enumerated()), id: \.offset) { _, term in
+                ForEach(Array(formula.terms.enumerated()), id: \.offset) { _, term in
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
                         Text(term.symbol)
                             .font(.system(.caption, design: .rounded).weight(.bold))
                             .foregroundColor(palette.primary)
                             .lineLimit(1)
                             .fixedSize()
-                            .frame(minWidth: 28, alignment: .leading)
+                            .frame(minWidth: 34, alignment: .leading)
                         Text(term.meaning)
                             .font(.system(.caption2, design: .rounded))
                             .foregroundColor(palette.ink)

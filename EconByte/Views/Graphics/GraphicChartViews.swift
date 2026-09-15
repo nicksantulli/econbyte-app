@@ -98,13 +98,8 @@ struct LineGraphicView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 10) {
-                Text(line.yLabel)
-                    .font(.system(.caption2, design: .rounded))
-                    .foregroundColor(palette.secondary)
-                    .lineLimit(1)
-                Spacer(minLength: 4)
-                if line.series.count > 1 {
+            if line.series.count > 1 {
+                HStack(spacing: 10) {
                     ForEach(Array(line.series.enumerated()), id: \.offset) { index, series in
                         HStack(spacing: 4) {
                             RoundedRectangle(cornerRadius: 1.5)
@@ -119,7 +114,12 @@ struct LineGraphicView: View {
                     }
                 }
             }
+            Text(line.yLabel)
+                .font(.system(.caption2, design: .rounded))
+                .foregroundColor(palette.secondary)
+                .lineLimit(1)
             chart
+                .padding(.top, markerHeadroom)
             if line.xFormat == .number {
                 Text(line.xLabel)
                     .font(.system(.caption2, design: .rounded))
@@ -149,15 +149,15 @@ struct LineGraphicView: View {
                 RuleMark(y: .value("Reference", reference.y))
                     .foregroundStyle(palette.muted)
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 3]))
-                    .annotation(position: .top, alignment: .leading, spacing: 1) {
+                    .annotation(position: referenceIsHigh(reference.y) ? .bottom : .top, alignment: .leading, spacing: 1) {
                         GraphicTag(text: reference.label, palette: palette)
                     }
             }
-            ForEach(Array((line.markers ?? []).enumerated()), id: \.offset) { _, marker in
+            ForEach(Array((line.markers ?? []).enumerated()), id: \.offset) { index, marker in
                 RuleMark(x: .value("Marker", marker.x))
                     .foregroundStyle(palette.accent.opacity(0.8))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
-                    .annotation(position: .top, alignment: markerAlignment(marker.x), spacing: 1) {
+                    .annotation(position: .top, alignment: markerAlignment(marker.x), spacing: index % 2 == 1 ? 17 : 1) {
                         GraphicTag(text: marker.label, palette: palette)
                     }
             }
@@ -166,7 +166,7 @@ struct LineGraphicView: View {
         .chartXScale(domain: xRange)
         .chartYScale(domain: yRange)
         .chartXAxis {
-            AxisMarks(values: xTicks) { value in
+            AxisMarks(preset: .aligned, values: xTicks) { value in
                 AxisGridLine().foregroundStyle(palette.grid)
                 AxisValueLabel {
                     if let x = value.as(Double.self) {
@@ -189,6 +189,20 @@ struct LineGraphicView: View {
                 }
             }
         }
+    }
+
+    /// Room above the plot for marker tags: one row, or two when markers stagger.
+    private var markerHeadroom: CGFloat {
+        switch line.markers?.count ?? 0 {
+        case 0: return 0
+        case 1: return 12
+        default: return 28
+        }
+    }
+
+    private func referenceIsHigh(_ y: Double) -> Bool {
+        let span = yRange.upperBound - yRange.lowerBound
+        return span > 0 && (y - yRange.lowerBound) / span > 0.6
     }
 
     /// Markers in the right half extend leftward so the tag stays in the plot.

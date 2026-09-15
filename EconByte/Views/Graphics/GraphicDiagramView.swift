@@ -73,8 +73,16 @@ struct DiagramGraphicView: View {
                         Self.arrowPath(from: from, to: to)
                             .stroke(palette.accent, style: StrokeStyle(lineWidth: 1.8, lineCap: .round, lineJoin: .round))
                         if let label = arrow.label {
-                            GraphicTag(text: label, palette: palette, color: palette.ink)
-                                .position(x: (from.x + to.x) / 2, y: min(from.y, to.y) - 10)
+                            if abs(to.x - from.x) >= abs(to.y - from.y) {
+                                // Below an arrow in the lower half, above one in the upper half.
+                                let above = arrow.from[1] > 0.5
+                                anchored(GraphicTag(text: label, palette: palette, color: palette.ink), alignment: above ? .bottom : .top)
+                                    .position(x: (from.x + to.x) / 2, y: above ? min(from.y, to.y) - 5 : max(from.y, to.y) + 5)
+                            } else {
+                                anchored(GraphicTag(text: label, palette: palette, color: palette.ink),
+                                         alignment: arrow.from[0] > 0.5 ? .trailing : .leading)
+                                    .position(x: from.x + (arrow.from[0] > 0.5 ? -6 : 6), y: (from.y + to.y) / 2)
+                            }
                         }
                     }
                 }
@@ -114,7 +122,7 @@ struct DiagramGraphicView: View {
     private func anchored<Content: View>(_ content: Content, alignment: Alignment) -> some View {
         Color.clear
             .frame(width: 1, height: 1)
-            .overlay(content.fixedSize(), alignment: alignment.opposite)
+            .overlay(content.fixedSize(), alignment: alignment)
     }
 
     private func color(for tone: DiagramGraphic.Tone?, text: Bool = false) -> Color {

@@ -107,13 +107,18 @@ extension CardGraphicSpec {
                     let fmt = { (v: Double) in GraphicFormat.value(v, unit: line.unit, decimals: line.decimals) }
                     let high = points.max { $0[1] < $1[1] }!
                     let low = points.min { $0[1] < $1[1] }!
-                    var sentence = "\(series.name): \(fmt(first[1])) in \(GraphicFormat.x(first[0], format: line.xFormat)), "
-                        + "\(fmt(last[1])) in \(GraphicFormat.x(last[0], format: line.xFormat))"
+                    // "in Jun 2022" for dates; "at year 20" for a counted axis.
+                    let when = { (x: Double) -> String in
+                        line.xFormat == .number
+                            ? "at \(line.xLabel.lowercased()) \(GraphicFormat.x(x, format: .number))"
+                            : "in \(GraphicFormat.x(x, format: line.xFormat))"
+                    }
+                    var sentence = "\(series.name): \(fmt(first[1])) \(when(first[0])), \(fmt(last[1])) \(when(last[0]))"
                     if high[1] > max(first[1], last[1]) {
-                        sentence += ", peaking at \(fmt(high[1])) in \(GraphicFormat.x(high[0], format: line.xFormat))"
+                        sentence += ", peaking at \(fmt(high[1])) \(when(high[0]))"
                     }
                     if low[1] < min(first[1], last[1]) {
-                        sentence += ", lowest at \(fmt(low[1])) in \(GraphicFormat.x(low[0], format: line.xFormat))"
+                        sentence += ", lowest at \(fmt(low[1])) \(when(low[0]))"
                     }
                     parts.append(sentence + ".")
                 }

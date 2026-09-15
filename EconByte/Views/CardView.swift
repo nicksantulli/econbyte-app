@@ -104,7 +104,6 @@ struct CardView: View {
 
                 if let graphic = card.graphic {
                     CardGraphicView(spec: graphic)
-                        .padding(.horizontal, 20)
                 }
 
                 Text(card.conceptBody)

@@ -22,6 +22,11 @@ struct CardGraphicView: View {
             .sheet(isPresented: $showsSheet) {
                 GraphicSheet(spec: spec)
             }
+            .padding(.horizontal, 20)
+            // Last, so the card's stack sees it: the card's own text is measured
+            // first and the graphic takes what is left (full, compact, or the
+            // one-line button).
+            .layoutPriority(-1)
         }
     }
 
@@ -44,7 +49,7 @@ struct GraphicPlate: View {
     let size: GraphicSize
     @Environment(\.colorScheme) private var colorScheme
     @ScaledMetric(relativeTo: .caption) private var chartHeight: CGFloat = 132
-    @ScaledMetric(relativeTo: .caption) private var compactChartHeight: CGFloat = 90
+    @ScaledMetric(relativeTo: .caption) private var compactChartHeight: CGFloat = 76
 
     var body: some View {
         let palette = GraphicPalette.palette(for: colorScheme)
@@ -52,7 +57,7 @@ struct GraphicPlate: View {
             Text(spec.title)
                 .font(.system(.footnote, design: .rounded).weight(.semibold))
                 .foregroundColor(palette.ink)
-                .lineLimit(2)
+                .lineLimit(size == .regular ? 2 : 1)
                 .fixedSize(horizontal: false, vertical: true)
             GraphicBody(spec: spec, size: size, palette: palette,
                         chartHeight: size == .regular ? chartHeight : compactChartHeight)
@@ -61,12 +66,12 @@ struct GraphicPlate: View {
                     .font(.system(.caption2, design: .rounded))
                     .italic()
                     .foregroundColor(palette.secondary)
-                    .lineLimit(2)
+                    .lineLimit(size == .regular ? 3 : 2)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.vertical, size == .regular ? 10 : 7)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(palette.plate))
         .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(palette.rim, lineWidth: 1))
