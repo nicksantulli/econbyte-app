@@ -13,7 +13,7 @@
           "title": "Consumer Price Index, August 2026",
           "releaseDate": "2026-09-11",
           "summary": "The Bureau of Labor Statistics reported that the Consumer Price Index for All Urban Consumers rose 0.4 percent in August on a seasonally adjusted basis, and 3.4 percent over the twelve months ending in August before seasonal adjustment. Leaving out food and energy, the index rose 0.3 percent in the month and 2.4 percent over the year. The energy index rose 2.1 percent in August and 16.3 percent over twelve months; the food index rose 0.1 percent; shelter rose 0.3 percent in the month and 3.0 percent over the year.",
-          "meaning": "The CPI is the most widely watched measure of the prices households pay. A 3.4 percent yearly rise means a basket of goods and services that cost $100 a year earlier cost about $103.40 in August. Most of the gap between the headline and the ex-food-and-energy figure is energy.",
+          "meaning": "The CPI measures the average change in the prices that urban consumers pay for a basket of goods and services. A 3.4 percent yearly rise means a basket that cost $100 a year earlier cost about $103.40 in August. Most of the gap between the headline and the ex-food-and-energy figure is energy.",
           "figures": [
             {"label": "All items, month (seasonally adjusted)", "value": "+0.4%"},
             {"label": "All items, 12 months", "value": "+3.4%"},
@@ -33,7 +33,7 @@
           "title": "Producer Price Index, August 2026",
           "releaseDate": "2026-09-10",
           "summary": "The Producer Price Index for final demand moved up 0.4 percent in August, seasonally adjusted, and rose 5.4 percent for the twelve months ended in August on an unadjusted basis. The index for final demand less foods, energy, and trade services rose 0.3 percent in the month and 4.7 percent over the year.",
-          "meaning": "The PPI tracks the prices producers receive for what they sell, one step before the shop shelf. It does not automatically pass through to consumer prices, but a persistent gap between producer and consumer inflation is one of the things economists watch.",
+          "meaning": "The PPI measures the average change in the selling prices that U.S. producers receive for their goods and services. Producer price changes do not pass through to consumer prices one for one, and the two indexes cover different baskets, but a persistent gap between producer and consumer inflation is one of the things economists watch.",
           "figures": [
             {"label": "Final demand, month", "value": "+0.4%"},
             {"label": "Final demand, 12 months", "value": "+5.4%"},
@@ -50,7 +50,7 @@
           "title": "Employment Situation, August 2026",
           "releaseDate": "2026-09-04",
           "summary": "Released the week before: total nonfarm payroll employment increased by 162,000 in August and the unemployment rate was unchanged at 4.1 percent. Average hourly earnings for private-sector employees rose 10 cents, or 0.3 percent, in the month and 3.1 percent over the year. The labor force participation rate edged up to 61.6 percent.",
-          "meaning": "Payroll growth of 162,000 and a steady 4.1 percent unemployment rate describe a labor market that added jobs without a change in the share of people looking for work. With wages up 3.1 percent and consumer prices up 3.4 percent over the same year, average hourly pay did not keep pace with the CPI.",
+          "meaning": "Payroll growth of 162,000 with the unemployment rate unchanged at 4.1 percent describes a labor market that added jobs while the share of the labor force without a job held steady. With average hourly earnings up 3.1 percent and consumer prices up 3.4 percent over the same twelve months, pay rose less than the CPI.",
           "figures": [
             {"label": "Nonfarm payrolls, change", "value": "+162,000"},
             {"label": "Unemployment rate", "value": "4.1%"},
@@ -112,10 +112,10 @@
       "type": "concept",
       "title": "One concept to know",
       "conceptTitle": "Headline versus core inflation",
-      "text": "Headline inflation is the change in the whole CPI basket. Core inflation leaves out food and energy, whose prices swing with harvests and oil markets. Neither is more real than the other: households pay headline prices, but core is a steadier read on where prices are heading. In August the two differed by a full percentage point over the year — 3.4 percent against 2.4 percent — and energy accounted for most of the gap.",
+      "text": "Headline inflation is the change in the whole CPI basket. Core inflation leaves out food and energy, whose prices swing with harvests and oil markets. Neither is more real than the other: households pay headline prices, but core is a steadier read on the underlying trend. In August the two differed by a full percentage point over the year — 3.4 percent against 2.4 percent — and energy accounted for most of the gap.",
       "linkedCardID": "inf-001"
     }
   ],
   "disclaimer": "Informational only — not investment advice. This brief restates figures published by official statistical agencies and central banks; it is not financial or tax advice either, and it makes no recommendations and no predictions. Educational content only. EconByte does not provide financial, investment, or tax advice.",
-  "methodology": "The Daily Economic Brief is generated once per U.S. business day from primary sources only: official statistical releases and central-bank publications that are public domain or carry open reuse terms (Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, U.S. Treasury, Federal Reserve, Congressional Budget Office, and peer statistical offices). It never reads or restates commercial news articles or headlines. Every figure links to the release it came from with the time the page was read. Sentences are our own plain-English description of public facts. This edition is a bundled sample written from the releases of the week of September 8–14, 2026."
+  "methodology": "The Daily Economic Brief is written from primary sources only: official statistical releases and central-bank publications that are public domain or carry open reuse terms (Bureau of Labor Statistics, Bureau of Economic Analysis, Census Bureau, U.S. Treasury, Federal Reserve, Congressional Budget Office, and peer statistical offices). It never reads or restates commercial news articles or headlines. Every figure links to the release it came from with the time the page was read. Sentences are our own plain-English description of public facts. This edition is a bundled sample written on September 14, 2026 from releases published September 4–11, 2026."
 }

@@ -105,7 +105,7 @@ struct BriefDocumentView: View {
                     .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundColor(Econ.white)
                     .multilineTextAlignment(.center)
-                Text("Every U.S. business day: what official releases said, what's scheduled this week, and one concept to know — with sources, never news sites.")
+                Text("What official releases said, what's scheduled this week, and one concept to know — with sources, never news sites.")
                     .font(.system(size: 13, design: .rounded))
                     .foregroundColor(Econ.white.opacity(0.75))
                     .multilineTextAlignment(.center)

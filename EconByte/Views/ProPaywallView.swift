@@ -302,7 +302,7 @@ struct ProPaywallContent<Interlude: View>: View {
                 .font(.system(size: 12, weight: .bold, design: .rounded))
                 .foregroundColor(Econ.subtext)
                 .tracking(1.5)
-            benefitRow("book.fill", "Three courses — Investing Approaches, Reading Price Charts, Bonds & the Yield Curve — with charts, diagrams and quizzes")
+            benefitRow("book.fill", "Three courses — Investing Approaches, Reading Price Charts, Bonds, Rates and the Yield Curve — with charts, diagrams and quizzes")
             benefitRow("newspaper.fill", "The Daily Economic Brief: what official releases said, in plain English, with sources")
             benefitRow("square.stack.3d.up.fill", "Every topic pack and every core topic while you're subscribed")
             benefitRow("rectangle.slash", "No ads")
