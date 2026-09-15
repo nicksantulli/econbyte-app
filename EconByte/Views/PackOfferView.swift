@@ -1,7 +1,7 @@
 import SwiftUI
 import StoreKit
 
-/// One topic pack on Home (1.1.3).
+/// One topic pack (1.1.3; Home's featured pack and the Browse tab in 1.1.4).
 ///
 /// Locked: the pack's name and summary, its four topic names, a three-card
 /// preview (title + first sentence of each definition, verbatim from the
@@ -17,6 +17,8 @@ import StoreKit
 /// (D19). Unlock All never opens a pack (D18).
 struct PackOfferView: View {
     let pack: EconPack
+    /// Where the offer is shown, for `pack_shown_v1`.
+    var entryPoint: EBEntryPoint = .home
     let onOpenTopic: (EconTopic) -> Void
 
     @EnvironmentObject private var content: ContentStore
@@ -168,7 +170,7 @@ struct PackOfferView: View {
     private func recordShownOnce() {
         guard !owned, !didRecordShown, let productID else { return }
         didRecordShown = true
-        EBEvents.packShown(family: productID.family, entryPoint: .home)
+        EBEvents.packShown(family: productID.family, entryPoint: entryPoint)
     }
 
     private func buy() {

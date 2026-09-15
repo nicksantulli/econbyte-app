@@ -3,9 +3,11 @@ import UserNotifications
 
 // MARK: - Notifications (design section 11.1)
 //
-// Default off. The system dialog appears only after an explicit opt-in from the
-// Session Complete primer or Settings — version 1.0 prompted automatically one
-// second after first Home appearance. The reminder carries no financial claim,
+// Default off. 1.1–1.1.3 showed the system dialog only after an explicit opt-in
+// from the Session Complete primer or Settings (1.0 prompted one second after
+// Home first appeared). 1.1.4 asks Apple's standard dialog once at first launch,
+// after the studio intro (`FirstLaunchPermissionsCoordinator`); a grant turns the
+// reminder on at the stored time, a denial leaves it off. The reminder carries no financial claim,
 // urgency, or streak-loss pressure; 1.0's copy did. See `CONTENT-DECISIONS.md` D8.
 
 public enum EconNotificationAuthorization: Equatable {
@@ -61,8 +63,11 @@ public enum NotificationPolicy {
     public static let reminderIdentifier = "econbyte.daily-reminder"
     public static let enabledDefaultsKey = "econ.notifications.enabled"
     public static let primerShownDefaultsKey = "econ.notifications.primerShown"
+    /// The default reminder time; Settings can move it (1.1.4).
     public static let reminderHour = 19
     public static let reminderMinute = 0
+    public static let reminderHourDefaultsKey = "econ.notifications.hour"
+    public static let reminderMinuteDefaultsKey = "econ.notifications.minute"
 
     public static var reminderTitle: String { "EconByte" }
     public static var reminderBody: String { "Today's cards are ready when you are." }
@@ -97,15 +102,16 @@ public enum NotificationPolicy {
         return true
     }
 
-    public static func makeReminderRequest() -> UNNotificationRequest {
+    public static func makeReminderRequest(hour: Int = reminderHour,
+                                           minute: Int = reminderMinute) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = reminderTitle
         content.body = reminderBody
         content.sound = .default
 
         var components = DateComponents()
-        components.hour = reminderHour
-        components.minute = reminderMinute
+        components.hour = hour
+        components.minute = minute
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
 
         return UNNotificationRequest(identifier: reminderIdentifier,
@@ -140,6 +146,9 @@ public final class NotificationCoordinator: ObservableObject {
 
     @Published public private(set) var remindersEnabled: Bool
     @Published public private(set) var authorization: EconNotificationAuthorization = .notDetermined
+    /// The daily reminder's local time (1.1.4: user-set in Settings).
+    @Published public private(set) var reminderHour: Int
+    @Published public private(set) var reminderMinute: Int
     public private(set) var didRequestAuthorization = false
 
     /// Set when scheduling fails, so the caller can raise a diagnostic code.
@@ -157,6 +166,10 @@ public final class NotificationCoordinator: ObservableObject {
         self.center = center
         self.defaults = defaults
         self.remindersEnabled = defaults.bool(forKey: NotificationPolicy.enabledDefaultsKey)
+        let storedHour = defaults.object(forKey: NotificationPolicy.reminderHourDefaultsKey) as? Int
+        let storedMinute = defaults.object(forKey: NotificationPolicy.reminderMinuteDefaultsKey) as? Int
+        self.reminderHour = (0...23).contains(storedHour ?? -1) ? storedHour! : NotificationPolicy.reminderHour
+        self.reminderMinute = (0...59).contains(storedMinute ?? -1) ? storedMinute! : NotificationPolicy.reminderMinute
         refreshAuthorization()
     }
 
@@ -208,6 +221,45 @@ public final class NotificationCoordinator: ObservableObject {
         }
     }
 
+    /// A fresh read of the system status (the published cache fills
+    /// asynchronously and may still say `.notDetermined`).
+    public func currentAuthorization() async -> EconNotificationAuthorization {
+        let status = await withCheckedContinuation { continuation in
+            center.econAuthorizationStatus { continuation.resume(returning: $0) }
+        }
+        authorization = status
+        return status
+    }
+
+    /// The first-launch ask (1.1.4). Unlike `enableReminders`, it always
+    /// completes, and it reports whether a dialog was actually presented, so
+    /// `notification_permission_result` still records only what iOS did.
+    /// Granted ⇒ reminder on at the stored time; denied ⇒ reminder off.
+    public func requestAuthorizationForFirstLaunch() async -> (presented: Bool, granted: Bool) {
+        let status = await currentAuthorization()
+        guard status == .notDetermined else {
+            return (false, status == .authorized)
+        }
+        didRequestAuthorization = true
+        let granted = await withCheckedContinuation { continuation in
+            center.econRequestAuthorization { granted, _ in continuation.resume(returning: granted) }
+        }
+        authorization = granted ? .authorized : .denied
+        persist(granted)
+        if granted { schedule() }
+        return (true, granted)
+    }
+
+    /// Moves the daily reminder. Persisted; reschedules at once when it is on.
+    public func setReminderTime(hour: Int, minute: Int) {
+        guard (0...23).contains(hour), (0...59).contains(minute) else { return }
+        reminderHour = hour
+        reminderMinute = minute
+        defaults.set(hour, forKey: NotificationPolicy.reminderHourDefaultsKey)
+        defaults.set(minute, forKey: NotificationPolicy.reminderMinuteDefaultsKey)
+        if remindersEnabled { schedule() }
+    }
+
     public func disableReminders() {
         persist(false)
         center.econRemovePendingRequests(withIdentifiers: [NotificationPolicy.reminderIdentifier])
@@ -227,7 +279,7 @@ public final class NotificationCoordinator: ObservableObject {
 
     private func schedule() {
         center.econRemovePendingRequests(withIdentifiers: [NotificationPolicy.reminderIdentifier])
-        center.econAdd(NotificationPolicy.makeReminderRequest()) { error in
+        center.econAdd(NotificationPolicy.makeReminderRequest(hour: reminderHour, minute: reminderMinute)) { error in
             Task { @MainActor in
                 self.lastScheduleError = error
                 if let error { self.onScheduleFailure?(error) }
@@ -254,6 +306,8 @@ public final class NotificationCoordinator: ObservableObject {
     public static func resetPersistedState(in defaults: UserDefaults = .standard) {
         defaults.removeObject(forKey: NotificationPolicy.enabledDefaultsKey)
         defaults.removeObject(forKey: NotificationPolicy.primerShownDefaultsKey)
+        defaults.removeObject(forKey: NotificationPolicy.reminderHourDefaultsKey)
+        defaults.removeObject(forKey: NotificationPolicy.reminderMinuteDefaultsKey)
     }
     #endif
 }

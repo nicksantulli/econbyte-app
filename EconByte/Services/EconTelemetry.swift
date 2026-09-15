@@ -166,7 +166,9 @@ enum TelemetrySchema {
         // the Daily Brief) as places the Pro paywall can be entered from.
         "entry_point": .enumerated(["home", "home_highlight", "topic_grid",
                                     "bookmarks", "settings", "paywall",
-                                    "session_complete", "course", "brief"]),
+                                    "session_complete", "course", "brief",
+                                    // 1.1.4 shell: the Pro tab's inline paywall.
+                                    "pro_tab"]),
         "direction": .enumerated(["forward", "back"]),
         "reason": .enumerated(["completed", "user_exit"]),
         "action": .enumerated(["added", "removed"]),
@@ -679,6 +681,10 @@ final class EconTelemetry: ObservableObject {
     }
 
     var queuedEventCount: Int { queue.count }
+
+    /// The reader's stored answer (1.1.4 Settings reads this, so a Debug or
+    /// unkeyed build still shows what was chosen even though nothing starts).
+    var analyticsChoice: Bool { isAnalyticsEnabled || Self.isOptedIn(defaults) }
 
     // MARK: Opt-out
 

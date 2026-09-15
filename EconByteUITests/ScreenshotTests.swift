@@ -26,16 +26,16 @@ final class ScreenshotTests: XCTestCase {
         app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt"]
         app.launch()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 30),
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 30),
                       "Home should render before capture")
         sleep(1)
         capture("01-home")
 
-        // Topic grid: scroll far enough to show free and locked topics together.
-        app.swipeUp()
+        // Topic grid (1.1.4: the Browse tab), showing free and locked topics.
+        app.tabBars.buttons["Browse"].tap()
         sleep(1)
         capture("02-topics")
-        app.swipeDown()
+        app.tabBars.buttons["Home"].tap()
         sleep(1)
 
         let start = app.buttons.containing(
@@ -78,10 +78,11 @@ final class ScreenshotTests: XCTestCase {
         capture("05-session-complete")
 
         done.tap()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 20))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 20))
         sleep(1)
         capture("06-home-streak")
 
+        app.tabBars.buttons["Browse"].tap()
         let bookmarks = app.buttons.containing(
             NSPredicate(format: "label CONTAINS 'Bookmarks'")
         ).firstMatch

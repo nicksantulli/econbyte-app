@@ -45,9 +45,12 @@ final class EconByteUITests: XCTestCase {
     func testHomeScreenSmoke() {
         let app = launchApp()
 
-        // Navigation title.
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5),
-                      "EconByte navigation title should render on the home screen")
+        // 1.1.4 shell: the EconByte wordmark in the fixed top bar, and four tabs.
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5),
+                      "the EconByte wordmark should render in the top bar")
+        for tab in ["Home", "Browse", "News", "Pro"] {
+            XCTAssertTrue(app.tabBars.buttons[tab].exists, "\(tab) tab should exist")
+        }
 
         // Today's Cards CTA: "Start" before the daily goal, "Review" after.
         let start = app.buttons.containing(
@@ -61,7 +64,7 @@ final class EconByteUITests: XCTestCase {
     func testBrowseTopicsGridRenders() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
 
         // 10 topic tiles render in the grid. We assert at least one
         // to stay resilient to content shuffles.
@@ -76,7 +79,7 @@ final class EconByteUITests: XCTestCase {
     func testTodaysCardsCardModeOpens() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
 
         tapStart(in: app)
 
@@ -92,7 +95,7 @@ final class EconByteUITests: XCTestCase {
     func testCardModeCloseReturnsHome() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
         tapStart(in: app)
 
         // Wait for card mode.
@@ -107,7 +110,7 @@ final class EconByteUITests: XCTestCase {
         close.tap()
 
         // Back on Home.
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 8),
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 8),
                       "EconByte home should reappear after dismissing card mode")
     }
 
@@ -115,7 +118,7 @@ final class EconByteUITests: XCTestCase {
     func testCardDisclaimerRenders() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
         tapStart(in: app)
 
         XCTAssertTrue(
@@ -137,9 +140,9 @@ final class EconByteUITests: XCTestCase {
     func testSettingsSheetOpensWithPrivacyLink() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
 
-        // Gear button in navigation bar.
+        // Gear button in the shared top bar.
         let gear = app.buttons["settingsGearButton"]
         XCTAssertTrue(gear.waitForExistence(timeout: 5), "Settings gear should render in the nav bar")
         gear.tap()
@@ -186,13 +189,14 @@ final class EconByteUITests: XCTestCase {
     func testBookmarksRowRenders() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
+        app.tabBars.buttons["Browse"].tap()
 
         let bookmarks = app.buttons.containing(
             NSPredicate(format: "label CONTAINS 'Bookmarks'")
         ).firstMatch
         XCTAssertTrue(bookmarks.waitForExistence(timeout: 5),
-                      "Bookmarks row should render on the home screen")
+                      "Bookmarks row should render on the Browse tab")
     }
 
     // MARK: - IAP / Paywall
@@ -201,11 +205,12 @@ final class EconByteUITests: XCTestCase {
     func testLockedTopicOpensPaywall() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
+        app.tabBars.buttons["Browse"].tap()
 
         let lockedTopic = app.buttons["topic-gdp"]
         XCTAssertTrue(lockedTopic.waitForExistence(timeout: 8),
-                      "Locked GDP topic tile should render on Home")
+                      "Locked GDP topic tile should render on Browse")
         for _ in 0..<3 where !lockedTopic.isHittable {
             app.swipeUp()
         }
@@ -223,7 +228,7 @@ final class EconByteUITests: XCTestCase {
     func testSettingsUnlockAllOpensPaywall() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
 
         let gear = app.buttons["settingsGearButton"]
         XCTAssertTrue(gear.waitForExistence(timeout: 5))
@@ -242,7 +247,7 @@ final class EconByteUITests: XCTestCase {
     func testSettingsRemoveAdsButtonExists() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
 
         let gear = app.buttons["settingsGearButton"]
         XCTAssertTrue(gear.waitForExistence(timeout: 5))
@@ -260,7 +265,7 @@ final class EconByteUITests: XCTestCase {
     func testGroceryLineRendersOnHomeWithoutOpeningCard() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
 
         let grocery = app.buttons["homeGroceryLine"]
         XCTAssertTrue(grocery.waitForExistence(timeout: 5),
@@ -295,7 +300,7 @@ final class EconByteUITests: XCTestCase {
         app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-exposeGroceryBinding"]
         app.launch()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
         let grocery = app.buttons["homeGroceryLine"]
         XCTAssertTrue(grocery.waitForExistence(timeout: 5))
 
@@ -313,7 +318,7 @@ final class EconByteUITests: XCTestCase {
     func testGroceryLineTapStartsTodaysSet() {
         let app = launchApp()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 5))
         let grocery = app.buttons["homeGroceryLine"]
         XCTAssertTrue(grocery.waitForExistence(timeout: 5))
         for _ in 0..<3 where !grocery.isHittable { app.swipeUp() }

@@ -144,20 +144,18 @@ through cards → tap a card to flip it for the sourced example.
   the banner is on Home as soon as Google's test unit fills.
 
 **Consent, reminders, and rating**
-- **First open (1.1.3, keyed builds only):** as the Dudley studio intro fades,
-  a card asks once whether to share anonymous usage analytics (and crash
-  reports, when the build carries a Sentry DSN). Two equal buttons; "Not now"
-  is a real, remembered answer. Both toggles stay in Settings → Privacy & Data
-  permanently. A plain Simulator run is unkeyed by design
-  (`InstrumentationContext`) and shows **no card**; to see it, launch with
-  `-AllowAnalyticsInDebug` on an erased simulator. `-EBSkipConsentPrompt`
-  suppresses it for UI tests and screenshots.
-- No permission dialog appears on first launch — notifications and tracking are
-  asked later, in context.
-- If the build is unkeyed (so the first-open card did not ask), Session
-  Complete offers the two data choices after your **first completed set** as
-  separate toggles, both off — the 1.1 primer. It never asks an install the
-  first-open card already asked, and vice versa.
+- **First launch (1.1.4):** as the Dudley studio intro fades, Apple's tracking
+  prompt appears, then Apple's notifications prompt. Allow on tracking turns
+  Settings → Privacy → Usage analytics and Crash reports on; Allow on
+  notifications turns the daily reminder on (7:00 p.m., adjustable). To see the
+  prompts again, delete the app (or `xcrun simctl privacy <udid> reset all
+  com.nsantulli.econbyte` plus an uninstall on a simulator).
+  `-EBSkipPermissionPrompts` / `-EBSkipConsentPrompt` suppress both for UI
+  tests and screenshots. Readers in the EEA/UK (no ads) are not shown the
+  tracking prompt.
+- If tracking was not asked (EEA/UK, Remove Ads, Pro), Session Complete still
+  offers the two data choices after your **first completed set** as separate
+  toggles, both off — the 1.1 primer.
 - After your **next completed set**, the reminder primer appears. The iOS
   notification dialog appears only if you tap **Turn On Reminders** (or the
   Settings toggle). Enabling schedules one reminder at 7:00 p.m. local; turning

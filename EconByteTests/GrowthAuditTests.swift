@@ -4,8 +4,8 @@ import XCTest
 /// EconByte 1.1.3 growth audit (Owner order 2026-09-14; Dudley factory pattern
 /// ported from Table Talk 1.1.5):
 ///
-///  1. the first-open analytics consent card — asked once, only when keyed,
-///     both answers persisted, never on top of the 1.1 primer's answer;
+///  1. (1.1.4) the first-open consent card is replaced by Apple's standard ATT
+///     and notification prompts at first launch (`FirstLaunchPermissionsTests`);
 ///  2. the Release instrumentation key gate in the committed project file;
 ///  3. the version stamp (1.1.3 / build 14 — the live max is build 13);
 ///  4. the anchored banner — production unit, Google's test unit in Debug, and
@@ -37,70 +37,42 @@ final class GrowthAuditTests: XCTestCase {
         URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
     }
 
-    // MARK: - 1. First-open consent card
+    // MARK: - 1. First-launch permissions replace the consent card (1.1.4)
 
-    /// An unkeyed build has nothing to consent to and must never ask. Every
-    /// Debug, unit-test and UI-test process is unkeyed by `InstrumentationContext`,
-    /// which is why a plain Simulator run never sees the card.
-    func testUnkeyedBuildNeverAsks() {
-        XCTAssertFalse(FirstOpenConsentPolicy.shouldPresent(isConfigured: false,
-                                                            legacyPrimerAnswered: false,
-                                                            defaults: defaults, arguments: []))
-    }
-
-    func testKeyedBuildAsksExactlyOnceAndBothAnswersPersist() {
-        XCTAssertTrue(FirstOpenConsentPolicy.shouldPresent(isConfigured: true,
-                                                           legacyPrimerAnswered: false,
-                                                           defaults: defaults, arguments: []))
-        FirstOpenConsentPolicy.recordAnswered(defaults: defaults)
-        XCTAssertEqual(defaults.integer(forKey: FirstOpenConsentPolicy.answeredVersionKey),
-                       FirstOpenConsentPolicy.promptVersion)
-        XCTAssertFalse(FirstOpenConsentPolicy.shouldPresent(isConfigured: true,
-                                                            legacyPrimerAnswered: false,
-                                                            defaults: defaults, arguments: []),
-                       "\"Not now\" is a real, persisted answer — the card does not nag")
-        FirstOpenConsentPolicy.reset(defaults: defaults)
-        XCTAssertTrue(FirstOpenConsentPolicy.shouldPresent(isConfigured: true,
-                                                           legacyPrimerAnswered: false,
-                                                           defaults: defaults, arguments: []))
-    }
-
-    /// One question, one answer: an install the 1.1 / 1.1.2 session-complete
-    /// primer already asked is never asked again by the new card.
-    func testAnInstallAlreadyAskedByTheLegacyPrimerIsNotAskedAgain() {
-        XCTAssertFalse(FirstOpenConsentPolicy.shouldPresent(isConfigured: true,
-                                                            legacyPrimerAnswered: true,
-                                                            defaults: defaults, arguments: []))
-    }
-
-    /// The harness arguments stand the card down in every configuration, and
-    /// the skip argument is an automation marker so the run stays unkeyed too.
-    func testSkipAndSmokeArgumentsSuppressTheCard() {
-        XCTAssertFalse(FirstOpenConsentPolicy.shouldPresent(
-            isConfigured: true, legacyPrimerAnswered: false, defaults: defaults,
-            arguments: ["EconByte", FirstOpenConsentPolicy.skipArgument]))
-        XCTAssertFalse(FirstOpenConsentPolicy.shouldPresent(
-            isConfigured: true, legacyPrimerAnswered: false, defaults: defaults,
-            arguments: ["EconByte", "-EBInstrumentationSmoke"]))
-        XCTAssertEqual(FirstOpenConsentPolicy.skipArgument, "-EBSkipConsentPrompt")
-        XCTAssertTrue(InstrumentationContext.automationArguments.contains(FirstOpenConsentPolicy.skipArgument),
-                      "a launch that skips the card must also be recognised as automation")
-    }
-
-    /// The card states the same facts Settings → Privacy & Data states, and
-    /// never reads as an ad-tracking prompt — ATT is a separate, later dialog.
-    func testConsentCopyStatesTheFactsAndIsNotATrackingPrompt() {
-        let blob = FirstOpenConsentCopy.allSlots.joined(separator: " ").lowercased()
-        for required in ["anonymous", "90 days", "settings", "resets", "never a card"] {
-            XCTAssertTrue(blob.contains(required), "consent copy must state: \(required)")
+    /// The 1.1.3 custom consent card is gone: 1.1.4 asks Apple's standard ATT
+    /// and notification prompts instead (`FirstLaunchPermissionsTests` covers
+    /// the mapping and the upgrade rules). No source may bring the card back.
+    func testTheCustomConsentCardIsGoneAndTheAppRunsTheSystemPromptFlow() throws {
+        let app = repoRoot.appendingPathComponent("EconByte")
+        for removed in ["Views/AnalyticsConsentCard.swift", "Services/FirstOpenConsentPolicy.swift"] {
+            XCTAssertFalse(FileManager.default.fileExists(atPath: app.appendingPathComponent(removed).path),
+                           "\(removed) was replaced by the system prompts")
         }
-        for banned in ["track you", "tracking permission", "personalized ads", "idfa", "advertising id "] {
-            XCTAssertFalse(blob.contains(banned),
-                           "consent copy must not read as an ad-tracking prompt: \(banned)")
-        }
-        XCTAssertFalse(FirstOpenConsentCopy.accept.isEmpty)
-        XCTAssertFalse(FirstOpenConsentCopy.decline.isEmpty)
-        XCTAssertNotEqual(FirstOpenConsentCopy.accept, FirstOpenConsentCopy.decline)
+        let appSource = InstrumentationPrivacyTests.strippingComments(
+            try String(contentsOf: app.appendingPathComponent("EconByteApp.swift"), encoding: .utf8))
+        XCTAssertFalse(appSource.contains("AnalyticsConsentCard"))
+        XCTAssertTrue(appSource.contains("permissions.runIfNeeded()"),
+                      "the app runs the first-launch permission flow")
+        XCTAssertTrue(appSource.contains("waitForIntro()"),
+                      "…and only after the studio intro has gone")
+    }
+
+    /// The 1.1.3 card's stored answer still counts as an analytics answer, so
+    /// an install that answered it is never re-mapped by an ATT Allow.
+    func testTheLegacyCardAnswerStillCountsAsAnAnalyticsAnswer() {
+        XCTAssertEqual(FirstLaunchPermissionPolicy.legacyFirstOpenConsentKey, "ebAnalyticsConsentPromptVersion")
+        XCTAssertFalse(FirstLaunchPermissionPolicy.analyticsAlreadyAnswered(defaults: defaults))
+        defaults.set(1, forKey: FirstLaunchPermissionPolicy.legacyFirstOpenConsentKey)
+        XCTAssertTrue(FirstLaunchPermissionPolicy.analyticsAlreadyAnswered(defaults: defaults))
+    }
+
+    /// The UI-test harness arguments stand the prompts down and keep the run
+    /// unkeyed.
+    func testSkipArgumentsStandTheSystemPromptsDown() {
+        XCTAssertTrue(FirstLaunchPermissionPolicy.isSkipped(arguments: ["EconByte", "-EBSkipConsentPrompt"]))
+        XCTAssertTrue(FirstLaunchPermissionPolicy.isSkipped(arguments: ["EconByte", "-EBSkipPermissionPrompts"]))
+        XCTAssertTrue(FirstLaunchPermissionPolicy.isSkipped(arguments: ["EconByte", "-EBInstrumentationSmoke"]))
+        XCTAssertFalse(FirstLaunchPermissionPolicy.isSkipped(arguments: ["EconByte"]))
     }
 
     /// The decision itself is never measured — `consent_state` stays prohibited.

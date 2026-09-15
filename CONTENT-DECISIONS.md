@@ -559,7 +559,9 @@ depend on a DEBUG-only branch, and it only ever *suppresses* a prompt:
 | `-skipStudioIntro` | Skips the studio intro animation | Pre-existing from 1.0 |
 | `-econResetGrowthState` | Clears consent, reminders, ad counters, review progress, card state, and streak | UI tests need a fresh-install posture |
 | `-econDisableAds` | Reports the device as ad-restricted | See below |
-| `-EBSkipConsentPrompt` | Suppresses the 1.1.3 first-open analytics consent card (all configurations) | UI tests and screenshot runs; also an `InstrumentationContext` automation marker |
+| `-EBSkipConsentPrompt` | 1.1.3: suppressed the first-open consent card. 1.1.4: stands down the first-launch ATT + notification prompts (all configurations) | UI tests and screenshot runs; also an `InstrumentationContext` automation marker |
+| `-EBSkipPermissionPrompts` | 1.1.4 name for the same stand-down | As above |
+| `-econInitialTab browse\|news\|pro` | DEBUG only: opens on that tab | Screenshot runs |
 
 `-econDisableAds` routes through the real DUD-224 region gate, so the ad SDK is
 never started and no request is made. It exists because one UI test drives the
@@ -902,3 +904,68 @@ were re-sourced to Federal Reserve Board speeches and re-verified. One
 transparency note: `tsb-002…004` cite a St. Louis Fed Page One Economics essay
 whose real title contains the word "Bitcoin" (its tulip-bubble section is the
 source); no brand word appears in any card's prose.
+
+## D22 — Tab shell, fixed wordmark bar, first-launch system prompts, Settings cut to essentials (1.1.4)
+
+Owner order 2026-09-14 (night batch, Phase 10).
+
+**Shell.** One long Home became four tabs: **Home** (today's set, streak, today's
+brief card → News, continue-your-course / course teaser, one featured pack that
+rotates daily among packs the reader cannot yet read), **Browse** (search over
+topic names and card titles, Bookmarks, the 15 core topics, the 6 packs),
+**News** (the Daily Brief inline, archive for Pro, "Scheduled this week" inside
+the Pro brief, "How this brief is made"; non-Pro sees the free teaser + upgrade),
+**Pro** (subscriber: status + courses + what's included; non-subscriber: the
+3.1.2 paywall inline — the same `ProPaywallContent` as the cover — with the
+courses and their free first lessons in the middle). Settings is the gear in the
+shared top bar (a sheet), not a tab. Every modal is presented from the tab
+container by `AppRouter`, keeping the "dismiss the sheet, then present the
+cover" rule in one place. New telemetry entry point `pro_tab` (the Pro tab's
+inline paywall); no other schema change. The banner stays on Home only —
+placement across tabs is Phase 11's audit.
+
+**Header.** The "EconByte" large navigation title is gone. A custom bar sits
+outside each tab's scroll view: the SwiftUI wordmark (`EconWordmark`: "Econ"
+white, "Byte" #F2B233, a tapered gold swoosh from low-left rising past "Byte",
+knocked out where it passes behind the final "e") at top-left, the gear at
+top-right, a hairline divider once content scrolls under it. Being outside the
+scroll view, it cannot move or resize — `ShellRedesignTests` asserts the frame is
+identical at rest, scrolled, and on every tab.
+
+**First-launch permissions** (replaces the 1.1.3 custom consent card and the
+1.1.2–1.1.3 set-exit ATT ask). After the intro: ATT, then notifications, both
+Apple's standard dialogs, no pre-prompt. ATT `.authorized` ⇒ analytics + crash
+reports on; denied/restricted ⇒ off; a prompt iOS did not present writes nothing.
+Notifications granted ⇒ reminder on; denied ⇒ off. Once per install. Upgraders:
+ATT is not asked if it was decided or requested before; the ATT answer is not
+mapped onto analytics if the install ever answered analytics (Settings switch,
+1.1 primer, 1.1.3 card); notifications are not asked if the reminder is on, the
+1.1 reminder primer was shown, or iOS already has an answer. Answering marks the
+matching 1.1 session-complete primer as shown. Readers who can't see ads (Remove
+Ads, Pro, EEA/UK, unknown region) are not asked ATT — asking for tracking the app
+won't do — so their analytics stays at its stored answer; the notifications
+prompt is still asked. No ad SDK start or request precedes the ATT answer, and
+the SDK starts only after the notifications prompt resolves (`.systemPrompt`
+blocker held throughout). Requests remain `npa=1`/`rdp=1` for every answer:
+personalizing for authorized readers is a portfolio policy revision
+(`personalizedAdsMode: disabled`, release gate POLICY_PERSONALIZATION), not
+decided here. The ATT purpose string now also says Allow turns on anonymous
+usage stats, because it does.
+
+**Open, for the Owner (not decided in code):** an ATT "Allow" is Apple's
+tracking permission; it may not count as GDPR/ePrivacy consent for analytics in
+the EEA/UK. EEA/UK readers never see ATT here (DUD-224 serves them no ads), so
+their analytics remains an explicit opt-in (Settings / the set-exit primer). A
+reader in the EEA/UK whose region reads as allowed (e.g. a US storefront device
+setting) would still be mapped.
+
+**Settings.** Grouped and compact in navy/amber. Kept only: EconByte Pro (status,
+plan, period end, Manage Subscription, Restore Purchases); Purchases (Remove Ads,
+Unlock All, six packs — one line each); Notifications (reminder toggle + time,
+now user-set, persisted, rescheduled on change); Privacy (Usage analytics, Crash
+reports, Analytics ID with copy + reset, Privacy Policy, Terms of Use); About
+(not-advice line, Sources & editorial policy sheet, Contact support
+mailto:support@dudleyapps.com, Rate EconByte, Version — which opens the Dudley
+studio sheet). Every footer is one short sentence; the multi-paragraph
+explanations are gone. The Debug section is DEBUG-only.
+

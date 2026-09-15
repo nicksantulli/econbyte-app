@@ -41,7 +41,7 @@ final class AccessibilityTests: XCTestCase {
     /// which face is showing, and flipping it is reachable without a gesture.
     func testCardAnnouncesFaceTopicAndPositionAndCanBeFlipped() {
         let app = launchApp()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 10))
         openTodaysSet(in: app)
 
         let front = app.buttons.containing(
@@ -63,7 +63,7 @@ final class AccessibilityTests: XCTestCase {
     /// name.
     func testIconOnlyControlsAreLabelled() {
         let app = launchApp()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 10))
 
         let gear = app.buttons["settingsGearButton"]
         XCTAssertTrue(gear.waitForExistence(timeout: 10))
@@ -91,7 +91,7 @@ final class AccessibilityTests: XCTestCase {
             throw XCTSkip("performAccessibilityAudit requires iOS 17")
         }
         let app = launchApp()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 10))
 
         var logged: [String] = []
         var blocking: [String] = []
@@ -129,7 +129,7 @@ final class AccessibilityTests: XCTestCase {
         }
 
         app.buttons["cardModeCloseButton"].tap()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 10))
         app.buttons["settingsGearButton"].tap()
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
         try audit("settings")
@@ -149,7 +149,7 @@ final class AccessibilityTests: XCTestCase {
     /// the card rather than clipped away.
     func testCoreLoopSurvivesAccessibilityExtraExtraExtraLarge() {
         let app = launchApp(contentSizeCategory: "UICTContentSizeCategoryAccessibilityXXXL")
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 10))
 
         openTodaysSet(in: app)
 
@@ -171,7 +171,7 @@ final class AccessibilityTests: XCTestCase {
     /// (design section 12).
     func testPurchaseControlsOperableAtLargestTextSize() {
         let app = launchApp(contentSizeCategory: "UICTContentSizeCategoryAccessibilityXXXL")
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 10))
 
         let gear = app.buttons["settingsGearButton"]
         XCTAssertTrue(gear.waitForExistence(timeout: 10))
@@ -185,14 +185,15 @@ final class AccessibilityTests: XCTestCase {
         // operable*, which is what Restore is already asserted the same way.
         // Scroll first, then assert, or this passes only on the widest
         // simulator that happens to be on the bench.
+        // 1.1.4: Restore sits in the EconByte Pro section, above Purchases.
+        let restore = app.buttons["settingsRestoreButton"]
+        for _ in 0..<6 where !restore.exists || !restore.isHittable { app.swipeUp() }
+        XCTAssertTrue(restore.exists, "Restore Purchases must remain reachable at AccessibilityXXXL")
+
         let removeAds = app.buttons["settingsRemoveAdsButton"]
         for _ in 0..<6 where !removeAds.exists || !removeAds.isHittable { app.swipeUp() }
         XCTAssertTrue(removeAds.waitForExistence(timeout: 10),
                       "Remove Ads must remain reachable at AccessibilityXXXL")
         XCTAssertTrue(removeAds.isHittable, "Remove Ads must stay operable at AccessibilityXXXL")
-
-        let restore = app.buttons["settingsRestoreButton"]
-        for _ in 0..<6 where !restore.exists || !restore.isHittable { app.swipeUp() }
-        XCTAssertTrue(restore.exists, "Restore Purchases must remain reachable at AccessibilityXXXL")
     }
 }

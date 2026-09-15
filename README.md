@@ -122,18 +122,19 @@ promise ("separate opt-in choices, both off by default"); the 1.1.2
 reconciliation kept that posture rather than reverse a published promise on
 update (`RECONCILIATION-LOG.md` §5).
 
-**First-open consent card (1.1.3, Dudley factory pattern).** On the first open
-of a *keyed* build, a card revealed as the studio intro fades asks once whether
-to share anonymous usage analytics (and crash reports, when a DSN is present).
-Two equal-weight buttons; "Not now" is a real, persisted answer. One answer sets
-both vendor consents through the same facade paths Settings uses; Settings stays
-the per-vendor control. An install the 1.1 session-complete primer already asked
-is never asked again, and answering the card retires that primer. Code:
-`EconByte/Services/FirstOpenConsentPolicy.swift`,
-`EconByte/Views/AnalyticsConsentCard.swift`, mounted in `EconByteApp`. Launch
-argument `-EBSkipConsentPrompt` suppresses it (every UI test passes it). This
-card is **not** the App Tracking Transparency prompt — that is a separate,
-later system dialog owned by `EconMonetization` (1.1.2 build 13).
+**First-launch permissions (1.1.4; replaces the 1.1.3 first-open consent card
+and the at-first-set-exit ATT ask).** After the studio intro fades the app asks
+Apple's standard App Tracking Transparency prompt, then Apple's standard
+notifications prompt — no custom pre-prompt screens. ATT "Allow" turns usage
+analytics and crash reports on (any other answer leaves them off);
+notifications granted turns the daily reminder on at the stored time (default
+7:00 p.m.). Both stay switchable in Settings. Once per install; an upgrader's
+earlier answers are honoured (never re-prompted, never re-mapped). Readers
+who cannot see ads (Remove Ads, Pro, EEA/UK) are not shown ATT. Code:
+`EconByte/Services/FirstLaunchPermissions.swift` (tests:
+`FirstLaunchPermissionsTests`). `-EBSkipPermissionPrompts` or the older
+`-EBSkipConsentPrompt` stands both prompts down (every UI test passes one).
+See `CONTENT-DECISIONS.md` D22, including the open GDPR question.
 
 What ships when analytics is on is small enough to defend: only a typed,
 allowlisted event set can reach PostHog (see

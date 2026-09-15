@@ -265,6 +265,9 @@ final class EconDiagnostics: ObservableObject {
     /// Sentry receives no PostHog identifier and no advertising state; the only
     /// thing this call passes it is the DSN and the crash-only configuration
     /// above. Calling it twice must not start the SDK twice.
+    /// The reader's stored answer, whether or not a DSN let the SDK start.
+    var diagnosticsChoice: Bool { isDiagnosticsEnabled || defaults.bool(forKey: Self.consentDefaultsKey) }
+
     func setDiagnosticsConsent(_ enabled: Bool) {
         defaults.set(enabled, forKey: Self.consentDefaultsKey)
         guard enabled else {

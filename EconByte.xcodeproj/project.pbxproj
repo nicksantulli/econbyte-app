@@ -12,6 +12,7 @@
 		SE0000000000000000000004 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = SE0000000000000000000006 /* Sentry */; };
 		A2C3D4E5F6A7B8C9D0E1F2A3 /* EconByteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4B5 /* EconByteUITests.swift */; };
 		A2C3D4E5F6A7B8C9D0E1F2B4 /* GrowthFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4C6 /* GrowthFlowTests.swift */; };
+		UT00000000000000000000E1 /* ShellRedesignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000E0 /* ShellRedesignTests.swift */; };
 		A2C3D4E5F6A7B8C9D0E1F2C5 /* AccessibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4D7 /* AccessibilityTests.swift */; };
 		A2C3D4E5F6A7B8C9D0E1F2D6 /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4E8 /* ScreenshotTests.swift */; };
 		1A0000000000000000000004 /* CurriculumCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000002 /* CurriculumCatalogTests.swift */; };
@@ -20,6 +21,7 @@
 		UT0000000000000000000011 /* InstrumentationPrivacyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */; };
 		UT00000000000000000000A1 /* TrackingAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */; };
 		UT00000000000000000000B1 /* GrowthAuditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000B0 /* GrowthAuditTests.swift */; };
+		UT00000000000000000000D1 /* FirstLaunchPermissionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000D0 /* FirstLaunchPermissionsTests.swift */; };
 		UT0000000000000000000021 /* EconTelemetryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000020 /* EconTelemetryTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -33,8 +35,10 @@
 		UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentationPrivacyTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingAuthorizationTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000B0 /* GrowthAuditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAuditTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000000D0 /* FirstLaunchPermissionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLaunchPermissionsTests.swift; sourceTree = "<group>"; };
 		UT0000000000000000000020 /* EconTelemetryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EconTelemetryTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4C6 /* GrowthFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthFlowTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000000E0 /* ShellRedesignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellRedesignTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4D7 /* AccessibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4E8 /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
 		1A0000000000000000000002 /* CurriculumCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumCatalogTests.swift; sourceTree = "<group>"; };
@@ -121,6 +125,7 @@
 			children = (
 				C4D5E6F7A8B9C0D1E2F3A4B5 /* EconByteUITests.swift */,
 				C4D5E6F7A8B9C0D1E2F3A4C6 /* GrowthFlowTests.swift */,
+				UT00000000000000000000E0 /* ShellRedesignTests.swift */,
 				C4D5E6F7A8B9C0D1E2F3A4D7 /* AccessibilityTests.swift */,
 				C4D5E6F7A8B9C0D1E2F3A4E8 /* ScreenshotTests.swift */,
 			);
@@ -134,6 +139,7 @@
 				UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */,
 				UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */,
 				UT00000000000000000000B0 /* GrowthAuditTests.swift */,
+				UT00000000000000000000D0 /* FirstLaunchPermissionsTests.swift */,
 				1A0000000000000000000002 /* CurriculumCatalogTests.swift */,
 				1A0000000000000000000012 /* GrowthSystemsTests.swift */,
 				UT00000000000000000000C0 /* ProCoursesBriefTests.swift */,
@@ -300,6 +306,7 @@
 			files = (
 				A2C3D4E5F6A7B8C9D0E1F2A3 /* EconByteUITests.swift in Sources */,
 				A2C3D4E5F6A7B8C9D0E1F2B4 /* GrowthFlowTests.swift in Sources */,
+				UT00000000000000000000E1 /* ShellRedesignTests.swift in Sources */,
 				A2C3D4E5F6A7B8C9D0E1F2C5 /* AccessibilityTests.swift in Sources */,
 				A2C3D4E5F6A7B8C9D0E1F2D6 /* ScreenshotTests.swift in Sources */,
 			);
@@ -313,6 +320,7 @@
 				UT0000000000000000000011 /* InstrumentationPrivacyTests.swift in Sources */,
 				UT00000000000000000000A1 /* TrackingAuthorizationTests.swift in Sources */,
 				UT00000000000000000000B1 /* GrowthAuditTests.swift in Sources */,
+				UT00000000000000000000D1 /* FirstLaunchPermissionsTests.swift in Sources */,
 				1A0000000000000000000004 /* CurriculumCatalogTests.swift in Sources */,
 				1A0000000000000000000014 /* GrowthSystemsTests.swift in Sources */,
 				UT00000000000000000000C1 /* ProCoursesBriefTests.swift in Sources */,

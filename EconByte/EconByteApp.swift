@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @main
 struct EconByteApp: App {
@@ -11,50 +12,18 @@ struct EconByteApp: App {
     @StateObject private var store = PurchaseManager.shared
 
     @Environment(\.scenePhase) private var scenePhase
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var wasBackgrounded = false
-
-    /// First-open analytics consent (Owner order 2026-09-14). Decided once, here,
-    /// from the same facades Settings uses; only ever true when there is a
-    /// key/DSN to consent to, and never for an install the 1.1 session-complete
-    /// primer already asked.
-    @State private var showConsentPrompt: Bool
-
-    init() {
-        // Touch the composition root first so its DEBUG reset runs before the
-        // consent decision reads the stored answer.
-        let growth = EconGrowth.shared
-        _showConsentPrompt = State(initialValue: FirstOpenConsentPolicy.shouldPresent(
-            isConfigured: growth.telemetry.isConfigured || growth.diagnostics.isConfigured,
-            legacyPrimerAnswered: growth.consentPromptShown,
-            defaults: .standard))
-    }
 
     var body: some Scene {
         WindowGroup {
-            StudioIntroGate {
-                ZStack {
-                    HomeView()
-                        .environmentObject(content)
-                        .environmentObject(streak)
-                        .environmentObject(store)
-                        .environmentObject(growth)
-
-                    // First-open consent, revealed as the cold-launch StudioIntro
-                    // (zIndex 100) fades. While it is up no ad may present and the
-                    // rating ask is deferred for this session.
-                    if showConsentPrompt {
-                        AnalyticsConsentCard(
-                            showsDiagnosticsAddendum: growth.diagnostics.isConfigured,
-                            onDecision: { decideConsent($0) }
-                        )
-                        .zIndex(50)
-                        .onAppear {
-                            growth.monetization.setBlocker(.consent, active: true)
-                            growth.review.noteNegativeSessionEvent(.consentForm)
-                        }
-                    }
-                }
+            StudioIntroGate(onFinished: { LaunchSequence.shared.markIntroFinished() }) {
+                // 1.1.4 shell: Home · Browse · News · Pro under the fixed
+                // wordmark bar (`Views/Shell`).
+                RootTabView()
+                    .environmentObject(content)
+                    .environmentObject(streak)
+                    .environmentObject(store)
+                    .environmentObject(growth)
             }
             .preferredColorScheme(.dark)
             .task {
@@ -66,12 +35,23 @@ struct EconByteApp: App {
                 Self.applyInstrumentationSmokeIfRequested()
                 Self.crashOnPurposeIfRequested()
                 // Reconcile verified entitlements BEFORE anything can start the
-                // ad SDK: a stale-false Remove Ads cache must never initialize
-                // the provider for an entitled reader. Mirrors the foreground path.
+                // ad SDK or decide whether ATT is owed: a stale-false Remove Ads
+                // or Pro cache must never initialize the provider — or prompt —
+                // for an entitled reader. Mirrors the foreground path.
                 await store.updatePurchasedProducts()
                 growth.syncEntitlements(from: store)
                 growth.applicationDidBecomeActive()
                 growth.reportContentLoadFailureIfNeeded(content)
+
+                // First-launch permissions (1.1.4): Apple's ATT prompt, then
+                // Apple's notifications prompt, once the studio intro has faded
+                // and the app is active (iOS will not present ATT otherwise).
+                // Anything already answered is skipped, so this is a no-op on
+                // every later launch; UI-test arguments stand it down.
+                await LaunchSequence.shared.waitForIntro()
+                guard await Self.waitUntilActive() else { return }
+                try? await Task.sleep(nanoseconds: 450_000_000)
+                await growth.permissions.runIfNeeded()
             }
             // Purchase, restore, refund, and revocation must all reach ad
             // behaviour and content access on the same turn.
@@ -109,27 +89,15 @@ struct EconByteApp: App {
         }
     }
 
-    // MARK: First-open consent
-
-    /// One answer sets both vendor consents (analytics, and diagnostics when a
-    /// DSN is present) through the same facade paths Settings → Privacy & Data
-    /// uses, so the per-vendor switches there read back the same answer. Both
-    /// answers are persisted; the 1.1 session-complete primer is marked shown so
-    /// it can never ask the same question a second time.
-    private func decideConsent(_ granted: Bool) {
-        growth.setAnalyticsEnabled(granted, entryPoint: .home)
-        if growth.diagnostics.isConfigured {
-            growth.setDiagnosticsEnabled(granted, entryPoint: .home)
+    /// Polls until the app is foreground-active. Returns false if the launch
+    /// task was cancelled first.
+    @MainActor
+    private static func waitUntilActive() async -> Bool {
+        while UIApplication.shared.applicationState != .active {
+            if Task.isCancelled { return false }
+            try? await Task.sleep(nanoseconds: 200_000_000)
         }
-        FirstOpenConsentPolicy.recordAnswered(defaults: .standard)
-        growth.noteConsentPromptShown()
-        growth.monetization.setBlocker(.consent, active: false)
-        withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.22)) {
-            showConsentPrompt = false
-        }
-        // Nothing is queued pre-consent by design; the next captured event is
-        // the first to ride. Flush anyway so nothing waits on a mode change.
-        if granted { EBEvents.flush() }
+        return !Task.isCancelled
     }
 
     /// DEBUG-ONLY instrumentation smoke hook. Launched with
@@ -142,12 +110,9 @@ struct EconByteApp: App {
     /// A Debug process reaches the LIVE projects only when
     /// `-AllowAnalyticsInDebug` is also passed (see `InstrumentationContext`),
     /// so the ingestion proof is launched with BOTH arguments and this hook
-    /// alone stays inert. The log line below reports which of the two happened.
-    ///
-    /// RECONCILED (1.1.2): it now has to force consent ON rather than merely
-    /// undo a stored opt-out, because the reconciled build is opt-in. The
-    /// first-open consent card stands down for a smoke run
-    /// (`FirstOpenConsentPolicy.shouldPresent`) so there is one answer, not two.
+    /// alone stays inert. The first-launch permission flow stands down for a
+    /// smoke run (`FirstLaunchPermissionPolicy.isSkipped`) so there is one
+    /// answer, not two.
     private static func applyInstrumentationSmokeIfRequested() {
         #if DEBUG
         guard ProcessInfo.processInfo.arguments.contains("-EBInstrumentationSmoke")
@@ -177,5 +142,26 @@ struct EconByteApp: App {
             fatalError("EBInstrumentationCrash: deliberate crash to verify Sentry ingestion")
         }
         #endif
+    }
+}
+
+/// Lets the launch task wait for the studio intro to finish (1.1.4), so the
+/// first system prompt never lands on the brand beat.
+@MainActor
+final class LaunchSequence {
+    static let shared = LaunchSequence()
+    private(set) var introFinished = false
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    func markIntroFinished() {
+        guard !introFinished else { return }
+        introFinished = true
+        waiters.forEach { $0.resume() }
+        waiters.removeAll()
+    }
+
+    func waitForIntro() async {
+        guard !introFinished else { return }
+        await withCheckedContinuation { waiters.append($0) }
     }
 }

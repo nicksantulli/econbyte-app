@@ -22,7 +22,7 @@ final class GrowthFlowTests: XCTestCase {
         app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-econResetGrowthState"]
         if adsDisabled { app.launchArguments.append("-econDisableAds") }
         app.launch()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 15),
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 15),
                       "Home should render on cold launch")
         return app
     }
@@ -97,7 +97,7 @@ final class GrowthFlowTests: XCTestCase {
                       "turning analytics back off should stick")
 
         app.buttons["Done"].firstMatch.tap()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 8),
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 8),
                       "declining analytics must not affect the learning flow")
         XCTAssertTrue(app.buttons.containing(NSPredicate(format: "label CONTAINS 'Start'"))
             .firstMatch.waitForExistence(timeout: 8))
@@ -184,6 +184,7 @@ final class GrowthFlowTests: XCTestCase {
     /// The paywall must not imply the two products are one bundle.
     func testPaywallDoesNotUseAnUmbrellaProLabel() {
         let app = launchApp()
+        app.tabBars.buttons["Browse"].tap()
 
         let locked = app.buttons["topic-gdp"]
         XCTAssertTrue(locked.waitForExistence(timeout: 10))
@@ -259,7 +260,7 @@ final class GrowthFlowTests: XCTestCase {
         XCTAssertEqual(app.alerts.count, 0, "no system prompt at the set exit")
         done.tap()
 
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12),
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 12),
                       "the set exit returns to Home with no ad on a fresh install")
     }
 
@@ -292,7 +293,7 @@ final class GrowthFlowTests: XCTestCase {
         // Declining leaves the learning flow untouched.
         app.buttons["consentPromptDoneButton"].tap()
         app.buttons["sessionCompleteDoneButton"].tap()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 12))
     }
 
     /// The primer defers past the consent offer — so prove it actually arrives
@@ -315,7 +316,7 @@ final class GrowthFlowTests: XCTestCase {
                        "the primer defers while consent is being offered")
         app.buttons["consentPromptDoneButton"].tap()
         app.buttons["sessionCompleteDoneButton"].tap()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 12))
 
         // Second set: the primer arrives, and consent is not asked again.
         completeASet(in: app)
@@ -329,7 +330,7 @@ final class GrowthFlowTests: XCTestCase {
 
         app.buttons["notificationPrimerDismissButton"].tap()
         app.buttons["sessionCompleteDoneButton"].tap()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 12))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 12))
     }
 
     // MARK: - Topic packs (1.1.3) — discoverability + evidence capture
@@ -341,7 +342,7 @@ final class GrowthFlowTests: XCTestCase {
         add(attachment)
     }
 
-    /// Locked topic packs are discoverable on Home: name, summary, the four
+    /// Locked topic packs are discoverable on Browse (1.1.4; Home in 1.1.3): name, summary, the four
     /// topic names, a three-card preview, a buy button whose price comes from
     /// StoreKit (the scheme's `EconByte.storekit`), and Restore. No locked pack
     /// exposes a topic tile. The attachments are the Phase 2 evidence
@@ -351,7 +352,8 @@ final class GrowthFlowTests: XCTestCase {
         app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt",
                                 "-econResetGrowthState", "-econDisableAds"]
         app.launch()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 15))
+        app.tabBars.buttons["Browse"].tap()
 
         let any = app.descendants(matching: .any)
         let markets = any["pack-markets"]
@@ -389,39 +391,33 @@ final class GrowthFlowTests: XCTestCase {
     // MARK: - EconByte Pro (1.1.4) — surfaces render, gates hold, evidence capture
 
     /// Drives every 1.1.4 surface from a cold, non-subscribed launch, then from a
-    /// launch that reports Pro as active (`-econDebugPro`, DEBUG only). The
-    /// assertions are the contract; the attachments are the Phase 8 evidence:
-    /// Home with the Pro hub and the new pack rows, the subscription paywall,
-    /// a lesson with a chart, a quiz, the brief teaser, the unlocked brief,
-    /// Home with Pro active, Settings with the subscription status.
+    /// launch that reports Pro as active (`-econDebugPro`, DEBUG only), through
+    /// the tab shell: Home's brief and course cards, the four new packs on
+    /// Browse, the subscription paywall (Settings → cover), the Pro tab's
+    /// inline paywall and course list, a lesson with a chart and a quiz, the
+    /// News tab's teaser and, for a subscriber, the whole brief.
     func testProSurfacesRenderGateAndCaptureEvidence() {
         let app = launchApp(adsDisabled: true)
         let any = app.descendants(matching: .any)
 
-        // Home: the Pro hub with a call to action (not subscribed).
-        let hub = any["proHub"]
-        for _ in 0..<8 where !(hub.exists && hub.isHittable) { app.swipeUp() }
-        XCTAssertTrue(hub.waitForExistence(timeout: 15), "the EconByte Pro section is on Home")
-        XCTAssertTrue(any["proBriefRow"].exists, "the Daily Brief row is on Home")
-        XCTAssertTrue(any["proCourseRow-investing-approaches"].exists, "the courses are on Home")
-        XCTAssertTrue(any["proCtaRow"].exists, "a non-subscriber sees the Pro call to action")
-        XCTAssertFalse(any["proActiveBadge"].exists)
+        // Home: today's brief and the course teaser.
+        XCTAssertTrue(any["homeBriefCard"].waitForExistence(timeout: 15), "today's brief is on Home")
+        let homeCourse = any["homeCourseCard"]
+        for _ in 0..<6 where !(homeCourse.exists && homeCourse.isHittable) { app.swipeUp() }
+        XCTAssertTrue(homeCourse.exists, "a course teaser is on Home")
         capturePack("eb-home-pro-hub")
 
-        // Home: the four new packs are discoverable. Their products exist only
-        // in EconByte.storekit until the Owner creates them in ASC, and this
-        // box's xcodebuild does not attach the scheme's StoreKit configuration
-        // (proved 2026-09-14 with a sentinel price: the file said 7.77, the
-        // sandbox said $1.99), so the buy control is either priced from the
-        // local config ("$") or in its designed fail-closed state ("—" and
-        // disabled). Anything else — a literal price, a live control with no
-        // price — is a defect.
-        let priced = NSPredicate(format: "label CONTAINS '$'")
+        // Browse: the four new packs are discoverable. Their products exist
+        // only in EconByte.storekit until the Owner creates them in ASC, and
+        // this box's xcodebuild does not attach the scheme's StoreKit
+        // configuration (sentinel-price proof, 2026-09-14), so the buy control is
+        // either priced ("$") or in its fail-closed state ("—" and disabled).
+        app.tabBars.buttons["Browse"].tap()
         let pricedOrClosed = NSPredicate(format: "label CONTAINS '$' OR label CONTAINS '—'")
         for id in ["history", "world", "systems", "personalfinance"] {
             let buy = app.buttons["pack-\(id)-buy"]
-            for _ in 0..<12 where !(buy.exists && buy.isHittable) { app.swipeUp() }
-            XCTAssertTrue(buy.waitForExistence(timeout: 15), "\(id) pack offer is on Home")
+            for _ in 0..<14 where !(buy.exists && buy.isHittable) { app.swipeUp() }
+            XCTAssertTrue(buy.waitForExistence(timeout: 15), "\(id) pack offer is on Browse")
             XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: pricedOrClosed, evaluatedWith: buy)], timeout: 20),
                            .completed, "\(id) buy button is priced by StoreKit or fail-closed")
             if !buy.label.contains("$") {
@@ -432,11 +428,9 @@ final class GrowthFlowTests: XCTestCase {
             if id == "personalfinance" { capturePack("eb-home-packs-new-2") }
         }
 
-        // The Pro paywall: price primary, trial line present (local config =
-        // eligible), terms + privacy + restore reachable.
-        // Entered from Settings (a deterministic tap on a List row; Home's CTA
-        // row sits under a long scroll and a decelerating tap is flaky). The
-        // Settings row dismisses the sheet and Home presents the cover.
+        // The Pro paywall cover, entered from Settings (a deterministic List
+        // row tap). The Settings row dismisses the sheet and the shell presents
+        // the cover.
         openSettings(app)
         let settingsPro = app.buttons["settingsProButton"]
         XCTAssertTrue(settingsPro.waitForExistence(timeout: 10), "Settings offers EconByte Pro")
@@ -448,15 +442,12 @@ final class GrowthFlowTests: XCTestCase {
                        .completed, "the subscribe button is priced by StoreKit or fail-closed")
         XCTAssertTrue(any["proPaywallPlan-annual"].exists && any["proPaywallPlan-monthly"].exists)
         if subscribe.label.contains("$") {
-            // Local StoreKit configuration attached: every new subscriber is
-            // trial-eligible there, so the subordinate trial line must show.
             XCTAssertTrue(any["proPaywallTrialLine"].waitForExistence(timeout: 15),
                           "a trial-eligible reader sees the subordinate trial line")
         } else {
             XCTAssertFalse(subscribe.isEnabled, "no price, no live subscribe control")
             XCTAssertFalse(any["proPaywallTrialLine"].exists, "no trial line without a StoreKit answer")
         }
-        _ = priced
         XCTAssertTrue(app.buttons["proPaywallRestoreButton"].exists, "Restore is on the paywall")
         capturePack("eb-pro-paywall")
         let terms = any["proPaywallTermsLink"]
@@ -464,11 +455,15 @@ final class GrowthFlowTests: XCTestCase {
         XCTAssertTrue(terms.exists, "Terms of Use link is on the paywall")
         XCTAssertTrue(any["proPaywallPrivacyLink"].exists, "Privacy Policy link is on the paywall")
         app.buttons["proPaywallCloseButton"].tap()
-        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+        XCTAssertTrue(any["econWordmark"].waitForExistence(timeout: 10))
 
-        // A course: lesson 1 is the free preview; lesson 2 is locked.
+        // The Pro tab: the same paywall inline, and the courses.
+        app.tabBars.buttons["Pro"].tap()
+        XCTAssertTrue(app.buttons["proPaywallSubscribeButton"].waitForExistence(timeout: 15),
+                      "a non-subscriber sees the paywall inline on the Pro tab")
         let courseRow = any["proCourseRow-investing-approaches"]
         for _ in 0..<8 where !(courseRow.exists && courseRow.isHittable) { app.swipeUp() }
+        XCTAssertTrue(courseRow.exists, "the courses are on the Pro tab")
         courseRow.tap()
         XCTAssertTrue(any["course-investing-approaches"].waitForExistence(timeout: 15), "the course opens")
         let lesson2 = any["lessonRow-ia-02"]
@@ -480,8 +475,6 @@ final class GrowthFlowTests: XCTestCase {
         let chart = any.matching(NSPredicate(format: "identifier BEGINSWITH 'chart-' AND NOT identifier ENDSWITH '-note'")).firstMatch
         for _ in 0..<10 where !(chart.exists && chart.isHittable) { app.swipeUp() }
         XCTAssertTrue(chart.exists, "the lesson renders a chart")
-        // The container's identifier wins over its children's (SwiftUI
-        // propagation), so the note is found by its text, not its id.
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Synthetic'")).firstMatch.exists,
                       "the chart says its data is synthetic")
         capturePack("eb-lesson-chart")
@@ -493,19 +486,16 @@ final class GrowthFlowTests: XCTestCase {
         capturePack("eb-lesson-quiz")
         app.terminate()
 
-        // The brief: free teaser + lock (fresh launch, still not subscribed).
+        // News: free teaser + lock (fresh launch, still not subscribed).
         let free = launchApp(adsDisabled: true)
         let freeAny = free.descendants(matching: .any)
-        let briefRow = free.buttons["proBriefRow"]
-        for _ in 0..<8 where !(briefRow.exists && briefRow.isHittable) { free.swipeUp() }
-        XCTAssertTrue(briefRow.waitForExistence(timeout: 10) && briefRow.isHittable)
-        briefRow.tap()
-        XCTAssertTrue(freeAny["briefView"].waitForExistence(timeout: 15), "the Daily Brief opens")
-        XCTAssertTrue(freeAny["briefHeadline"].exists)
+        free.tabBars.buttons["News"].tap()
+        XCTAssertTrue(freeAny["briefHeadline"].waitForExistence(timeout: 15), "the Daily Brief is on the News tab")
         XCTAssertTrue(freeAny["briefTeaserItem"].waitForExistence(timeout: 10), "the free teaser shows one released item")
         let lock = free.buttons["briefLockedProButton"]
         for _ in 0..<6 where !(lock.exists && lock.isHittable) { free.swipeUp() }
         XCTAssertTrue(lock.exists, "the rest of the brief is locked without Pro")
+        XCTAssertFalse(freeAny["briefScheduledSection"].exists, "the schedule is part of the Pro brief")
         capturePack("eb-brief-teaser")
         free.terminate()
 
@@ -513,22 +503,21 @@ final class GrowthFlowTests: XCTestCase {
         let pro = XCUIApplication()
         pro.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-econDisableAds", "-econDebugPro"]
         pro.launch()
-        XCTAssertTrue(pro.navigationBars["EconByte"].waitForExistence(timeout: 15))
         let proAny = pro.descendants(matching: .any)
-        let proHub = proAny["proHub"]
-        for _ in 0..<8 where !(proHub.exists && proHub.isHittable) { pro.swipeUp() }
+        XCTAssertTrue(proAny["econWordmark"].waitForExistence(timeout: 15))
+        pro.tabBars.buttons["Pro"].tap()
         XCTAssertTrue(proAny["proActiveBadge"].waitForExistence(timeout: 10), "Pro shows as active")
-        XCTAssertFalse(proAny["proCtaRow"].exists, "no call to action for a subscriber")
-        XCTAssertFalse(pro.buttons["topic-gdp"].label.isEmpty)
+        XCTAssertFalse(pro.buttons["proPaywallSubscribeButton"].exists, "no paywall for a subscriber")
         capturePack("eb-home-pro-active")
-        proAny["proBriefRow"].tap()
-        XCTAssertTrue(proAny["briefView"].waitForExistence(timeout: 15))
+        pro.tabBars.buttons["News"].tap()
+        XCTAssertTrue(proAny["briefHeadline"].waitForExistence(timeout: 15))
         XCTAssertFalse(pro.buttons["briefLockedProButton"].exists, "a subscriber sees the whole brief")
+        let schedule = proAny["briefScheduledSection"]
+        for _ in 0..<8 where !(schedule.exists && schedule.isHittable) { pro.swipeUp() }
+        XCTAssertTrue(schedule.exists, "a subscriber sees what is scheduled this week")
         capturePack("eb-brief-pro")
-        pro.buttons["briefCloseButton"].tap()
         openSettings(pro)
         let status = proAny["settingsProStatusRow"]
-        for _ in 0..<6 where !(status.exists && status.isHittable) { pro.swipeUp() }
         XCTAssertTrue(status.waitForExistence(timeout: 10), "Settings shows the subscription status")
         XCTAssertTrue(proAny["settingsManageSubscriptionLink"].exists, "Manage Subscription is reachable")
         capturePack("eb-settings-pro")

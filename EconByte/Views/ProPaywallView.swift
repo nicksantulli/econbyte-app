@@ -20,12 +20,54 @@ struct ProPaywallView: View {
 
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var store: PurchaseManager
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Econ.ocean.ignoresSafeArea()
+                ScrollView {
+                    ProPaywallContent(entryPoint: entryPoint)
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 40)
+                }
+            }
+            .navigationTitle("EconByte Pro")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Close") { dismiss() }.foregroundColor(Econ.sky)
+                        .accessibilityIdentifier("proPaywallCloseButton")
+                }
+            }
+        }
+        .tint(Econ.sky)
+        .onChange(of: store.isProActive) { active in
+            if active { dismiss() }
+        }
+    }
+}
+
+/// The paywall itself, shared by the full-screen cover and the Pro tab (1.1.4
+/// shell), so both carry the same 3.1.2 elements: price primary, subordinate
+/// trial line for eligible readers only, what you get, renewal terms, Terms of
+/// Use, Privacy Policy, Restore. `interlude` sits between the purchase controls
+/// and the benefits (the Pro tab puts the course list there).
+struct ProPaywallContent<Interlude: View>: View {
+    let entryPoint: EconEntryPoint
+    let interlude: () -> Interlude
+
+    @EnvironmentObject private var store: PurchaseManager
     @EnvironmentObject private var growth: EconGrowth
     @State private var selected: PurchaseManager.ProductID = .proAnnual
     @State private var working = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
     @State private var showAlert = false
+
+    init(entryPoint: EconEntryPoint, @ViewBuilder interlude: @escaping () -> Interlude) {
+        self.entryPoint = entryPoint
+        self.interlude = interlude
+    }
 
     private var product: Product? { store.product(for: selected) }
     private var trialPeriod: Product.SubscriptionPeriod? {
@@ -38,52 +80,34 @@ struct ProPaywallView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Econ.ocean.ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: 22) {
-                        header
-                        if store.isProActive {
-                            activeState
-                        } else {
-                            planPicker
-                            subscribeBlock
-                        }
-                        benefits
-                        legal
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 40)
-                }
+        VStack(spacing: 22) {
+            header
+            if store.isProActive {
+                activeState
+            } else {
+                planPicker
+                subscribeBlock
             }
-            .navigationTitle("EconByte Pro")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Close") { dismiss() }.foregroundColor(Econ.sky)
-                        .accessibilityIdentifier("proPaywallCloseButton")
-                }
-            }
-            .alert(alertTitle, isPresented: $showAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(alertMessage)
-            }
+            interlude()
+            benefits
+            legal
         }
-        .tint(Econ.sky)
-        .task {
+        .alert(alertTitle, isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
+        .onAppear {
             growth.monetization.setBlocker(.paywall, active: true)
             growth.review.noteNegativeSessionEvent(.paywall)
+        }
+        .onDisappear { growth.monetization.setBlocker(.paywall, active: false) }
+        .task {
             await store.loadProducts()
             await store.refreshTrialEligibility()
             EBEvents.proPaywallShown(entryPoint: entryPoint.ebEntryPoint,
                                      productsReady: store.productsReady,
                                      trialEligible: store.isEligibleForTrial)
-        }
-        .onDisappear { growth.monetization.setBlocker(.paywall, active: false) }
-        .onChange(of: store.isProActive) { active in
-            if active { dismiss() }
         }
     }
 
@@ -94,7 +118,7 @@ struct ProPaywallView: View {
             Image(systemName: "graduationcap.fill")
                 .font(.system(size: 44))
                 .foregroundColor(Econ.amber)
-                .padding(.top, 12)
+                .padding(.top, 8)
                 .accessibilityHidden(true)
             Text("Go further than the cards")
                 .font(.system(size: 24, weight: .heavy, design: .rounded))
@@ -382,5 +406,11 @@ struct ProPaywallView: View {
         alertTitle = title
         alertMessage = message
         showAlert = true
+    }
+}
+
+extension ProPaywallContent where Interlude == EmptyView {
+    init(entryPoint: EconEntryPoint) {
+        self.init(entryPoint: entryPoint) { EmptyView() }
     }
 }

@@ -380,10 +380,15 @@ private enum StudioIntroState {
 /// LaunchScreen background (no white/black FOUC at hand-off).
 struct StudioIntroGate<Content: View>: View {
     @ViewBuilder var content: Content
+    /// Called once, when the intro has gone (or at once when it is not shown
+    /// this launch) — the host's cue for anything that must not overlap the
+    /// brand beat, such as EconByte's first-launch system prompts.
+    var onFinished: (() -> Void)? = nil
 
     @State private var showIntro: Bool
 
-    init(@ViewBuilder content: () -> Content) {
+    init(onFinished: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+        self.onFinished = onFinished
         self.content = content()
         // Decide-and-latch exactly once, synchronously, at gate construction.
         let shouldShow = !StudioIntroState.hasShownThisLaunch
@@ -396,10 +401,16 @@ struct StudioIntroGate<Content: View>: View {
         ZStack {
             content   // real app mounts + loads behind the overlay
             if showIntro {
-                StudioIntroView { showIntro = false }
+                StudioIntroView {
+                    showIntro = false
+                    onFinished?()
+                }
                     .transition(.opacity)
                     .zIndex(100)
             }
+        }
+        .onAppear {
+            if !showIntro { onFinished?() }
         }
     }
 }

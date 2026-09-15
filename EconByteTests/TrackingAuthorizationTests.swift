@@ -141,9 +141,11 @@ final class TrackingAuthorizationTests: XCTestCase {
         XCTAssertTrue(log.adRequests.isEmpty, "no provider call may precede the decision")
     }
 
-    /// Cold launch never prompts and never requests. Launch is the moment the
-    /// app has done nothing for the reader yet; the guideline forbids the
-    /// request, and Apple's own design guidance forbids the prompt.
+    /// The lifecycle path never prompts and never requests before the decision.
+    /// 1.1.4 does ask ATT at first launch, but only from
+    /// `FirstLaunchPermissionsCoordinator`, after the studio intro and in order
+    /// with the notifications prompt (`FirstLaunchPermissionsTests`); the
+    /// foreground hook itself must stay inert until the reader has answered.
     func testNothingHappensAtLaunchWithNoCompletedSession() {
         let log = CallLog()
         let adapter = LoggingAdapter(log: log)
@@ -154,7 +156,7 @@ final class TrackingAuthorizationTests: XCTestCase {
         monetization.noteForegroundSessionBegan()
         monetization.startAdsIfPermitted()
 
-        XCTAssertEqual(tracking.requestCount, 0, "launch must never present the ATT prompt")
+        XCTAssertEqual(tracking.requestCount, 0, "the lifecycle hook must never present the ATT prompt")
         XCTAssertTrue(log.entries.isEmpty, "launch must neither prompt nor request")
     }
 

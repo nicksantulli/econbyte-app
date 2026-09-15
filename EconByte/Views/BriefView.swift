@@ -1,112 +1,58 @@
 import SwiftUI
 
-/// The Daily Economic Brief (1.1.4).
+/// The Daily Economic Brief document (1.1.4), shown inline in the News tab
+/// and, for past briefs, in `BriefArchiveView`.
 ///
 /// Pro readers see the whole document; everyone else sees the headline and the
 /// first released item as a teaser, then a lock with the Pro call to action.
 /// Every released item carries its figures, a plain-English "what it says" and
 /// "why it matters", and a link to the official source with the time it was
-/// read. The disclaimer and "How this brief is made" are always visible.
-struct BriefView: View {
+/// read. The disclaimer is always visible; "How this brief is made" is one tap
+/// away from the News tab and the archive.
+struct BriefDocumentView: View {
+    let brief: DailyBrief
+    let unlocked: Bool
+    /// The News tab shows the store's refresh spinner and offline note.
+    var showsRefreshState = false
     var onProPaywall: (() -> Void)? = nil
 
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var store: PurchaseManager
     @EnvironmentObject private var briefs: BriefStore
-    @State private var showMethodology = false
-    @State private var didRecordOpen = false
-
-    private var unlocked: Bool { store.isProActive }
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Econ.ocean.ignoresSafeArea()
-                if let brief = briefs.latest {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 18) {
-                            header(brief)
-                            if unlocked {
-                                fullBrief(brief)
-                            } else {
-                                teaser(brief)
-                            }
-                            disclaimer(brief)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 8)
-                        .padding(.bottom, 40)
-                    }
-                    .refreshable { await briefs.refreshIfNeeded(force: true) }
-                } else {
-                    VStack(spacing: 12) {
-                        Text("The brief isn't available right now.")
-                            .foregroundColor(Econ.white)
-                        Button("Try again") { Task { await briefs.refreshIfNeeded(force: true) } }
-                            .buttonStyle(SecondaryButton())
-                            .padding(.horizontal, 40)
-                    }
-                }
+        VStack(alignment: .leading, spacing: 18) {
+            header
+            if unlocked {
+                fullBrief
+            } else {
+                teaser
             }
-            .navigationTitle("Daily Brief")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button { showMethodology = true } label: {
-                        Image(systemName: "questionmark.circle").foregroundColor(Econ.sky)
-                    }
-                    .accessibilityLabel("How this brief is made")
-                    .accessibilityIdentifier("briefMethodologyButton")
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Close") { dismiss() }.foregroundColor(Econ.sky)
-                        .accessibilityIdentifier("briefCloseButton")
-                }
-            }
-            .sheet(isPresented: $showMethodology) {
-                if let brief = briefs.latest {
-                    BriefMethodologyView(brief: brief)
-                }
-            }
+            Text(brief.disclaimer)
+                .font(.system(size: 11, design: .rounded))
+                .foregroundColor(Econ.subtext)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .tint(Econ.sky)
-        .task {
-            await briefs.refreshIfNeeded()
-            if !didRecordOpen {
-                didRecordOpen = true
-                EBEvents.briefOpened(accessState: unlocked ? .unlocked : .locked, source: briefs.source)
-            }
-        }
-        .accessibilityIdentifier("briefView")
     }
 
-    // MARK: Pieces
-
-    private func header(_ brief: DailyBrief) -> some View {
+    private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(Self.longDate(brief.briefDate).uppercased())
+                Text(BriefDates.long(brief.briefDate).uppercased())
                     .font(.system(size: 12, weight: .bold, design: .rounded))
                     .foregroundColor(Econ.subtext)
                     .tracking(1.5)
                 Spacer()
-                if brief.isSample == true {
-                    Text("SAMPLE")
-                        .font(.system(size: 10, weight: .bold, design: .rounded))
-                        .foregroundColor(Econ.ink)
-                        .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background(Econ.amber)
-                        .cornerRadius(4)
-                        .accessibilityLabel("Sample brief")
+                if brief.isSample == true { BriefSampleBadge() }
+                if showsRefreshState, briefs.isRefreshing {
+                    ProgressView().tint(Econ.sky).scaleEffect(0.8)
                 }
-                if briefs.isRefreshing { ProgressView().tint(Econ.sky).scaleEffect(0.8) }
             }
             Text(brief.headline)
                 .font(.system(size: 22, weight: .heavy, design: .rounded))
                 .foregroundColor(Econ.white)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("briefHeadline")
-            if let note = briefs.refreshNote {
+                .accessibilityAddTraits(.isHeader)
+            if showsRefreshState, let note = briefs.refreshNote {
                 Text(note)
                     .font(.system(size: 11, design: .rounded))
                     .foregroundColor(Econ.subtext)
@@ -115,50 +61,38 @@ struct BriefView: View {
         }
     }
 
-    private func fullBrief(_ brief: DailyBrief) -> some View {
+    private var fullBrief: some View {
         VStack(alignment: .leading, spacing: 18) {
             if let released = brief.section(.released) {
-                sectionTitle(released.title)
+                BriefSectionTitle(title: released.title)
                 ForEach(released.items ?? []) { item in
                     ReleasedItemCard(item: item)
                 }
             }
             if let scheduled = brief.section(.scheduled) {
-                sectionTitle(scheduled.title)
+                BriefSectionTitle(title: scheduled.title)
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(scheduled.items ?? []) { item in
                         ScheduledRow(item: item)
                     }
                 }
                 .padding(14)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Econ.tide.opacity(0.12))
                 .cornerRadius(12)
+                .accessibilityIdentifier("briefScheduledSection")
             }
             if let concept = brief.section(.concept) {
-                sectionTitle(concept.title)
+                BriefSectionTitle(title: concept.title)
                 ConceptCard(section: concept)
-            }
-            if !briefs.history.isEmpty {
-                sectionTitle("Past briefs")
-                VStack(alignment: .leading, spacing: 6) {
-                    ForEach(briefs.history) { past in
-                        Text("\(Self.longDate(past.briefDate)) — \(past.headline)")
-                            .font(.system(size: 13, design: .rounded))
-                            .foregroundColor(Econ.white.opacity(0.8))
-                            .lineLimit(2)
-                    }
-                }
-                .padding(14)
-                .background(Econ.tide.opacity(0.08))
-                .cornerRadius(12)
             }
         }
     }
 
-    private func teaser(_ brief: DailyBrief) -> some View {
+    private var teaser: some View {
         VStack(alignment: .leading, spacing: 18) {
             if let released = brief.section(.released), let first = brief.teaserItem {
-                sectionTitle(released.title)
+                BriefSectionTitle(title: released.title)
                 ReleasedItemCard(item: first)
                     .accessibilityIdentifier("briefTeaserItem")
             }
@@ -186,42 +120,85 @@ struct BriefView: View {
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(Econ.amber.opacity(0.35), lineWidth: 1))
         }
     }
+}
 
-    private func disclaimer(_ brief: DailyBrief) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(brief.disclaimer)
-                .font(.system(size: 11, design: .rounded))
-                .foregroundColor(Econ.subtext)
-                .fixedSize(horizontal: false, vertical: true)
-            Button("How this brief is made") { showMethodology = true }
-                .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundColor(Econ.sky)
-        }
-        .padding(.top, 4)
-    }
-
-    private func sectionTitle(_ title: String) -> some View {
+struct BriefSectionTitle: View {
+    let title: String
+    var body: some View {
         Text(title.uppercased())
             .font(.system(size: 12, weight: .bold, design: .rounded))
             .foregroundColor(Econ.subtext)
             .tracking(1.5)
+            .accessibilityAddTraits(.isHeader)
     }
+}
 
-    static func longDate(_ iso: String) -> String {
+struct BriefSampleBadge: View {
+    var body: some View {
+        Text("SAMPLE")
+            .font(.system(size: 10, weight: .bold, design: .rounded))
+            .foregroundColor(Econ.ink)
+            .padding(.horizontal, 6).padding(.vertical, 2)
+            .background(Econ.amber)
+            .cornerRadius(4)
+            .accessibilityLabel("Sample brief")
+    }
+}
+
+enum BriefDates {
+    /// "Monday, September 14, 2026" for an ISO calendar day. Parsed and
+    /// formatted in UTC: the brief date is a calendar day, and formatting it in
+    /// the device's zone shifted it a day west.
+    static func long(_ iso: String) -> String {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .iso8601)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.dateFormat = "yyyy-MM-dd"
         guard let date = formatter.date(from: iso) else { return iso }
-        // Same UTC calendar on the way out: the brief date is a calendar day,
-        // and formatting it in the device's zone shifted it a day west.
         let output = DateFormatter()
         output.calendar = formatter.calendar
         output.locale = .current
         output.timeZone = formatter.timeZone
         output.setLocalizedDateFormatFromTemplate("EEEEMMMMdyyyy")
         return output.string(from: date)
+    }
+}
+
+/// A past brief from the archive (Pro), in its own sheet.
+struct BriefArchiveView: View {
+    let brief: DailyBrief
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var showMethodology = false
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                Econ.ocean.ignoresSafeArea()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 18) {
+                        BriefDocumentView(brief: brief, unlocked: true)
+                        Button("How this brief is made") { showMethodology = true }
+                            .font(.system(size: 13, weight: .medium, design: .rounded))
+                            .foregroundColor(Econ.sky)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                    .padding(.bottom, 40)
+                }
+            }
+            .navigationTitle(BriefDates.long(brief.briefDate))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Close") { dismiss() }.foregroundColor(Econ.sky)
+                        .accessibilityIdentifier("briefCloseButton")
+                }
+            }
+            .sheet(isPresented: $showMethodology) { BriefMethodologyView(brief: brief) }
+        }
+        .tint(Econ.sky)
     }
 }
 

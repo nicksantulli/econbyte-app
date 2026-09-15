@@ -25,6 +25,8 @@ public enum EconEntryPoint: String, CaseIterable, Equatable {
     /// 1.1.4: the Pro paywall's two content entry points.
     case course
     case brief
+    /// 1.1.4 shell: the Pro tab, where the paywall is shown inline.
+    case proTab = "pro_tab"
 }
 
 public enum EconLaunchType: String, CaseIterable, Equatable {
@@ -121,6 +123,7 @@ extension EconEntryPoint {
         case .bookmarks:       return .bookmarks
         case .course:          return .course
         case .brief:           return .brief
+        case .proTab:          return .proTab
         }
     }
 }

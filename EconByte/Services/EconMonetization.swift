@@ -440,17 +440,18 @@ public final class EconMonetization: ObservableObject {
         return tracking.status == .notDetermined
     }
 
-    /// Presents the ATT prompt if it is still owed, then lets the ad SDK start.
+    /// Presents the ATT prompt if it is still owed, then (by default) lets the
+    /// ad SDK start.
     ///
-    /// Called from the session-complete screen's exit path — i.e. after a card
-    /// session has actually been completed, and before the ad decision for that
-    /// exit. It marks `.systemPrompt` for the caller to clear, so no
-    /// interstitial follows a system dialog at the same exit; that is the same
-    /// house rule the notification prompt already follows.
+    /// 1.1.2–1.1.3 called this from the session-complete exit. 1.1.4 calls it
+    /// from `FirstLaunchPermissionsCoordinator` after the studio intro, with
+    /// `startingAds: false`, because the notifications prompt follows and no ad
+    /// may load under a system dialog; the coordinator starts ads when both
+    /// prompts have resolved. It marks `.systemPrompt` for the caller to clear.
     @discardableResult
-    public func resolveTrackingAuthorizationIfNeeded() async -> EconTrackingStatus {
+    public func resolveTrackingAuthorizationIfNeeded(startingAds: Bool = true) async -> EconTrackingStatus {
         guard shouldRequestTrackingAuthorization else {
-            startAdsIfPermitted()
+            if startingAds { startAdsIfPermitted() }
             return tracking.status
         }
         setBlocker(.systemPrompt, active: true)
@@ -459,7 +460,7 @@ public final class EconMonetization: ObservableObject {
         didRequestTrackingPrompt = true
         defaults.set(true, forKey: Key.trackingPromptRequested)
         let resolved = await tracking.requestAuthorization()
-        startAdsIfPermitted()
+        if startingAds { startAdsIfPermitted() }
         return resolved
     }
 
@@ -607,6 +608,16 @@ final class EconGrowth: ObservableObject {
 
     private var didStartFirstSession = false
     private let defaults: UserDefaults
+    private let defaultsForPermissions: UserDefaults
+
+    /// First-launch ATT + notifications prompts and their mapping (1.1.4).
+    private(set) lazy var permissions = FirstLaunchPermissionsCoordinator(
+        monetization: monetization,
+        notifications: notifications,
+        defaults: defaultsForPermissions,
+        applyAnalyticsConsent: { [weak self] granted in self?.applyFirstLaunchAnalyticsConsent(granted) },
+        noteNegativeSessionEvent: { [weak self] event in self?.review.noteNegativeSessionEvent(event) },
+        recordNotificationResult: { granted in EBEvents.notificationPermissionResult(granted: granted) })
 
     private init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -629,6 +640,7 @@ final class EconGrowth: ObservableObject {
                                                currentVersion: environment.appVersion,
                                                requestReview: { EconGrowth.requestSystemReview() })
         self.notifications = NotificationCoordinator(defaults: defaults)
+        self.defaultsForPermissions = defaults
 
         AdManager.shared.onFailure = { [weak self] code, error in
             self?.diagnosticLog.capture(code, detail: error.map(EconDiagnosticDetail.init))
@@ -699,6 +711,24 @@ final class EconGrowth: ObservableObject {
         }
     }
 
+    /// ATT "Allow" ⇒ analytics + crash reports on; any other answer ⇒ off.
+    /// Through the same facade paths the Settings switches use, so they read
+    /// back the same answer.
+    func applyFirstLaunchAnalyticsConsent(_ granted: Bool) {
+        setAnalyticsEnabled(granted, entryPoint: .home)
+        setDiagnosticsEnabled(granted, entryPoint: .home)
+        if granted { EBEvents.flush() }
+    }
+
+    /// Settings → Privacy → Analytics ID → Reset: the vendor state and id are
+    /// deleted and a fresh anonymous id is minted, without emitting a consent
+    /// change (the reader's answer did not change).
+    func resetAnalyticsIdentity() {
+        guard telemetry.isAnalyticsEnabled else { return }
+        telemetry.setAnalyticsConsent(false)
+        telemetry.setAnalyticsConsent(true)
+    }
+
     func setDiagnosticsEnabled(_ enabled: Bool, entryPoint: EconEntryPoint) {
         diagnostics.setDiagnosticsConsent(enabled)
         diagnosticLog.setEnabled(enabled)
@@ -765,7 +795,7 @@ final class EconGrowth: ObservableObject {
         defaults.removeObject(forKey: EconTelemetry.Key.consent)
         defaults.removeObject(forKey: EconDiagnostics.consentDefaultsKey)
         defaults.removeObject(forKey: ConsentPromptPolicy.shownDefaultsKey)
-        FirstOpenConsentPolicy.reset(defaults: defaults)
+        FirstLaunchPermissionsCoordinator.resetPersistedState(in: defaults)
         EconDiagnosticLog.resetPersistedState(in: defaults)
         ReviewRequestCoordinator.resetPersistedState(in: defaults)
         NotificationCoordinator.resetPersistedState(in: defaults)

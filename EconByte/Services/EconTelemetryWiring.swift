@@ -39,6 +39,8 @@ enum EBEntryPoint: String {
     /// the two places the Pro paywall is entered from besides Home and Settings.
     case course = "course"
     case brief = "brief"
+    /// 1.1.4 shell: the Pro tab, which shows the paywall inline.
+    case proTab = "pro_tab"
 }
 
 enum EBDirection: String {
