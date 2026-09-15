@@ -100,6 +100,13 @@ words and identifiers (A4, A6–A8, A10); benefits counted at runtime (A5). Lega
 
 - Dynamic Type across every migrated view (F1). Layouts that would clip now reflow: Browse topic grid → one column,
   brief schedule and released-item header stack, flip-card faces scroll, flow/compare story figures stack vertically.
+- **AX5 walk findings (after the first token pass), all fixed:**
+  - Header rows that could not shrink pushed their card past the screen edge (Home "Today's cards", brief and course headers).
+  - A plan tile's "Annual" collapsed to one letter per line beside its badge.
+  - The Pro-tab course row, the Settings "EconByte Pro" row and the brief's date + SAMPLE header squeezed their titles into narrow columns.
+  - The offer-card header squeezed "EconByte Pro" beside "Active ✓".
+  - Story flow steps would not wrap and ran off the side.
+  - **Fix:** `EconAdaptiveRow` lays a row out side by side when it fits and stacks it vertically when it does not. It is used on all of those headers and rows. Badges and flow steps now wrap. Chrome stops growing: the top-bar gear at xxxLarge; the story progress, close button and Back/Next at accessibility2. The reading content keeps the screen.
 - Fixed-geometry drawings (the 14 diagrams, Swift Charts plots) cap their own labels at `xLarge` so they stay inside
   the artwork; their meaning is also in the VoiceOver description and in the beat text beside them.
 - Contrast: every text token ≥ 4.5:1 on every ground (unit-tested).
