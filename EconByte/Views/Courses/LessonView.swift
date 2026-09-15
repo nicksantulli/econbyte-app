@@ -588,22 +588,26 @@ struct StoryCheckView<Picture: View>: View {
     }
 }
 
-/// A check's verdict and explanation, pinned above the story controls. A long
-/// explanation at a large text size scrolls inside the panel instead of pushing
-/// the controls off screen.
+/// A check's verdict and explanation, pinned above the story controls. The panel
+/// is exactly as tall as its text, up to `maxHeight`; a longer explanation (a
+/// large text size) scrolls inside it instead of pushing the page or the
+/// controls off screen.
 struct StoryCheckFeedback: View {
     let correct: Bool
     let explanation: String
-    /// The panel never takes more than this share of the story's height.
     static let maxHeight: CGFloat = 280
+    @State private var contentHeight: CGFloat = 0
 
     var body: some View {
-        ViewThatFits(in: .vertical) {
+        ScrollView {
             content
-            ScrollView { content }
-                .frame(maxHeight: Self.maxHeight)
+                .background(GeometryReader { geo in
+                    Color.clear.preference(key: StoryFeedbackHeightKey.self, value: geo.size.height)
+                })
         }
-        .frame(maxHeight: Self.maxHeight)
+        .modifier(StoryFeedbackBounce())
+        .frame(height: min(max(contentHeight, 1), Self.maxHeight))
+        .onPreferenceChange(StoryFeedbackHeightKey.self) { contentHeight = $0 }
         .background(EconColor.surfaceRaised)
         .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous)
@@ -631,6 +635,22 @@ struct StoryCheckFeedback: View {
         }
         .padding(EconSpace.s)
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct StoryFeedbackHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+/// A panel whose text fits does not rubber-band (iOS 16.4+).
+private struct StoryFeedbackBounce: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.4, *) {
+            content.scrollBounceBehavior(.basedOnSize)
+        } else {
+            content
+        }
     }
 }
 
