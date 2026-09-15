@@ -173,6 +173,7 @@ struct CardView: View {
                     stack
                         .frame(minHeight: geo.size.height, alignment: .center)
                 }
+                .modifier(CardFaceScrollCue())
                 .accessibilityIdentifier("cardFaceScroll")
             }
 
@@ -202,5 +203,28 @@ struct CardView: View {
         }
         .accessibilityLabel(content.isBookmarked(card.id) ? "Remove bookmark" : "Bookmark card")
         .accessibilityIdentifier("cardBookmarkButton")
+    }
+}
+
+/// A long face (a card graphic above a long definition, or a large text size)
+/// continues below the fold. Fade the bottom edge of the scrolling body so the
+/// cut-off line reads as "more below", and flash the scroll indicator when the
+/// card appears (iOS 17+). A short face is centred with empty space at its
+/// bottom, so the fade touches nothing there; scrolled to the end, the stack's
+/// own bottom padding keeps the last line clear of the fade.
+private struct CardFaceScrollCue: ViewModifier {
+    func body(content: Content) -> some View {
+        let faded = content.mask(
+            VStack(spacing: 0) {
+                Color.black
+                LinearGradient(colors: [.black, .black.opacity(0)], startPoint: .top, endPoint: .bottom)
+                    .frame(height: EconSpace.m)
+            }
+        )
+        if #available(iOS 17.0, *) {
+            faded.scrollIndicatorsFlash(onAppear: true)
+        } else {
+            faded
+        }
     }
 }
