@@ -907,8 +907,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "Budgeting: How to create a budget and stick with it",
                 "url": "https://www.consumerfinance.gov/archive/blog/budgeting-how-to-create-a-budget-and-stick-with-it/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2019-06-05",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -928,8 +928,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "Youth Financial Education Glossary",
                 "url": "https://www.consumerfinance.gov/consumer-tools/educator-tools/youth-financial-education/glossary/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2025-01-23",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -956,8 +956,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "An essential guide to building an emergency fund",
                 "url": "https://www.consumerfinance.gov/an-essential-guide-to-building-an-emergency-fund/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2025-10-29",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1012,8 +1012,8 @@
                 "organization": "U.S. Bureau of Economic Analysis",
                 "documentTitle": "Personal Income and Outlays, July 2026",
                 "url": "https://www.bea.gov/news/2026/personal-income-and-outlays-july-2026",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2026-08-26",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1040,8 +1040,8 @@
                 "organization": "U.S. Bureau of Economic Analysis",
                 "documentTitle": "Regional Price Parities by State and Metro Area",
                 "url": "https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2026-02-19",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1061,15 +1061,15 @@
               "topicID": "household-budgets",
               "title": "Opportunity Cost",
               "definition": "The opportunity cost of a choice is the value of the most valuable alternative use of the same money or time that is given up by making it. Every purchase has one, whether or not it is noticed, because a dollar spent on one thing cannot be spent on another. It is the true cost of a decision - the alternative, not the price tag.",
-              "example": "A $5 coffee on 250 working days is $1,250 a year. Its opportunity cost is not the coffee; it is whatever else that $1,250 would have done - a car repair covered without borrowing, or 2 months of a utility bill. Naming the alternative is what turns a habit into a decision.",
+              "example": "A $5 coffee on 250 working days is $1,250 a year. Its opportunity cost is not the coffee; it is whatever else that $1,250 would have done - a car repair covered without borrowing, or several months of utility bills. Naming the alternative is what turns a habit into a decision.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "Youth Financial Education Glossary",
                 "url": "https://www.consumerfinance.gov/consumer-tools/educator-tools/youth-financial-education/glossary/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2025-01-23",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1134,8 +1134,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "What is the difference between a mortgage interest rate and an APR?",
                 "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-mortgage-interest-rate-and-an-apr-en-135/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2026-08-28",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1162,8 +1162,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "How does my credit card company calculate the amount of interest I owe?",
                 "url": "https://www.consumerfinance.gov/ask-cfpb/how-does-my-credit-card-company-calculate-the-amount-of-interest-i-owe-en-51/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2024-01-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1190,8 +1190,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "Credit reports and scores key terms",
                 "url": "https://www.consumerfinance.gov/consumer-tools/credit-reports-and-scores/answers/key-terms/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2022-12-28",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1204,15 +1204,15 @@
               "topicID": "credit-borrowing",
               "title": "Amortization",
               "definition": "An amortizing loan is repaid in fixed installments, each split between interest and principal. Early on, most of a payment goes to interest because the balance is large; over time the interest share falls and the principal share rises. The balance therefore declines slowly at first and faster toward the end of the term.",
-              "example": "On an illustrative 60-month car loan, roughly 40 percent of the first payment may be interest and less than 2 percent of the last. Stretching the same loan to 84 months lowers the monthly payment but raises the total interest paid, because a larger balance is outstanding for longer.",
+              "example": "On an illustrative 60-month car loan at a 10 percent APR, roughly 40 percent of the first payment is interest and less than 1 percent of the last. Stretching the same loan to 84 months lowers the monthly payment but raises the total interest paid, because a larger balance is outstanding for longer.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "What is amortization and how could it affect my auto loan?",
                 "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-amortization-and-how-could-it-affect-my-auto-loan-en-771/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2024-09-24",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1220,7 +1220,7 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "percent of payment and months (illustrative auto loan)",
+                "units": "percent of payment, percent APR, and months (illustrative auto loan)",
                 "geography": "United States",
                 "claimKind": "illustration",
                 "observationPeriod": "amortization as described by the CFPB",
@@ -1239,8 +1239,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "What is the difference between a fixed APR and a variable APR?",
                 "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-apr-and-a-variable-apr-en-45/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2020-08-28",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1267,8 +1267,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "Bank accounts and services key terms",
                 "url": "https://www.consumerfinance.gov/consumer-tools/bank-accounts/answers/key-terms/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2026-09-01",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1288,15 +1288,15 @@
               "topicID": "credit-borrowing",
               "title": "Grace Periods and Minimums",
               "definition": "A grace period is the stretch between the end of a billing cycle and the payment due date during which no interest is charged on purchases, provided the balance is paid in full by the due date. Issuers are not required to offer one, though most do. Paying only the minimum keeps the account current but leaves a balance on which interest accrues.",
-              "example": "A $1,000 statement balance paid in full by the due date, 25 days after the cycle closes, costs $0 in interest. The same balance with only a $35 minimum paid starts accruing interest on the remaining $965 from the day the grace period lapses, and the minimum shrinks the debt very slowly.",
+              "example": "A $1,000 statement balance paid in full by the due date, 25 days after the cycle closes, costs $0 in interest. Paying only a $35 minimum leaves $965 on which interest is charged, and purchases in the next cycle accrue interest from the day each is made, so the minimum shrinks the debt very slowly.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "Consumer Financial Protection Bureau",
-                "documentTitle": "Credit cards key terms",
-                "url": "https://www.consumerfinance.gov/consumer-tools/credit-cards/answers/key-terms/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "documentTitle": "What is a grace period for a credit card?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-grace-period-for-a-credit-card-en-47/",
+                "publicationDate": "2024-09-23",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1323,8 +1323,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "What is a federal Direct Loan?",
                 "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-federal-direct-loan-en-1553/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2023-09-12",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1354,15 +1354,15 @@
               "topicID": "saving-retirement",
               "title": "Deposit Insurance",
               "definition": "FDIC deposit insurance protects money in deposit accounts at insured banks if the bank fails. The standard coverage is $250,000 per depositor, per insured bank, for each account ownership category - single, joint, certain retirement, trust, and others. Deposits in the same category at the same bank are added together against that one limit.",
-              "example": "A depositor with $200,000 in a single account and $200,000 in a joint account at 1 bank is fully covered - 2 categories, 2 limits. The same $400,000 in 2 single-name accounts at the same bank is insured only to $250,000. Since the FDIC was founded in 1933, no depositor has lost a penny of insured funds.",
+              "example": "A depositor with $200,000 in a single account and $200,000 in a joint account at 1 bank is fully covered - 2 categories, 2 limits. The same $400,000 split between 2 single accounts in that depositor's name at the same bank is insured only to $250,000.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
                 "organization": "Federal Deposit Insurance Corporation",
                 "documentTitle": "Understanding Deposit Insurance",
                 "url": "https://www.fdic.gov/resources/deposit-insurance/understanding-deposit-insurance/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2024-04-01",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1373,7 +1373,7 @@
                 "units": "U.S. dollars (FDIC standard insurance amount; illustrative account balances)",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "coverage rules as published by the FDIC on 2026-09-14; agency founded 1933",
+                "observationPeriod": "coverage rules as published by the FDIC, page last updated 2024-04-01",
                 "retrievalDate": "2026-09-14"
               }
             },
@@ -1557,8 +1557,8 @@
                 "organization": "Consumer Financial Protection Bureau",
                 "documentTitle": "Before you claim: Planning your Social Security claiming age",
                 "url": "https://www.consumerfinance.gov/consumer-tools/retirement/before-you-claim/",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2026-01-29",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1569,7 +1569,7 @@
                 "units": "percent of the full retirement benefit (claiming-age adjustments)",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "rules for people born on or after January 2, 1960, as published by the CFPB on 2026-09-14",
+                "observationPeriod": "rules for people born on or after January 2, 1960, as published by the CFPB, page last modified 2026-01-29",
                 "retrievalDate": "2026-09-14"
               }
             }
@@ -1672,7 +1672,7 @@
               "topicID": "safety-nets",
               "title": "Unemployment Insurance",
               "definition": "Unemployment insurance pays cash benefits to workers who lose their jobs through no fault of their own. There is no single federal program: each state runs its own, sets its own eligibility rules, and pays the claims. Workers generally file in the state where they worked rather than the state where they live.",
-              "example": "A worker laid off in 2020 from a job across a state line filed with the state where the job was, not the state of residence. Two neighbors laid off the same week by employers in 2 different states can face 2 different sets of rules and receive different benefits, because 2 rulebooks apply.",
+              "example": "A worker who lives in one state and is laid off from a job across the state line generally files with the state where the job was, not the state of residence. Two neighbors laid off the same week by employers in 2 different states can face 2 different sets of rules and receive different benefits, because 2 rulebooks apply.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -1742,8 +1742,8 @@
                 "organization": "Pension Benefit Guaranty Corporation",
                 "documentTitle": "How PBGC Operates",
                 "url": "https://www.pbgc.gov/about/operate",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2026-07-15",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1763,8 +1763,8 @@
                 "organization": "Federal Deposit Insurance Corporation",
                 "documentTitle": "What We Do",
                 "url": "https://www.fdic.gov/about/what-we-do",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2026-01-28",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -1775,7 +1775,7 @@
                 "units": "number of institutions (FDIC-insured and FDIC-supervised)",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "as published by the FDIC on 2026-09-14; insurance in force since January 1, 1934",
+                "observationPeriod": "as published by the FDIC, page last updated 2026-01-28; insurance in force since January 1, 1934",
                 "retrievalDate": "2026-09-14"
               }
             }

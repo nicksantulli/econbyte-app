@@ -17,7 +17,7 @@
         {
           "lessonID": "ia-01",
           "title": "Risk and Return",
-          "summary": "What a return is, what risk really means, and why the two are inseparable.",
+          "summary": "What a return is, what risk really means, and why the two tend to travel together.",
           "estimatedMinutes": 6,
           "isPreview": true,
           "blocks": [
@@ -60,7 +60,7 @@
               "chartID": "ia-01-two-paths",
               "kind": "line",
               "title": "Two synthetic paths over 24 months",
-              "caption": "Both paths start at 100. The steady path rises a little every month. The volatile path swings up and down and ends higher, but an owner who had to sell in month 9 or month 17 would have taken a loss. The chart shows how variability and loss are two different things.",
+              "caption": "Both paths start at 100. The steady path rises a little every month. The volatile path swings up and down and ends higher, but an owner who had to sell in month 4 or month 9 would have taken a loss. The chart shows how variability and loss are two different things.",
               "xLabel": "Month",
               "yLabel": "Value (index, start = 100)",
               "dataNote": "Synthetic illustration — not real market data. Both series are invented to show the mechanism.",
@@ -270,11 +270,11 @@
               ],
               "markers": [
                 {
-                  "x": 9,
+                  "x": 4,
                   "label": "Dip"
                 },
                 {
-                  "x": 17,
+                  "x": 9,
                   "label": "Dip"
                 }
               ]
@@ -542,7 +542,7 @@
             },
             {
               "type": "paragraph",
-              "text": "There is also plain arithmetic behind the debate. Every share is owned by someone, so across all owners together the return before costs is simply the market's return. For one manager to do better, another owner must do worse. Active management as a whole therefore matches the market before costs and trails it after costs, because it spends more on research and trading. Individual managers can and do outpace their benchmarks in a given period; the arithmetic is about the average across all of them."
+              "text": "There is also plain arithmetic behind the debate. Every share is owned by someone, so across all owners together the return before costs is simply the market's return. Index funds that hold the whole market earn roughly that return before costs, so the remaining owners, the active managers, must as a group earn it too. For one active manager to do better, another must do worse. Active management as a whole therefore roughly matches the market before costs and trails it after costs, because it spends more on research and trading. Individual managers can and do outpace their benchmarks in a given period; the arithmetic is about the average across all of them."
             },
             {
               "type": "chart",
@@ -666,7 +666,7 @@
               "items": [
                 "An index fund copies a list of securities to match an index's return before fees.",
                 "An active fund chooses holdings to pursue a goal, usually at higher cost, with results tied to manager skill.",
-                "Before costs, active owners as a group match the market; after costs, the group trails it.",
+                "Before costs, active owners as a group roughly match the market; after costs, the group trails it.",
                 "The SEC notes that not every index fund is cheap and that any fund can trail its benchmark."
               ]
             }
@@ -699,11 +699,11 @@
           "blocks": [
             {
               "type": "paragraph",
-              "text": "Value and growth are labels for styles of describing shares, not guarantees. A share labelled value trades at a low price relative to the company's earnings or assets; the buyer's idea is that the price understates what the business is worth. A share labelled growth trades at a high price relative to its earnings because buyers anticipate that those earnings will expand quickly. Both labels are judgments about a price and the profits behind it, and both can turn out wrong."
+              "text": "Value and growth are labels for styles of describing shares, not guarantees. A share labeled value trades at a low price relative to the company's earnings or assets; the buyer's idea is that the price understates what the business is worth. A share labeled growth trades at a high price relative to its earnings because buyers anticipate that those earnings will expand quickly. Both labels are judgments about a price and the profits behind it, and both can turn out wrong."
             },
             {
               "type": "paragraph",
-              "text": "A dividend is a portion of a company's profit paid out in cash to its shareholders, usually on a regular schedule. It is distributed profit: money the company earned and chose to hand back rather than keep for new projects or debt repayment. Nothing obliges a company to pay one, and a board can cut or stop a dividend at any time. Companies paying large dividends are often mature, with fewer places to reinvest; companies labelled growth often pay little or nothing because they plough profit back into the business."
+              "text": "A dividend is a portion of a company's profit paid out to its shareholders, usually in cash and on a regular schedule. It is distributed profit: money the company earned and chose to hand back rather than keep for new projects or debt repayment. Nothing obliges a company to pay one, and a board can cut or stop a dividend at any time. Companies paying large dividends are often mature, with fewer places to reinvest; companies labeled growth often pay little or nothing because they plow profit back into the business."
             },
             {
               "type": "paragraph",
@@ -722,7 +722,7 @@
                 },
                 {
                   "term": "Dividend",
-                  "definition": "A portion of profit paid out in cash to shareholders; declared by the board and never guaranteed."
+                  "definition": "A portion of profit paid out to shareholders, usually in cash; declared by the board and never guaranteed."
                 },
                 {
                   "term": "Dividend yield",
@@ -927,7 +927,7 @@
             },
             {
               "type": "paragraph",
-              "text": "The average cost is lower than the average price by construction, not luck: more of the money lands on the cheap purchases. What the method does not do is guarantee a profit or protect against a falling price. If the price ends the year below the average cost of $19.91, the holding is worth less than the $1,200 put in. Spreading purchases across time spreads the risk of buying everything at a high point and removes the temptation to guess when to buy."
+              "text": "The average cost is lower than the average price by construction, not luck: more of the money lands on the cheap purchases. What the method does not do is guarantee a profit or protect against a falling price. If the price ends the year below the average cost of $19.91, the holding is worth less than the $1,200 put in. Spreading purchases across time spreads the risk of buying everything at a high point and removes the temptation to guess when to buy. The trade-off runs the other way too: money held back for later purchases sits uninvested and misses any rise in the meantime, so when a large sum is available all at once, spreading it out is a debated choice rather than a settled rule."
             },
             {
               "type": "paragraph",
@@ -936,7 +936,7 @@
             {
               "type": "diagram",
               "diagramID": "allocation-pie",
-              "caption": "An illustrative mix of asset categories drawn as a pie. The slices are labelled illustrative because no single mix suits everyone: the right proportions depend on when the money is needed and how much variability the owner can live with."
+              "caption": "An illustrative mix of asset categories drawn as a pie. The slices are labeled illustrative because no single mix suits everyone: the right proportions depend on when the money is needed and how much variability the owner can live with."
             },
             {
               "type": "paragraph",
@@ -1001,7 +1001,7 @@
             },
             {
               "type": "paragraph",
-              "text": "Two other costs sit alongside it. A sales load is a one-off charge, like a commission, paid when buying fund shares (front-end) or selling them (back-end). Trading costs arise whenever securities change hands: a broker's commission, a markup when a dealer sells from its own stock, and the spread between the price at which a security can be bought and the slightly lower price at which it can be sold at the same moment. The SEC groups these as transaction fees, charged per trade, as distinct from ongoing fees like the expense ratio, charged every year the holding exists."
+              "text": "Two other costs sit alongside it. A sales load is a one-off charge, like a commission, paid when buying fund shares (front-end) or selling them (back-end). Trading costs arise whenever securities change hands: a broker's commission, a markup when a dealer sells from its own stock, and the spread between the price at which a security can be bought and the slightly lower price at which it can be sold at the same moment. The SEC's fee bulletin lists commissions, markups, and sales loads as transaction fees, charged each time an investment is bought or sold, as distinct from ongoing fees like the expense ratio, charged every year the holding exists."
             },
             {
               "type": "keyTerms",
@@ -3173,7 +3173,7 @@
             {
               "type": "diagram",
               "diagramID": "price-yield-seesaw",
-              "caption": "A seesaw with price on one end and yield on the other. Push the price up and the yield comes down; let the price fall and the yield rises. The coupon in the middle never moves."
+              "caption": "A seesaw with price on one end and yield on the other. Push the price up and the yield comes down; let the price fall and the yield rises. A fixed coupon paid on a higher price works out to a smaller percentage."
             },
             {
               "type": "chart",
@@ -3288,7 +3288,7 @@
             },
             {
               "type": "paragraph",
-              "text": "Duration is the measure that turns this idea into a number. In plain words, duration is the approximate percentage change in a bond's price for a one-percentage-point change in its yield. A bond with a duration of 2 moves roughly 2 percent for each point; a bond with a duration of 15 moves roughly 15 percent. Duration is measured in years because it also equals the weighted average time until the bond's cash comes back. Longer maturity and lower coupon both push duration up, because more of the value sits in the distant future. A zero-coupon bond, which pays nothing until maturity, has a duration equal to its full maturity."
+              "text": "Duration is the measure that turns this idea into a number. In plain words, duration is the approximate percentage change in a bond's price for a one-percentage-point change in its yield. A bond with a duration of 2 moves roughly 2 percent for each point; a bond with a duration of 15 moves roughly 15 percent. Duration is quoted in years because it is closely tied to the weighted average time until the bond's cash comes back. Longer maturity and lower coupon both push duration up, because more of the value sits in the distant future. A zero-coupon bond, which pays nothing until maturity, has a duration equal to its full maturity."
             },
             {
               "type": "keyTerms",
@@ -3299,7 +3299,7 @@
                 },
                 {
                   "term": "Duration",
-                  "definition": "The approximate percentage price change for a one-percentage-point move in yield; also the weighted average time until a bond's payments arrive."
+                  "definition": "The approximate percentage price change for a one-percentage-point move in yield; closely tied to the weighted average time until a bond's payments arrive."
                 },
                 {
                   "term": "Zero-coupon bond",
@@ -3316,7 +3316,7 @@
               "chartID": "bry-02-duration-bars",
               "kind": "bar",
               "title": "Illustrative price change for a one-percentage-point move in yield, by maturity",
-              "caption": "Three illustrative bonds with the same coupon. A one-point rise in yields barely dents the 2-year bond but knocks roughly 15 percent off the 30-year bond. A one-point fall lifts each by a little more than the matching rise lowers it.",
+              "caption": "Three illustrative bonds with the same coupon. A one-point rise in yields barely dents the 2-year bond but knocks roughly 15 percent off the 30-year bond. A one-point fall lifts each by more than the matching rise lowers it.",
               "xLabel": "Maturity (years)",
               "yLabel": "Price change (percent)",
               "dataNote": "Synthetic illustration — hand-designed values for bonds of equal coupon, not real market data.",
@@ -3334,7 +3334,7 @@
                     },
                     {
                       "x": 30,
-                      "y": -14.5
+                      "y": -15.5
                     }
                   ]
                 },
@@ -3351,7 +3351,7 @@
                     },
                     {
                       "x": 30,
-                      "y": 17.5
+                      "y": 19.7
                     }
                   ]
                 }
@@ -3656,7 +3656,7 @@
             },
             {
               "type": "paragraph",
-              "text": "The historical record is what makes the topic famous. In a 2018 Economic Letter, economists at the Federal Reserve Bank of San Francisco documented that every U.S. recession in the preceding sixty years had been preceded by a negative term spread, and that a negative spread was followed by a recession in all but one case. The Cleveland Fed's yield-curve page likewise records that inversions preceded each of the last eight recessions, while also listing several inversions that were not followed by one, including the long inversion that ran from late 2022 into 2024. The pattern is real, and so are the exceptions."
+              "text": "The historical record is what makes the topic famous. In a 2018 Economic Letter, economists at the Federal Reserve Bank of San Francisco documented that every U.S. recession in the preceding sixty years had been preceded by a negative term spread, and that a negative spread was followed by a recession in all but one case. The Cleveland Fed's yield-curve page likewise records that inversions preceded each of the last eight recessions, while also listing three notable false signals, including the long inversion that ran from late 2022 through late 2024. The pattern is real, and so are the exceptions."
             },
             {
               "type": "chart",
@@ -3785,7 +3785,7 @@
               "type": "callout",
               "style": "caution",
               "title": "Association is not prediction",
-              "text": "The record above is a description of the past, not a forecast. Inversions have come before recessions with gaps ranging from a few months to about two years, some inversions were not followed by any recession, and the economy has changed in ways that could weaken or strengthen the link. Reserve Bank researchers themselves warn against reading the signal too literally. This lesson explains why people watch the spread; it does not say what any inversion means for the future."
+              "text": "The record above is a description of the past, not a forecast. Inversions have come before recessions with gaps ranging from a few months to about two years, some inversions were not followed by any recession, and the economy has changed in ways that could weaken or strengthen the link. Some Reserve Bank researchers urge caution against reading the signal too literally, while others have found that its record holds up. This lesson explains why people watch the spread; it does not say what any inversion means for the future."
             },
             {
               "type": "quiz",
@@ -3837,7 +3837,7 @@
           "blocks": [
             {
               "type": "paragraph",
-              "text": "The yield printed on a bond is a nominal yield: the percentage of money you receive, counted in dollars. It says nothing about what those dollars buy. If a bond yields 5 percent while prices in the shops rise 3 percent, the lender's purchasing power grows by only about 2 percent. That leftover is the real yield. As a rule of thumb, real yield is roughly the nominal yield minus the inflation rate. When inflation runs above the nominal yield, the real yield is negative, and the lender ends up able to buy less than before even though the account balance grew."
+              "text": "The yield printed on a bond is a nominal yield: the percentage of money you receive, counted in dollars. It says nothing about what those dollars buy. If a bond yields 5 percent while prices in stores rise 3 percent, the lender's purchasing power grows by only about 2 percent. That leftover is the real yield. As a rule of thumb, real yield is roughly the nominal yield minus the inflation rate. When inflation runs above the nominal yield, the real yield is negative, and the lender ends up able to buy less than before even though the account balance grew."
             },
             {
               "type": "keyTerms",
@@ -4058,7 +4058,7 @@
               "chartID": "bry-06-short-vs-long",
               "kind": "line",
               "title": "An illustrative policy rate and 10-year yield over twenty quarters",
-              "caption": "The short rate climbs in steps from 0.5 percent to 4.5 percent and then comes back down. The long rate drifts up by far less and then eases. Where the short rate rises above the long rate, around quarters 10 to 15, the illustrative curve is inverted.",
+              "caption": "The short rate climbs in steps from 0.5 percent to 4.5 percent and then comes back down. The long rate drifts up by far less and then eases. Where the short rate rises above the long rate, around quarters 10 to 16, the illustrative curve is inverted.",
               "xLabel": "Quarter",
               "yLabel": "Rate (percent)",
               "dataNote": "Synthetic illustration — hand-designed paths for a policy rate and a long yield, not real data.",
@@ -4260,7 +4260,7 @@
             },
             {
               "type": "paragraph",
-              "text": "The policy rate matters to households because other rates are priced off the curve. Savings accounts, money market funds and short certificates of deposit tend to track the short end, so their rates move soon after the FOMC acts. A 30-year fixed mortgage is priced closer to long Treasury yields, which is why mortgage rates can move before a policy meeting, on expectations, and sometimes barely react to the meeting itself. The Federal Reserve describes this chain as the transmission of monetary policy: a change at the short end works its way through financial conditions to spending, hiring and prices, usually with a lag of months or longer."
+              "text": "The policy rate matters to households because other rates are priced off the curve. Savings accounts, money market funds and short certificates of deposit tend to track the short end, so their rates move soon after the FOMC acts. A 30-year fixed mortgage is priced closer to long Treasury yields, which is why mortgage rates can move before a policy meeting, on expectations, and sometimes barely react to the meeting itself. The Federal Reserve describes this chain as the transmission of monetary policy: a change at the short end works its way through financial conditions to spending, hiring and prices, and those effects build over time."
             },
             {
               "type": "callout",
@@ -4286,7 +4286,7 @@
                 "The FOMC sets a target range for the overnight federal funds rate, anchoring the short end of the curve.",
                 "Long yields reflect expected future short rates plus a term premium, so they do not simply follow the policy rate.",
                 "Savings and card rates track the short end; long fixed mortgages track long yields.",
-                "Policy changes reach spending and prices through transmission, with a lag of months or longer."
+                "Policy changes reach spending and prices through transmission, and the effects take time to build."
               ]
             }
           ],
@@ -4301,8 +4301,8 @@
             },
             {
               "organization": "Board of Governors of the Federal Reserve System",
-              "documentTitle": "Policy Tools: Open Market Operations",
-              "url": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm",
+              "documentTitle": "Policy Tools",
+              "url": "https://www.federalreserve.gov/monetarypolicy/policytools.htm",
               "publicationDate": "2026-09-14",
               "datePrecision": "observed-on-verification-date",
               "verificationDate": "2026-09-14"
