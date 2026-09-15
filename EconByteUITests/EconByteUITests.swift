@@ -114,7 +114,9 @@ final class EconByteUITests: XCTestCase {
                       "EconByte home should reappear after dismissing card mode")
     }
 
-    /// Financial disclaimer renders on the front face of a card in card mode.
+    /// 1.1.4 copy trim: the not-advice line is no longer repeated on every card
+    /// face; a card session carries it once, at its end (`sessionNotAdvice`,
+    /// asserted in `GrowthFlowTests.testFirstCompletedSetReturnsHomeWithNoInterstitial`).
     func testCardDisclaimerRenders() {
         let app = launchApp()
 
@@ -126,12 +128,10 @@ final class EconByteUITests: XCTestCase {
                 .firstMatch.waitForExistence(timeout: 5)
         )
 
-        // Disclaimer text on card front face.
-        let disclaimer = app.staticTexts.containing(
+        let repeated = app.staticTexts.containing(
             NSPredicate(format: "label CONTAINS 'not financial'")
         ).firstMatch
-        XCTAssertTrue(disclaimer.waitForExistence(timeout: 5),
-                      "Financial disclaimer should render on the front face of every card")
+        XCTAssertFalse(repeated.exists, "the disclaimer is not repeated on every card face")
     }
 
     // MARK: - Settings
@@ -237,13 +237,15 @@ final class EconByteUITests: XCTestCase {
         XCTAssertTrue(gear.waitForExistence(timeout: 5))
         gear.tap()
 
+        // 1.1.4: Settings sells Unlock All directly with the shared purchase
+        // button (price from StoreKit, or its loading / unavailable state).
         let unlockAll = app.buttons["settingsUnlockAllButton"]
         XCTAssertTrue(unlockAll.waitForExistence(timeout: 5),
-                      "Unlock All Topics row should be tappable in Settings")
-        unlockAll.tap()
-
-        XCTAssertTrue(app.staticTexts["Unlock All Topics"].waitForExistence(timeout: 10),
-                      "Settings Unlock All should present the paywall after Settings dismisses")
+                      "Unlock All Topics purchase button should be in Settings")
+        XCTAssertTrue(app.staticTexts["Unlock All Topics"].exists, "the offer names the product")
+        let settled = NSPredicate(format: "label BEGINSWITH 'Unlock' OR label == 'Owned'")
+        XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: settled, evaluatedWith: unlockAll)], timeout: 30),
+                       .completed, "the button reads Unlock (· price) or Owned, never a placeholder")
     }
 
     /// Settings shows a tappable Remove Ads purchase row.

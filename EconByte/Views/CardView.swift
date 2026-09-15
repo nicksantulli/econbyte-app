@@ -52,9 +52,9 @@ struct CardView: View {
             : "card \(position + 1)"
         if showsBackFace {
             let source = card.source.isEmpty ? "No source listed." : "Source: \(card.source)."
-            return Text("\(topic), \(place). Real-world example. \(card.exampleBody) \(source) For educational purposes only — not financial or investment advice.")
+            return Text("\(topic), \(place). Real-world example. \(card.exampleBody) \(source)")
         }
-        return Text("\(topic), \(place). Concept. \(card.concept). \(card.conceptBody) For educational purposes only — not financial or investment advice.")
+        return Text("\(topic), \(place). Concept. \(card.concept). \(card.conceptBody)")
     }
 
     private func flip() {
@@ -111,11 +111,6 @@ struct CardView: View {
             Spacer()
 
             VStack(spacing: 8) {
-                Text("For educational purposes only — not financial or investment advice.")
-                    .font(.system(size: 11, design: .rounded))
-                    .foregroundColor(Econ.subtext)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
                 if !isFlipped {
                     Text("Tap to see example →")
                         .font(.system(size: 13, design: .rounded))
@@ -158,13 +153,7 @@ struct CardView: View {
                 .foregroundColor(Econ.subtext)
             }
             Spacer()
-
-            Text("For educational purposes only — not financial or investment advice.")
-                .font(.system(size: 11, design: .rounded))
-                .foregroundColor(Econ.subtext)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 24)
+                .frame(minHeight: 24)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Econ.page)

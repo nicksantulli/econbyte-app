@@ -41,7 +41,7 @@ struct BriefDocumentView: View {
                     .foregroundColor(Econ.subtext)
                     .tracking(1.5)
                 Spacer()
-                if brief.isSample == true { BriefSampleBadge() }
+                if briefs.showsSampleBadge(brief) { BriefSampleBadge() }
                 if showsRefreshState, briefs.isRefreshing {
                     ProgressView().tint(Econ.sky).scaleEffect(0.8)
                 }
@@ -57,7 +57,6 @@ struct BriefDocumentView: View {
                     .font(.system(size: 11, design: .rounded))
                     .foregroundColor(Econ.subtext)
             }
-            EducationalNoticeBanner(text: "Informational only — not investment advice. Built from official releases; no news sites.")
         }
     }
 
@@ -104,10 +103,6 @@ struct BriefDocumentView: View {
                 Text("The rest of the brief is part of EconByte Pro")
                     .font(.system(size: 17, weight: .bold, design: .rounded))
                     .foregroundColor(Econ.white)
-                    .multilineTextAlignment(.center)
-                Text("What official releases said, what's scheduled this week, and one concept to know — with sources, never news sites.")
-                    .font(.system(size: 13, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.75))
                     .multilineTextAlignment(.center)
                 Button("See EconByte Pro") { onProPaywall?() }
                     .buttonStyle(PrimaryButton())

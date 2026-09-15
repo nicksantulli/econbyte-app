@@ -86,11 +86,6 @@ struct NewsTabView: View {
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("briefArchiveRow-\(past.briefDate)")
             }
-            if briefs.history.isEmpty {
-                Text("Earlier briefs appear here as they're published.")
-                    .font(.system(size: 13, design: .rounded))
-                    .foregroundColor(Econ.subtext)
-            }
         }
     }
 

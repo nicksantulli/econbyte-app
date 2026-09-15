@@ -555,6 +555,88 @@ final class ProCoursesBriefTests: XCTestCase {
         XCTAssertEqual(store.history.count, BriefStore.cacheLimit - 1)
     }
 
+    // MARK: - Daily Brief: the service (1.1.4 release scope, step 5)
+
+    func testBriefServiceURLsDeriveFromOneBaseConstant() {
+        XCTAssertEqual(BriefStore.baseURL.scheme, "https")
+        XCTAssertEqual(BriefStore.latestURL, BriefStore.baseURL.appendingPathComponent("latest.json"))
+        XCTAssertEqual(BriefStore.indexURL, BriefStore.baseURL.appendingPathComponent("index.json"))
+    }
+
+    func testBriefIndexReadsTheCommonShapesAndRejectsOffHostEntries() throws {
+        let base = URL(string: "https://briefs.example.org/econbyte/brief/")!
+        let bare = try JSONSerialization.data(withJSONObject: ["2026-09-14", "2026-09-15", "2026-09-15", "bad"])
+        XCTAssertEqual(BriefIndex.entries(from: bare, base: base),
+                       [BriefIndexEntry(briefDate: "2026-09-15", url: URL(string: "https://briefs.example.org/econbyte/brief/2026-09-15.json")!),
+                        BriefIndexEntry(briefDate: "2026-09-14", url: URL(string: "https://briefs.example.org/econbyte/brief/2026-09-14.json")!)])
+        let dates = try JSONSerialization.data(withJSONObject: ["dates": ["2026-09-11"]])
+        XCTAssertEqual(BriefIndex.entries(from: dates, base: base).map(\.briefDate), ["2026-09-11"])
+        let objects = try JSONSerialization.data(withJSONObject: ["briefs": [
+            ["briefDate": "2026-09-12", "path": "/econbyte/brief/2026-09-12.json"],
+            ["date": "2026-09-10", "url": "https://evil.example.com/2026-09-10.json"],
+            ["date": "2026-09-09", "url": "http://briefs.example.org/econbyte/brief/2026-09-09.json"],
+        ]])
+        XCTAssertEqual(BriefIndex.entries(from: objects, base: base),
+                       [BriefIndexEntry(briefDate: "2026-09-12", url: URL(string: "https://briefs.example.org/econbyte/brief/2026-09-12.json")!)],
+                       "another host or plain http is never fetched")
+        XCTAssertEqual(BriefIndex.entries(from: Data("not json".utf8), base: base), [])
+    }
+
+    @MainActor
+    func testFetchedBriefsFillTheArchiveFromIndexWithoutSampleBadgesAndFallBackToCacheOffline() async throws {
+        let template = try sampleBriefJSON()
+        func document(_ date: String) throws -> Data {
+            var object = template
+            object["briefDate"] = date
+            object["isSample"] = false
+            object["headline"] = "Brief \(date)"
+            return try JSONSerialization.data(withJSONObject: object)
+        }
+        let latest = try document("2026-09-15")
+        let previous = try document("2026-09-14")
+        let older = try document("2026-09-11")
+        let index = try JSONSerialization.data(withJSONObject: ["briefs": [
+            ["briefDate": "2026-09-15", "url": "2026-09-15.json"],
+            ["briefDate": "2026-09-14", "url": "2026-09-14.json"],
+            ["date": "2026-09-11"],
+            ["briefDate": "2026-09-10", "url": "https://evil.example.com/2026-09-10.json"],
+        ]])
+        StubURLProtocol.handler = { request in
+            switch request.url?.lastPathComponent {
+            case "latest.json": return (200, latest)
+            case "index.json": return (200, index)
+            case "2026-09-14.json": return (200, previous)
+            case "2026-09-11.json": return (200, older)
+            default: return (404, Data())
+            }
+        }
+        let cache = temporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: cache) }
+        let endpoint = URL(string: "https://briefs.example.org/econbyte/brief/latest.json")!
+
+        let store = BriefStore(endpoint: endpoint, session: stubbedSession(), cacheDirectory: cache)
+        XCTAssertEqual(store.source, .bundled)
+        XCTAssertTrue(store.showsSampleBadge(try XCTUnwrap(store.latest)), "a bundled sample is labelled")
+        await store.refresh()
+        XCTAssertEqual(store.source, .network)
+        XCTAssertEqual(store.latest?.briefDate, "2026-09-15")
+        XCTAssertEqual(store.history.map(\.briefDate), ["2026-09-14", "2026-09-11"],
+                       "the archive comes from index.json; no bundled samples are mixed in; off-host entries are skipped")
+        XCTAssertFalse(store.showsSampleBadge(try XCTUnwrap(store.latest)), "a fetched brief shows no SAMPLE badge")
+        XCTAssertTrue(store.history.allSatisfy { !store.showsSampleBadge($0) })
+
+        // Offline: the cache is shown first, and a failed refresh keeps it.
+        StubURLProtocol.handler = { _ in (503, Data()) }
+        let offline = BriefStore(endpoint: endpoint, session: stubbedSession(), cacheDirectory: cache)
+        XCTAssertEqual(offline.source, .cache)
+        XCTAssertEqual(offline.latest?.briefDate, "2026-09-15")
+        XCTAssertEqual(offline.history.map(\.briefDate), ["2026-09-14", "2026-09-11"])
+        await offline.refresh()
+        XCTAssertEqual(offline.latest?.briefDate, "2026-09-15")
+        XCTAssertNotNil(offline.refreshNote)
+        XCTAssertFalse(offline.showsSampleBadge(try XCTUnwrap(offline.latest)))
+    }
+
     // MARK: - Entitlement: Pro suppresses ads and opens core topics (D19)
 
     func testProEntitlementSuppressesAdsAndUnlocksCoreTopicsWithoutTouchingTheOneTimeFlags() {
@@ -616,6 +698,9 @@ final class ProCoursesBriefTests: XCTestCase {
     // StoreKit configuration exactly as the code names them (ASC is created later
     // from the same ids — no code change).
 
+    /// Prices are the 2026-09-15 pricing decision (`econbyte-pricing-2026-09-15.md`):
+    /// annual $39.99 with the only free trial, monthly $9.99 with none, the
+    /// All Packs Bundle $5.99, packs $1.99, Unlock All $2.99, Remove Ads $1.99.
     func testStoreKitConfigurationCarriesTheProGroupWithFreeTrialsAndAllSixPacks() throws {
         let data = try Data(contentsOf: repoRoot().appendingPathComponent("EconByte.storekit"))
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
@@ -626,23 +711,37 @@ final class ProCoursesBriefTests: XCTestCase {
         XCTAssertEqual(Set(subscriptions.compactMap { $0["productID"] as? String }),
                        Set(PurchaseManager.ProductID.subscriptions.map(\.rawValue)))
         for sub in subscriptions {
-            let offer = try XCTUnwrap(sub["introductoryOffer"] as? [String: Any], "\(sub["productID"] ?? "") has a trial")
-            XCTAssertEqual(offer["paymentMode"] as? String, "free")
-            XCTAssertEqual(offer["subscriptionPeriod"] as? String, "P1W", "one-week free trial")
             XCTAssertEqual(sub["type"] as? String, "RecurringSubscription")
         }
         let monthly = try XCTUnwrap(subscriptions.first { $0["productID"] as? String == PurchaseManager.ProductID.proMonthly.rawValue })
         XCTAssertEqual(monthly["recurringSubscriptionPeriod"] as? String, "P1M")
-        XCTAssertEqual(monthly["displayPrice"] as? String, "4.99")
+        XCTAssertEqual(monthly["displayPrice"] as? String, "9.99")
+        XCTAssertNil(monthly["introductoryOffer"] as? [String: Any], "monthly has no introductory offer")
+        XCTAssertEqual(monthly["groupNumber"] as? Int, 2)
         let annual = try XCTUnwrap(subscriptions.first { $0["productID"] as? String == PurchaseManager.ProductID.proAnnual.rawValue })
         XCTAssertEqual(annual["recurringSubscriptionPeriod"] as? String, "P1Y")
-        XCTAssertEqual(annual["displayPrice"] as? String, "29.99")
+        XCTAssertEqual(annual["displayPrice"] as? String, "39.99")
+        XCTAssertEqual(annual["groupNumber"] as? Int, 1)
+        let offer = try XCTUnwrap(annual["introductoryOffer"] as? [String: Any], "annual carries the free trial")
+        XCTAssertEqual(offer["paymentMode"] as? String, "free")
+        XCTAssertEqual(offer["subscriptionPeriod"] as? String, "P1W", "one-week free trial")
 
         let products = try XCTUnwrap(object["products"] as? [[String: Any]])
         let ids = Set(products.compactMap { $0["productID"] as? String })
+        func price(_ id: PurchaseManager.ProductID) -> String? {
+            products.first { $0["productID"] as? String == id.rawValue }?["displayPrice"] as? String
+        }
         for pack in PurchaseManager.ProductID.packs {
             XCTAssertTrue(ids.contains(pack.rawValue), pack.rawValue)
+            XCTAssertEqual(price(pack), "1.99", pack.rawValue)
         }
+        XCTAssertEqual(price(.packBundle), "5.99")
+        XCTAssertEqual(price(.unlockAll), "2.99")
+        XCTAssertEqual(price(.removeAds), "1.99")
+        XCTAssertEqual(products.first { $0["productID"] as? String == PurchaseManager.ProductID.packBundle.rawValue }?["type"] as? String,
+                       "NonConsumable")
+        XCTAssertEqual(products.count + subscriptions.count, PurchaseManager.ProductID.allCases.count,
+                       "every product id is configured exactly once")
         // No "synced" keys: with them present the simulator ignores local products.
         let settings = try XCTUnwrap(object["settings"] as? [String: Any])
         XCTAssertNil(settings["_applicationInternalID"])

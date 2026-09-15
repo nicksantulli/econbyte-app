@@ -3,9 +3,13 @@ import Foundation
 /// Owns the Daily Brief on the device (1.1.4).
 ///
 /// Order of preference: the newest validated brief in the on-device cache, then
-/// the bundled samples (newest first; the older samples fill the archive). `refresh()` fetches `latest.json` from the static
-/// endpoint, validates it fail-closed, stores it in the cache (which keeps the
-/// most recent 30 briefs by date), and publishes it. Every failure — offline,
+/// the bundled samples (newest first; the older samples fill the archive).
+/// `refresh()` fetches `latest.json` from the brief service (`baseURL`),
+/// validates it fail-closed, stores it in the cache (which keeps the most recent
+/// 30 briefs by date), publishes it, and then reads `index.json` to fill the
+/// archive with published briefs the device does not have yet. Fetched briefs
+/// never carry the SAMPLE badge; the bundled samples do, and they are never
+/// mixed into an archive of published briefs. Every failure — offline,
 /// 404 while the server job does not exist yet, a document that fails
 /// validation — is silent to the reader beyond a small caption: the screen keeps
 /// showing what it already had. No user data is sent; the request is a plain
@@ -15,10 +19,19 @@ final class BriefStore: ObservableObject {
 
     static let shared = BriefStore()
 
-    /// The published location of the latest brief. May 404 until the server job
-    /// (a follow-up lane) exists; the app is built to treat that as "no news".
-    static let latestURL = URL(string: "https://dudleyapps.com/econbyte/brief/latest.json")!
+    /// The brief service's public base URL — the ONE place it is set. Serves
+    /// `latest.json`, `index.json` and `<YYYY-MM-DD>.json`.
+    /// TODO(orchestrator, 1.1.4): confirm/replace with the base URL in
+    /// `~/dudley-lane-briefs/reports/laneB-daily-brief-service.md` before archiving.
+    nonisolated static let baseURL = URL(string: "https://dudleyapps.com/econbyte/brief/")!
+    nonisolated static var latestURL: URL { baseURL.appendingPathComponent("latest.json") }
+    nonisolated static var indexURL: URL { baseURL.appendingPathComponent("index.json") }
+    /// Published briefs pulled into the archive per refresh, newest first.
+    static let archiveFetchLimit = 14
     static let cacheLimit = 30
+    /// How often a new brief is published, as the paywall states it (A5, A14).
+    /// Must match the brief service's real schedule.
+    static let cadenceDescription = "every U.S. business day"
     /// A refresh is attempted at most this often, so opening the screen
     /// repeatedly is not a request each time.
     static let minimumRefreshInterval: TimeInterval = 60 * 60
@@ -33,6 +46,7 @@ final class BriefStore: ObservableObject {
     @Published private(set) var history: [DailyBrief] = []
 
     private let endpoint: URL
+    private let indexEndpoint: URL
     private let session: URLSession
     private let cacheDirectory: URL
     private let now: () -> Date
@@ -44,6 +58,7 @@ final class BriefStore: ObservableObject {
          bundle: Bundle = .curriculumBundle,
          now: @escaping () -> Date = Date.init) {
         self.endpoint = endpoint
+        self.indexEndpoint = endpoint.deletingLastPathComponent().appendingPathComponent("index.json")
         self.session = session
         self.now = now
         self.cacheDirectory = cacheDirectory ?? BriefStore.defaultCacheDirectory()
@@ -119,28 +134,62 @@ final class BriefStore: ObservableObject {
             }
             guard http.statusCode == 200 else {
                 refreshNote = http.statusCode == 404
-                    ? "No published brief yet — showing the bundled sample."
-                    : "The latest brief could not be downloaded."
+                    ? "No brief published yet."
+                    : "Couldn't download the latest brief."
                 return
             }
             let brief = try DailyBrief.decodeValidated(data)
             store(brief)
-            if let current = latest, current.briefDate > brief.briefDate, current.isSample != true {
+            if let current = latest, current.briefDate > brief.briefDate, source != .bundled {
                 // Never replace a newer cached brief with an older one.
                 refreshNote = nil
-                return
+            } else {
+                latest = brief
+                source = .network
+                refreshNote = nil
             }
-            latest = brief
-            source = .network
-            history = loadCache().filter { $0.briefDate != brief.briefDate }
-            refreshNote = nil
+            await refreshArchive()
+            if let shown = latest {
+                history = loadCache().filter { $0.briefDate != shown.briefDate }
+            }
         } catch is CurriculumError {
-            refreshNote = "The downloaded brief did not pass validation; showing the last good one."
+            refreshNote = "Showing the last good brief."
             NSLog("[BriefStore] brief failed validation")
         } catch {
-            refreshNote = "You're offline — showing the most recent brief."
+            refreshNote = "Offline — showing the last saved brief."
             NSLog("[BriefStore] refresh failed: \(error.localizedDescription)")
         }
+    }
+
+    /// Reads `index.json` and caches published briefs this device is missing.
+    /// Best effort: any failure leaves the archive as it was.
+    private func refreshArchive() async {
+        guard let result = try? await session.data(for: Self.request(indexEndpoint)),
+              (result.1 as? HTTPURLResponse)?.statusCode == 200 else { return }
+        let have = Set(cachedDates)
+        let missing = BriefIndex.entries(from: result.0, base: indexEndpoint.deletingLastPathComponent())
+            .filter { !have.contains($0.briefDate) }
+            .prefix(Self.archiveFetchLimit)
+        for entry in missing {
+            guard let fetched = try? await session.data(for: Self.request(entry.url)),
+                  (fetched.1 as? HTTPURLResponse)?.statusCode == 200,
+                  let brief = try? DailyBrief.decodeValidated(fetched.0),
+                  brief.briefDate == entry.briefDate else { continue }
+            store(brief)
+        }
+    }
+
+    private static func request(_ url: URL) -> URLRequest {
+        var request = URLRequest(url: url)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        return request
+    }
+
+    /// The SAMPLE badge belongs to the bundled samples only — never to a brief
+    /// fetched from the service (even one that sets `isSample`).
+    func showsSampleBadge(_ brief: DailyBrief) -> Bool {
+        source == .bundled && brief.isSample == true
     }
 
     // MARK: Cache
@@ -179,4 +228,50 @@ final class BriefStore: ObservableObject {
         reloadFromDisk(bundle: .curriculumBundle)
     }
     #endif
+}
+
+/// One entry of the brief service's `index.json`.
+struct BriefIndexEntry: Equatable {
+    let briefDate: String
+    let url: URL
+}
+
+/// Reads `index.json` tolerantly — a bare array of dates, `{"dates": [...]}`,
+/// or `{"briefs": [{"briefDate"|"date": ..., "url"|"path": ...}]}` — and keeps
+/// only well-formed dates whose file lives on the service's own host over HTTPS.
+enum BriefIndex {
+    static func entries(from data: Data, base: URL) -> [BriefIndexEntry] {
+        guard let json = try? JSONSerialization.jsonObject(with: data) else { return [] }
+        var raw: [Any] = []
+        if let array = json as? [Any] {
+            raw = array
+        } else if let object = json as? [String: Any] {
+            raw = (object["briefs"] as? [Any]) ?? (object["items"] as? [Any])
+                ?? (object["archive"] as? [Any]) ?? (object["dates"] as? [Any]) ?? []
+        }
+        var seen = Set<String>()
+        let entries = raw.compactMap { item -> BriefIndexEntry? in
+            var date: String?
+            var path: String?
+            if let string = item as? String {
+                date = string
+            } else if let object = item as? [String: Any] {
+                date = (object["briefDate"] as? String) ?? (object["date"] as? String)
+                path = (object["url"] as? String) ?? (object["path"] as? String) ?? (object["file"] as? String)
+            }
+            guard let date, isISODate(date), !seen.contains(date) else { return nil }
+            let resolved = path.flatMap { URL(string: $0, relativeTo: base)?.absoluteURL }
+                ?? base.appendingPathComponent("\(date).json")
+            guard resolved.scheme == "https", resolved.host == base.host else { return nil }
+            seen.insert(date)
+            return BriefIndexEntry(briefDate: date, url: resolved)
+        }
+        return entries.sorted { $0.briefDate > $1.briefDate }
+    }
+
+    static func isISODate(_ s: String) -> Bool {
+        let parts = s.split(separator: "-")
+        return s.count == 10 && parts.count == 3 && parts[0].count == 4 && parts[1].count == 2 && parts[2].count == 2
+            && s.filter(\.isNumber).count == 8
+    }
 }

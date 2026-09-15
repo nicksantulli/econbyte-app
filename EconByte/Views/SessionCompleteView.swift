@@ -29,6 +29,12 @@ struct SessionCompleteView: View {
                 .foregroundColor(Econ.white.opacity(0.8))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
+            // The one "not advice" line for a card session, at its end.
+            Text(PlanCopy.notAdvice)
+                .font(.system(.footnote, design: .rounded))
+                .foregroundColor(Econ.subtext)
+                .multilineTextAlignment(.center)
+                .accessibilityIdentifier("sessionNotAdvice")
 
             if showConsentPrompt { consentPrompt }
             if showPrimer { primer }

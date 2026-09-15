@@ -2,8 +2,8 @@ import SwiftUI
 
 /// One course lesson, rendered block by block (1.1.4).
 ///
-/// The "educational, not advice" notice sits at the top of every lesson; the
-/// sources at the bottom. Completing a lesson means reaching the takeaways and
+/// The sources and the one "educational, not advice" notice sit at the end of
+/// every lesson. Completing a lesson means reaching the takeaways and
 /// tapping "Mark as complete" (or "Next lesson"), which records progress locally
 /// and emits the bucketed completion event once. A lesson that is not the free
 /// preview is readable only while Pro is active — the check is here as well as
@@ -74,8 +74,6 @@ struct LessonView: View {
             }
             .font(.system(size: 12, weight: .medium, design: .rounded))
             .foregroundColor(Econ.subtext)
-            EducationalNoticeBanner(text: ContentStore.shared.courses?.educationalNotice
-                                    ?? "Educational content only — not investment advice.")
         }
     }
 
@@ -123,9 +121,8 @@ struct LessonView: View {
                     }
                 }
             }
-            Text("For educational purposes only — not financial or investment advice.")
-                .font(.system(size: 11, design: .rounded))
-                .foregroundColor(Econ.subtext)
+            // The one "not advice" line in a lesson, at its end.
+            EducationalNoticeBanner(text: PlanCopy.notAdvice)
                 .padding(.top, 4)
         }
         .padding(14)
@@ -173,10 +170,6 @@ struct LockedLessonView: View {
             Text(lesson.summary)
                 .font(.system(size: 15, design: .rounded))
                 .foregroundColor(Econ.white.opacity(0.75))
-                .multilineTextAlignment(.center)
-            Text("This lesson is part of EconByte Pro. The first lesson of every course is free.")
-                .font(.system(size: 13, design: .rounded))
-                .foregroundColor(Econ.subtext)
                 .multilineTextAlignment(.center)
             Button("See EconByte Pro") { onProPaywall() }
                 .buttonStyle(PrimaryButton())

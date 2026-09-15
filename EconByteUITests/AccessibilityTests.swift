@@ -153,14 +153,13 @@ final class AccessibilityTests: XCTestCase {
 
         openTodaysSet(in: app)
 
-        let disclaimer = app.staticTexts.containing(
-            NSPredicate(format: "label CONTAINS 'not financial'")
-        ).firstMatch
+        // 1.1.4: the not-advice line moved to the end of the session; the card
+        // itself must still render and announce itself at this size.
         let cardElement = app.buttons.containing(
-            NSPredicate(format: "label CONTAINS 'not financial'")
+            NSPredicate(format: "label CONTAINS 'card 1 of'")
         ).firstMatch
-        XCTAssertTrue(disclaimer.waitForExistence(timeout: 10) || cardElement.exists,
-                      "The educational-use disclosure must survive the largest text size")
+        XCTAssertTrue(cardElement.waitForExistence(timeout: 10),
+                      "The card must survive the largest text size")
 
         let close = app.buttons["cardModeCloseButton"]
         XCTAssertTrue(close.waitForExistence(timeout: 10))

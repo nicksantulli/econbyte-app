@@ -120,7 +120,7 @@ final class ShellRedesignTests: XCTestCase {
         app.swipeUp()
         sleep(1)
         capture("p10-14-settings-3")
-        for id in ["settingsEducationalNotice", "settingsSupportLink", "settingsRateButton", "settingsVersionRow"] {
+        for id in ["settingsSourcesButton", "settingsSupportLink", "settingsRateButton", "settingsVersionRow"] {
             XCTAssertTrue(any[id].exists, "About keeps \(id)")
         }
         let sources = app.buttons["settingsSourcesButton"]
@@ -129,6 +129,215 @@ final class ShellRedesignTests: XCTestCase {
         XCTAssertTrue(app.navigationBars["Sources & editorial policy"].waitForExistence(timeout: 10))
         sleep(1)
         capture("p10-15-sources-policy")
+    }
+
+    // MARK: - 1.1.4 release scope: paywall states and the one purchase button
+    //
+    // `-econDebugStore <scenario>` (DEBUG only) serves the EconByte.storekit US
+    // prices without StoreKit, because xcodebuild on this Mac does not attach
+    // the StoreKit configuration (Phase 8/11 proof). The layout, copy and state
+    // logic under test are the shipping code; only the price source is fixed.
+
+    private func launchStore(_ scenario: String, tab: String, _ extra: [String] = []) -> XCUIApplication {
+        launch(["-econDebugStore", scenario, "-econInitialTab", tab] + extra)
+    }
+
+    private func waitForLabel(_ element: XCUIElement, _ label: String, timeout: TimeInterval = 10) -> Bool {
+        let predicate = NSPredicate(format: "label == %@", label)
+        return XCTWaiter().wait(for: [expectation(for: predicate, evaluatedWith: element)], timeout: timeout) == .completed
+    }
+
+    private func reveal(_ element: XCUIElement, in app: XCUIApplication, swipes: Int = 12) {
+        for _ in 0..<swipes where !(element.exists && element.isHittable) { app.swipeUp() }
+    }
+
+    func testPaywallEligibleForTrial() {
+        let app = launchStore("eligible", tab: "pro")
+        let any = app.descendants(matching: .any)
+        let annual = any["proPaywallPlan-annual"]
+        let monthly = any["proPaywallPlan-monthly"]
+        XCTAssertTrue(annual.waitForExistence(timeout: 15))
+        XCTAssertTrue(annual.isSelected, "annual is preselected")
+        XCTAssertEqual(annual.label, "Annual plan, $39.99 per year, $3.33 per month, Save 66%")
+        XCTAssertEqual(monthly.label, "Monthly plan, $9.99 per month")
+        XCTAssertEqual(any["proPaywallTrialLine"].label,
+                       "Free for 7 days, then $39.99 per year. Cancel anytime in Settings at least 24 hours before the trial ends.")
+        let cta = app.buttons["proPaywallSubscribeButton"]
+        XCTAssertEqual(cta.label, "Start 7-day free trial · then $39.99 per year")
+        XCTAssertTrue(cta.isEnabled)
+        XCTAssertEqual(app.switches.count, 0, "no toggle paywall")
+        sleep(1)
+        capture("a2-paywall-eligible")
+        capture("review-com.nsantulli.econbyte.pro.annual")
+
+        monthly.tap()
+        XCTAssertTrue(waitForLabel(cta, "Subscribe · $9.99 per month"), "the CTA follows the selected plan")
+        XCTAssertFalse(any["proPaywallTrialLine"].exists, "monthly has no trial")
+        XCTAssertTrue(monthly.isSelected)
+        sleep(1)
+        capture("a2-paywall-eligible-monthly-selected")
+        capture("review-com.nsantulli.econbyte.pro.monthly")
+
+        annual.tap()
+        XCTAssertTrue(waitForLabel(cta, "Start 7-day free trial · then $39.99 per year"))
+        for id in ["proPaywallRestoreButton", "proPaywallBenefits", "proPaywallAutoRenewDisclosure",
+                   "proPaywallNotAdvice", "proPaywallTermsLink", "proPaywallPrivacyLink"] {
+            let element = any[id]
+            reveal(element, in: app)
+            XCTAssertTrue(element.exists, id)
+        }
+        let benefits = any["proPaywallBenefits"]
+        XCTAssertTrue(benefits.staticTexts["3 courses, 27 lessons with charts and quizzes"].exists)
+        XCTAssertTrue(benefits.staticTexts["All 6 topic packs (288 cards) and all 15 core topics"].exists)
+        sleep(1)
+        capture("a2-paywall-eligible-terms")
+    }
+
+    func testPaywallNotEligibleForTrial() {
+        let app = launchStore("ineligible", tab: "pro")
+        let any = app.descendants(matching: .any)
+        let annual = any["proPaywallPlan-annual"]
+        XCTAssertTrue(annual.waitForExistence(timeout: 15))
+        XCTAssertTrue(annual.isSelected)
+        XCTAssertEqual(annual.label, "Annual plan, $39.99 per year, $3.33 per month, Save 66%")
+        XCTAssertFalse(any["proPaywallTrialLine"].exists, "no trial wording for a reader who cannot take it")
+        XCTAssertEqual(app.buttons["proPaywallSubscribeButton"].label, "Subscribe · $39.99 per year")
+        let trialWords = app.staticTexts.containing(NSPredicate(format: "label CONTAINS[c] 'free trial' OR label CONTAINS[c] 'Free for'"))
+        XCTAssertEqual(trialWords.count, 0, "no trial text anywhere")
+        sleep(1)
+        capture("a2-paywall-not-eligible")
+    }
+
+    func testPaywallSubscribedShowsCurrentPlan() {
+        let app = launchStore("subscribed", tab: "pro")
+        let any = app.descendants(matching: .any)
+        XCTAssertTrue(any["proActiveBadge"].waitForExistence(timeout: 15))
+        let annual = any["proPaywallPlan-annual"]
+        XCTAssertEqual(annual.label, "Annual plan, $39.99 per year, $3.33 per month, Current plan")
+        let cta = app.buttons["proPaywallSubscribeButton"]
+        XCTAssertEqual(cta.label, "Current plan")
+        XCTAssertFalse(cta.isEnabled)
+        XCTAssertTrue(app.buttons["proManageSubscriptionLink"].exists, "Manage Subscription for a subscriber")
+        XCTAssertFalse(any["proPaywallTrialLine"].exists)
+        sleep(1)
+        capture("a2-paywall-subscribed")
+        any["proPaywallPlan-monthly"].tap()
+        XCTAssertTrue(waitForLabel(cta, "Switch to Monthly · $9.99 per month"), "a plan change goes through StoreKit")
+        XCTAssertTrue(cta.isEnabled)
+        sleep(1)
+        capture("a2-paywall-subscribed-switch")
+    }
+
+    func testPaywallProductsFailed() {
+        let app = launchStore("failed", tab: "pro")
+        let any = app.descendants(matching: .any)
+        let annual = any["proPaywallPlan-annual"]
+        XCTAssertTrue(annual.waitForExistence(timeout: 15))
+        XCTAssertEqual(annual.label, "Annual plan, Price unavailable")
+        XCTAssertEqual(any["proPaywallPlan-monthly"].label, "Monthly plan, Price unavailable")
+        let cta = app.buttons["proPaywallSubscribeButton"]
+        XCTAssertEqual(cta.label, "Subscribe")
+        XCTAssertFalse(cta.isEnabled, "no price, no live subscribe control")
+        XCTAssertTrue(any["proPaywallPricesUnavailable"].exists)
+        XCTAssertTrue(app.buttons["proPaywallPricesUnavailableRetryButton"].exists)
+        XCTAssertFalse(any["proPaywallTrialLine"].exists)
+        XCTAssertTrue(app.buttons["proPaywallRestoreButton"].exists, "Restore still works without prices")
+        sleep(1)
+        capture("a2-paywall-products-failed")
+    }
+
+    /// The cover (from Settings) has a visible Close, and every one-time offer
+    /// uses the same button: packs, the bundle, Unlock All, Remove Ads.
+    func testEveryOfferUsesTheOnePurchaseButton() {
+        let app = launchStore("eligible", tab: "browse")
+        let any = app.descendants(matching: .any)
+
+        let bundle = app.buttons["packBundle-buy"]
+        reveal(bundle, in: app)
+        XCTAssertTrue(bundle.waitForExistence(timeout: 15), "the All Packs Bundle is offered on Browse")
+        XCTAssertEqual(bundle.label, "Unlock · $5.99")
+        XCTAssertTrue(app.staticTexts["All Packs Bundle"].exists, "named exactly as in App Store Connect")
+        XCTAssertTrue(app.buttons["packBundle-restore"].exists)
+        sleep(1)
+        capture("a2-browse-bundle")
+        capture("review-com.nsantulli.econbyte.pack.bundle")
+        let bundleHeight = bundle.frame.height
+
+        for id in ["markets", "personal", "history", "world", "systems", "personalfinance"] {
+            let buy = app.buttons["pack-\(id)-buy"]
+            reveal(buy, in: app, swipes: 16)
+            XCTAssertTrue(buy.exists, id)
+            XCTAssertEqual(buy.label, "Unlock · $1.99", id)
+            XCTAssertEqual(buy.frame.height, bundleHeight, accuracy: 1, "\(id): identical button size")
+            XCTAssertTrue(any["pack-\(id)-preview"].exists, id)
+            if ["history", "world", "systems", "personalfinance"].contains(id) {
+                // Scroll the card's header into view for the review frame.
+                app.swipeUp(velocity: .slow)
+                let header = any["pack-\(id)"]
+                if !(header.exists && header.isHittable) { app.swipeDown(velocity: .slow) }
+                sleep(1)
+                capture("review-com.nsantulli.econbyte.pack.\(id)")
+            }
+            if id == "markets" { capture("a2-pack-offer-card") }
+        }
+
+        let gdp = app.buttons["topic-gdp"]
+        for _ in 0..<20 where !(gdp.exists && gdp.isHittable) { app.swipeDown() }
+        gdp.tap()
+        let unlock = app.buttons["paywallUnlockButton"]
+        XCTAssertTrue(unlock.waitForExistence(timeout: 10))
+        XCTAssertEqual(unlock.label, "Unlock · $2.99")
+        XCTAssertEqual(unlock.frame.height, bundleHeight, accuracy: 1)
+        XCTAssertTrue(app.buttons["paywallRestoreButton"].exists)
+        sleep(1)
+        capture("a2-unlock-all-offer")
+        app.buttons["paywallCloseButton"].tap()
+
+        app.buttons["settingsGearButton"].tap()
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
+        let expected = ["settingsRemoveAdsButton": "Remove ads · $1.99",
+                        "settingsUnlockAllButton": "Unlock · $2.99",
+                        "settingsPackBundleButton": "Unlock · $5.99"]
+        for (id, label) in expected.sorted(by: { $0.key < $1.key }) {
+            let button = app.buttons[id]
+            reveal(button, in: app, swipes: 6)
+            XCTAssertEqual(button.label, label, id)
+        }
+        sleep(1)
+        capture("a2-settings-purchases")
+
+        let proRow = app.buttons["settingsProButton"]
+        for _ in 0..<6 where !(proRow.exists && proRow.isHittable) { app.swipeDown() }
+        proRow.tap()
+        XCTAssertTrue(app.buttons["proPaywallCloseButton"].waitForExistence(timeout: 15), "visible Close on the cover")
+        sleep(1)
+        capture("a2-paywall-cover")
+        app.buttons["proPaywallCloseButton"].tap()
+        XCTAssertTrue(any["econWordmark"].waitForExistence(timeout: 10))
+    }
+
+    func testOwnedProductsReadOwned() {
+        let app = launchStore("ineligible", tab: "browse", ["-econDebugOwnAll"])
+        let bundle = app.buttons["packBundle-buy"]
+        reveal(bundle, in: app)
+        XCTAssertTrue(bundle.waitForExistence(timeout: 15))
+        XCTAssertEqual(bundle.label, "Owned")
+        XCTAssertFalse(bundle.isEnabled)
+        let markets = app.buttons["pack-markets-buy"]
+        reveal(markets, in: app, swipes: 16)
+        XCTAssertEqual(markets.label, "Owned", "a pack owned through the bundle reads Owned")
+        XCTAssertTrue(app.buttons["topic-stocks-bonds"].exists, "an owned pack opens its topics")
+        sleep(1)
+        capture("a2-owned-pack")
+        app.buttons["settingsGearButton"].tap()
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
+        for id in ["settingsRemoveAdsButton", "settingsUnlockAllButton", "settingsPackBundleButton"] {
+            let button = app.buttons[id]
+            reveal(button, in: app, swipes: 6)
+            XCTAssertEqual(button.label, "Owned", id)
+        }
+        sleep(1)
+        capture("a2-owned-settings")
     }
 
     // MARK: - Phase 11: purchase controls and banner layout
@@ -174,7 +383,7 @@ final class ShellRedesignTests: XCTestCase {
         _ = XCTWaiter().wait(for: [expectation(for: settled, evaluatedWith: buy)], timeout: 40)
         assertReadable(buy, "pack CTA")
         if !buy.label.contains("$") {
-            XCTAssertEqual(buy.label, "Unlock Personal Finance")
+            XCTAssertEqual(buy.label, "Unlock")
             XCTAssertFalse(buy.isEnabled)
         }
         capture("p11-02-pack-cta")
@@ -277,7 +486,8 @@ final class ShellRedesignTests: XCTestCase {
         capture("p10-20-pro-home")
         app.tabBars.buttons["Pro"].tap()
         XCTAssertTrue(any["proActiveBadge"].waitForExistence(timeout: 10))
-        XCTAssertFalse(app.buttons["proPaywallSubscribeButton"].exists)
+        XCTAssertEqual(app.buttons["proPaywallSubscribeButton"].label, "Current plan")
+        XCTAssertFalse(app.buttons["proPaywallSubscribeButton"].isEnabled)
         capture("p10-21-pro-tab-subscriber")
         app.tabBars.buttons["News"].tap()
         XCTAssertTrue(any["briefHeadline"].waitForExistence(timeout: 10))

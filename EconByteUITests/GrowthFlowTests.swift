@@ -263,6 +263,9 @@ final class GrowthFlowTests: XCTestCase {
         let done = app.buttons["sessionCompleteDoneButton"]
         XCTAssertTrue(done.waitForExistence(timeout: 10),
                       "the session-complete state should appear after the final card")
+        XCTAssertEqual(app.descendants(matching: .any)["sessionNotAdvice"].label,
+                       "Educational content, not financial advice.",
+                       "a card session ends with the one not-advice line")
         XCTAssertEqual(app.alerts.count, 0, "no system prompt at the set exit")
         done.tap()
 
@@ -450,9 +453,11 @@ final class GrowthFlowTests: XCTestCase {
         XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: pricedOrClosed, evaluatedWith: subscribe)], timeout: 20),
                        .completed, "the subscribe button is priced by StoreKit or fail-closed")
         XCTAssertTrue(any["proPaywallPlan-annual"].exists && any["proPaywallPlan-monthly"].exists)
-        if subscribe.label.contains("$") {
+        if subscribe.label.hasPrefix("Start") {
             XCTAssertTrue(any["proPaywallTrialLine"].waitForExistence(timeout: 15),
                           "a trial-eligible reader sees the subordinate trial line")
+        } else if subscribe.label.contains("$") {
+            XCTAssertFalse(any["proPaywallTrialLine"].exists, "no trial CTA, no trial line")
         } else {
             XCTAssertFalse(subscribe.isEnabled, "no price, no live subscribe control")
             XCTAssertFalse(any["proPaywallTrialLine"].exists, "no trial line without a StoreKit answer")
@@ -516,7 +521,9 @@ final class GrowthFlowTests: XCTestCase {
         XCTAssertTrue(proAny["econWordmark"].waitForExistence(timeout: 15))
         pro.tabBars.buttons["Pro"].tap()
         XCTAssertTrue(proAny["proActiveBadge"].waitForExistence(timeout: 10), "Pro shows as active")
-        XCTAssertFalse(pro.buttons["proPaywallSubscribeButton"].exists, "no paywall for a subscriber")
+        XCTAssertEqual(pro.buttons["proPaywallSubscribeButton"].label, "Current plan",
+                       "a subscriber sees their current plan, not a subscribe offer")
+        XCTAssertFalse(pro.buttons["proPaywallSubscribeButton"].isEnabled)
         capturePack("eb-home-pro-active")
         pro.tabBars.buttons["News"].tap()
         XCTAssertTrue(proAny["briefHeadline"].waitForExistence(timeout: 15))

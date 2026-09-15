@@ -20,8 +20,6 @@ struct CourseView: View {
                     VStack(alignment: .leading, spacing: 18) {
                         header
                         lessonList
-                        EducationalNoticeBanner(text: ContentStore.shared.courses?.educationalNotice
-                                                ?? "Educational content only — not investment advice.")
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 8)

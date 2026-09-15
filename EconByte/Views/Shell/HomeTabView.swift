@@ -155,7 +155,7 @@ struct HomeTabView: View {
                             .accessibilityHidden(true)
                         EconSectionLabel(text: "Today's brief")
                         Spacer()
-                        if brief.isSample == true { BriefSampleBadge() }
+                        if briefs.showsSampleBadge(brief) { BriefSampleBadge() }
                     }
                     Text(BriefDates.long(brief.briefDate))
                         .font(.system(size: 12, weight: .medium, design: .rounded))
@@ -274,7 +274,7 @@ struct HomeTabView: View {
     private var featuredPack: EconPack? {
         let locked = content.packs.filter { !store.hasAccess(packProductID: $0.productID) }
         let priced = locked.filter { pack in
-            PurchaseManager.ProductID(rawValue: pack.productID).flatMap { store.product(for: $0) } != nil
+            PurchaseManager.ProductID(rawValue: pack.productID).flatMap { store.offer(for: $0) } != nil
         }
         let pool = !priced.isEmpty ? priced : (locked.isEmpty ? content.packs : locked)
         guard !pool.isEmpty else { return nil }
