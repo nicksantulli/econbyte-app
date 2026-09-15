@@ -997,3 +997,23 @@ Full table: `docs/audit/2026-09-14-ads-iap-audit.md`.
 - **Not shipped (Owner decisions):** personalized ads for ATT-authorized readers (portfolio policy
   revision), a rewarded ad (recommended against for the brief), Switzerland in the no-ads list
   (recommended yes).
+
+## D24 — ATT prompt hardening after the 1.1.3 App Review 2.1 rejection (Phase 14, 2026-09-15)
+
+**Why.** App Review could not find 1.1.3 build 15's ATT prompt on iOS/iPadOS 27 (asked once at a set exit, only with
+ads reachable, flag spent before iOS showed anything). Root cause: `docs/audit/2026-09-15-att-rejection.md`. The
+Owner parked 1.1.3; the fix lands in 1.1.4 on top of D22's first-launch prompts.
+
+**Decided.** (1) ATT is owed exactly while iOS reports `.notDetermined` — every install, whatever its region or
+purchases (Remove Ads, Pro, EEA/UK, unknown). Ads are still never served in the EEA/UK or to ad-free readers.
+(2) Asked only when the scene is active with nothing presented over the root and no transition; up to three tries per
+run; the app re-runs the flow on every `.active`. (3) `adRequestsPermitted` is status-only; `econ.ads.trackingPromptRequested`
+is evidence, not a gate. (4) A notifications ask iOS did not present writes nothing and is retried. (5) The DEBUG
+`-econTrackingAnswered` harness keeps the banner UI test working. (6) A unit-test host process never runs the prompts
+(an alert it left behind outlived the process and an uninstall and blocked the next UI tests' prompts). (7) DEBUG
+`-econPermissionPromptDelay <s>` lets a UI test background the app before the launch run.
+
+**Owner flags.** EEA/UK readers now see ATT, so an Allow there also turns analytics on (D22's GDPR flag widens —
+options: keep; or skip the analytics mapping in DUD-224 regions). Apple's recording + new review notes are required
+for the 1.1.4 submission (draft text in the audit doc); the 1.1.3 build-13 notes must not be reused.
+

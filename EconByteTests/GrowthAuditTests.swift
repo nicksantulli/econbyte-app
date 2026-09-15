@@ -51,10 +51,16 @@ final class GrowthAuditTests: XCTestCase {
         let appSource = InstrumentationPrivacyTests.strippingComments(
             try String(contentsOf: app.appendingPathComponent("EconByteApp.swift"), encoding: .utf8))
         XCTAssertFalse(appSource.contains("AnalyticsConsentCard"))
-        XCTAssertTrue(appSource.contains("permissions.runIfNeeded()"),
+        XCTAssertTrue(appSource.contains("permissions.runIfNeeded("),
                       "the app runs the first-launch permission flow")
         XCTAssertTrue(appSource.contains("waitForIntro()"),
-                      "…and only after the studio intro has gone")
+                      "…only after the studio intro has gone")
+        XCTAssertTrue(appSource.contains("isReadyForSystemPrompt"),
+                      "…only when iOS would show it (active, nothing presented) — Phase 14")
+        XCTAssertTrue(appSource.contains("case .active:") && appSource.contains("runLaunchPermissions()"),
+                      "…and again on activation while a prompt is still owed — Phase 14")
+        XCTAssertTrue(appSource.contains("isUnitTestRun"),
+                      "…and never inside a unit-test host, whose orphaned alert blocks later UI tests — Phase 14")
     }
 
     /// The 1.1.3 card's stored answer still counts as an analytics answer, so
@@ -177,6 +183,16 @@ final class GrowthAuditTests: XCTestCase {
         func requestAuthorization() async -> EconTrackingStatus { status }
     }
 
+    /// A prompt the reader answers (the Phase 14 gate is the answer, not the ask).
+    @MainActor
+    private final class AnsweringTracking: EconTrackingAuthorizing {
+        var status: EconTrackingStatus = .notDetermined
+        func requestAuthorization() async -> EconTrackingStatus {
+            status = .denied
+            return status
+        }
+    }
+
     /// The adapter is built inside rather than as a default argument: the
     /// double is main-actor-isolated and a default argument is evaluated
     /// nonisolated (the same reason `ReviewRequestCoordinator` takes a closure).
@@ -261,7 +277,7 @@ final class GrowthAuditTests: XCTestCase {
                                             defaults: defaults,
                                             now: { Date(timeIntervalSince1970: 1_789_000_000) },
                                             region: { .allowed },
-                                            tracking: FixedTracking(.notDetermined))
+                                            tracking: AnsweringTracking())
         XCTAssertFalse(monetization.canRequestAds, "an undecided ATT status blocks the banner")
         monetization.startAdsIfPermitted()
         XCTAssertFalse(monetization.didStartSDK)

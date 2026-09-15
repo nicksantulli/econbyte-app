@@ -579,13 +579,17 @@ final class ProCoursesBriefTests: XCTestCase {
     }
 
     @MainActor
-    func testProSubscriberNeverGetsTheAdSDKStartedOrTheTrackingPrompt() {
+    /// Phase 14 hardening: a Pro subscriber is still owed the ATT prompt while
+    /// iOS has no answer (every install is asked, so App Review can always find
+    /// it), but never gets the ad SDK started.
+    func testProSubscriberNeverGetsTheAdSDKStartedButTheTrackingPromptStaysStatusBased() {
         let defaults = UserDefaults(suiteName: "ProCoursesBriefTests.ads.\(UUID().uuidString)")!
         let adapter = SpyAdapter()
         let monetization = EconMonetization(adapter: adapter, defaults: defaults, region: { .allowed },
                                             tracking: StubTracking())
         monetization.update(entitlements: EconEntitlements(pro: true))
-        XCTAssertFalse(monetization.shouldRequestTrackingAuthorization)
+        XCTAssertEqual(monetization.shouldRequestTrackingAuthorization,
+                       monetization.trackingStatus == .notDetermined)
         monetization.startAdsIfPermitted()
         XCTAssertFalse(monetization.didStartSDK)
         XCTAssertEqual(adapter.startCount, 0)

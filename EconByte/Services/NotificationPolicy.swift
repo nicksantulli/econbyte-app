@@ -235,6 +235,8 @@ public final class NotificationCoordinator: ObservableObject {
     /// completes, and it reports whether a dialog was actually presented, so
     /// `notification_permission_result` still records only what iOS did.
     /// Granted ⇒ reminder on at the stored time; denied ⇒ reminder off.
+    /// Phase 14: if iOS returns while the status is still `.notDetermined`, it
+    /// showed nothing — nothing is persisted and the coordinator asks again.
     public func requestAuthorizationForFirstLaunch() async -> (presented: Bool, granted: Bool) {
         let status = await currentAuthorization()
         guard status == .notDetermined else {
@@ -244,7 +246,8 @@ public final class NotificationCoordinator: ObservableObject {
         let granted = await withCheckedContinuation { continuation in
             center.econRequestAuthorization { granted, _ in continuation.resume(returning: granted) }
         }
-        authorization = granted ? .authorized : .denied
+        let after = await currentAuthorization()
+        guard after != .notDetermined else { return (false, false) }
         persist(granted)
         if granted { schedule() }
         return (true, granted)

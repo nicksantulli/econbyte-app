@@ -153,6 +153,12 @@ through cards → tap a card to flip it for the sourced example.
   `-EBSkipPermissionPrompts` / `-EBSkipConsentPrompt` suppress both for UI
   tests and screenshots. Readers in the EEA/UK (no ads) are not shown the
   tracking prompt.
+- **ATT can't be missed (Phase 14):** every fresh install sees the tracking
+  prompt after the intro — including EEA/UK regions, Remove Ads owners and Pro.
+  If you background the app during the intro, or a sheet is open, it appears the
+  next time the app is active. If it never appears, check Settings → Privacy &
+  Security → Tracking → "Allow Apps to Request to Track" (off = iOS answers
+  "denied" for the app, silently).
 - If tracking was not asked (EEA/UK, Remove Ads, Pro), Session Complete still
   offers the two data choices after your **first completed set** as separate
   toggles, both off — the 1.1 primer.

@@ -43,19 +43,13 @@ struct EconByteApp: App {
                 growth.applicationDidBecomeActive()
                 growth.reportContentLoadFailureIfNeeded(content)
 
-                // First-launch permissions (1.1.4): Apple's ATT prompt, then
-                // Apple's notifications prompt, once the studio intro has faded
-                // and the app is active (iOS will not present ATT otherwise).
-                // Anything already answered is skipped, so this is a no-op on
-                // every later launch; UI-test arguments stand it down.
+                // First-launch permissions (1.1.4; hardened in Phase 14): Apple's
+                // ATT prompt, then Apple's notifications prompt, once the studio
+                // intro has faded and iOS would actually show them (scene active,
+                // nothing presented). Anything already answered is skipped, so
+                // later launches are a no-op; UI-test arguments stand it down.
                 await LaunchSequence.shared.waitForIntro()
-                guard await Self.waitUntilActive() else {
-                    // Never leave ads held for a flow that will not run.
-                    growth.monetization.setLaunchPermissionsHold(false)
-                    return
-                }
-                try? await Task.sleep(nanoseconds: 450_000_000)
-                await growth.permissions.runIfNeeded()
+                await runLaunchPermissions(isLaunch: true)
             }
             // Purchase, restore, refund, and revocation must all reach ad
             // behaviour and content access on the same turn.
@@ -84,6 +78,12 @@ struct EconByteApp: App {
                 case .background:
                     wasBackgrounded = true
                 case .active:
+                    // Phase 14: retry any prompt still owed on every activation
+                    // once the intro has gone — iOS shows nothing to an inactive
+                    // app or over a presentation, and an answered prompt is a no-op.
+                    if LaunchSequence.shared.introFinished {
+                        Task { await runLaunchPermissions() }
+                    }
                     guard wasBackgrounded else { return }
                     wasBackgrounded = false
                     Task {
@@ -100,15 +100,43 @@ struct EconByteApp: App {
         }
     }
 
-    /// Polls until the app is foreground-active. Returns false if the launch
-    /// task was cancelled first.
+    /// Waits (bounded) until iOS would actually present a system prompt — the
+    /// app active, nothing presented over the root — then runs Apple's ATT
+    /// prompt followed by the notifications prompt. Called after the studio
+    /// intro and again on every activation (Phase 14): anything already answered
+    /// is a no-op, and a run iOS could not present simply runs again next time.
+    /// Ads stay held until a run completes.
     @MainActor
-    private static func waitUntilActive() async -> Bool {
-        while UIApplication.shared.applicationState != .active {
-            if Task.isCancelled { return false }
-            try? await Task.sleep(nanoseconds: 200_000_000)
+    private func runLaunchPermissions(isLaunch: Bool = false) async {
+        var arguments = ProcessInfo.processInfo.arguments
+        // A unit-test host process runs this App too. It must never raise a
+        // system prompt: an alert it leaves behind outlives the process (and an
+        // uninstall) and blocks the next UI test's prompts (Phase 14 finding).
+        if InstrumentationContext.current.isUnitTestRun {
+            arguments.append(FirstLaunchPermissionPolicy.skipArgument)
         }
-        return !Task.isCancelled
+        if !FirstLaunchPermissionPolicy.isSkipped(arguments: arguments) {
+            #if DEBUG
+            // DEBUG-only UI-test hook (`-econPermissionPromptDelay <seconds>`):
+            // holds the launch run back so a test can background the app first
+            // and prove the prompt waits for the next activation.
+            if isLaunch, let flag = arguments.firstIndex(of: "-econPermissionPromptDelay"),
+               flag + 1 < arguments.count, let seconds = Double(arguments[flag + 1]) {
+                try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+            }
+            #endif
+            let environment = LivePromptPresentationEnvironment.shared
+            let deadline = Date().addingTimeInterval(20)
+            while !environment.isReadyForSystemPrompt {
+                // Not ready in time (backgrounded, a sheet left open): the next
+                // `.active` tries again.
+                if Task.isCancelled || Date() > deadline { return }
+                try? await Task.sleep(nanoseconds: 200_000_000)
+            }
+            // Let the intro's fade and the first layout settle.
+            try? await Task.sleep(nanoseconds: 450_000_000)
+        }
+        await EconGrowth.shared.permissions.runIfNeeded(arguments: arguments)
     }
 
     /// DEBUG-ONLY instrumentation smoke hook. Launched with

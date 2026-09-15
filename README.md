@@ -136,6 +136,13 @@ who cannot see ads (Remove Ads, Pro, EEA/UK) are not shown ATT. Code:
 `-EBSkipConsentPrompt` stands both prompts down (every UI test passes one).
 See `CONTENT-DECISIONS.md` D22, including the open GDPR question.
 
+**ATT hardening (Phase 14, after App Review could not find 1.1.3 build 15's
+prompt — `docs/audit/2026-09-15-att-rejection.md`).** The ATT prompt is owed to
+every install while iOS reports `.notDetermined` (no region/purchase exceptions,
+no "asked once" flag), asked only when the scene is active with nothing presented
+(`LivePromptPresentationEnvironment`), retried up to 3× in a run and again on
+every `.active`; ads wait for a real answer (`adRequestsPermitted` is status-only).
+
 What ships when analytics is on is small enough to defend: only a typed,
 allowlisted event set can reach PostHog (see
 `EconByte/Services/EconTelemetry.swift`) — bucketed, anonymous counts of which

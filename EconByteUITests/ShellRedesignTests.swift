@@ -341,8 +341,57 @@ final class ShellRedesignTests: XCTestCase {
         let analytics = app.switches["settingsAnalyticsToggle"]
         for _ in 0..<6 where !(analytics.exists && analytics.isHittable) { app.swipeUp() }
         XCTAssertTrue(waitForValue(analytics, expected), "ATT \(mode) ⇒ analytics \(expected)")
-        XCTAssertTrue(waitForValue(app.switches["settingsDiagnosticsToggle"], expected),
+        let diagnostics = app.switches["settingsDiagnosticsToggle"]
+        for _ in 0..<6 where !(diagnostics.exists && diagnostics.isHittable) { app.swipeUp() }
+        XCTAssertTrue(waitForValue(diagnostics, expected),
                       "ATT \(mode) ⇒ crash reports \(expected)")
         capture("p10-first-04-settings-\(mode)")
+    }
+
+    /// Phase 14 hardening proof: iOS shows nothing to an app that is not active,
+    /// and build 15 spent its one ask in exactly that kind of state. The DEBUG
+    /// `-econPermissionPromptDelay` hook holds the flow back so the app can be
+    /// genuinely backgrounded first; the flow then runs while no prompt can be
+    /// shown, and Apple's ATT prompt must appear once the app is active again.
+    /// Runs only with `TEST_RUNNER_EB_FIRST_LAUNCH=background` after uninstall +
+    /// `simctl privacy reset all`, with no other system alert on screen.
+    func testTrackingPromptWaitsUntilTheAppIsActiveAgain() throws {
+        guard ProcessInfo.processInfo.environment["EB_FIRST_LAUNCH"] == "background" else {
+            throw XCTSkip("fresh-install retry proof; run with TEST_RUNNER_EB_FIRST_LAUNCH=background")
+        }
+        let tag = ProcessInfo.processInfo.environment["EB_DEVICE_TAG"] ?? "sim"
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let att = springboard.alerts.containing(NSPredicate(format: "label CONTAINS[c] 'track'")).firstMatch
+        let app = XCUIApplication()
+        app.launchArguments += ["-econResetGrowthState", "-econPermissionPromptDelay", "6"]
+        app.launch()
+        XCTAssertFalse(springboard.alerts.firstMatch.exists,
+                       "no system alert may be up before backgrounding (Home would dismiss it instead)")
+        XCUIDevice.shared.press(.home)
+        let backgrounded = app.wait(for: .runningBackgroundSuspended, timeout: 10) || app.state == .runningBackground
+        guard backgrounded else {
+            // iPadOS 26 (seen on iPad Air 11-inch (M3), iPhone-compatibility mode)
+            // can leave the app foreground after a Home press, so the "no prompt
+            // while backgrounded" half cannot be staged there. Skip, never pass.
+            throw XCTSkip("Home did not background the app on this device (state \(app.state.rawValue))")
+        }
+        sleep(12)   // past the delay: the flow runs while the app cannot show a prompt
+        XCTAssertFalse(att.exists, "no ATT prompt while the app is in the background")
+        capture("p14-bg-00-home-screen-\(tag)")
+
+        app.activate()
+        XCTAssertTrue(att.waitForExistence(timeout: 40), "ATT appears once the app is active again")
+        sleep(1)
+        capture("p14-bg-01-att-after-return-\(tag)")
+        att.buttons["Allow"].tap()
+        let notifications = springboard.alerts.containing(NSPredicate(format: "label CONTAINS[c] 'notifications'")).firstMatch
+        XCTAssertTrue(notifications.waitForExistence(timeout: 20), "notifications follow ATT")
+        sleep(1)
+        capture("p14-bg-02-notifications-\(tag)")
+        notifications.buttons["Allow"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 15))
+        sleep(2)
+        XCTAssertFalse(springboard.alerts.firstMatch.exists, "no further prompt")
+        capture("p14-bg-03-home-\(tag)")
     }
 }

@@ -50,7 +50,7 @@ struct InstrumentationContext: Equatable {
     static let automationArguments: Set<String> = [
         "-UITesting", "-skipStudioIntro", "-exposeGroceryBinding", "-uitestResult",
         "-econResetGrowthState", "-econDisableAds", "-EBSkipConsentPrompt",
-        "-EBSkipPermissionPrompts",
+        "-EBSkipPermissionPrompts", "-econPermissionPromptDelay",
     ]
 
     let arguments: [String]

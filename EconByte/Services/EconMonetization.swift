@@ -515,13 +515,18 @@ public final class EconMonetization: ObservableObject {
     /// the first interstitial, which is exactly the ordering the guideline is
     /// about.
     ///
-    /// `didRequestTrackingPrompt` is part of the condition on purpose: if iOS
-    /// declines to present the prompt (the app was not active), the status stays
-    /// `.notDetermined` forever and a status-only gate would silence ads for
-    /// that install permanently. The reader still gets `npa=1` in that state,
-    /// which is what an unanswered prompt means.
+    /// Phase 14 hardening (1.1.3 App Review 2.1 rejection, 2026-09-15):
+    /// status-only. Builds 13–15 also accepted "the prompt was asked", so an ask
+    /// iOS never presented let the SDK start with no answer on file. iOS leaves
+    /// `.notDetermined` after an ask only transiently (the app was not active, or
+    /// a presentation was in flight — a device with tracking requests switched
+    /// off reports `.denied`), and `FirstLaunchPermissionsCoordinator` asks again
+    /// on the next activation, so ads wait for a real answer instead.
     public var adRequestsPermitted: Bool {
-        tracking.status.isDecided || didRequestTrackingPrompt
+        #if DEBUG
+        if debugTrackingAnswered { return true }
+        #endif
+        return tracking.status.isDecided
     }
 
     /// The request-side gate for the anchored banner (1.1.3): may this install
@@ -545,26 +550,32 @@ public final class EconMonetization: ObservableObject {
     /// DEBUG-only (`-econTrackingAnswered`): lets a UI test that skips the
     /// system prompts still reach a real (test-unit) banner, so banner layout
     /// can be asserted. In-memory only; never persisted.
+    private var debugTrackingAnswered = false
     public func debugMarkTrackingPromptRequested() {
         didRequestTrackingPrompt = true
+        debugTrackingAnswered = true
     }
     #endif
+
+    /// The live ATT status (through the injected seam).
+    public var trackingStatus: EconTrackingStatus { tracking.status }
 
     /// The request configuration a banner must use: the same non-personalized
     /// extras, carrying the live tracking status.
     public var currentRequestPolicy: EconAdRequestPolicy { requestPolicy }
 
-    /// Whether the ATT prompt is still owed to this reader.
+    /// Whether the ATT prompt is still owed: exactly while iOS has no answer.
     ///
-    /// No prompt when ads are off for this install: a Remove Ads owner, a Pro
-    /// subscriber, and a reader in the EEA/UK (DUD-224) will never see an ad, so
-    /// asking them for tracking permission would be asking for something the
-    /// app does not use.
+    /// Phase 14 hardening (1.1.3 App Review 2.1 rejection): this used to skip
+    /// Remove Ads owners, Pro subscribers, EEA/UK or unknown device regions, and
+    /// any install that had asked once — even when iOS showed nothing. Each of
+    /// those states is invisible to a reviewer, who then cannot find the prompt.
+    /// The binary links an ad SDK whose privacy manifest declares tracking, so
+    /// the prompt is owed to every install until answered. Ads are still never
+    /// served in the EEA/UK or to Remove Ads / Pro readers (`canRequestAds`,
+    /// `startAdsIfPermitted`).
     public var shouldRequestTrackingAuthorization: Bool {
-        guard !didRequestTrackingPrompt else { return false }
-        guard !entitlements.adsSuppressed else { return false }
-        guard region().permitsAdRequests else { return false }
-        return tracking.status == .notDetermined
+        tracking.status == .notDetermined
     }
 
     /// Presents the ATT prompt if it is still owed, then (by default) lets the
@@ -582,8 +593,8 @@ public final class EconMonetization: ObservableObject {
             return tracking.status
         }
         setBlocker(.systemPrompt, active: true)
-        // Recorded before awaiting: a prompt interrupted by a crash or a
-        // backgrounding has still been spent, and iOS will not offer a second.
+        // A record of the ask, not a gate (Phase 14): an ask iOS did not
+        // present leaves `.notDetermined`, and the coordinator asks again.
         didRequestTrackingPrompt = true
         defaults.set(true, forKey: Key.trackingPromptRequested)
         let resolved = await tracking.requestAuthorization()
@@ -750,6 +761,7 @@ final class EconGrowth: ObservableObject {
         monetization: monetization,
         notifications: notifications,
         defaults: defaultsForPermissions,
+        environment: LivePromptPresentationEnvironment.shared,
         applyAnalyticsConsent: { [weak self] granted in self?.applyFirstLaunchAnalyticsConsent(granted) },
         noteNegativeSessionEvent: { [weak self] event in self?.review.noteNegativeSessionEvent(event) },
         recordNotificationResult: { granted in EBEvents.notificationPermissionResult(granted: granted) })

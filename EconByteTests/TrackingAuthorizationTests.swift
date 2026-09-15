@@ -15,10 +15,12 @@ import XCTest
 ///
 ///  1. No provider call — SDK start, preload, or re-preload — happens before the
 ///     tracking decision.
-///  2. The prompt is asked at most once per install, and the record of having
-///     asked survives a relaunch.
-///  3. Every outcome moves the app forward: authorized, denied, restricted, and
-///     a prompt iOS declined to present.
+///  2. (Phase 14 hardening, after the 1.1.3 App Review 2.1 rejection) The
+///     prompt is owed exactly while iOS has no answer: an ask iOS never
+///     presented is asked again — on the next launch too — and an answered
+///     status is never prompted.
+///  3. Every answer moves the app forward (authorized, denied, restricted); a
+///     prompt iOS declined to present keeps ads off until it is answered.
 ///  4. Every request stays non-personalized on every outcome.
 ///
 /// ATT itself cannot be exercised here — there is no dialog in a unit test and
@@ -217,28 +219,33 @@ final class TrackingAuthorizationTests: XCTestCase {
         XCTAssertEqual(log.entries.filter { $0 == "att.request" }.count, 1)
     }
 
-    /// And once across relaunches — including the state iOS actually leaves
-    /// behind when it declines to present the dialog, where the status is still
-    /// `.notDetermined` afterwards and a status-only guard would ask forever.
-    func testThePromptIsNotRepeatedOnTheNextLaunchEvenIfItWasNeverPresented() async {
+    /// Phase 14 (1.1.3 App Review 2.1, 2026-09-15): the state iOS leaves when it
+    /// declines to present the dialog — status still `.notDetermined` — is NOT
+    /// an answer. Builds 13–15 recorded it as spent, so one silent no-show hid
+    /// the prompt for the rest of the install and let ads start unanswered.
+    func testAPromptIOSNeverPresentedIsAskedAgainOnTheNextLaunchAndAdsWaitForTheAnswer() async {
         let log = CallLog()
         let firstTracking = StubTracking(status: .notDetermined, resolvesTo: .notDetermined, log: log)
-        let first = makeMonetization(log,
-                                     tracking: firstTracking,
-                                     adapter: LoggingAdapter(log: log))
+        let firstAdapter = LoggingAdapter(log: log)
+        let first = makeMonetization(log, tracking: firstTracking, adapter: firstAdapter)
         await first.resolveTrackingAuthorizationIfNeeded()
         XCTAssertEqual(firstTracking.requestCount, 1)
+        XCTAssertTrue(first.didRequestTrackingPrompt, "the ask is still recorded, as evidence")
+        XCTAssertFalse(first.adRequestsPermitted, "an ask iOS did not present is not an answer")
+        XCTAssertEqual(firstAdapter.startCount, 0, "no ad SDK without an answer")
+        XCTAssertTrue(first.shouldRequestTrackingAuthorization, "still owed in the same process")
 
         // A new process, same install: same UserDefaults, status still undecided.
-        let secondTracking = StubTracking(status: .notDetermined, resolvesTo: .notDetermined, log: log)
-        let second = makeMonetization(log,
-                                      tracking: secondTracking,
-                                      adapter: LoggingAdapter(log: log))
-        XCTAssertTrue(second.didRequestTrackingPrompt,
-                      "the record of having asked must survive the process")
-        XCTAssertFalse(second.shouldRequestTrackingAuthorization)
+        let secondTracking = StubTracking(status: .notDetermined, resolvesTo: .denied, log: log)
+        let secondAdapter = LoggingAdapter(log: log)
+        let second = makeMonetization(log, tracking: secondTracking, adapter: secondAdapter)
+        XCTAssertTrue(second.didRequestTrackingPrompt)
+        XCTAssertTrue(second.shouldRequestTrackingAuthorization,
+                      "a persisted 'asked' flag must never hide a prompt iOS never showed")
         await second.resolveTrackingAuthorizationIfNeeded()
-        XCTAssertEqual(secondTracking.requestCount, 0, "never a second prompt")
+        XCTAssertEqual(secondTracking.requestCount, 1, "asked again")
+        XCTAssertTrue(second.adRequestsPermitted)
+        XCTAssertEqual(secondAdapter.startCount, 1, "ads start once there is an answer")
     }
 
     /// A reader who already answered on a previous version is never re-asked,
@@ -258,12 +265,10 @@ final class TrackingAuthorizationTests: XCTestCase {
         }
     }
 
-    // MARK: - 3. Every outcome moves the app forward
+    // MARK: - 3. Every answer moves the app forward; no answer does not
 
-    func testEveryOutcomeUnblocksTheAdRequest() async {
+    func testEveryAnswerUnblocksTheAdRequestAndNoAnswerDoesNot() async {
         for outcome in [EconTrackingStatus.authorized, .denied, .restricted, .notDetermined] {
-            // Each pass is a separate install: the "already asked" record is
-            // persisted, and this test is about the four first-ask outcomes.
             EconMonetization.resetPersistedState(in: defaults)
             let log = CallLog()
             let adapter = LoggingAdapter(log: log)
@@ -272,48 +277,55 @@ final class TrackingAuthorizationTests: XCTestCase {
 
             await monetization.resolveTrackingAuthorizationIfNeeded()
 
-            XCTAssertTrue(monetization.adRequestsPermitted,
-                          "resolving to \(outcome) must not leave ads silenced forever")
-            XCTAssertEqual(adapter.startCount, 1,
-                           "the ad SDK starts once the prompt has been answered or dismissed")
             XCTAssertEqual(log.entries.first, "att.request")
+            if outcome.isDecided {
+                XCTAssertTrue(monetization.adRequestsPermitted, "\(outcome) is an answer")
+                XCTAssertEqual(adapter.startCount, 1, "\(outcome): the ad SDK starts once answered")
+            } else {
+                XCTAssertFalse(monetization.adRequestsPermitted, "no answer, no ad request")
+                XCTAssertEqual(adapter.startCount, 0)
+                XCTAssertTrue(log.adRequests.isEmpty)
+            }
         }
     }
 
-    // MARK: - 4. Ads that will never be served are never prompted for
+    // MARK: - 4. The prompt is findable on every device; ads still are not served everywhere
 
-    /// A Remove Ads owner sees no ads, so there is nothing to ask them about.
-    func testRemoveAdsOwnersAreNeverPrompted() async {
-        let log = CallLog()
-        let adapter = LoggingAdapter(log: log)
-        let tracking = StubTracking(status: .notDetermined, resolvesTo: .authorized, log: log)
-        let monetization = makeMonetization(log, tracking: tracking, adapter: adapter)
-        monetization.update(entitlements: EconEntitlements(removeAds: true))
+    /// Phase 14: Remove Ads owners and Pro subscribers are asked too. App Review
+    /// sandbox accounts can own Remove Ads from earlier reviews, and an unasked
+    /// account is an "unable to locate the ATT prompt" rejection. They still
+    /// never get an ad.
+    func testAdFreeReadersAreAskedButNeverGetAnAd() async {
+        for entitlements in [EconEntitlements(removeAds: true), EconEntitlements(pro: true)] {
+            let log = CallLog()
+            let adapter = LoggingAdapter(log: log)
+            let tracking = StubTracking(status: .notDetermined, resolvesTo: .authorized, log: log)
+            let monetization = makeMonetization(log, tracking: tracking, adapter: adapter)
+            monetization.update(entitlements: entitlements)
 
-        XCTAssertFalse(monetization.shouldRequestTrackingAuthorization)
-        await monetization.resolveTrackingAuthorizationIfNeeded()
-        XCTAssertEqual(tracking.requestCount, 0)
-        XCTAssertEqual(adapter.startCount, 0)
+            XCTAssertTrue(monetization.shouldRequestTrackingAuthorization, "\(entitlements)")
+            await monetization.resolveTrackingAuthorizationIfNeeded()
+            XCTAssertEqual(tracking.requestCount, 1)
+            XCTAssertEqual(adapter.startCount, 0, "ad-free still means no ad SDK")
+            XCTAssertFalse(monetization.canRequestAds)
+        }
     }
 
-    /// DUD-224: no ads in the EEA/UK, so no ATT prompt there either — and no
-    /// prompt when the region cannot be determined, which fails closed the same
-    /// way the ad gate does.
-    func testAdRestrictedRegionsAreNeverPrompted() async {
+    /// Phase 14: EEA/UK and unknown device regions are asked too (a review
+    /// device's Region setting is invisible in a rejection), and DUD-224 still
+    /// serves them no ads at all.
+    func testAdRestrictedRegionsAreAskedButNeverRequestAnAd() async {
         for region in [EconAdRegionState.restricted, .unknown] {
             let log = CallLog()
             let adapter = LoggingAdapter(log: log)
             let tracking = StubTracking(status: .notDetermined, resolvesTo: .authorized, log: log)
-            let monetization = makeMonetization(log,
-                                                tracking: tracking,
-                                                adapter: adapter,
-                                                region: region)
+            let monetization = makeMonetization(log, tracking: tracking, adapter: adapter, region: region)
 
-            XCTAssertFalse(monetization.shouldRequestTrackingAuthorization,
-                           "\(region) serves no ads, so it must not ask for tracking")
+            XCTAssertTrue(monetization.shouldRequestTrackingAuthorization, "\(region)")
             await monetization.resolveTrackingAuthorizationIfNeeded()
-            XCTAssertEqual(tracking.requestCount, 0)
-            XCTAssertTrue(log.entries.isEmpty)
+            XCTAssertEqual(tracking.requestCount, 1, "\(region)")
+            XCTAssertTrue(log.adRequests.isEmpty, "\(region) must never request an ad")
+            XCTAssertFalse(monetization.canRequestAds)
         }
     }
 
