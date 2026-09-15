@@ -75,10 +75,20 @@ struct CardModeView: View {
                         .environmentObject(growth)
                         .padding(.horizontal, EconSpace.gutter)
                         .offset(x: dragOffset)
+                        // 1.1.5: the card face scrolls vertically, so the deck
+                        // swipe only follows mostly horizontal drags; a vertical
+                        // drag belongs to the card's scroll view.
                         .gesture(
-                            DragGesture()
-                                .onChanged { dragOffset = $0.translation.width }
+                            DragGesture(minimumDistance: 20)
+                                .onChanged { value in
+                                    guard abs(value.translation.width) > abs(value.translation.height) else { return }
+                                    dragOffset = value.translation.width
+                                }
                                 .onEnded { value in
+                                    guard abs(value.translation.width) > abs(value.translation.height) else {
+                                        withAnimation(.spring()) { dragOffset = 0 }
+                                        return
+                                    }
                                     if value.translation.width < -60 {
                                         advance()
                                     } else if value.translation.width > 60 && currentIndex > 0 {

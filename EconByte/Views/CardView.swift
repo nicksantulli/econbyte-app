@@ -84,18 +84,24 @@ struct CardView: View {
 
     // MARK: Faces (1.1.5 design system)
     //
-    // Both faces share `face(header:body:footer:)`: header row, a centred body
-    // that scrolls instead of clipping at accessibility text sizes, and an
-    // optional footer. The body stack is where a card's graphic goes.
+    // Both faces share `face(header:body:footer:)`: a fixed header row (topic
+    // chip + bookmark), a body that ALWAYS scrolls vertically — centred when it
+    // is shorter than the card, scrolling when a long definition, an
+    // accessibility text size or a card graphic makes it taller — and a fixed
+    // footer. Nothing inside the body is ever squeezed to fit: the scroll view
+    // proposes unlimited height, so a graphic keeps its natural size. A tap
+    // anywhere still flips the card; a vertical drag scrolls; card mode's swipe
+    // only reacts to mostly horizontal drags.
 
     private var frontFace: some View {
         face {
             Text(content.topicName(for: card.topicId))
                 .modifier(CardFaceChip())
         } body: {
-            // PHASE 20 GRAPHIC SLOT (front): the card-graphics lane's hook —
-            // `if let graphic = card.graphic { CardGraphicView(graphic: graphic) }` —
-            // goes here, first in this stack, above the concept title.
+            // PHASE 20 GRAPHIC SLOT (front face, first in this scrolling stack,
+            // above the concept title). The card-graphics lane's hook goes here:
+            //   if let graphic = card.graphic { CardGraphicView(spec: graphic) }
+            // (plus its one VoiceOver line in `accessibilityLabelText`).
             Text(card.concept)
                 .font(EconType.title)
                 .foregroundColor(EconColor.onCardPrimary)
@@ -147,6 +153,7 @@ struct CardView: View {
         @ViewBuilder footer: () -> Footer) -> some View {
         let stack = VStack(spacing: EconSpace.m) { body() }
             .padding(.horizontal, EconSpace.xl)
+            .padding(.vertical, EconSpace.m)
             .frame(maxWidth: .infinity)
         return VStack(spacing: 0) {
             HStack {
@@ -158,9 +165,12 @@ struct CardView: View {
             .padding(.trailing, EconSpace.s)
             .padding(.top, EconSpace.s)
 
-            ViewThatFits(in: .vertical) {
-                VStack { Spacer(minLength: 0); stack; Spacer(minLength: 0) }
-                ScrollView { stack.padding(.vertical, EconSpace.m) }
+            GeometryReader { geo in
+                ScrollView(.vertical, showsIndicators: true) {
+                    stack
+                        .frame(minHeight: geo.size.height, alignment: .center)
+                }
+                .accessibilityIdentifier("cardFaceScroll")
             }
 
             footer()

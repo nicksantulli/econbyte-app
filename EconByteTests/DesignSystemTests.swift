@@ -41,6 +41,22 @@ final class DesignSystemTests: XCTestCase {
         XCTAssertTrue(violations.isEmpty, violations.joined(separator: "\n"))
     }
 
+    /// Merge contract with the card-graphics lane (Phase 20): the flip card's
+    /// face always scrolls vertically (so a graphic is never squeezed or
+    /// collapsed on a long card), and the front face keeps the marked graphic
+    /// slot above the concept title.
+    func testCardFaceAlwaysScrollsAndKeepsTheGraphicSlot() throws {
+        let card = try String(contentsOf: repoRoot().appendingPathComponent("EconByte/Views/CardView.swift"))
+        XCTAssertTrue(card.contains("ScrollView(.vertical"), "the card face scrolls")
+        XCTAssertFalse(card.contains("ViewThatFits"), "the face never swaps to a squeezed non-scrolling layout")
+        let slot = try XCTUnwrap(card.range(of: "PHASE 20 GRAPHIC SLOT"))
+        let title = try XCTUnwrap(card.range(of: "Text(card.concept)"))
+        XCTAssertLessThan(slot.lowerBound, title.lowerBound, "the graphic slot sits above the concept title")
+        let deck = try String(contentsOf: repoRoot().appendingPathComponent("EconByte/Views/CardModeView.swift"))
+        XCTAssertTrue(deck.contains("abs(value.translation.width) > abs(value.translation.height)"),
+                      "card mode's swipe leaves vertical drags to the card's scroll view")
+    }
+
     // MARK: Contrast
 
     private func rgba(_ color: Color) -> (r: Double, g: Double, b: Double, a: Double) {
