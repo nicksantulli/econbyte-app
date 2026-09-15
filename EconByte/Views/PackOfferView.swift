@@ -12,8 +12,9 @@ import StoreKit
 ///
 /// Owned: the pack's four topics as tiles, opened exactly like core topics.
 ///
-/// Ownership is read from `PurchaseManager.isPackPurchased(productID:)` —
-/// verified StoreKit entitlements only. Unlock All never opens a pack (D18).
+/// Access is read from `PurchaseManager.hasAccess(packProductID:)` — a verified
+/// StoreKit entitlement for the pack itself, or an active Pro subscription
+/// (D19). Unlock All never opens a pack (D18).
 struct PackOfferView: View {
     let pack: EconPack
     let onOpenTopic: (EconTopic) -> Void
@@ -32,7 +33,10 @@ struct PackOfferView: View {
         PurchaseManager.ProductID(rawValue: pack.productID)
     }
     private var product: Product? { productID.flatMap { store.product(for: $0) } }
-    private var owned: Bool { store.isPackPurchased(productID: pack.productID) }
+    /// Owned outright (verified entitlement for this pack's own product).
+    private var ownedOutright: Bool { store.isPackPurchased(productID: pack.productID) }
+    /// Readable: owned outright or included by an active Pro subscription (D19).
+    private var owned: Bool { store.hasAccess(packProductID: pack.productID) }
     private var canBuy: Bool {
         productID != nil && PurchasePresentation.canPurchase(
             displayPrice: product?.displayPrice, isWorking: working, isLoading: store.isLoadingProducts)
@@ -83,7 +87,7 @@ struct PackOfferView: View {
                 .font(.system(size: 17, weight: .heavy, design: .rounded))
                 .foregroundColor(Econ.white)
             Spacer()
-            Text(owned ? "Owned ✓" : "\(pack.cards.count) cards")
+            Text(ownedOutright ? "Owned ✓" : (owned ? "Included with Pro ✓" : "\(pack.cards.count) cards"))
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundColor(owned ? Econ.sky : Econ.subtext)
         }

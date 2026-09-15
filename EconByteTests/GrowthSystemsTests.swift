@@ -138,9 +138,17 @@ final class GrowthSystemsTests: XCTestCase {
                        "com.nsantulli.econbyte.pack.markets")
         XCTAssertEqual(PurchaseManager.ProductID.packPersonal.rawValue,
                        "com.nsantulli.econbyte.pack.personal")
-        XCTAssertEqual(PurchaseManager.ProductID.allCases.count, 4,
-                       "EconByte ships the two approved non-consumables plus the two 1.1.3 topic packs")
-        XCTAssertEqual(PurchaseManager.ProductID.packs, [.packMarkets, .packPersonal])
+        XCTAssertEqual(PurchaseManager.ProductID.allCases.count, 10,
+                       "two approved non-consumables + six topic packs + the two EconByte Pro subscriptions (1.1.4)")
+        XCTAssertEqual(PurchaseManager.ProductID.packs,
+                       [.packMarkets, .packPersonal, .packHistory, .packWorld, .packSystems, .packPersonalFinance])
+        XCTAssertEqual(PurchaseManager.ProductID.subscriptions, [.proMonthly, .proAnnual])
+        XCTAssertEqual(PurchaseManager.ProductID.proMonthly.rawValue, "com.nsantulli.econbyte.pro.monthly")
+        XCTAssertEqual(PurchaseManager.ProductID.proAnnual.rawValue, "com.nsantulli.econbyte.pro.annual")
+        for id in PurchaseManager.ProductID.subscriptions {
+            XCTAssertTrue(id.isSubscription, id.rawValue)
+            XCTAssertFalse(id.isPack, id.rawValue)
+        }
         XCTAssertFalse(PurchaseManager.ProductID.unlockAll.isPack)
         XCTAssertFalse(PurchaseManager.ProductID.removeAds.isPack)
         XCTAssertEqual(PurchaseManager.ProductID.packs.map(\.rawValue), PackCatalog.expectedProductIDs,
@@ -155,7 +163,7 @@ final class GrowthSystemsTests: XCTestCase {
     func testPackTopicsAreLockedWithoutTheirPackAndNeverOpenedByUnlockAll() throws {
         let store = ContentStore.shared
         XCTAssertNil(store.packLoadError, "packs-v1.json must load: \(String(describing: store.packLoadError))")
-        XCTAssertEqual(store.packs.count, 2)
+        XCTAssertEqual(store.packs.count, PackCatalog.expectedPackCount)
         for pack in store.packs {
             XCTAssertEqual(pack.topics.count, 4, pack.id)
             XCTAssertEqual(pack.cards.count, 32, pack.id)
@@ -208,9 +216,9 @@ final class GrowthSystemsTests: XCTestCase {
         let store = ContentStore.shared
         XCTAssertEqual(store.topics.count, 15)
         XCTAssertEqual(store.allCards.count, 120)
-        XCTAssertEqual(store.packTopics.count, 8)
-        XCTAssertEqual(store.packCards.count, 64)
-        XCTAssertEqual(store.everyCard.count, 184)
+        XCTAssertEqual(store.packTopics.count, 24)
+        XCTAssertEqual(store.packCards.count, 192)
+        XCTAssertEqual(store.everyCard.count, 312)
         let ids = store.everyCard.map(\.id)
         XCTAssertEqual(Set(ids).count, ids.count, "no pack card id collides with a core card id")
         XCTAssertTrue(Set(store.packTopics.map(\.id)).isDisjoint(with: Set(store.topics.map(\.id))))
@@ -221,7 +229,8 @@ final class GrowthSystemsTests: XCTestCase {
     func testPackShownEventIsDeclaredWithFamilyAndEntryPointOnly() {
         XCTAssertEqual(TelemetrySchema.allowedProperties["pack_shown_v1"], ["product_family", "entry_point"])
         let families = TelemetrySchema.allowedValues["product_family"] ?? []
-        XCTAssertEqual(families, ["unlock_all", "remove_ads", "pack_markets", "pack_personal"])
+        XCTAssertEqual(families, ["unlock_all", "remove_ads", "pack_markets", "pack_personal", "pack_history",
+                                  "pack_world", "pack_systems", "pack_personalfinance", "pro_monthly", "pro_annual"])
         XCTAssertEqual(TelemetryValidator.validate(TelemetryEvent("pack_shown_v1", [
             "product_family": .string("pack_markets"), "entry_point": .string("home"),
         ])), .accepted)

@@ -774,3 +774,127 @@ public federal primary sources for their subject matter — SEC (sec.gov,
 investor.gov), FINRA, SIPC, CFPB, NCUA, DOL, Federal Student Aid, Medicare,
 HealthCare.gov, PBGC — plus the CBO and IMF the brief names. The allowlist in
 `PackCatalogTests.approvedSourceHosts` is the record.
+
+---
+
+## D19 — EconByte Pro: one subscription that spans the one-time products (1.1.4)
+
+Owner order (2026-09-14): a subscription with a one-week free trial that unlocks
+course-style content, a daily bot-written economic brief, and every purchasable
+pack while active. Plan: `~/dudley-lane-briefs/econbyte-114-pro-plan.md`.
+
+**Products.** Subscription group "EconByte Pro": `com.nsantulli.econbyte.pro.monthly`
+($4.99 / month) and `com.nsantulli.econbyte.pro.annual` ($29.99 / year), each with a
+7-day free-trial introductory offer. Prices are the pricing-explore assumptions
+(`vault/ops/revops/2026-09-13-pricing-explore-menswear-econbyte.md`). **They exist
+only in `EconByte.storekit`** — the 1.1.4 lane made no App Store Connect writes
+(no products, no version, no upload, no submission). `PurchaseManager` keys on
+the ids, so creating them in ASC later needs no code change.
+
+**What Pro includes, and the one deliberate superset.** Plan §3.1 says "all
+packs + courses + brief unlocked and no ads". The build also opens the **core
+topics** (`coreTopicsUnlocked` = Unlock All ∨ Pro). Reason: a $4.99/month
+subscriber meeting a lock on a $0.99 topic would be absurd on its face and an
+App Review "no ongoing value" argument waiting to happen. Nothing about the
+one-time products changes: Unlock All, Remove Ads and the packs remain
+independent purchases (D4, D18); a pack bought outright stays owned after Pro
+lapses; Pro access to packs ends with it. The paywall and Settings say so.
+
+**D4 supersession.** D4 (1.1) forbade an umbrella "Pro" label because the two
+one-time products are not a bundle. That still holds for *them*: `PaywallView`
+stays titled "Purchases" and the Settings purchases section keeps its wording
+(`GrowthFlowTests.testPaywallDoesNotUseAnUmbrellaProLabel` still passes). "EconByte
+Pro" now names an actual subscription product, with its own paywall and Settings
+section. The 1.1 review notes that mention the old label are superseded.
+
+**Paywall (App Review 3.1.2).** Billed price is the most prominent element (plan
+cards and the Subscribe button); the "7-day free trial, then $X / period. Cancel
+anytime." line is smaller, beneath it, and appears only when StoreKit reports
+`isEligibleForIntroOffer` for this Apple ID; what you get; auto-renewal terms;
+Terms of Use = Apple's standard EULA; Privacy Policy = dudleyapps.com/privacy;
+Restore. No price literal anywhere (`PurchasePresentation`).
+
+**Ads.** `EconEntitlements.pro` ⇒ `adsSuppressed`: no SDK start, no banner, no
+interstitial, no ATT prompt for a subscriber. Refund/lapse reverses on the same
+turn via `EconGrowth.syncEntitlements`.
+
+**Telemetry.** `pro_paywall_shown_v1` (entry point, products ready, trial
+eligible), `pro_trial_started_v1` / `pro_subscribed_v1` (family only, split by the
+transaction's own offer type), `course_lesson_completed_v1` (`course_family`,
+`quiz_correct`), `brief_opened_v1` (`access_state`, `brief_source`). New
+prohibited properties: expiration/renewal/subscription status, lesson and course
+ids, quiz answers, brief ids and headlines.
+
+**Open for the Owner.** (1) Create the two subscriptions + four pack IAPs in ASC
+(ids above; the $4.99/$29.99 tiers and the 1-week free trial), then a 1.1.4
+version — after 1.1.3 is approved. (2) Whether Pro should also grandfather
+anything for existing Unlock All buyers (Phase 2 decision 1 is still open).
+(3) The Small Business Program rate applies to subscriptions too (85% proceeds
+observed on the pack price schedules).
+
+---
+
+## D20 — Courses and the Daily Brief: primary sources, synthetic charts, no aggregation (1.1.4)
+
+**Courses.** Three courses in `Resources/courses-v1.json` (Investing Approaches,
+Reading Price Charts, Bonds, Rates and the Yield Curve; 6 lessons each, 154
+blocks, 19 charts, 9 diagrams, 18 quizzes). Same editorial bar as the cards plus
+three more rules the validators enforce: **charts plot only synthetic,
+hand-designed series** carried in the block and labelled "Synthetic …" (the app
+has no market-data dependency and can never show a licensed or stale quote);
+**no named securities, fund companies, brokerages, trademarked indexes, or
+cryptocurrencies**; **no prediction framing**. The chart-reading course has an
+explicit "patterns are not predictions" lesson and cites the NBER evidence rather
+than promising an edge. The first lesson of every course is free so App Review
+and readers can see the format before paying.
+
+**Daily Brief — the legal path chosen.** Summarizing publisher headlines with a
+model is the path courts and publishers are contesting; the brief therefore reads
+**only official releases and open-licence statistical data** (the complete host
+list is `DailyBrief.allowedHosts`, mirrored in `scripts/validate_content.mjs` and
+`docs/daily-brief/SERVER.md`) and writes our own sentences about public facts.
+Nothing in the app fetches, parses, or summarizes anything: the app downloads a
+finished JSON document, validates it fail-closed (any host outside the list, a
+missing disclaimer, a missing section ⇒ rejected, previous brief stays), caches
+the newest 30, and otherwise shows the bundled sample. The **bundled sample** was
+written by the lane from the BLS CPI (Sep 11), PPI (Sep 10) and Employment
+Situation (Sep 4) releases and the Fed/BLS/BEA calendars, each with URL and
+retrieval time; it is labelled SAMPLE in the UI. The server job is specified in
+`docs/daily-brief/SERVER.md` and is a follow-up lane; the endpoint
+`https://dudleyapps.com/econbyte/brief/latest.json` 404s until then, which the
+app treats as "no news".
+
+**Free teaser.** Non-subscribers see the brief's headline and first released
+item, then the lock — enough to judge the product, not enough to substitute for it.
+
+---
+
+## D21 — Four new packs; Personal Finance re-scoped to avoid duplicating Personal Economics (1.1.4)
+
+`packs-v1.json` grows from two packs to six (`PackCatalog.expectedPackCount` 6):
+Economic History (`history`: Tulip Mania & the South Sea Bubble, 1929 & the Great
+Depression, 1970s Stagflation, The 2008 Financial Crisis), Economies Around the
+World (`world`: The United States, The Eurozone, China, Emerging Markets),
+Economic Systems (`systems`: Market, Mixed, Planned, Welfare-State Models) and
+Personal Finance (`personalfinance`). Product ids `com.nsantulli.econbyte.pack.<packID>`,
+$1.99 each in the StoreKit configuration; **not created in ASC this lane**.
+
+**Deviation from the plan, stated:** plan §2.4 lists Personal Finance as
+"budgeting, credit & debt, saving & compounding, insurance & risk" — which is
+exactly the shipped **Personal Economics** pack (Household Budgets, Credit &
+Borrowing, Saving & Retirement, Insurance & Safety Nets). Shipping the same four
+subjects twice would sell readers a duplicate. Personal Finance is therefore the
+*applied* complement: **Paychecks & Taxes**, **Buying a Car or a Home**, **Credit
+Scores & Scams**, **Compounding & Time** — no card repeats a Personal Economics
+concept. Owner can rename or re-scope before the ASC products are created.
+
+Editorial: same schema and policy as D18; every card cites a public primary
+source verified 2026-09-14 (history draws heavily on federalreservehistory.org,
+the Bank of England and Reserve Bank publications; world on the World Bank, IMF
+alternatives where imf.org refused non-browser clients, ECB, national offices;
+systems on Fed education material, the World Bank and OECD; personal finance on
+CFPB, IRS, FTC, FDIC, MyMoney.gov). Approved hosts grew accordingly (the list in
+`scripts/validate_content.mjs` and `PackCatalogTests.approvedSourceHosts`). One
+transparency note: `tsb-002…004` cite a St. Louis Fed Page One Economics essay
+whose real title contains the word "Bitcoin" (its tulip-bubble section is the
+source); no brand word appears in any card's prose.

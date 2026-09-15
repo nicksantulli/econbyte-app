@@ -61,6 +61,66 @@
       "productID": "com.nsantulli.econbyte.pack.personal",
       "referenceName": "Personal Economics",
       "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": false,
+      "internalID": "EB000000000005",
+      "localizations": [
+        {
+          "description": "Four topics, 32 sourced cards: Tulip Mania & the South Sea Bubble, 1929 & the Great Depression, 1970s Stagflation, The 2008 Financial Crisis. One-time purchase, restores across devices.",
+          "displayName": "Economic History",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nsantulli.econbyte.pack.history",
+      "referenceName": "Economic History",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": false,
+      "internalID": "EB000000000006",
+      "localizations": [
+        {
+          "description": "Four topics, 32 sourced cards: The United States, The Eurozone, China, Emerging Markets. One-time purchase, restores across devices.",
+          "displayName": "Economies Around the World",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nsantulli.econbyte.pack.world",
+      "referenceName": "Economies Around the World",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": false,
+      "internalID": "EB000000000007",
+      "localizations": [
+        {
+          "description": "Four topics, 32 sourced cards: Market Economies, Mixed Economies, Planned Economies, Welfare-State Models. One-time purchase, restores across devices.",
+          "displayName": "Economic Systems",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nsantulli.econbyte.pack.systems",
+      "referenceName": "Economic Systems",
+      "type": "NonConsumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": false,
+      "internalID": "EB000000000008",
+      "localizations": [
+        {
+          "description": "Four topics, 32 sourced cards: Paychecks & Taxes, Buying a Car or a Home, Credit Scores & Scams, Compounding & Time. One-time purchase, restores across devices.",
+          "displayName": "Personal Finance",
+          "locale": "en_US"
+        }
+      ],
+      "productID": "com.nsantulli.econbyte.pack.personalfinance",
+      "referenceName": "Personal Finance",
+      "type": "NonConsumable"
     }
   ],
   "settings": {
@@ -69,7 +129,73 @@
     "_storefront": "USA",
     "_storeKitErrors": []
   },
-  "subscriptionGroups": [],
+  "subscriptionGroups": [
+    {
+      "id": "EB00000000000G01",
+      "localizations": [
+        {
+          "description": "Courses, the Daily Economic Brief, every topic pack, and no ads.",
+          "displayName": "EconByte Pro",
+          "locale": "en_US"
+        }
+      ],
+      "name": "EconByte Pro",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "4.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "EB000000000101",
+          "introductoryOffer": {
+            "internalID": "EB000000000111",
+            "paymentMode": "free",
+            "subscriptionPeriod": "P1W"
+          },
+          "localizations": [
+            {
+              "description": "Courses, the Daily Economic Brief, every topic pack, and no ads. Billed monthly; 7-day free trial for new subscribers.",
+              "displayName": "EconByte Pro Monthly",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.nsantulli.econbyte.pro.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "EconByte Pro Monthly",
+          "subscriptionGroupID": "EB00000000000G01",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "29.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "EB000000000102",
+          "introductoryOffer": {
+            "internalID": "EB000000000112",
+            "paymentMode": "free",
+            "subscriptionPeriod": "P1W"
+          },
+          "localizations": [
+            {
+              "description": "Courses, the Daily Economic Brief, every topic pack, and no ads. Billed yearly; 7-day free trial for new subscribers.",
+              "displayName": "EconByte Pro Annual",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.nsantulli.econbyte.pro.annual",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "EconByte Pro Annual",
+          "subscriptionGroupID": "EB00000000000G01",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        }
+      ]
+    }
+  ],
   "version": {
     "major": 3,
     "minor": 0

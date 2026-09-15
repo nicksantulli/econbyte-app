@@ -168,20 +168,21 @@ final class GrowthAuditTests: XCTestCase {
 
     // MARK: - 3. Version stamp
 
-    /// The live App Store maximum is 1.1.2 build 13; build 14 (growth lane) is
-    /// uploaded to the 1.1.3 version; this tree is 1.1.3 build 15 (topic packs)
-    /// in both places the project declares it, and the documentation mirror agrees.
-    func testProjectIsStampedOneOneThreeBuildFifteen() throws {
+    /// The live App Store maximum is 1.1.2 build 13; 1.1.3 build 15 (topic
+    /// packs) is submitted; this tree is 1.1.4 build 16 (EconByte Pro) in both
+    /// places the project declares it, and the documentation mirror agrees.
+    func testProjectIsStampedOneOneFourBuildSixteen() throws {
         let pbx = try String(contentsOf: repoRoot.appendingPathComponent("EconByte.xcodeproj/project.pbxproj"),
                              encoding: .utf8)
-        XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.3;").count - 1, 2)
-        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 15;").count - 1, 2)
-        XCTAssertFalse(pbx.contains("CURRENT_PROJECT_VERSION = 14;"), "build 14 is on ASC; 15 is next")
+        XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.4;").count - 1, 2)
+        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 16;").count - 1, 2)
+        XCTAssertFalse(pbx.contains("CURRENT_PROJECT_VERSION = 15;"), "build 15 is on ASC; 16 is next")
+        XCTAssertFalse(pbx.contains("CURRENT_PROJECT_VERSION = 14;"), "build 14 is on ASC")
         XCTAssertFalse(pbx.contains("CURRENT_PROJECT_VERSION = 13;"), "build 13 is live")
 
         let yml = try String(contentsOf: repoRoot.appendingPathComponent("project.yml"), encoding: .utf8)
-        XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.3\""))
-        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"15\""))
+        XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.4\""))
+        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"16\""))
     }
 
     // MARK: - 4. Anchored banner

@@ -81,6 +81,11 @@ struct EconByteApp: App {
             .onChange(of: store.isUnlockAllPurchased) { _ in
                 growth.syncEntitlements(from: store)
             }
+            // EconByte Pro (1.1.4): an active subscription suppresses ads and
+            // opens the core topics; a lapse or refund reverses both at once.
+            .onChange(of: store.isProActive) { _ in
+                growth.syncEntitlements(from: store)
+            }
             .onChange(of: scenePhase) { phase in
                 // Hand whatever is queued to the transport when the app leaves
                 // the foreground, so a day of bucketed counts is not lost to a

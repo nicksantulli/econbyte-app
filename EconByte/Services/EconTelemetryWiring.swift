@@ -35,6 +35,10 @@ enum EBEntryPoint: String {
     /// the consent primer and the notification primer are offered. Lineage C
     /// was cut from v1.0, which had no such screen.
     case sessionComplete = "session_complete"
+    /// 1.1.4: a locked course lesson, and the locked part of the Daily Brief —
+    /// the two places the Pro paywall is entered from besides Home and Settings.
+    case course = "course"
+    case brief = "brief"
 }
 
 enum EBDirection: String {
@@ -73,6 +77,39 @@ enum EBProductFamily: String {
     /// per pack without the product id ever leaving the device.
     case packMarkets = "pack_markets"
     case packPersonal = "pack_personal"
+    case packHistory = "pack_history"
+    case packWorld = "pack_world"
+    case packSystems = "pack_systems"
+    case packPersonalFinance = "pack_personalfinance"
+    /// EconByte Pro (1.1.4): the two durations in the one subscription group.
+    case proMonthly = "pro_monthly"
+    case proAnnual = "pro_annual"
+}
+
+/// The three Pro courses (1.1.4). A closed vocabulary: the course id itself is
+/// a content identifier and never travels.
+enum EBCourseFamily: String {
+    case investing = "investing"
+    case charts = "charts"
+    case bonds = "bonds"
+
+    /// `nil` for a course id the schema does not know — such a lesson is simply
+    /// not measured rather than reported under a wrong family.
+    init?(courseID: String) {
+        switch courseID {
+        case "investing-approaches":     self = .investing
+        case "reading-price-charts":     self = .charts
+        case "bonds-rates-yield-curve":  self = .bonds
+        default: return nil
+        }
+    }
+}
+
+/// Where the Daily Brief on screen came from (1.1.4).
+enum EBBriefSource: String {
+    case bundled = "bundled"
+    case network = "network"
+    case cache = "cache"
 }
 
 /// Why an ad was not requested or not shown. Named `suppression` rather than
@@ -234,6 +271,52 @@ enum EBEvents {
         EconTelemetry.shared.capture(TelemetryEvent("pack_shown_v1", [
             "product_family": .string(family.rawValue),
             "entry_point": .string(entryPoint.rawValue),
+        ]))
+    }
+
+    // MARK: EconByte Pro, courses and the Daily Brief (1.1.4)
+
+    /// The subscription paywall became visible. `trialEligible` is StoreKit's
+    /// answer for this Apple ID (`nil` — not yet known — is reported as false,
+    /// which is also what the paywall shows in that state: no trial line).
+    static func proPaywallShown(entryPoint: EBEntryPoint, productsReady: Bool, trialEligible: Bool?) {
+        EconTelemetry.shared.capture(TelemetryEvent("pro_paywall_shown_v1", [
+            "entry_point": .string(entryPoint.rawValue),
+            "products_ready": .bool(productsReady),
+            "trial_eligible": .bool(trialEligible ?? false),
+        ]))
+    }
+
+    /// A subscription purchase completed AND StoreKit says the transaction
+    /// carries the introductory offer — a free trial began. Family only.
+    static func proTrialStarted(family: EBProductFamily) {
+        EconTelemetry.shared.capture(TelemetryEvent("pro_trial_started_v1", [
+            "product_family": .string(family.rawValue),
+        ]))
+    }
+
+    /// A subscription purchase completed as a paid period (no intro offer).
+    static func proSubscribed(family: EBProductFamily) {
+        EconTelemetry.shared.capture(TelemetryEvent("pro_subscribed_v1", [
+            "product_family": .string(family.rawValue),
+        ]))
+    }
+
+    /// A lesson was completed for the first time. Which course and whether the
+    /// lesson's one quiz was answered correctly — never the lesson or the answer.
+    static func courseLessonCompleted(family: EBCourseFamily, quizCorrect: Bool) {
+        EconTelemetry.shared.capture(TelemetryEvent("course_lesson_completed_v1", [
+            "course_family": .string(family.rawValue),
+            "quiz_correct": .bool(quizCorrect),
+        ]))
+    }
+
+    /// The Daily Brief screen appeared. `accessState` is `.unlocked` for a Pro
+    /// reader and `.locked` for the free teaser.
+    static func briefOpened(accessState: EconAccessState, source: EBBriefSource) {
+        EconTelemetry.shared.capture(TelemetryEvent("brief_opened_v1", [
+            "access_state": .string(accessState.rawValue),
+            "brief_source": .string(source.rawValue),
         ]))
     }
 

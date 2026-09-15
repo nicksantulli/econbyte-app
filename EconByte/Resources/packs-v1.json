@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "catalogVersion": "1.1.3-packs-1",
+  "catalogVersion": "1.1.4-packs-1",
   "verifiedOn": "2026-09-14",
   "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
   "editorialPolicy": "Every factual claim is traceable to a named institutional source with a canonical URL that was re-verified by following redirects to its final landing page, plus a publication or observation date and a verification date. Claims that could not be reproduced from a primary source were removed rather than estimated. Each card carries a concrete illustration alongside its definition. Content is educational and contains no financial, investment, or tax advice.",
@@ -1776,6 +1776,1798 @@
                 "geography": "United States",
                 "claimKind": "observation",
                 "observationPeriod": "as published by the FDIC on 2026-09-14; insurance in force since January 1, 1934",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "packID": "history",
+      "name": "Economic History",
+      "productID": "com.nsantulli.econbyte.pack.history",
+      "icon": "clock.arrow.circlepath",
+      "summary": "Four episodes that still shape how economies are run: the first great bubbles, the Great Depression, 1970s stagflation, and the 2008 financial crisis, told from primary sources.",
+      "topics": [
+        {
+          "topicID": "tulip-south-sea",
+          "name": "Tulip Mania & the South Sea Bubble",
+          "icon": "leaf.fill",
+          "order": 1,
+          "access": "pack",
+          "summary": "The two oldest famous bubbles: how Dutch tulip bulbs and shares in an English trading company ran far ahead of any value behind them, and what the crashes of 1637 and 1720 taught.",
+          "cards": [
+            {
+              "cardID": "tsb-001",
+              "topicID": "tulip-south-sea",
+              "title": "What a Bubble Is",
+              "definition": "A bubble is a stretch of time when an asset sells for more than the money it can reasonably be expected to produce. Economists call that reasonable amount the fundamental value: the stream of future cash the asset should generate, discounted back to the present. In a bubble the price keeps climbing anyway, because buyers expect to sell to someone else at a still higher price rather than to hold the asset for what it earns.",
+              "example": "A San Francisco Fed letter written in October 2007 named two U.S. episodes it treats as bubbles: stock prices in the late 1990s and house prices in the early 2000s. In both, prices ran far ahead of the earnings or rents behind them, and the gap closed the hard way, from above.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve Bank of San Francisco",
+                "documentTitle": "FRBSF Economic Letter: Asset Price Bubbles",
+                "url": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2007/10/asset-price-bubbles/",
+                "publicationDate": "2007-10-26",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "tsb-002",
+              "topicID": "tulip-south-sea",
+              "title": "Tulip Mania: How It Began",
+              "definition": "Tulips reached Western Europe from Turkey in the 1600s and quickly became a status symbol in the Netherlands, prized because they were rare and beautiful. Bulbs that produced flowers with streaked, flame-like petals were valued far above plain single-colour ones. A market for bulbs developed, growers began bidding prices up, and buyers who had never grown a flower joined in, hoping to resell at a profit.",
+              "example": "By 1636 tulip bulbs had become the fourth-largest export of the Netherlands. By January 1637 a single rare bulb was valued at about the price of one of the finest houses in Amsterdam. The flower had not changed; only the number of people expecting to resell it had.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve Bank of St. Louis",
+                "documentTitle": "Page One Economics: Bitcoin: Money or Financial Investment? (section on the Dutch tulip bubble)",
+                "url": "https://www.stlouisfed.org/publications/page-one-economics/2018/03/01/bitcoin-money-or-financial-investment",
+                "publicationDate": "2018-03-01",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "tsb-003",
+              "topicID": "tulip-south-sea",
+              "title": "Betting Without the Bulb",
+              "definition": "A futures contract is an agreement to buy or sell something at a fixed price on a future date. An option is the right, but not the duty, to do so. Both let a trader profit from a price move without ever holding the asset. Such contracts appeared in the Dutch tulip trade once prices started rising, so speculation could run far beyond the number of bulbs actually in the ground.",
+              "example": "Once bulb prices were climbing in the mid-1630s, a buyer could take a position on a bulb without taking possession of it. One promise to deliver a bulb at a later date could change hands many times over before a single bulb was dug up, and every resale needed only a buyer who expected the next price to be higher.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve Bank of St. Louis",
+                "documentTitle": "Page One Economics: Bitcoin: Money or Financial Investment? (section on the Dutch tulip bubble)",
+                "url": "https://www.stlouisfed.org/publications/page-one-economics/2018/03/01/bitcoin-money-or-financial-investment",
+                "publicationDate": "2018-03-01",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "tsb-004",
+              "topicID": "tulip-south-sea",
+              "title": "February 1637: The Crash",
+              "definition": "A speculative market lives on a steady arrival of new buyers willing to pay more than the last one. When they stop arriving, holders who bought only to resell all want out at once, and with no bids underneath, the price does not drift down; it collapses. This is the greater-fool problem: the plan depends on finding someone who will pay more, whatever the asset is really worth.",
+              "example": "In February 1637 buyers stepped back from Dutch tulip bulbs. Sellers rushed to get out before prices fell further, and the market collapsed entirely. Bulbs valued weeks earlier at the price of an Amsterdam mansion found no one willing to pay anything close, because the only reason to pay had been the next buyer.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve Bank of St. Louis",
+                "documentTitle": "Page One Economics: Bitcoin: Money or Financial Investment? (section on the Dutch tulip bubble)",
+                "url": "https://www.stlouisfed.org/publications/page-one-economics/2018/03/01/bitcoin-money-or-financial-investment",
+                "publicationDate": "2018-03-01",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "tsb-005",
+              "topicID": "tulip-south-sea",
+              "title": "The South Sea Company",
+              "definition": "The South Sea Company was set up in England in 1711. It lent money to the government and, in return, received exclusive trading rights in Spanish South America, although very little trade ever happened. Its real business was government debt, which made it a rival to the Bank of England, itself founded in 1694 as a private bank that acted as banker to the state and raised money for war.",
+              "example": "The Bank of England opened for business on 1 August 1694, founded chiefly to pay for the war against France. Seventeen years later, in 1711, the South Sea Company was created and set its sights on the same job of servicing the national debt, the work that had largely been the Bank's.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Bank of England",
+                "documentTitle": "History of the Bank of England",
+                "url": "https://www.bankofengland.co.uk/about/history",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "tsb-006",
+              "topicID": "tulip-south-sea",
+              "title": "1720: Turning Debt into Shares",
+              "definition": "A debt-for-equity swap replaces a lender's claim to fixed repayments with shares in a company. In 1720 the South Sea Company was granted a portion of Britain's national debt, and holders of government debt were encouraged to exchange it for company stock. Because the company's value now rested on its own share price, rising enthusiasm fed on itself until the price collapsed and thousands of people were ruined.",
+              "example": "The whole cycle ran inside the single year 1720: the company was given part of the national debt, investors rushed for its stock, the price rose dramatically, then it crashed. Those who had swapped a steady government claim for shares near the top were left holding paper worth a fraction of what they had given up.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Bank of England",
+                "documentTitle": "History of the Bank of England",
+                "url": "https://www.bankofengland.co.uk/about/history",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "tsb-007",
+              "topicID": "tulip-south-sea",
+              "title": "Where the Word \"Bubble\" Comes From",
+              "definition": "The financial meaning of the word bubble was coined in England in 1720, after the rise and collapse of South Sea Company shares. That boom drew in a swarm of copycat companies selling shares in schemes with little or no real business behind them, some openly fraudulent. Parliament answered with the Bubble Act of 1720, which restricted the raising of money from the public without a royal charter.",
+              "example": "One scheme of 1720 advertised itself as a venture of great advantage whose purpose nobody was allowed to know, and still found subscribers. The Bubble Act passed the same year. The pattern of a genuine boom surrounded by fraud recurred in later episodes; the 1720 case simply gave it a name.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve Bank of San Francisco",
+                "documentTitle": "FRBSF Economic Letter: Asset Price Bubbles",
+                "url": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2007/10/asset-price-bubbles/",
+                "publicationDate": "2007-10-26",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "tsb-008",
+              "topicID": "tulip-south-sea",
+              "title": "New Eras and Old Mistakes",
+              "definition": "Many bubbles ride on real progress. A genuine technological advance arrives, investors overreact to it, and a new-era story takes hold in which the usual yardsticks of value no longer seem to apply. Prices are then justified by the story rather than by earnings. When prices eventually correct, the capital drawn in during the boom turns out to have been misallocated, even though the underlying technology was real.",
+              "example": "The San Francisco Fed letter of June 2008 traces the same pattern through rail, radio and electric power in the early 1900s, cars, highways and electrification in the 1920s, television and space travel in the 1950s and 1960s, and the internet in the late 1990s. Each brought real productivity gains, and each brought a stock run-up that outran them.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Federal Reserve Bank of San Francisco",
+                "documentTitle": "FRBSF Economic Letter: Speculative Bubbles and Overreaction to Technological Innovation",
+                "url": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2008/06/speculative-bubbles-technology-innovation/",
+                "publicationDate": "2008-06-20",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "great-depression",
+          "name": "1929 & the Great Depression",
+          "icon": "building.columns",
+          "order": 2,
+          "access": "pack",
+          "summary": "How a stock market crash became a decade-long slump: bank runs, a shrinking money supply, the gold standard, the 1933 bank holiday, and the reforms that followed.",
+          "cards": [
+            {
+              "cardID": "dep-001",
+              "topicID": "great-depression",
+              "title": "The Crash of October 1929",
+              "definition": "A stock market crash is a sudden, steep fall in share prices. In the 1920s many buyers bought on margin, putting down as little as 10 percent of the price and borrowing the rest from a broker. That leverage magnified gains on the way up, and on the way down a modest fall could wipe out the buyer's stake and force sales that pushed prices lower still.",
+              "example": "A leading U.S. stock index fell nearly 13 percent on Monday, October 28, 1929 and nearly 12 percent the next day; by mid-November it had lost almost half its value. From a peak of 381 on September 3, 1929 it reached 41 on July 8, 1932, 89 percent lower, and did not regain the 1929 level until November 1954.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Stock Market Crash of 1929",
+                "url": "https://www.federalreservehistory.org/essays/stock-market-crash-of-1929",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "index points and percent change in a leading U.S. stock index; percent margin down payment",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1929 to 1954",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "dep-002",
+              "topicID": "great-depression",
+              "title": "A Run on the Bank",
+              "definition": "A bank run happens when many depositors demand their cash at the same time. Banks lend most of their deposits out, so even a sound bank cannot pay everyone at once. Fear spreads: when one bank closes, depositors at others rush to withdraw before their bank is next. A run that jumps from bank to bank is a banking panic.",
+              "example": "In November 1930 the collapse of a large banking group centred in Nashville, Tennessee set off a cascade across the South; in December 1930 hundreds of banks suspended operations. About one-third of those reopened within a few months, but most were liquidated. In June 1931 a new crisis erupted in Chicago.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Banking Panics of 1930-31",
+                "url": "https://www.federalreservehistory.org/essays/banking-panics-1930-31",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "dep-003",
+              "topicID": "great-depression",
+              "title": "The Bank Holiday of 1933",
+              "definition": "A bank holiday is a government order closing every bank for a set period. It stops a run by making withdrawals impossible while examiners sort sound banks from insolvent ones and legislators pass emergency measures. It buys time; it does not by itself make any bank safer, so the reopening plan matters as much as the closure, and depositors must believe the banks that reopen are sound.",
+              "example": "At 1:00 a.m. on March 6, 1933 the new president proclaimed a national bank holiday, and Congress passed the Emergency Banking Act on March 9. Banks in the 12 Reserve Bank cities reopened on March 13; by March 15 institutions holding 90 percent of the nation's banking resources were open again. About 4,000 banks never reopened.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Bank Holiday of 1933",
+                "url": "https://www.federalreservehistory.org/essays/bank-holiday-of-1933",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of banking resources; count of banks",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1933",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "dep-004",
+              "topicID": "great-depression",
+              "title": "Shrinking Money, Falling Prices",
+              "definition": "The money supply is the currency in circulation plus the deposits people hold at banks. When banks fail, their deposits disappear and the stock of money shrinks. Less money chasing the same goods pushes prices down, which is deflation. Deflation makes debts heavier in real terms: the dollars owed stay fixed while wages and prices used to earn them fall.",
+              "example": "From the fall of 1930 to the winter of 1933 the U.S. money supply fell by nearly 30 percent, and the price level fell by a comparable amount. A borrower who owed a fixed $1,000 still owed $1,000, but had to repay it out of shrunken pay and shrunken prices for whatever the borrower sold.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "The Great Depression",
+                "url": "https://www.federalreservehistory.org/essays/great-depression",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent change in the money supply and price level; illustrative $1,000 debt for the arithmetic",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "fall 1930 to winter 1933",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "dep-005",
+              "topicID": "great-depression",
+              "title": "The Gold Standard as a Straitjacket",
+              "definition": "Under a gold standard a country promises to exchange its currency for gold at a fixed price. To keep that promise the central bank must hold enough gold, so when gold flows out it raises interest rates to draw it back, even in a slump. The rule that steadied currencies in calm times could force a central bank to tighten exactly when the economy needed easing.",
+              "example": "On September 21, 1931 Britain left the gold standard. Foreigners feared the United States would follow and began converting dollars into gold, so in early October 1931 the New York Reserve Bank raised its discount rate to defend the gold stock while banks were failing. On March 3, 1933 the Board suspended the gold reserve requirement; the national holiday began 3 days later.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Banking Panics of 1931-33",
+                "url": "https://www.federalreservehistory.org/essays/banking-panics-1931-33",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "dep-006",
+              "topicID": "great-depression",
+              "title": "Emergency Currency and the Reopening",
+              "definition": "The Emergency Banking Act of March 9, 1933 approved the bank holiday after the fact and gave officials tools to end it. Weak banks could be placed under conservators, the Treasury could arrange capital for banks that needed it, and the Federal Reserve could issue emergency currency backed by ordinary bank assets, so reopened banks would have cash to meet withdrawals.",
+              "example": "In the 4 weeks before March 8, 1933 the public pulled about $1.78 billion of cash out of the banks. Once sound banks reopened between March 13 and March 15, the flow reversed: by the end of the month roughly two-thirds of that hoarded cash had been redeposited.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Emergency Banking Act of 1933",
+                "url": "https://www.federalreservehistory.org/essays/emergency-banking-act-of-1933",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of currency withdrawn and redeposited",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1933",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "dep-007",
+              "topicID": "great-depression",
+              "title": "Deposit Insurance Is Born",
+              "definition": "Deposit insurance is a promise that if a bank fails, depositors get their money back up to a stated limit, paid from a fund the banks themselves finance. The Banking Act of 1933, signed on June 16, 1933, created the Federal Deposit Insurance Corporation to run it. The same law separated commercial banking from investment banking and let regulators cap the interest banks paid on deposits.",
+              "example": "The temporary insurance fund began on January 1, 1934, covering deposits up to $2,500; the permanent plan in July 1934 raised the limit to $5,000. Insurance was the most controversial provision and drew veto threats. The law's separation of banks from securities firms was repealed in 1999.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Banking Act of 1933 (Glass-Steagall)",
+                "url": "https://www.federalreservehistory.org/essays/glass-steagall-act",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of insured deposits per depositor",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1934",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "dep-008",
+              "topicID": "great-depression",
+              "title": "Devaluing the Dollar",
+              "definition": "Devaluation lowers a currency's official value against gold or other currencies. Under a gold standard that means raising the dollar price of an ounce of gold. Because other prices are anchored to gold, a higher gold price pushes the whole price level up, which is a way to fight deflation. It also frees the central bank from defending the old parity with high interest rates.",
+              "example": "On April 20, 1933 a proclamation formally suspended the gold standard. In May 1933 Congress authorized cutting the dollar's gold content by up to 50 percent; on June 5, 1933 it voided gold clauses in contracts; in October 1933 the government began buying gold at rising prices, up from the old $20.67 an ounce. The Gold Reserve Act of January 1934 fixed the new order.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Roosevelt's Gold Program",
+                "url": "https://www.federalreservehistory.org/essays/roosevelts-gold-program",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of gold content; U.S. dollars per ounce of gold",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1933 to 1934",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "stagflation-1970s",
+          "name": "1970s Stagflation",
+          "icon": "fuelpump.fill",
+          "order": 3,
+          "access": "pack",
+          "summary": "How inflation and unemployment rose together between 1965 and 1982: the end of the gold window, two oil shocks, price controls that did not work, and the painful cure of 1979 to 1982.",
+          "cards": [
+            {
+              "cardID": "stg-001",
+              "topicID": "stagflation-1970s",
+              "title": "What Stagflation Means",
+              "definition": "Stagflation is a stagnant economy and high inflation at the same time: weak growth, rising unemployment, and prices climbing fast. It was a shock because policymakers in the 1960s believed inflation and unemployment moved in opposite directions, so a little more of one would buy less of the other. The 1970s showed both could rise together, leaving no easy lever to pull.",
+              "example": "In 1964 U.S. inflation ran about 1 percent and unemployment 5 percent. By 1974 inflation was above 12 percent while unemployment had risen above 7 percent. In the summer of 1980 inflation was near 14.5 percent with unemployment above 7.5 percent. Both dials had moved the wrong way at once.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "The Great Inflation",
+                "url": "https://www.federalreservehistory.org/essays/great-inflation",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent inflation rate and percent unemployment rate",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1964 to 1980",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "stg-002",
+              "topicID": "stagflation-1970s",
+              "title": "Closing the Gold Window",
+              "definition": "Under the Bretton Woods system, designed in 1944, foreign governments could exchange U.S. dollars for gold at a fixed price, and other currencies were pegged to the dollar. Closing the gold window meant the United States stopped honouring that exchange. Without the gold anchor, currencies moved to floating rates set by markets, and the dollar's value depended on confidence rather than a metal.",
+              "example": "On August 15, 1971 the president announced three measures at once: foreign governments could no longer convert dollars into gold at $35 an ounce, wages and prices were frozen for 90 days, and imports carried a new 10 percent surcharge. A later agreement tried to re-peg exchange rates, but the fixed-rate era was over.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Nixon Ends Convertibility of U.S. Dollars to Gold and Announces Wage/Price Controls",
+                "url": "https://www.federalreservehistory.org/essays/gold-convertibility-ends",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars per ounce of gold; percent import surcharge; days of price freeze",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1971",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "stg-003",
+              "topicID": "stagflation-1970s",
+              "title": "The 1973 Oil Embargo",
+              "definition": "A supply shock is a sudden jump in the cost of something the whole economy depends on. It raises prices and cuts output at the same time, which puts a central bank in a bind: fighting the inflation deepens the slump, and fighting the slump feeds the inflation. Oil in 1973 was the textbook case, because almost every good needed energy to make and move.",
+              "example": "On October 19, 1973 Arab oil exporters embargoed the United States. Crude oil went from about $2.90 a barrel before the embargo to $11.65 by January 1974, nearly 4 times the price. The embargo was lifted in March 1974, but by mid-1973 wholesale industrial prices had already been rising more than 10 percent a year.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Oil Shock of 1973-74",
+                "url": "https://www.federalreservehistory.org/essays/oil-shock-of-1973-74",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars per barrel of crude oil; percent annual rise in wholesale industrial prices",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1973 to 1974",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "stg-004",
+              "topicID": "stagflation-1970s",
+              "title": "Wage and Price Controls",
+              "definition": "Price controls are legal limits on what sellers may charge and employers may pay. They can hold measured inflation down for a while, but they do not remove the pressure underneath. Sellers respond with shortages and lower quality, and when the controls end, prices catch up. Controls treat the symptom; the cause, too much money chasing too few goods, is untouched.",
+              "example": "The controls announced in 1971 ran in 3 phases until 1974. They slowed price rises only temporarily and made shortages worse, especially for food and energy. Once they lapsed, the delayed increases arrived: inflation exceeded 12 percent in 1974, higher than before the freeze began.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "The Great Inflation",
+                "url": "https://www.federalreservehistory.org/essays/great-inflation",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent inflation rate",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1971 to 1974",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "stg-005",
+              "topicID": "stagflation-1970s",
+              "title": "The Second Oil Shock",
+              "definition": "A second supply shock is more dangerous than the first when people have learned to expect inflation. Workers demand raises to keep up, firms raise prices to cover them, and the shock feeds a spiral. By 1979 the Federal Reserve had concluded that if inflation was going to be dealt with at all, it would have to be through monetary policy.",
+              "example": "Revolution in Iran between early 1978 and early 1979 cut its oil output by 4.8 million barrels a day, about 7 percent of world production. Oil prices more than doubled between April 1979 and April 1980. U.S. consumer inflation, below 5 percent in early 1976, was near 7 percent by March 1979 and 9 percent by the end of 1979.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Oil Shock of 1978-79",
+                "url": "https://www.federalreservehistory.org/essays/oil-shock-of-1978-79",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "million barrels per day; percent of world oil production; percent inflation rate",
+                "geography": "United States and world oil market",
+                "claimKind": "observation",
+                "observationPeriod": "1978 to 1980",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "stg-006",
+              "topicID": "stagflation-1970s",
+              "title": "October 1979: A New Way to Tighten",
+              "definition": "A central bank can steer by setting a short-term interest rate or by controlling the quantity of reserves banks hold. On October 6, 1979 the Federal Reserve switched from the first to the second, letting interest rates swing much more widely so that money growth could be reined in. The change was a signal that inflation would be fought whatever the cost to rates.",
+              "example": "Inflation was 7.7 percent in January 1979 and peaked at 11.6 percent in March 1980. The federal funds rate reached a record 20 percent in late 1980. The medicine worked slowly: inflation was down to 6.1 percent in early 1982 and 3.7 percent the year after, but unemployment peaked at 10.8 percent in late 1982.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Volcker's Announcement of Anti-Inflation Measures",
+                "url": "https://www.federalreservehistory.org/essays/anti-inflation-measures",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent inflation rate; percent federal funds rate; percent unemployment rate",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1979 to 1983",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "stg-007",
+              "topicID": "stagflation-1970s",
+              "title": "The 1981-82 Recession",
+              "definition": "Disinflation is a fall in the rate of inflation, and it usually has a price. Tight money raises interest rates, borrowing slows, and firms cut output and jobs before prices respond. Interest-sensitive industries such as home building and cars are hit first, because their customers borrow to buy. The recession of 1981 to 1982 was the bill for ending the Great Inflation.",
+              "example": "The recession ran from July 1981 to November 1982. Unemployment neared 11 percent at the end of 1982, the postwar high, while inflation fell from 11 percent in June 1979 to 5 percent by October 1982. Goods-producing sectors took 90 percent of the job losses in 1982; unemployment reached 22 percent in residential construction and 24 percent in auto manufacturing.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Recession of 1981-82",
+                "url": "https://www.federalreservehistory.org/essays/recession-of-1981-82",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent unemployment rate; percent inflation rate; percent share of job losses",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1979 to 1982",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "stg-008",
+              "topicID": "stagflation-1970s",
+              "title": "The Phillips Curve Trade-off Breaks",
+              "definition": "The Phillips curve is the observed link between lower unemployment and higher inflation. In the 1960s policymakers read it as a menu: accept modestly higher inflation and buy permanently lower unemployment. Economists Milton Friedman and Edmund Phelps warned that once people expected inflation, the curve would shift up, so the same unemployment would need ever-higher inflation. The 1970s proved them right.",
+              "example": "Between 1964 and 1980 the two variables rose together, inflation from about 1 percent to near 14.5 percent and unemployment from 5 percent to more than 7.5 percent. The Employment Act of 1946 had asked government to promote maximum employment; the Humphrey-Hawkins Act of 1978 explicitly charged the Federal Reserve with both full employment and price stability.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "The Great Inflation",
+                "url": "https://www.federalreservehistory.org/essays/great-inflation",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent inflation rate and percent unemployment rate",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1964 to 1980",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "crisis-2008",
+          "name": "The 2008 Financial Crisis",
+          "icon": "house.and.flag.fill",
+          "order": 4,
+          "access": "pack",
+          "summary": "From a housing boom to the deepest downturn since the 1930s: subprime lending, the run on the financial system, emergency lending and TARP, near-zero rates, and the reforms of 2010.",
+          "cards": [
+            {
+              "cardID": "gfc-001",
+              "topicID": "crisis-2008",
+              "title": "A Housing Bubble",
+              "definition": "A housing bubble is a run-up in home prices driven by the expectation that they will keep rising rather than by rents or incomes. Because most homes are bought with borrowed money, rising prices make lenders confident and loans easy, which pushes prices higher. When prices turn, borrowers owe more than the house is worth and lenders discover the collateral was the bubble itself.",
+              "example": "Across the United States, home prices roughly doubled between 1998 and 2006 and peaked in early 2007. They then fell by more than a fifth on average from the first quarter of 2007 to the second quarter of 2011, a decline of a size the country had not seen since the 1930s.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "The Great Recession and Its Aftermath",
+                "url": "https://www.federalreservehistory.org/essays/great-recession-and-its-aftermath",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "relative change in a national index of home prices",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1998 to 2011",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "gfc-002",
+              "topicID": "crisis-2008",
+              "title": "Subprime Mortgages",
+              "definition": "A subprime mortgage is a home loan to a borrower with a weaker credit record, priced with a higher rate to cover the extra risk. In the 2000s many carried low introductory rates that reset higher, and lenders bundled them into mortgage-backed securities sold to investors worldwide. As long as prices rose, borrowers could refinance; when prices stalled, defaults climbed and the securities lost value.",
+              "example": "In April 2007 one of the largest subprime lenders filed for bankruptcy, and soon afterwards large numbers of mortgage-backed securities were downgraded to high risk. U.S. homeownership had hovered around 65 percent for decades before rising during the subprime boom; the boom's unwinding took years to work through.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Subprime Mortgage Crisis",
+                "url": "https://www.federalreservehistory.org/essays/subprime-mortgage-crisis",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of households owning their home (long-run rate before the 2000s boom)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "long-run rate before 2007, as described in the essay",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "gfc-003",
+              "topicID": "crisis-2008",
+              "title": "The Great Recession by the Numbers",
+              "definition": "A recession is a broad, sustained fall in economic activity. In the United States the start and end months are dated after the fact by a committee of economists. The downturn that began in December 2007 earned the name Great Recession because it was the longest since the Second World War and reached every corner of the economy: output, jobs, home values and household wealth.",
+              "example": "The recession lasted from December 2007 to June 2009. Real GDP fell 4.3 percent from peak to trough. Unemployment rose from 5 percent in December 2007 to 10 percent in October 2009. Home prices dropped about 30 percent from mid-2006 to mid-2009, and household net worth fell from roughly $69 trillion in 2007 to $55 trillion in 2009.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "The Great Recession",
+                "url": "https://www.federalreservehistory.org/essays/great-recession-of-200709",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent change in real GDP; percent unemployment rate; percent change in home prices; U.S. dollars of household net worth",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2007 to 2009",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "gfc-004",
+              "topicID": "crisis-2008",
+              "title": "Lender of Last Resort, Expanded",
+              "definition": "A lender of last resort lends to solvent institutions that cannot borrow elsewhere during a panic, against good collateral, so that a shortage of cash does not become a wave of failures. The Federal Reserve traditionally did this through its discount window for banks. In 2007 and 2008 it built new facilities to reach securities dealers, the commercial paper market, money market funds and foreign central banks.",
+              "example": "The Term Auction Facility, announced December 12, 2007, peaked at $493 billion outstanding. The commercial paper facility opened in October 2008 and peaked at $350 billion. Dollar swap lines with 14 foreign central banks peaked at $586 billion on December 4, 2008. Most of the programs closed on February 1, 2010.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Federal Reserve Credit Programs During the Meltdown",
+                "url": "https://www.federalreservehistory.org/essays/fed-credit-programs",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of peak lending outstanding; count of foreign central banks",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2007 to 2010",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "gfc-005",
+              "topicID": "crisis-2008",
+              "title": "TARP: Capital from the Treasury",
+              "definition": "The Troubled Asset Relief Program let the Treasury buy or insure troubled assets and inject capital into financial firms. Congress created it in the Emergency Economic Stabilization Act of October 2008. Rather than lending against collateral as a central bank does, TARP put taxpayer money at risk as an owner, taking preferred shares and warrants that were later sold back or redeemed.",
+              "example": "Congress authorized $700 billion in October 2008; the Dodd-Frank Act of 2010 cut that to $475 billion. The Treasury disbursed $443.5 billion and recovered $425.5 billion through repayments, sales, dividends and interest. After $13.1 billion of interest costs, the net cost stood at $31.1 billion as of September 30, 2023, when the last program was wound down.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Department of the Treasury",
+                "documentTitle": "Troubled Asset Relief Program",
+                "url": "https://home.treasury.gov/data/troubled-asset-relief-program",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars authorized, disbursed, recovered and net cost",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2008 to 2023",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "gfc-006",
+              "topicID": "crisis-2008",
+              "title": "Zero Rates and Asset Purchases",
+              "definition": "When a central bank cuts its policy rate to almost zero and the economy still needs help, it can buy long-term bonds and mortgage securities. The purchases push long-term interest rates down and add reserves to the banking system. The approach is called large-scale asset purchases, or quantitative easing. It works on the same rates households and firms actually borrow at.",
+              "example": "The federal funds target fell from 5.25 percent in September 2007 to a range of 0 to 0.25 percent in December 2008. The first round of purchases bought about $1.75 trillion of longer-term securities; a second round added $600 billion in 2010 and 2011. The rate stayed near zero for years afterwards.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "The Great Recession",
+                "url": "https://www.federalreservehistory.org/essays/great-recession-of-200709",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent federal funds target; U.S. dollars of securities purchased",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2007 to 2011",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "gfc-007",
+              "topicID": "crisis-2008",
+              "title": "Deposit Insurance in a Panic",
+              "definition": "Deposit insurance removes the reason to run on a bank: if the bank fails, the insurer pays depositors up to the limit, so there is nothing to gain by pulling money out first. Coverage is counted per depositor, per insured bank, per ownership category, so one person can be covered separately for a single account, a joint account, and a retirement account at the same bank.",
+              "example": "The FDIC was founded in 1933, and since then no depositor has lost a penny of insured funds. The standard limit is $250,000 per depositor, per insured bank, per ownership category. A saver with $250,000 in a single account and $250,000 in a joint account at 1 bank is fully covered on both.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Deposit Insurance Corporation",
+                "documentTitle": "Understanding Deposit Insurance",
+                "url": "https://www.fdic.gov/resources/deposit-insurance/understanding-deposit-insurance",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of standard deposit insurance coverage per depositor per ownership category",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "standard maximum in force at verification in 2026; FDIC founded 1933",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "gfc-008",
+              "topicID": "crisis-2008",
+              "title": "Dodd-Frank: Rewiring the Rules",
+              "definition": "The Dodd-Frank Act, signed on July 21, 2010, was the broadest rewrite of U.S. financial rules since the 1930s. It created a council of regulators to watch for system-wide risks and a consumer protection bureau; barred insured banks from trading for their own account; required annual stress tests of the largest firms; and gave the government authority to wind down a failing nonbank in an orderly way.",
+              "example": "Two failures of the crisis shaped 2 of its rules: lenders must verify a borrower's ability to repay a mortgage, and firms that package loans into securities must keep a slice of the credit risk they sell. Signed in July 2010, the law took years of rulemaking to put into effect.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Dodd-Frank Act",
+                "url": "https://www.federalreservehistory.org/essays/dodd-frank-act",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "packID": "world",
+      "name": "Economies Around the World",
+      "productID": "com.nsantulli.econbyte.pack.world",
+      "icon": "globe.americas.fill",
+      "summary": "The United States, the euro area, China and the emerging world through their own official statistics: how each measures output, prices, jobs and debt, and what makes each one work differently.",
+      "topics": [
+        {
+          "topicID": "us-economy",
+          "name": "The United States",
+          "icon": "flag.fill",
+          "order": 1,
+          "access": "pack",
+          "summary": "The world's largest economy through its own statistics: how output, jobs, prices, population and debt are measured, and how the central bank is built and what it aims for.",
+          "cards": [
+            {
+              "cardID": "usa-001",
+              "topicID": "us-economy",
+              "title": "How Big Is the U.S. Economy?",
+              "definition": "Gross domestic product is the market value of the goods and services produced by labor and property located in a country. The U.S. figure is published every quarter by the Bureau of Economic Analysis. Because a quarter is only 3 months, the number is scaled up to an annual rate, so it answers the question: if this pace held for a year, how much would the country produce?",
+              "example": "In the second quarter of 2026, U.S. GDP ran at a seasonally adjusted annual rate of $32,486 billion in current dollars, about $32.5 trillion, according to the estimate posted on FRED on August 26, 2026. That is the value of one year of the nation's output at that quarter's pace.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve Bank of St. Louis, FRED (data: U.S. Bureau of Economic Analysis)",
+                "documentTitle": "Gross Domestic Product (GDP)",
+                "url": "https://fred.stlouisfed.org/series/GDP",
+                "publicationDate": "2026-08-26",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars, seasonally adjusted annual rate, current prices",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "second quarter of 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "usa-002",
+              "topicID": "us-economy",
+              "title": "Reading a GDP Report",
+              "definition": "Real GDP strips out price changes so that growth reflects more goods and services, not just higher prices. The growth rate is reported as an annualized quarterly rate: the quarter's change compounded as if it continued for 4 quarters. Each quarter gets 3 estimates, an advance, a second and a third, as more complete data arrive, so the headline can be revised.",
+              "example": "The second estimate released on August 26, 2026 said real GDP increased at an annual rate of 1.5 percent in the second quarter of 2026. Read literally: output grew a little under 0.4 percent during the quarter, and at that pace a full year would add 1.5 percent.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Bureau of Economic Analysis",
+                "documentTitle": "Gross Domestic Product",
+                "url": "https://www.bea.gov/data/gdp/gross-domestic-product",
+                "publicationDate": "2026-08-26",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent change in real GDP, seasonally adjusted annual rate; the within-quarter figure is arithmetic derived from it",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "second quarter of 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "usa-003",
+              "topicID": "us-economy",
+              "title": "The Unemployment Rate",
+              "definition": "The unemployment rate is the share of the labor force without a job. The labor force counts people who are working or actively looking for work; those who have stopped looking are not in it, so the rate can fall when discouraged people give up as well as when they find jobs. The Bureau of Labor Statistics measures it monthly from a survey of households.",
+              "example": "For August 2026 the rate was 4.1 percent, seasonally adjusted, as posted on FRED on September 4, 2026. Seasonal adjustment removes predictable swings, such as students entering the job market each summer, so one month can be compared fairly with the last.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve Bank of St. Louis, FRED (data: U.S. Bureau of Labor Statistics)",
+                "documentTitle": "Unemployment Rate (UNRATE)",
+                "url": "https://fred.stlouisfed.org/series/UNRATE",
+                "publicationDate": "2026-09-04",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of the labor force, seasonally adjusted",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "August 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "usa-004",
+              "topicID": "us-economy",
+              "title": "The Consumer Price Index",
+              "definition": "The Consumer Price Index tracks the prices urban households pay for a fixed basket of goods and services: rent, food, fuel, medical care and so on. The change over 12 months is the headline inflation rate. The monthly change is reported seasonally adjusted so that regular swings, like winter heating bills, do not masquerade as inflation or disinflation. The index is published each month.",
+              "example": "In August 2026 the index for all urban consumers rose 0.4 percent on a seasonally adjusted basis, after a 0.1 percent rise in July. Over the 12 months to August the all-items index was up 3.4 percent before seasonal adjustment, according to the release of September 11, 2026.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Bureau of Labor Statistics",
+                "documentTitle": "Consumer Price Index Summary (August 2026)",
+                "url": "https://www.bls.gov/news.release/cpi.nr0.htm",
+                "publicationDate": "2026-09-11",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent change in CPI-U, monthly seasonally adjusted and 12-month unadjusted",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "August 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "usa-005",
+              "topicID": "us-economy",
+              "title": "How the Federal Reserve Is Built",
+              "definition": "The Federal Reserve is the U.S. central bank, created by the Federal Reserve Act of 1913. It has three parts: a Board of Governors in Washington, 12 regional Reserve Banks that are its operating arms, and the Federal Open Market Committee, which sets monetary policy. The design spreads authority between the capital and the regions and insulates decisions from the election cycle.",
+              "example": "The Board has 7 governors serving staggered 14-year terms, nominated by the president and confirmed by the Senate. The 12 Reserve Banks operate 24 branches between them. The FOMC has 12 voting members and meets at least 8 times a year. The Fed lists 5 functions, from monetary policy to payment systems and consumer protection.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Board of Governors of the Federal Reserve System",
+                "documentTitle": "The Fed Explained: Who We Are",
+                "url": "https://www.federalreserve.gov/aboutthefed/fedexplained/who-we-are.htm",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "usa-006",
+              "topicID": "us-economy",
+              "title": "The Dual Mandate and 2 Percent",
+              "definition": "Congress gave the Federal Reserve a dual mandate: to pursue maximum employment and stable prices. Maximum employment means the highest level of jobs the economy can sustain without overheating. Stable prices means inflation low enough that households and firms can plan long-term decisions without worrying about it. Congress set the goals; the Fed itself defines the number that counts as price stability.",
+              "example": "The Federal Open Market Committee judges that inflation of 2 percent over the longer run is most consistent with its price-stability mandate. It measures that against the annual change in the price index for personal consumption expenditures, not the Consumer Price Index, according to the Fed's explanation last updated in August 2025.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Board of Governors of the Federal Reserve System",
+                "documentTitle": "FAQ: What economic goals does the Federal Reserve seek to achieve through its monetary policy?",
+                "url": "https://www.federalreserve.gov/faqs/what-economic-goals-does-federal-reserve-seek-to-achieve-through-monetary-policy.htm",
+                "publicationDate": "2025-08-22",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent inflation objective, PCE price index",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "objective as stated on the page updated August 2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "usa-007",
+              "topicID": "us-economy",
+              "title": "Population: The Base of Everything",
+              "definition": "Population sets the scale of an economy: how many workers, consumers and taxpayers there are. It grows through natural change, births minus deaths, and through net international migration, arrivals minus departures. Slower population growth means slower growth in the labor force, so the same output per worker produces less total growth. The Census Bureau estimates the figure every year as of July 1.",
+              "example": "The U.S. resident population reached 341.8 million on July 1, 2025, up 1.8 million or 0.5 percent over the year. Net international migration fell from 2.7 million to 1.3 million, and natural change was about 519,000, down from roughly 1.1 million in 2017, according to estimates released January 27, 2026.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Census Bureau",
+                "documentTitle": "U.S. Population Growth Slows Due to Historic Decline in Net International Migration",
+                "url": "https://www.census.gov/newsroom/press-releases/2026/population-growth-slows.html",
+                "publicationDate": "2026-01-27",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "million residents; percent growth; million net migrants; natural change in persons",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "July 1, 2024 to July 1, 2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "usa-008",
+              "topicID": "us-economy",
+              "title": "Federal Debt Relative to GDP",
+              "definition": "The debt-to-GDP ratio compares what the federal government owes with what the economy produces in a year. It is a better gauge than the raw dollar figure because a bigger economy can carry more debt. Total public debt includes securities held by the public and those held by government trust funds. The ratio can fall even while debt rises, if GDP grows faster.",
+              "example": "In the first quarter of 2026 total federal public debt stood at 122.59 percent of GDP, according to the series on FRED updated June 25, 2026. A reading above 100 percent means the debt exceeds a full year of the nation's output.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Federal Reserve Bank of St. Louis, FRED (data: U.S. Office of Management and Budget)",
+                "documentTitle": "Federal Debt: Total Public Debt as Percent of Gross Domestic Product (GFDEGDQ188S)",
+                "url": "https://fred.stlouisfed.org/series/GFDEGDQ188S",
+                "publicationDate": "2026-06-25",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of GDP, total public debt",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "first quarter of 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "eurozone",
+          "name": "The Eurozone",
+          "icon": "eurosign.circle.fill",
+          "order": 2,
+          "access": "pack",
+          "summary": "How 21 countries share one currency: who runs it, the rules for joining, the 2 percent goal, and how inflation, growth and government debt are read across the bloc.",
+          "cards": [
+            {
+              "cardID": "eur-001",
+              "topicID": "eurozone",
+              "title": "One Currency, Many Countries",
+              "definition": "The euro is a single currency shared by a group of European Union members called the euro area or eurozone. Each country keeps its own government, budget and taxes, but gives up its own currency and interest rate. Monetary policy for the whole area is set centrally, so the same interest rate applies whether a member's economy is booming or shrinking.",
+              "example": "The euro was launched on 1 January 1999 for accounting and electronic payments, and notes and coins followed on 1 January 2002. By 2026, 21 of the 27 EU countries used it, with Bulgaria the latest to join, and some 358 million people paid with euro cash every day.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "European Central Bank",
+                "documentTitle": "The euro",
+                "url": "https://www.ecb.europa.eu/euro/intro/html/index.en.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "count of member countries; million people using euro cash",
+                "geography": "euro area",
+                "claimKind": "observation",
+                "observationPeriod": "2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "eur-002",
+              "topicID": "eurozone",
+              "title": "The Eurosystem",
+              "definition": "The European System of Central Banks is the European Central Bank plus the national central banks of every EU member, whether or not it uses the euro. The Eurosystem is the smaller group: the ECB plus the national central banks of euro countries. The Eurosystem runs the single monetary policy, with the ECB at its core and national banks carrying out operations locally.",
+              "example": "The ECB has set monetary policy for the euro area since January 1999. Eleven countries started; Greece joined in 2001, Slovenia in 2007, Cyprus and Malta in 2008, Slovakia in 2009, Estonia in 2011, Latvia in 2014, Lithuania in 2015, Croatia in 2023 and Bulgaria in 2026.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "European Central Bank",
+                "documentTitle": "ECB, ESCB and the Eurosystem",
+                "url": "https://www.ecb.europa.eu/ecb/orga/escb/html/index.en.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "eur-003",
+              "topicID": "eurozone",
+              "title": "The Rules for Joining",
+              "definition": "Before a country can adopt the euro it must meet convergence criteria written into the EU Treaty. The idea is that economies sharing one interest rate should already look alike: low inflation, sound public finances, a stable exchange rate and long-term interest rates close to the best performers. The criteria are tested when a country applies for membership, not enforced afterwards, which is one reason the tests are strict.",
+              "example": "The tests: inflation no more than 1.5 percentage points above the average of the 3 lowest-inflation members; a government deficit within 3 percent of GDP and debt within 60 percent of GDP; at least 2 years in the exchange rate mechanism without devaluing; and long-term rates no more than 2 percentage points above the 3 best performers.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "European Central Bank",
+                "documentTitle": "Convergence criteria",
+                "url": "https://www.ecb.europa.eu/ecb/orga/escb/html/convergence-criteria.en.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percentage points; percent of GDP; years of exchange rate mechanism membership",
+                "geography": "European Union",
+                "claimKind": "observation",
+                "observationPeriod": "Treaty criteria as published by the ECB, observed 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "eur-004",
+              "topicID": "eurozone",
+              "title": "Price Stability at 2 Percent",
+              "definition": "The Treaty makes price stability the ECB's primary objective but does not define it. The ECB does. After its 2021 strategy review it set a target of 2 percent inflation over the medium term and made the target symmetric, meaning undershooting is as unwelcome as overshooting. The target applies to the euro area as a whole, not to each member separately.",
+              "example": "The Governing Council adopted the 2 percent symmetric target in July 2021. It measures inflation with the Harmonised Index of Consumer Prices, a basket built the same way in every member so that a 2 percent reading in one country means the same as in another. Medium term means the ECB does not react to every month's wobble.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "European Central Bank",
+                "documentTitle": "Price stability",
+                "url": "https://www.ecb.europa.eu/mopo/strategy/pricestab/html/index.en.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent inflation target, HICP",
+                "geography": "euro area",
+                "claimKind": "observation",
+                "observationPeriod": "strategy review of July 2021",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "eur-005",
+              "topicID": "eurozone",
+              "title": "Reading an Inflation Flash",
+              "definition": "A flash estimate is an early reading of inflation published within days of the month's end, before all the data are in. It breaks the headline into components: energy, food, industrial goods and services. Watching the pieces matters because a jump driven by energy can reverse quickly, while services inflation tends to move slowly and reflects wages. The full figure follows about two weeks later.",
+              "example": "Eurostat's flash estimate of September 1, 2026 put euro area annual inflation at 3.3 percent for August 2026, up from 2.9 percent in July. Energy ran at 14.3 percent, up from 10.3 percent; services eased to 3.0 percent from 3.3 percent; non-energy industrial goods were 1.2 percent and food, alcohol and tobacco 1.2 percent.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Eurostat",
+                "documentTitle": "Euro indicators: Euro area annual inflation up to 3.3% (flash estimate, August 2026)",
+                "url": "https://ec.europa.eu/eurostat/web/products-euro-indicators/w/2-01092026-ap",
+                "publicationDate": "2026-09-01",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent annual change in HICP and its components",
+                "geography": "euro area",
+                "claimKind": "observation",
+                "observationPeriod": "August 2026 (flash estimate)",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "eur-006",
+              "topicID": "eurozone",
+              "title": "Growth and Jobs Across the Bloc",
+              "definition": "Eurostat reports euro area GDP two ways: the change from the previous quarter, which shows momentum, and the change from a year earlier, which smooths out seasonal quirks. It publishes employment alongside, because output can grow while jobs stall if productivity rises. The EU total is larger than the euro area total since it also includes the 6 members that do not use the euro.",
+              "example": "In the second quarter of 2026 euro area GDP rose 0.6 percent from the previous quarter and 1.2 percent from a year earlier; the EU grew 0.7 percent and 1.4 percent. Employment rose 0.1 percent, with 176.4 million people employed in the euro area and 221.4 million in the EU, according to the estimate of September 7, 2026.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Eurostat",
+                "documentTitle": "Euro indicators: GDP up by 0.6% and employment up by 0.1% in the euro area",
+                "url": "https://ec.europa.eu/eurostat/web/products-euro-indicators/w/2-07092026-ap",
+                "publicationDate": "2026-09-07",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent change in seasonally adjusted GDP; percent change in employment; million persons employed",
+                "geography": "euro area and European Union",
+                "claimKind": "observation",
+                "observationPeriod": "second quarter of 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "eur-007",
+              "topicID": "eurozone",
+              "title": "Government Debt in a Currency Union",
+              "definition": "Euro members share a currency but each issues its own government debt and has its own budget; there is no common treasury standing behind them. That is why debt ratios matter so much in the euro area: a member with heavy debt cannot print its way out, and its bonds trade at rates that reflect its own finances rather than the bloc's.",
+              "example": "At the end of the first quarter of 2026 euro area government debt was 88.9 percent of GDP, up from 87.2 percent a year earlier. Greece stood at 143.5 percent, Italy 138.9 percent and France 117.6 percent; Estonia was lowest at 25.2 percent. Of the total, 84.3 percent was debt securities, 13.2 percent loans and 2.5 percent currency and deposits.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Eurostat",
+                "documentTitle": "Euro indicators: Government debt at 88.9% of GDP in euro area",
+                "url": "https://ec.europa.eu/eurostat/web/products-euro-indicators/w/2-21072026-ap",
+                "publicationDate": "2026-07-21",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of GDP; percent composition of debt",
+                "geography": "euro area and member states",
+                "claimKind": "observation",
+                "observationPeriod": "end of first quarter of 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "eur-008",
+              "topicID": "eurozone",
+              "title": "Exchange Rates Fixed Forever",
+              "definition": "Joining the euro means converting a national currency at a rate fixed irrevocably; the old currency then ceases to exist. Unlike a peg, which a government can abandon under pressure, the conversion rate has no exit. That permanence is what gives the union credibility, and also why the convergence tests come before entry: once in, a country can no longer devalue.",
+              "example": "The ECB publishes every conversion rate. Belgium and 10 other founders locked theirs on 1 January 1999, at 40.3399 Belgian francs per euro for example, and used the new notes from 2002. Later joiners came at their own fixed rates, such as 30.1260 Slovak koruna per euro when Slovakia entered in 2009.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "European Central Bank",
+                "documentTitle": "The euro",
+                "url": "https://www.ecb.europa.eu/euro/intro/html/index.en.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "china-economy",
+          "name": "China",
+          "icon": "yensign.circle.fill",
+          "order": 3,
+          "access": "pack",
+          "summary": "The world's second-largest economy in its own official statistics: growth since 1978, the 2025 numbers, a shrinking population, a managed currency, and how its central bank works.",
+          "cards": [
+            {
+              "cardID": "chn-001",
+              "topicID": "china-economy",
+              "title": "China's Economy in 2025",
+              "definition": "China measures its output the way other countries do, as gross domestic product, and publishes a preliminary annual figure in January. Growth is reported in real terms, after removing price changes, against the same period a year earlier. Because the quarterly readings are year-on-year, a slowing quarterly sequence within a year signals a loss of momentum even when the annual total looks steady.",
+              "example": "GDP in 2025 was 140,187.9 billion yuan, about 140.2 trillion yuan, up 5.0 percent on 2024, according to the preliminary accounting released January 21, 2026. The quarters slowed through the year: 5.4 percent, 5.2 percent, 4.8 percent and 4.5 percent year on year.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "National Bureau of Statistics of China",
+                "documentTitle": "Preliminary Accounting Results of GDP for the Fourth Quarter and Full Year of 2025",
+                "url": "https://www.stats.gov.cn/english/PressRelease/202601/t20260121_1962363.html",
+                "publicationDate": "2026-01-21",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "billion yuan of GDP at current prices; percent real growth year on year",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "chn-002",
+              "topicID": "china-economy",
+              "title": "Four Decades of Catch-up",
+              "definition": "Economic reform in China began in 1978, opening the economy to markets and trade. The result was one of the fastest sustained expansions on record, which moved the country through the World Bank's income groups and pulled hundreds of millions of people above the extreme poverty line. The pace has slowed as the population ages and the easy gains from moving farm workers into factories have been taken.",
+              "example": "GDP growth averaged more than 9 percent a year from 1978 into the 2020s, and almost 800 million people were lifted out of extreme poverty. China moved from the low-income group to the upper-middle-income group. The World Bank's 2026 update projected growth easing to 4.4 percent in 2026 as aging and weaker demand weigh.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "World Bank",
+                "documentTitle": "China Overview",
+                "url": "https://www.worldbank.org/en/country/china/overview",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent average annual GDP growth; million people leaving extreme poverty; percent projected growth",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "1978 to 2026",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "chn-003",
+              "topicID": "china-economy",
+              "title": "A Population That Is Shrinking",
+              "definition": "A population shrinks when deaths outnumber births and migration does not fill the gap. For an economy that means fewer new workers each year and more retirees per worker, which weighs on growth and public finances. Urbanization, the share of people living in cities, can still rise even as the total falls, because people keep moving from countryside to town.",
+              "example": "At the end of 2025 China's population was 1,404.89 million, down 3.39 million over the year, with 7.92 million births against 11.31 million deaths. The urbanization rate rose 0.89 percentage points to 67.89 percent, according to the statistical communiqué of February 28, 2026.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "National Bureau of Statistics of China",
+                "documentTitle": "Statistical Communiqué of the People's Republic of China on the 2025 National Economic and Social Development",
+                "url": "https://www.stats.gov.cn/english/PressRelease/202602/t20260228_1962661.html",
+                "publicationDate": "2026-02-28",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "million persons; percent urbanization rate; percentage points",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "chn-004",
+              "topicID": "china-economy",
+              "title": "Three Sectors",
+              "definition": "Statisticians split an economy into primary industry (farming, forestry, fishing), secondary industry (manufacturing, mining, construction) and tertiary industry (services). As economies mature, services grow fastest and take the largest share. China's figures show that shift under way, with construction, long a growth engine, contracting even as services expanded. Watching the three sectors separately shows where growth is actually coming from, which a single GDP number hides.",
+              "example": "In 2025 primary industry added 9.93 trillion yuan of value, up 3.9 percent; secondary industry 49.97 trillion yuan, up 4.5 percent; and tertiary industry 80.89 trillion yuan, up 5.4 percent. Within secondary industry, construction shrank 1.1 percent. Services were both the largest sector and the fastest growing.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "National Bureau of Statistics of China",
+                "documentTitle": "Preliminary Accounting Results of GDP for the Fourth Quarter and Full Year of 2025",
+                "url": "https://www.stats.gov.cn/english/PressRelease/202601/t20260121_1962363.html",
+                "publicationDate": "2026-01-21",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "trillion yuan of value added; percent real growth",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "chn-005",
+              "topicID": "china-economy",
+              "title": "Household Income and Spending",
+              "definition": "Per capita disposable income is what the average person has left to spend or save after taxes and transfers. Retail sales measure what households actually buy. Comparing the two with consumer prices shows whether living standards are rising: if income grows faster than prices, real purchasing power increases. A flat price index means every yuan of extra income was real.",
+              "example": "In 2025 per capita disposable income was 43,377 yuan, up 5.0 percent, while total retail sales of consumer goods were 50,120.2 billion yuan, up 3.7 percent. Consumer prices were flat at 0.0 percent for the year, and the urban surveyed unemployment rate averaged 5.2 percent, ending the year at 5.1 percent.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "National Bureau of Statistics of China",
+                "documentTitle": "Statistical Communiqué of the People's Republic of China on the 2025 National Economic and Social Development",
+                "url": "https://www.stats.gov.cn/english/PressRelease/202602/t20260228_1962661.html",
+                "publicationDate": "2026-02-28",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "yuan per person; billion yuan of retail sales; percent change in CPI; percent unemployment rate",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "chn-006",
+              "topicID": "china-economy",
+              "title": "A Managed Float",
+              "definition": "A managed floating exchange rate lets the currency move with market supply and demand inside limits set by the central bank. China's version references a basket of currencies rather than the U.S. dollar alone, and the central bank publishes a daily central parity around which trading may move within a band. It is neither a hard peg nor a free float.",
+              "example": "China unified its dual exchange rates on January 1, 1994 and on July 21, 2005 moved to a managed float based on market supply and demand with reference to a basket of currencies. The daily band against the dollar was 0.3 percent at the 2005 reform and was widened to 0.5 percent in 2007.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "People's Bank of China",
+                "documentTitle": "A Managed Floating Exchange Rate Regime is an Established Policy",
+                "url": "https://www.pbc.gov.cn/english/130724/2025080815071284369/index.html",
+                "publicationDate": "2010-07-15",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent width of the daily trading band against the U.S. dollar",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "2005 to 2007",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "chn-007",
+              "topicID": "china-economy",
+              "title": "Tools of the People's Bank",
+              "definition": "The People's Bank of China steers credit with several levers. The required reserve ratio sets how much of their deposits banks must park at the central bank; cutting it frees money to lend. The 7-day reverse repo rate is the short-term policy rate. The loan prime rate is the benchmark banks quote to their best customers, and it guides mortgage and business loan pricing.",
+              "example": "The 7-day reverse repo rate was designated the policy rate in July 2024. Over the 2021 to 2025 plan period the reserve ratio was cut 9 times, by 3.5 percentage points in total, releasing about 7 trillion yuan of long-term liquidity, and the 1-year loan prime rate fell 0.85 percentage points. By August 2025 new corporate loans averaged about 3.1 percent.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "People's Bank of China",
+                "documentTitle": "Steady Progress in Monetary Policy Framework Transformation Bolsters High-Quality Development - Interview with Head of PBOC's Monetary Policy Department",
+                "url": "https://www.pbc.gov.cn/en/3688006/5876310/5877235/index.html",
+                "publicationDate": "2025-10-14",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percentage points; trillion yuan of liquidity released; percent average loan rate",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "2021 to 2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "chn-008",
+              "topicID": "china-economy",
+              "title": "Big Economy, Middle Income",
+              "definition": "Total GDP and GDP per person tell different stories. A country can have the second-largest economy in the world and still have an average income well below that of rich countries, simply because the output is shared among many more people. Per capita figures are what matter for living standards; totals are what matter for the country's weight in world trade and finance.",
+              "example": "World Bank data for 2025 put China's GDP at about $19.5 trillion in current dollars, spread across 1.41 billion people, so GDP per person was about $13,862. Growth that year was 5.0 percent and life expectancy at birth reached 78 years in 2024. A very large economy, but a middle-income one per head.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "World Bank, World Development Indicators",
+                "documentTitle": "China | Data",
+                "url": "https://data.worldbank.org/country/china",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of GDP and GDP per capita; billion persons; percent growth; years of life expectancy",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "2024 to 2025",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "emerging-markets",
+          "name": "Emerging Markets",
+          "icon": "globe.asia.australia.fill",
+          "order": 4,
+          "access": "pack",
+          "summary": "What emerging and developing economies have in common: how they are classified, the money that flows to them, and the debt and currency crises of the 1980s and 1990s that still shape the rules.",
+          "cards": [
+            {
+              "cardID": "emg-001",
+              "topicID": "emerging-markets",
+              "title": "What \"Emerging Market\" Means",
+              "definition": "There is no single official definition of an emerging market. The phrase usually means a middle-income economy that is growing and opening to trade and investment but whose financial markets are smaller and less developed than those of rich countries. The World Bank avoids the label and instead sorts every economy into 4 income groups by national income per person.",
+              "example": "The World Bank groups economies as low, lower-middle, upper-middle or high income using gross national income per capita converted with its Atlas method, updated every July 1. In the classification announced in July 2022, low income meant $1,085 or less per person and lower-middle income ran from $1,086 to $4,255.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "World Bank",
+                "documentTitle": "A Statement on the World Bank Approach to Global Income Classification",
+                "url": "https://www.worldbank.org/en/news/statement/2022/07/07/a-statement-on-the-world-bank-approach-to-global-income-classification",
+                "publicationDate": "2022-07-07",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of GNI per capita, Atlas method (income-group thresholds)",
+                "geography": "world",
+                "claimKind": "observation",
+                "observationPeriod": "classification announced July 2022 for fiscal year 2023",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "emg-002",
+              "topicID": "emerging-markets",
+              "title": "Extreme Poverty",
+              "definition": "Extreme poverty is living below an international poverty line that the World Bank sets in purchasing-power terms, so that a dollar buys the same basket in every country. The line is revised as price data improve. Falling poverty in East and South Asia drove most of the decline since 1990; what remains is concentrated in Sub-Saharan Africa and in places affected by conflict.",
+              "example": "The international line is $3.00 a day at 2021 purchasing-power parity. In the World Bank's 2025 estimates about 831 million people lived below it, down from roughly 2.3 billion in 1990. An estimated 412 million children aged 17 or under lived in such households in 2024, and progress has slowed over the past decade.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "World Bank",
+                "documentTitle": "Poverty Overview",
+                "url": "https://www.worldbank.org/en/topic/poverty/overview",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars per day at 2021 PPP; million persons in extreme poverty",
+                "geography": "world",
+                "claimKind": "observation",
+                "observationPeriod": "1990 to 2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "emg-003",
+              "topicID": "emerging-markets",
+              "title": "Remittances",
+              "definition": "Remittances are money that migrants send home to family. For many developing countries they are a larger and steadier source of foreign currency than investment by foreign firms or aid from governments, because migrants keep sending even when the home economy is weak. The cost of sending money matters: every percentage point of fees is income that never arrives, which is why lowering that cost is a development goal in itself.",
+              "example": "Remittances to low- and middle-income countries reached $669 billion in 2023, up 3.8 percent, and exceeded foreign direct investment and official aid combined. The largest recipients were India at $125 billion, Mexico $67 billion, China $50 billion, the Philippines $40 billion and Egypt $24 billion. Sending $200 cost 6.2 percent on average in the second quarter of 2023.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "World Bank",
+                "documentTitle": "Remittance Flows Continue to Grow in 2023 Albeit at Slower Pace (Migration and Development Brief 39)",
+                "url": "https://www.worldbank.org/en/news/press-release/2023/12/18/remittance-flows-grow-2023-slower-pace-migration-development-brief",
+                "publicationDate": "2023-12-18",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of remittance inflows; percent growth; percent cost of sending $200",
+                "geography": "low- and middle-income countries",
+                "claimKind": "observation",
+                "observationPeriod": "2023",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "emg-004",
+              "topicID": "emerging-markets",
+              "title": "Foreign Direct Investment",
+              "definition": "Foreign direct investment is money a company puts into a lasting stake abroad: a factory, a mine, a subsidiary. It brings capital, technology and jobs and is harder to withdraw than a bond or a bank loan. Headline totals can mislead, because some flows merely pass through low-tax conduit economies on their way elsewhere without building anything, so analysts strip those out.",
+              "example": "Global FDI fell 11 percent in 2024 once volatile conduit flows are excluded, even though the headline rose 4 percent to $1.5 trillion. Flows to developed economies dropped 22 percent, with Europe down 58 percent. Developing economies were broadly stable: Southeast Asia rose 10 percent to $225 billion while Latin America fell 12 percent, and project finance dropped 26 percent.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "UN Trade and Development (UNCTAD)",
+                "documentTitle": "Global foreign direct investment falls for the second consecutive year, posing acute challenges to developing countries",
+                "url": "https://unctad.org/news/global-foreign-direct-investment-falls-second-consecutive-year-posing-acute-challenges",
+                "publicationDate": "2025-06-19",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of FDI inflows; percent change",
+                "geography": "world and regions",
+                "claimKind": "observation",
+                "observationPeriod": "2024",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "emg-005",
+              "topicID": "emerging-markets",
+              "title": "Borrowing in Someone Else's Currency",
+              "definition": "When a country borrows in a foreign currency at a floating interest rate, it takes on two risks it cannot control: the lender's central bank can raise rates, and its own currency can fall, making each repayment cost more at home. In the 1970s banks recycled oil exporters' surplus dollars into loans to Latin America on exactly those terms, and cheap real rates made the debt seem manageable.",
+              "example": "Latin American debt rose from $29 billion in 1970 to $159 billion in 1978 and $327 billion in 1982. When the United States tightened money to fight inflation, rates jumped and repayment periods shortened. In August 1982 Mexico announced it could not service its $80 billion debt; 16 Latin American countries and 11 others went on to reschedule.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Latin American Debt Crisis of the 1980s",
+                "url": "https://www.federalreservehistory.org/essays/latin-american-debt-crisis",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of external debt; count of countries rescheduling",
+                "geography": "Latin America",
+                "claimKind": "observation",
+                "observationPeriod": "1970 to 1982",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "emg-006",
+              "topicID": "emerging-markets",
+              "title": "The Lost Decade and the Brady Plan",
+              "definition": "A debt crisis becomes a lost decade when the cure, austerity to keep paying, chokes growth for years. Debt reduction breaks the cycle by writing part of the debt off in exchange for new bonds the borrower can service. Lenders accept a loss because a smaller debt that gets paid is worth more than a larger one that does not. Regulators first had to be sure the banks could absorb the write-offs.",
+              "example": "By 1982 the 9 largest U.S. banks held Latin American debt equal to 176 percent of their capital. The years 1982 to 1989 brought high unemployment, falling incomes per person and stagnant growth. The Brady plan of 1989 offered permanent relief: between 1989 and 1994 private lenders forgave $61 billion, about one-third of the debt.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Latin American Debt Crisis of the 1980s",
+                "url": "https://www.federalreservehistory.org/essays/latin-american-debt-crisis",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of bank capital; U.S. dollars of debt forgiven",
+                "geography": "Latin America and United States",
+                "claimKind": "observation",
+                "observationPeriod": "1982 to 1994",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "emg-007",
+              "topicID": "emerging-markets",
+              "title": "When a Peg Breaks: Asia, 1997",
+              "definition": "A currency peg fixes the exchange rate to the dollar. It invites firms and banks to borrow in dollars, often short term, because the rate seems guaranteed. If foreign lenders lose confidence and pull out, the central bank runs short of reserves and the peg breaks. The currency falls, and every dollar debt suddenly costs far more in local money, pushing borrowers into insolvency.",
+              "example": "On July 2, 1997 Thailand devalued its currency against the dollar, and the crisis spread to Malaysia, the Philippines, Indonesia, Hong Kong and South Korea through December 1998. Firms saw the local value of their foreign debts jump. The IMF, World Bank, Asian Development Bank and governments mobilized $118 billion for Thailand, Indonesia and South Korea, with reforms as conditions.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Asian Financial Crisis",
+                "url": "https://www.federalreservehistory.org/essays/asian-financial-crisis",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars of international financial support",
+                "geography": "Thailand, Indonesia, South Korea and other East Asian economies",
+                "claimKind": "observation",
+                "observationPeriod": "1997 to 1998",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "emg-008",
+              "topicID": "emerging-markets",
+              "title": "Spillovers to the Rest of the World",
+              "definition": "A crisis in emerging markets travels along two channels. Trade: collapsing demand and cheaper currencies mean cheaper exports, which lowers prices elsewhere. Finance: investors flee to the safest assets, usually U.S. Treasury bonds, pushing their yields down. So the same shock that devastates the crisis countries can arrive in rich economies as lower inflation and cheaper borrowing, at least at first.",
+              "example": "Before 1997 the affected Asian economies had grown 5 to 10 percent a year, which masked heavy short-term foreign borrowing and weak supervision. After July 1997 capital inflows slowed or reversed and several countries fell into deep recession, while the United States saw reduced inflation pressure from cheaper Asian imports and weaker commodity prices, and lower bond yields as money sought dollar assets.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
+                "documentTitle": "Asian Financial Crisis",
+                "url": "https://www.federalreservehistory.org/essays/asian-financial-crisis",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent annual GDP growth before the crisis",
+                "geography": "East Asia and United States",
+                "claimKind": "observation",
+                "observationPeriod": "1997 to 1998",
                 "retrievalDate": "2026-09-14"
               }
             }

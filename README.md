@@ -5,17 +5,79 @@ rates, GDP, trade) as swipeable daily cards. Educational only; not financial
 advice.
 
 - Bundle id: `com.nsantulli.econbyte` · ASC app id `6780714383`
-- Current version in this tree: **1.1.3 (build 14)** — live is 1.1.2 build 13
-- Freemium: Inflation + Interest Rates free; the other 8 topics behind
+- Current version in this tree: **1.1.4 (build 16)** — live is 1.1.2 build 13;
+  1.1.3 build 15 is in review. **1.1.4 has had no App Store Connect writes:** the
+  subscription and the four new pack products exist only in `EconByte.storekit`
+  until the Owner creates them (same ids, no code change needed).
+- Freemium: Inflation + Interest Rates free; the other 13 topics behind
   **Unlock All Topics** (`com.nsantulli.econbyte.unlockall`, $0.99). **Remove
   Ads** (`com.nsantulli.econbyte.removeads`, $0.99) is a separate purchase.
-  1.1.3 adds two **topic packs** — Markets & Investing Basics
-  (`com.nsantulli.econbyte.pack.markets`) and Personal Economics
-  (`com.nsantulli.econbyte.pack.personal`), $1.99 each, four topics × eight
-  sourced cards in `Resources/packs-v1.json`. Unlock All does **not** include
-  them (CONTENT-DECISIONS D18); each pack is readable only behind its own
-  verified entitlement, and owned packs' cards join the daily set.
+  Six **topic packs** at $1.99 each, four topics × eight sourced cards each in
+  `Resources/packs-v1.json`: Markets & Investing Basics (`pack.markets`),
+  Personal Economics (`pack.personal`) from 1.1.3, plus Economic History
+  (`pack.history`), Economies Around the World (`pack.world`), Economic Systems
+  (`pack.systems`) and Personal Finance (`pack.personalfinance`) from 1.1.4.
+  Unlock All does **not** include packs (CONTENT-DECISIONS D18).
+- **EconByte Pro** (1.1.4, D19): an auto-renewable subscription —
+  `com.nsantulli.econbyte.pro.monthly` $4.99/month, `…pro.annual` $29.99/year,
+  7-day free trial as an introductory offer — that unlocks three **courses**
+  (`Resources/courses-v1.json`), the **Daily Economic Brief**, every pack and
+  core topic, and removes ads while active. Packs bought outright stay owned
+  after a lapse. See "EconByte Pro" below.
 - To run it: see [RUN-ON-DEVICE.md](RUN-ON-DEVICE.md).
+
+## EconByte Pro (1.1.4)
+
+**Entitlement.** `PurchaseManager.isProActive` is true when
+`Transaction.currentEntitlements` carries a verified, unrevoked, unexpired
+transaction for either subscription id (StoreKit already excludes lapsed
+subscriptions and includes grace/billing-retry). It is mirrored to
+`iap.pro.active` for synchronous cold-launch gating, rechecked on launch, on
+foreground, and on `Transaction.updates`. `hasAccess(packProductID:)` = owned ∨
+Pro; `coreTopicsUnlocked` = Unlock All ∨ Pro; `adsSuppressed` = Remove Ads ∨ Pro.
+`EconEntitlements.pro` carries it into the ad policy, so a subscriber never has
+the ad SDK started or the ATT prompt asked.
+
+**Paywall** (`Views/ProPaywallView.swift`, App Review 3.1.2): the billed price
+is the largest element (plan cards + subscribe button); the "7-day free trial,
+then $X / period" line is smaller, beneath it, and shown **only** when
+`Product.SubscriptionInfo.isEligibleForIntroOffer` is true; what you get; the
+auto-renewal terms; Terms of Use (Apple's standard EULA) and Privacy Policy
+links; Restore. Prices are StoreKit `displayPrice`, never literals. The Unlock
+All paywall (`PaywallView`, "Purchases") is unchanged.
+
+**Courses** (`Content/CourseCatalog.swift`, `Resources/courses-v1.json`): three
+courses — Investing Approaches (6 lessons), Reading Price Charts (6), Bonds,
+Rates and the Yield Curve (6) — each lesson an ordered list of blocks
+(`paragraph`, `callout`, `keyTerms`, `diagram`, `chart`, `quiz`, `takeaways`).
+Charts are Swift Charts over **synthetic, labelled series** bundled in the block
+(no market data anywhere); diagrams are the nine SwiftUI drawings in
+`Views/Courses/DiagramView.swift`. The first lesson of every course is free.
+Progress is local (`CourseProgressStore`). Loader and validator fail closed;
+editorial rules (approved hosts, no advice/prediction framing, no named
+securities or brands, no stale wording) are enforced by `ProCoursesBriefTests`
+and mirrored in `scripts/validate_content.mjs` for writers.
+
+**Daily Brief** (`Content/DailyBrief.swift`, `Services/BriefStore.swift`,
+`Views/BriefView.swift`): a per-business-day JSON document produced server-side
+**from official releases only** (BLS, BEA, Census, Treasury, Federal Reserve,
+CBO and open-licence peers — the complete list is `DailyBrief.allowedHosts`),
+never a news site. The app fetches
+`https://dudleyapps.com/econbyte/brief/latest.json` (may 404 until the job
+exists), validates it fail-closed, caches the newest 30, and otherwise shows the
+bundled `Resources/brief-sample.json` (labelled SAMPLE, written from the
+2026-09-08…14 releases). Free readers see the headline and first item; Pro
+readers see everything. Server job spec: `docs/daily-brief/SERVER.md`.
+
+**Telemetry** (allowlisted, bucketed, tested): `pro_paywall_shown_v1`,
+`pro_trial_started_v1`, `pro_subscribed_v1`, `course_lesson_completed_v1`
+(`course_family` ∈ investing/charts/bonds + `quiz_correct`), `brief_opened_v1`
+(`access_state`, `brief_source`). No product id, price, expiry, lesson id, or
+headline can ride.
+
+**Content tooling:** `node scripts/validate_content.mjs packs|courses|brief
+<file> [--fragment] [--net]` — the writer-facing mirror of the Swift gates;
+contract in `docs/content/CONTENT-SCHEMA-1.1.4.md`.
 
 ## Build and test
 

@@ -6,6 +6,8 @@ struct SettingsView: View {
     /// Called when the user taps Unlock All; Settings dismisses first so the
     /// paywall is not a nested sheet (nested sheets break StoreKit on iPad).
     var onRequestPaywall: (() -> Void)? = nil
+    /// Same pattern for the EconByte Pro paywall (1.1.4).
+    var onRequestProPaywall: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var streak: StreakManager
@@ -36,6 +38,7 @@ struct SettingsView: View {
                 Econ.ocean.ignoresSafeArea()
                 List {
                     remindersSection
+                    proSection
                     purchasesSection
                     privacySection
                     #if DEBUG
@@ -105,10 +108,70 @@ struct SettingsView: View {
         }
     }
 
+    // MARK: - EconByte Pro (1.1.4)
+
+    /// Subscription status and the standard Manage link; or the way in. The
+    /// one-time purchases below stay their own section (D4/D18/D19).
+    private var proSection: some View {
+        Section {
+            if store.isProActive {
+                HStack {
+                    Text("EconByte Pro")
+                    Spacer()
+                    Text("Active ✓").foregroundColor(Econ.sky)
+                }
+                .accessibilityIdentifier("settingsProStatusRow")
+                if let plan = store.proProductID {
+                    HStack {
+                        Text("Plan")
+                        Spacer()
+                        Text(plan == PurchaseManager.ProductID.proAnnual.rawValue ? "Yearly" : "Monthly")
+                            .foregroundColor(Econ.subtext)
+                    }
+                }
+                if let expiration = store.proExpiration {
+                    HStack {
+                        Text("Current period ends")
+                        Spacer()
+                        Text(expiration.formatted(date: .abbreviated, time: .omitted))
+                            .foregroundColor(Econ.subtext)
+                    }
+                }
+                Link("Manage Subscription", destination: PurchaseManager.manageSubscriptionsURL)
+                    .accessibilityIdentifier("settingsManageSubscriptionLink")
+            } else {
+                Button {
+                    onRequestProPaywall?()
+                    dismiss()
+                } label: {
+                    HStack {
+                        Text("EconByte Pro")
+                        Spacer()
+                        if let monthly = store.product(for: .proMonthly)?.displayPrice {
+                            Text("from \(monthly) / month").foregroundColor(Econ.amber)
+                        } else {
+                            Text(PurchasePresentation.unavailablePrice).foregroundColor(Econ.amber)
+                        }
+                    }
+                }
+                .disabled(anyWorking)
+                .accessibilityIdentifier("settingsProButton")
+            }
+            Link("Terms of Use", destination: PurchaseManager.termsOfUseURL)
+                .accessibilityIdentifier("settingsTermsOfUseLink")
+        } header: {
+            Text("EconByte Pro")
+        } footer: {
+            Text(store.isProActive
+                 ? "While Pro is active you have the courses, the Daily Brief, every topic pack and every core topic, and no ads. Cancel any time from Manage Subscription; access continues to the end of the paid period. Packs you bought separately stay yours."
+                 : "A subscription with the three courses, the Daily Brief, every topic pack and core topic, and no ads. Renews automatically until cancelled. The first lesson of each course and the first item of each brief are free.")
+        }
+    }
+
     // MARK: - Purchases
 
-    /// Deliberately not labelled "Pro": the two products are independent
-    /// one-time purchases, not a bundle (design section 8).
+    /// Deliberately not labelled "Pro": the one-time products are independent
+    /// purchases, not a bundle (design section 8). Pro is its own section.
     private var purchasesSection: some View {
         Section {
             if store.isRemoveAdsPurchased {
@@ -175,7 +238,7 @@ struct SettingsView: View {
             } else if let error = store.productsLoadError, !store.productsReady {
                 Text(error)
             } else {
-                Text("Separate one-time purchases: Remove Ads does not unlock topics; Unlock All Topics opens every core topic and does not include the topic packs; each pack is its own unlock. Restore re-syncs all of them.")
+                Text("Separate one-time purchases: Remove Ads does not unlock topics; Unlock All Topics opens every core topic and does not include the topic packs; each pack is its own unlock and stays yours whether or not you subscribe to Pro. Restore re-syncs all of them.")
             }
         }
     }
@@ -304,6 +367,11 @@ struct SettingsView: View {
                 get: { store.isRemoveAdsPurchased },
                 set: { store.debugSetRemoveAds($0) }))
                 .tint(Econ.amber)
+            Toggle("🧪 EconByte Pro", isOn: Binding(
+                get: { store.isProActive },
+                set: { store.debugSetPro($0) }))
+                .tint(Econ.amber)
+                .accessibilityIdentifier("debugProToggle")
         } header: {
             Text("Debug — test only")
         } footer: {

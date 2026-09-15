@@ -16,13 +16,34 @@ struct HomeView: View {
     @State private var showBookmarks = false
     @State private var paywallSession: PaywallSession?
     @State private var pendingPaywallAfterSettings = false
+    // EconByte Pro (1.1.4): the brief and a course open as sheets; the Pro
+    // paywall is a full-screen cover presented from Home, so a sheet that
+    // wants it dismisses first and leaves the entry point here (same reason
+    // Settings does — nested presentation breaks StoreKit on iPad).
+    @StateObject private var courseProgress = CourseProgressStore.shared
+    @StateObject private var briefs = BriefStore.shared
+    @State private var showBrief = false
+    @State private var courseSession: CourseSession?
+    @State private var proPaywallSession: ProPaywallSession?
+    @State private var pendingProPaywall: EconEntryPoint?
 
     private let dailyGoal = 3
 
-    /// Content ids of the packs whose product StoreKit has verified. Drives
-    /// the daily-set pool and pack topic access; Unlock All is not consulted.
+    /// Content ids of the packs this reader may read: owned outright (a
+    /// verified entitlement for the pack's own product) or included by an
+    /// active Pro subscription (D19). Unlock All is not consulted (D18).
     private var ownedPackIDs: Set<String> {
-        Set(content.packs.filter { store.isPackPurchased(productID: $0.productID) }.map(\.id))
+        Set(content.packs.filter { store.hasAccess(packProductID: $0.productID) }.map(\.id))
+    }
+
+    private struct CourseSession: Identifiable {
+        let id = UUID()
+        let course: Course
+    }
+
+    private struct ProPaywallSession: Identifiable {
+        let id = UUID()
+        let entryPoint: EconEntryPoint
     }
 
     /// Atomic payload for the card-mode cover — carries the deck + title together
@@ -58,6 +79,7 @@ struct HomeView: View {
                         streakRow
                         Divider().overlay(Econ.mist.opacity(0.3))
                         browseSection
+                        proHubSection
                         packsSection
                         bookmarksRow
                     }
@@ -86,15 +108,41 @@ struct HomeView: View {
                 }
             }
             .sheet(isPresented: $showSettings) {
-                SettingsView(onRequestPaywall: { pendingPaywallAfterSettings = true })
+                SettingsView(onRequestPaywall: { pendingPaywallAfterSettings = true },
+                             onRequestProPaywall: { pendingProPaywall = .settings })
                     .environmentObject(streak)
                     .environmentObject(store)
                     .environmentObject(growth)
             }
             .onChange(of: showSettings) { showing in
-                guard !showing, pendingPaywallAfterSettings else { return }
-                pendingPaywallAfterSettings = false
-                paywallSession = PaywallSession(entryPoint: .settings)
+                guard !showing else { return }
+                if pendingPaywallAfterSettings {
+                    pendingPaywallAfterSettings = false
+                    paywallSession = PaywallSession(entryPoint: .settings)
+                }
+                presentPendingProPaywall()
+            }
+            .sheet(isPresented: $showBrief) {
+                BriefView(onProPaywall: { pendingProPaywall = .brief; showBrief = false })
+                    .environmentObject(store)
+                    .environmentObject(briefs)
+            }
+            .onChange(of: showBrief) { showing in
+                if !showing { presentPendingProPaywall() }
+            }
+            .sheet(item: $courseSession) { session in
+                CourseView(course: session.course,
+                           onProPaywall: { pendingProPaywall = .course; courseSession = nil })
+                    .environmentObject(store)
+                    .environmentObject(courseProgress)
+            }
+            .onChange(of: courseSession?.id) { id in
+                if id == nil { presentPendingProPaywall() }
+            }
+            .fullScreenCover(item: $proPaywallSession) { session in
+                ProPaywallView(entryPoint: session.entryPoint)
+                    .environmentObject(store)
+                    .environmentObject(growth)
             }
             .fullScreenCover(item: $cardModeSession) { session in
                 CardModeView(cards: session.cards, title: session.title,
@@ -130,6 +178,29 @@ struct HomeView: View {
     private func startTodaysSet(_ daily: [EconCard], from entryPoint: EBEntryPoint) {
         cardModeSession = CardModeSession(cards: daily, title: "Today's Set",
                                           mode: .daily, entryPoint: entryPoint)
+    }
+
+    /// Presents the Pro paywall a just-dismissed sheet asked for. Called from
+    /// each sheet's dismissal so the cover never stacks on top of a sheet.
+    private func presentPendingProPaywall() {
+        guard let entryPoint = pendingProPaywall else { return }
+        pendingProPaywall = nil
+        proPaywallSession = ProPaywallSession(entryPoint: entryPoint)
+    }
+
+    /// EconByte Pro on Home (1.1.4): brief, courses, and the call to action.
+    @ViewBuilder
+    private var proHubSection: some View {
+        if content.courses != nil || briefs.latest != nil {
+            ProHubSection(
+                onOpenBrief: { showBrief = true },
+                onOpenCourse: { course in courseSession = CourseSession(course: course) },
+                onProPaywall: { proPaywallSession = ProPaywallSession(entryPoint: .home) })
+                .environmentObject(content)
+                .environmentObject(store)
+                .environmentObject(courseProgress)
+                .environmentObject(briefs)
+        }
     }
 
     /// Test-only hook: exposes card `inf-001`'s full example as the grocery
@@ -187,7 +258,7 @@ struct HomeView: View {
     }
 
     private var todaysSetCard: some View {
-        let daily = content.dailySet(count: 8, unlockedAll: store.isUnlockAllPurchased,
+        let daily = content.dailySet(count: 8, unlockedAll: store.coreTopicsUnlocked,
                                      ownedPackIDs: ownedPackIDs)
         let seen = daily.filter { content.cardStates[$0.id]?.lastSeen != nil }.count
         // Completed = the user has met today's goal (same signal as the streak
@@ -257,7 +328,7 @@ struct HomeView: View {
                 .tracking(1.5)
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                 ForEach(content.topics) { topic in
-                    let locked = !content.isTopicFree(topic.id) && !store.isUnlockAllPurchased
+                    let locked = !content.isTopicFree(topic.id) && !store.coreTopicsUnlocked
                     Button {
                         if locked {
                             // RECONCILED (1.1.2): `topic_id` was allowed by
@@ -272,9 +343,9 @@ struct HomeView: View {
                                 entryPoint: .topicGrid,
                                 accessState: content.accessState(
                                     for: topic.id,
-                                    unlockedAll: store.isUnlockAllPurchased))
+                                    unlockedAll: store.coreTopicsUnlocked))
                             cardModeSession = CardModeSession(
-                                cards: content.cards(for: topic.id, unlockedAll: store.isUnlockAllPurchased),
+                                cards: content.cards(for: topic.id, unlockedAll: store.coreTopicsUnlocked),
                                 title: topic.name,
                                 mode: .topic,
                                 entryPoint: .topicGrid)
@@ -306,11 +377,11 @@ struct HomeView: View {
                         EBEvents.topicOpened(
                             entryPoint: .home,
                             accessState: content.accessState(for: topic.id,
-                                                             unlockedAll: store.isUnlockAllPurchased,
+                                                             unlockedAll: store.coreTopicsUnlocked,
                                                              ownedPackIDs: owned))
                         cardModeSession = CardModeSession(
                             cards: content.cards(for: topic.id,
-                                                 unlockedAll: store.isUnlockAllPurchased,
+                                                 unlockedAll: store.coreTopicsUnlocked,
                                                  ownedPackIDs: owned),
                             title: topic.name,
                             mode: .topic,

@@ -137,6 +137,21 @@ enum TelemetrySchema {
         "analytics_consent_changed_v1": ["enabled", "entry_point"],
         "diagnostics_consent_changed_v1": ["enabled", "entry_point"],
         "ad_dismissed_v1": ["placement", "outcome"],
+        // EconByte Pro (1.1.4, plan §3.5). The subscription paywall is a
+        // separate surface from the Unlock All paywall, so it has its own
+        // event; `trial_eligible` is StoreKit's own answer, so the funnel can
+        // be read for people who were and were not offered the trial. The two
+        // outcome events split a started free trial from a paid start, by
+        // family only — never a price, a transaction id, or an expiry.
+        "pro_paywall_shown_v1": ["entry_point", "products_ready", "trial_eligible"],
+        "pro_trial_started_v1": ["product_family"],
+        "pro_subscribed_v1": ["product_family"],
+        // Courses: which of the three courses and whether the lesson's quiz was
+        // answered right. No lesson id (a content identifier) and no score.
+        "course_lesson_completed_v1": ["course_family", "quiz_correct"],
+        // Daily Brief: whether the reader saw the free teaser or the whole
+        // brief, and where the brief came from (bundled sample, network, cache).
+        "brief_opened_v1": ["access_state", "brief_source"],
     ]
 
     static var allowedEventNames: Set<String> { Set(allowedProperties.keys) }
@@ -147,9 +162,11 @@ enum TelemetrySchema {
     /// end reason is `reason` and the ad-suppression reason is `suppression`.
     static let propertyKinds: [String: TelemetryPropertyKind] = [
         "mode": .enumerated(["daily", "topic", "bookmarks"]),
+        // 1.1.4 adds `course` (a locked lesson) and `brief` (the locked part of
+        // the Daily Brief) as places the Pro paywall can be entered from.
         "entry_point": .enumerated(["home", "home_highlight", "topic_grid",
                                     "bookmarks", "settings", "paywall",
-                                    "session_complete"]),
+                                    "session_complete", "course", "brief"]),
         "direction": .enumerated(["forward", "back"]),
         "reason": .enumerated(["completed", "user_exit"]),
         "action": .enumerated(["added", "removed"]),
@@ -163,7 +180,14 @@ enum TelemetrySchema {
         "outcome": .enumerated(["completed", "cancelled", "pending", "failed",
                                 "unavailable", "loaded", "filled", "no_fill",
                                 "nothing_to_restore"]),
-        "product_family": .enumerated(["unlock_all", "remove_ads", "pack_markets", "pack_personal"]),
+        "product_family": .enumerated(["unlock_all", "remove_ads",
+                                       "pack_markets", "pack_personal", "pack_history",
+                                       "pack_world", "pack_systems", "pack_personalfinance",
+                                       "pro_monthly", "pro_annual"]),
+        // The three Pro courses, as a closed vocabulary rather than a course id
+        // token, so a fourth course cannot be measured without a schema change.
+        "course_family": .enumerated(["investing", "charts", "bonds"]),
+        "brief_source": .enumerated(["bundled", "network", "cache"]),
         "suppression": .enumerated(["region_restricted", "ads_removed"]),
         // The interstitial's one placement plus, from 1.1.3, the two anchored
         // banner slots. Declared as a vocabulary rather than a token so a new
@@ -190,6 +214,8 @@ enum TelemetrySchema {
         "products_ready": .flag,
         "granted": .flag,
         "enabled": .flag,
+        "trial_eligible": .flag,
+        "quiz_correct": .flag,
     ]
 
     /// The enumerated vocabularies, exposed for tests and for the privacy
@@ -219,7 +245,10 @@ enum TelemetrySchema {
         // StoreKit and money
         "price", "display_price", "amount", "revenue", "product_id",
         "transaction_id", "original_transaction_id", "receipt", "account_id",
-        "app_account_token",
+        "app_account_token", "expiration_date", "renewal_date", "subscription_status",
+        // course and brief content (1.1.4)
+        "lesson_id", "course_id", "quiz_answer", "quiz_score", "brief_id", "brief_date",
+        "headline",
         // advertising and consent
         "advertising_id", "idfa", "idfv", "ad_unit_id", "ad_id", "consent_string",
         "consent_state", "att_status",

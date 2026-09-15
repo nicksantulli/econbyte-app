@@ -49,8 +49,8 @@ settings:
     # archived Info.plist is what App Store Connect reads, and this file only
     # reproduces the project. EconByte is a COMMITTED-pbxproj app: this file is
     # documentation, never a generator input (never run xcodegen here).
-    MARKETING_VERSION: "1.1.3"
-    CURRENT_PROJECT_VERSION: "15"
+    MARKETING_VERSION: "1.1.4"
+    CURRENT_PROJECT_VERSION: "16"
     DEVELOPMENT_TEAM: "" # Owner fills in for signing — never hardcode here
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: NO

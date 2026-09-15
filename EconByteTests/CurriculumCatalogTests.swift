@@ -814,8 +814,9 @@ final class PackCatalogTests: XCTestCase {
         XCTAssertEqual(packs.schemaVersion, 1)
         XCTAssertEqual(packs.packs.map(\.packID), PackCatalog.expectedPacks.map(\.packID))
         XCTAssertEqual(packs.packs.map(\.productID), PackCatalog.expectedProductIDs)
-        XCTAssertEqual(packs.allTopics.count, 8)
+        XCTAssertEqual(packs.allTopics.count, PackCatalog.expectedPackCount * 4)
         XCTAssertEqual(packs.allCards.count, PackCatalog.expectedCardCount)
+        XCTAssertEqual(PackCatalog.expectedPackCount, 6, "1.1.4 ships six packs (two from 1.1.3 + four new)")
         for pack in packs.packs {
             XCTAssertEqual(pack.topics.count, 4, pack.packID)
             XCTAssertFalse(pack.summary.isEmpty)

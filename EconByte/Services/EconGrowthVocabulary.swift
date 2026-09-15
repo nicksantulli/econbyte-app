@@ -22,6 +22,9 @@ public enum EconEntryPoint: String, CaseIterable, Equatable {
     case sessionComplete = "session_complete"
     case paywall
     case bookmarks
+    /// 1.1.4: the Pro paywall's two content entry points.
+    case course
+    case brief
 }
 
 public enum EconLaunchType: String, CaseIterable, Equatable {
@@ -116,6 +119,8 @@ extension EconEntryPoint {
         case .sessionComplete: return .sessionComplete
         case .paywall:         return .paywall
         case .bookmarks:       return .bookmarks
+        case .course:          return .course
+        case .brief:           return .brief
         }
     }
 }

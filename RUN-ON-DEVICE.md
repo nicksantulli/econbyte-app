@@ -5,22 +5,87 @@ language on the front, a sourced real-world example on the back. The iOS
 Simulator shows the complete experience. This is a plain Xcode run, **not**
 TestFlight — nothing gets submitted to Apple.
 
-> **Which version this describes.** This guide describes the **1.1 growth
-> branch** (`codex/econbyte-1.1`), which is what is in this working copy. The
-> project still declares `MARKETING_VERSION 1.0` / build `3`; bumping the version
-> and build number is Task 6's job, not something to change while testing.
+> **Which version this describes.** **1.1.4 (build 16)**, branch
+> `claude/econbyte-114-pro` in `~/Documents/GitHub/econbyte-app`. It adds the
+> EconByte Pro subscription, three courses, the Daily Brief, and four more topic
+> packs. Nothing in 1.1.4 has been written to App Store Connect: the
+> subscription and the new packs exist only in `EconByte.storekit`, so the
+> **StoreKit configuration is the only way to buy them** — see "EconByte Pro on
+> your iPhone" below.
 
 ## Simulator — the 30-second version (recommended first test)
 
-1. `cd ~/Documents/GitHub/Dudley-Development/workspaces/econbyte-ios`
-2. `git checkout codex/econbyte-1.1`
+1. `cd ~/Documents/GitHub/econbyte-app`
+2. `git checkout claude/econbyte-114-pro`
 3. **Open the project:** `open EconByte.xcodeproj`
 4. In Xcode's destination dropdown (next to the ▶︎ Run button) pick any
    **iPhone simulator**.
 5. Press **⌘R**.
 
-The scheme already points at `EconByte.storekit`, so you can buy and restore
-both in-app purchases in the Simulator without App Store Connect.
+The scheme already points at `EconByte.storekit` (Run and Test actions), so you
+can buy and restore every product — the one-time purchases, the six packs, and
+the two Pro subscriptions with their 7-day free trial — in the Simulator without
+App Store Connect.
+
+## EconByte Pro on your iPhone (1.1.4)
+
+Two ways to get the build onto the phone; only the first can exercise the
+subscription.
+
+**A. Run from Xcode (StoreKit configuration attached — use this to test the
+trial and the subscription).** Xcode applies the scheme's `.storekit` file to a
+device run exactly as it does to a simulator run (StoreKit Testing in Xcode,
+Xcode 12+). Plug in the iPhone 17 Pro, pick it as the destination, **⌘R**. Then:
+
+1. Home → the **ECONBYTE PRO** section → "Try EconByte Pro free for 7 days" (the
+   trial line appears only because the local config reports you eligible).
+2. The paywall shows **$29.99 / year** and **$4.99 / month** as the big figures,
+   the trial line under the Subscribe button, Terms of Use + Privacy links, and
+   Restore. Subscribe → the StoreKit test sheet → confirm.
+3. Home now shows "Active ✓"; every pack reads "Included with Pro ✓"; every core
+   topic opens; the banner and interstitial are gone; the Daily Brief and all
+   lessons open. Settings → EconByte Pro shows plan, period end, Manage link.
+4. To watch a lapse: Xcode → Debug → StoreKit → **Manage Transactions**, delete
+   or expire the subscription (or turn on the config's time-rate acceleration).
+   Access reverts; a pack you bought outright stays owned.
+5. Renewals under the test config are accelerated per the file's settings, so a
+   "month" can pass in minutes — handy for the renewal event.
+
+**B. Install with `devicectl` (what the lane's proof used).** A plain
+`xcodebuild … build` + `xcrun devicectl device install app` produces a working
+Debug build, but the StoreKit configuration is **not** attached, so the store
+returns no products (they do not exist in ASC yet): prices show "—" and buy
+controls stay disabled by design. To see the Pro surfaces anyway, use the
+DEBUG-only switch: Settings → Debug — test only → **🧪 EconByte Pro**, or launch
+with `-econDebugPro`. This flips `isProActive` without StoreKit and is compiled
+out of Release.
+
+```
+xcodebuild build -project EconByte.xcodeproj -scheme EconByte -configuration Debug \
+  -destination 'id=21CDCD83-9AC8-54DC-8597-EA0D3F6F0384' \
+  -derivedDataPath ~/Library/Developer/Xcode/DerivedData/EconByte-claude \
+  -allowProvisioningUpdates DEVELOPMENT_TEAM=Q2DM9FSRL4 CODE_SIGN_STYLE=Automatic
+xcrun devicectl device install app --device 21CDCD83-9AC8-54DC-8597-EA0D3F6F0384 \
+  ~/Library/Developer/Xcode/DerivedData/EconByte-claude/Build/Products/Debug-iphoneos/EconByte.app
+xcrun devicectl device process launch --device 21CDCD83-9AC8-54DC-8597-EA0D3F6F0384 com.nsantulli.econbyte
+```
+
+**What to check in Pro**
+- A course: Home → course row → lesson 1 is free ("Free preview"); lesson 2+
+  shows a lock and opens the Pro paywall when Pro is off. Inside a lesson: the
+  educational notice at the top, paragraphs, key terms, a chart (Swift Charts
+  with a "Synthetic …" note under it) or a diagram, one Quick Check quiz (tap a
+  choice → verdict + explanation; the first answer is the one recorded), the
+  takeaways, the sources. "Mark complete, next lesson" advances and fills the
+  progress ring on Home.
+- The Daily Brief: Home → Daily Brief. Without Pro: headline + the first
+  released item, then the lock. With Pro: What was released (figures, what it
+  says, why it matters, source link + read time), Scheduled this week, One
+  concept to know, Past briefs. The SAMPLE badge means the bundled edition is
+  showing (the live endpoint 404s until the server job exists; that is fail-soft
+  and expected). "?" in the toolbar → How this brief is made.
+- Packs: the four new packs appear under TOPIC PACKS with previews and buy rows
+  (local StoreKit prices under A; "—" under B).
 
 That's it — Dudley studio intro → home screen → today's 8-card set → advance
 through cards → tap a card to flip it for the sourced example.
@@ -111,9 +176,11 @@ Add these under Product → Scheme → Edit Scheme → Run → Arguments:
 | Argument | Effect |
 |---|---|
 | `-skipStudioIntro` | Skips the ~4s Dudley studio intro |
-| `-econResetGrowthState` | Resets to a fresh-install posture: consent, reminders, ad counters, review progress, card state, and streak |
+| `-econResetGrowthState` | Resets to a fresh-install posture: consent, reminders, ad counters, review progress, card state, course progress, and streak |
+| `-econDebugPro` | Reports EconByte Pro as active without StoreKit (1.1.4; for `devicectl` installs and screenshots) |
+| `-econDisableAds` | Reports the device as ad-restricted so no ad request races a UI test |
 
-Both are used by the UI test suite. Neither exists in a Release build.
+All are used by the UI test suite. None exists in a Release build.
 
 ## Run on a real iPhone (optional)
 

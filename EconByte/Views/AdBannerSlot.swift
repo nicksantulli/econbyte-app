@@ -11,7 +11,8 @@ import SwiftUI
 // `rdp=1`) like every other request in the app.
 //
 // It is policy-gated exactly like the interstitial. The view is not even
-// constructed for a Remove Ads owner, for a reader in the EEA/UK (DUD-224), or
+// constructed for a Remove Ads owner or an EconByte Pro subscriber (1.1.4,
+// D19), for a reader in the EEA/UK (DUD-224), or
 // before the tracking decision (`EconMonetization.canRequestAds`, the build-13
 // 5.1.2(i) ordering gate), so for them no banner is ever requested and the ad
 // SDK is never touched. It reserves no space until an ad has actually loaded —
@@ -27,7 +28,7 @@ struct AdBannerSlot: View {
 
     var body: some View {
         if let unit = EconAdUnit.banner,
-           !purchases.isRemoveAdsPurchased,
+           !purchases.adsSuppressed,
            monetization.didStartSDK,
            monetization.canRequestAds {
             GeometryReader { geo in

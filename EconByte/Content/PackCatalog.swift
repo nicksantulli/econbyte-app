@@ -53,7 +53,8 @@ public struct PackCurriculum: Codable, Hashable {
 public enum PackCatalog {
 
     public static let resourceName = "packs-v1"
-    public static let expectedPackCount = 2
+    /// Two packs shipped in 1.1.3 (build 15); four more in 1.1.4 (plan §2.4).
+    public static let expectedPackCount = 6
     public static let expectedTopicsPerPack = 4
     public static let expectedCardsPerTopic = 8
     public static var expectedCardCount: Int {
@@ -62,11 +63,17 @@ public enum PackCatalog {
     /// A locked offer previews this many cards.
     public static let previewCount = 3
 
-    /// Ordered pack contract: content id → App Store Connect product id
-    /// (both created 2026-09-14, Phase 2 lane).
+    /// Ordered pack contract: content id → App Store Connect product id. The
+    /// first two were created in ASC 2026-09-14 (Phase 2 lane); the four 1.1.4
+    /// packs exist in `EconByte.storekit` only until the Owner creates them
+    /// (no ASC writes in the 1.1.4 lane). The ids are the contract either way.
     public static let expectedPacks: [(packID: String, productID: String)] = [
         ("markets", "com.nsantulli.econbyte.pack.markets"),
         ("personal", "com.nsantulli.econbyte.pack.personal"),
+        ("history", "com.nsantulli.econbyte.pack.history"),
+        ("world", "com.nsantulli.econbyte.pack.world"),
+        ("systems", "com.nsantulli.econbyte.pack.systems"),
+        ("personalfinance", "com.nsantulli.econbyte.pack.personalfinance"),
     ]
 
     public static var expectedProductIDs: [String] { expectedPacks.map(\.productID) }

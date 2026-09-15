@@ -157,18 +157,23 @@ public enum EconAdOutcome: Equatable {
 // MARK: - Entitlements
 
 /// The two approved non-consumables are independent: buying one never implies
-/// the other (design section 8, `CONTENT-DECISIONS.md` D4).
+/// the other (design section 8, `CONTENT-DECISIONS.md` D4). EconByte Pro (1.1.4,
+/// D19) is the one product that spans both: while it is active the core topics
+/// are readable and no ad is requested, without touching either one-time flag.
 public struct EconEntitlements: Equatable {
     public var unlockAll: Bool
     public var removeAds: Bool
+    /// An active EconByte Pro subscription (verified, unrevoked, unexpired).
+    public var pro: Bool
 
-    public init(unlockAll: Bool = false, removeAds: Bool = false) {
+    public init(unlockAll: Bool = false, removeAds: Bool = false, pro: Bool = false) {
         self.unlockAll = unlockAll
         self.removeAds = removeAds
+        self.pro = pro
     }
 
-    public var paidTopicsUnlocked: Bool { unlockAll }
-    public var adsSuppressed: Bool { removeAds }
+    public var paidTopicsUnlocked: Bool { unlockAll || pro }
+    public var adsSuppressed: Bool { removeAds || pro }
 
     /// Verified StoreKit truth always wins, so a refund or revocation takes
     /// effect immediately rather than waiting for the cache to expire.
@@ -424,9 +429,10 @@ public final class EconMonetization: ObservableObject {
 
     /// Whether the ATT prompt is still owed to this reader.
     ///
-    /// No prompt when ads are off for this install: a Remove Ads owner and a
-    /// reader in the EEA/UK (DUD-224) will never see an ad, so asking them for
-    /// tracking permission would be asking for something the app does not use.
+    /// No prompt when ads are off for this install: a Remove Ads owner, a Pro
+    /// subscriber, and a reader in the EEA/UK (DUD-224) will never see an ad, so
+    /// asking them for tracking permission would be asking for something the
+    /// app does not use.
     public var shouldRequestTrackingAuthorization: Bool {
         guard !didRequestTrackingPrompt else { return false }
         guard !entitlements.adsSuppressed else { return false }
@@ -668,7 +674,8 @@ final class EconGrowth: ObservableObject {
     func syncEntitlements(from store: PurchaseManager) {
         monetization.update(entitlements: EconEntitlements(
             unlockAll: store.isUnlockAllPurchased,
-            removeAds: store.isRemoveAdsPurchased))
+            removeAds: store.isRemoveAdsPurchased,
+            pro: store.isProActive))
     }
 
     func reportContentLoadFailureIfNeeded(_ store: ContentStore) {
@@ -762,6 +769,7 @@ final class EconGrowth: ObservableObject {
         EconDiagnosticLog.resetPersistedState(in: defaults)
         ReviewRequestCoordinator.resetPersistedState(in: defaults)
         NotificationCoordinator.resetPersistedState(in: defaults)
+        CourseProgressStore.resetPersistedState(in: defaults)
         defaults.removeObject(forKey: ContentStore.cardStatesDefaultsKey)
         for key in ["currentStreak", "lastStreakDate", "cardsTodayCount",
                     "cardsTodayDate", "seenOnboarding"] {

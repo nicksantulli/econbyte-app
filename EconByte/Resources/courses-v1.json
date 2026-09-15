@@ -1,0 +1,4323 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "1.1.4-courses-1",
+  "verifiedOn": "2026-09-14",
+  "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+  "educationalNotice": "Educational content only — not investment advice. Nothing here recommends any investment or predicts any price.",
+  "editorialPolicy": "Every lesson cites public primary sources (SEC/investor.gov, FINRA, Federal Reserve and Reserve Banks, Treasury and TreasuryDirect, NBER) with canonical https URLs re-verified on 2026-09-14. Charts plot clearly labelled synthetic series designed to show a mechanism; no real market data is shown anywhere. Diagrams are schematic drawings. Content explains mechanisms and documented evidence in plain English and contains no recommendations, predictions, or named securities, funds, brokerages, or trademarked indexes.",
+  "courses": [
+    {
+      "courseID": "investing-approaches",
+      "title": "Investing Approaches",
+      "icon": "chart.pie.fill",
+      "level": "intro",
+      "summary": "Six short lessons on the mechanics behind common investing approaches: how risk and return relate, why diversification works, what index and active funds do, what value, growth and dividend labels mean, how regular buying and rebalancing work, and how fees compound.",
+      "estimatedMinutes": 38,
+      "lessons": [
+        {
+          "lessonID": "ia-01",
+          "title": "Risk and Return",
+          "summary": "What a return is, what risk really means, and why the two are inseparable.",
+          "estimatedMinutes": 6,
+          "isPreview": true,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A return is what an investment gives back to its owner over a period, measured against what was paid for it. It has two parts. Income is cash the asset pays out while it is held, such as interest on a bond or a dividend on a share. A capital gain or loss is the change in the asset's price between purchase and sale. Add the two together, divide by the starting amount, and you have the total return for the period, usually written as a percentage per year."
+            },
+            {
+              "type": "paragraph",
+              "text": "Risk is the word for uncertainty about that return. It has two faces. Variability means the return swings from period to period, so the holding's value is hard to predict at any given date. Loss means the return can be negative, so an owner can end up with less than they started with, or with nothing. An asset can be highly variable yet rarely lose money over long stretches, or steady for years and then fail completely, so both faces matter."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Return",
+                  "definition": "Income received plus any change in price, expressed as a share of the amount originally paid, over a stated period."
+                },
+                {
+                  "term": "Volatility",
+                  "definition": "How widely an asset's return swings from period to period; a measure of variability, not of direction."
+                },
+                {
+                  "term": "Risk premium",
+                  "definition": "The extra return, on average and over long periods, that holders of a variable asset have received compared with a steady one."
+                },
+                {
+                  "term": "Time horizon",
+                  "definition": "The number of months, years, or decades before the money is needed; a longer horizon gives more room to wait out swings."
+                }
+              ]
+            },
+            {
+              "type": "diagram",
+              "diagramID": "risk-return-ladder",
+              "caption": "A ladder of asset types. Each step up, from cash and short-term government bills to bonds to shares, carries a higher expected return and wider swings around it. The ladder shows a tendency observed over long periods, not a promise for any single year."
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-01-two-paths",
+              "kind": "line",
+              "title": "Two synthetic paths over 24 months",
+              "caption": "Both paths start at 100. The steady path rises a little every month. The volatile path swings up and down and ends higher, but an owner who had to sell in month 9 or month 17 would have taken a loss. The chart shows how variability and loss are two different things.",
+              "xLabel": "Month",
+              "yLabel": "Value (index, start = 100)",
+              "dataNote": "Synthetic illustration — not real market data. Both series are invented to show the mechanism.",
+              "series": [
+                {
+                  "name": "Steady path (illustrative)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 100.35
+                    },
+                    {
+                      "x": 2,
+                      "y": 100.7
+                    },
+                    {
+                      "x": 3,
+                      "y": 101.05
+                    },
+                    {
+                      "x": 4,
+                      "y": 101.41
+                    },
+                    {
+                      "x": 5,
+                      "y": 101.76
+                    },
+                    {
+                      "x": 6,
+                      "y": 102.12
+                    },
+                    {
+                      "x": 7,
+                      "y": 102.48
+                    },
+                    {
+                      "x": 8,
+                      "y": 102.83
+                    },
+                    {
+                      "x": 9,
+                      "y": 103.19
+                    },
+                    {
+                      "x": 10,
+                      "y": 103.56
+                    },
+                    {
+                      "x": 11,
+                      "y": 103.92
+                    },
+                    {
+                      "x": 12,
+                      "y": 104.28
+                    },
+                    {
+                      "x": 13,
+                      "y": 104.65
+                    },
+                    {
+                      "x": 14,
+                      "y": 105.01
+                    },
+                    {
+                      "x": 15,
+                      "y": 105.38
+                    },
+                    {
+                      "x": 16,
+                      "y": 105.75
+                    },
+                    {
+                      "x": 17,
+                      "y": 106.12
+                    },
+                    {
+                      "x": 18,
+                      "y": 106.49
+                    },
+                    {
+                      "x": 19,
+                      "y": 106.86
+                    },
+                    {
+                      "x": 20,
+                      "y": 107.24
+                    },
+                    {
+                      "x": 21,
+                      "y": 107.61
+                    },
+                    {
+                      "x": 22,
+                      "y": 107.99
+                    },
+                    {
+                      "x": 23,
+                      "y": 108.37
+                    },
+                    {
+                      "x": 24,
+                      "y": 108.75
+                    }
+                  ]
+                },
+                {
+                  "name": "Volatile path (illustrative)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 103.5
+                    },
+                    {
+                      "x": 2,
+                      "y": 100.6
+                    },
+                    {
+                      "x": 3,
+                      "y": 104.83
+                    },
+                    {
+                      "x": 4,
+                      "y": 99.48
+                    },
+                    {
+                      "x": 5,
+                      "y": 102.07
+                    },
+                    {
+                      "x": 6,
+                      "y": 108.19
+                    },
+                    {
+                      "x": 7,
+                      "y": 103.43
+                    },
+                    {
+                      "x": 8,
+                      "y": 105.29
+                    },
+                    {
+                      "x": 9,
+                      "y": 98.66
+                    },
+                    {
+                      "x": 10,
+                      "y": 103.79
+                    },
+                    {
+                      "x": 11,
+                      "y": 107.84
+                    },
+                    {
+                      "x": 12,
+                      "y": 105.47
+                    },
+                    {
+                      "x": 13,
+                      "y": 110.53
+                    },
+                    {
+                      "x": 14,
+                      "y": 106.55
+                    },
+                    {
+                      "x": 15,
+                      "y": 109.64
+                    },
+                    {
+                      "x": 16,
+                      "y": 115.89
+                    },
+                    {
+                      "x": 17,
+                      "y": 109.51
+                    },
+                    {
+                      "x": 18,
+                      "y": 112.91
+                    },
+                    {
+                      "x": 19,
+                      "y": 111.33
+                    },
+                    {
+                      "x": 20,
+                      "y": 116.45
+                    },
+                    {
+                      "x": 21,
+                      "y": 112.02
+                    },
+                    {
+                      "x": 22,
+                      "y": 114.71
+                    },
+                    {
+                      "x": 23,
+                      "y": 120.79
+                    },
+                    {
+                      "x": 24,
+                      "y": 118.5
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 9,
+                  "label": "Dip"
+                },
+                {
+                  "x": 17,
+                  "label": "Dip"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Why do risk and return travel together? Because buyers set prices. Nobody accepts wide swings and a real chance of loss for the same expected payoff a steady asset offers. So a variable asset only finds buyers at a price low enough that its expected return is higher. That gap is the risk premium. It is a tendency across many assets and many years, not a rule for any one asset: more risk widens the range of outcomes, including the bad ones."
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "This lesson explains how risk and return are related. It does not say how much risk anyone ought to take. That depends on personal circumstances, goals, and time horizon, which no lesson can know."
+            },
+            {
+              "type": "quiz",
+              "question": "Which statement best describes the link between risk and expected return?",
+              "choices": [
+                "Riskier assets always earn more in every year",
+                "Riskier assets tend to offer a higher expected return because buyers demand compensation for uncertainty",
+                "Risk and return are unrelated",
+                "Steady assets offer the highest returns over long periods"
+              ],
+              "answerIndex": 1,
+              "explanation": "Buyers only accept wider swings and possible loss at a price that offers a higher expected payoff. That relationship holds on average and over time, never as a guarantee for any single asset or year."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Return = income received + price change, measured against the starting amount.",
+                "Risk has two faces: variability of the return and the chance of outright loss.",
+                "Higher expected return is the market's compensation for accepting more uncertainty.",
+                "The relationship is a long-run tendency, not a promise for any one asset or year."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Risk",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Beginners’ Guide to Asset Allocation, Diversification, and Rebalancing",
+              "url": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "ia-02",
+          "title": "Diversification",
+          "summary": "Why spreading money across many holdings smooths the ride, and which kind of risk it cannot remove.",
+          "estimatedMinutes": 6,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Diversification means spreading money across many different holdings instead of concentrating it in one. To see why it works, split risk into two kinds. Idiosyncratic risk is specific to one company or one asset: a product fails, a factory floods, a manager leaves. Market risk is shared by nearly everything at once: a recession, a jump in interest rates, a global shock. The first kind can be diluted by owning many things. The second kind cannot."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "diversification-basket",
+              "caption": "One basket holding one egg, next to many baskets each holding one egg. A shock hits one basket. On the left the whole holding is lost; on the right a single egg is lost and the rest are untouched. Diversification does not stop shocks, it limits how much any one shock can do."
+            },
+            {
+              "type": "paragraph",
+              "text": "The mechanism is averaging. Company-specific shocks are largely independent: a bad year for one firm says little about the next. Added together, many independent ups and downs partly cancel, so the combined return swings far less than any single piece. The more holdings, and the less alike they are, the stronger the effect. The SEC's guide notes that a stock portion made of only four or five companies is not diversified, and that it takes at least a dozen carefully chosen companies to get there."
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-02-single-vs-basket",
+              "kind": "bar",
+              "title": "Yearly returns: one holding vs a basket of 20",
+              "caption": "Ten illustrative years. The single holding swings between a 31 percent gain and a 24 percent loss. The basket of 20 holdings moves in the same direction most years but within a much narrower band, because the company-specific surprises partly cancel. The basket still has down years: shared market risk remains.",
+              "xLabel": "Year (illustrative)",
+              "yLabel": "Return, percent",
+              "dataNote": "Synthetic illustration — not real market data. Both series are invented to show how averaging narrows the range.",
+              "series": [
+                {
+                  "name": "One holding (illustrative)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 12
+                    },
+                    {
+                      "x": 2,
+                      "y": -18
+                    },
+                    {
+                      "x": 3,
+                      "y": 27
+                    },
+                    {
+                      "x": 4,
+                      "y": -9
+                    },
+                    {
+                      "x": 5,
+                      "y": 31
+                    },
+                    {
+                      "x": 6,
+                      "y": -24
+                    },
+                    {
+                      "x": 7,
+                      "y": 8
+                    },
+                    {
+                      "x": 8,
+                      "y": 22
+                    },
+                    {
+                      "x": 9,
+                      "y": -15
+                    },
+                    {
+                      "x": 10,
+                      "y": 19
+                    }
+                  ]
+                },
+                {
+                  "name": "Basket of 20 holdings (illustrative)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 7
+                    },
+                    {
+                      "x": 2,
+                      "y": -4
+                    },
+                    {
+                      "x": 3,
+                      "y": 11
+                    },
+                    {
+                      "x": 4,
+                      "y": 2
+                    },
+                    {
+                      "x": 5,
+                      "y": 9
+                    },
+                    {
+                      "x": 6,
+                      "y": -8
+                    },
+                    {
+                      "x": 7,
+                      "y": 5
+                    },
+                    {
+                      "x": 8,
+                      "y": 10
+                    },
+                    {
+                      "x": 9,
+                      "y": -3
+                    },
+                    {
+                      "x": 10,
+                      "y": 8
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "What diversification cannot do is remove market risk. If a recession pulls down almost every company, owning 500 of them instead of 5 helps little, because the shock is shared rather than specific. That is why a well-spread basket of shares still has losing years. Spreading across asset categories, for example holding bonds and cash alongside shares, can soften this further, because the categories have historically not moved together. Even so, nothing removes the risk of the market as a whole. Diversification narrows the range of outcomes; it does not guarantee a gain or rule out a loss."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Idiosyncratic risk",
+                  "definition": "Risk that belongs to one company or asset alone, such as a failed product or a lawsuit; it can be diluted by holding many assets."
+                },
+                {
+                  "term": "Market risk",
+                  "definition": "Risk shared by nearly all assets at once, such as a recession or a rate shock; it cannot be diversified away."
+                },
+                {
+                  "term": "Correlation",
+                  "definition": "How closely two assets' returns move together; the lower it is, the more their swings cancel when combined."
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "This lesson describes what diversification does and does not do. It is not a suggestion about how many holdings anyone needs or which ones to own."
+            },
+            {
+              "type": "quiz",
+              "question": "A person owns shares in 40 companies spread across many industries. A deep recession arrives. What is most likely?",
+              "choices": [
+                "The holding is unaffected because it is diversified",
+                "The holding falls, because a recession is market risk that diversification does not remove",
+                "Exactly one of the 40 companies falls and the rest are untouched"
+              ],
+              "answerIndex": 1,
+              "explanation": "Diversification dilutes company-specific shocks. A recession is a shared shock that pulls down most companies together, so a spread-out holding still declines, though usually less erratically than any single company."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Idiosyncratic risk is specific to one asset; market risk is shared by nearly all assets.",
+                "Owning many unlike holdings lets specific shocks partly cancel, narrowing the range of outcomes.",
+                "Market risk remains no matter how many holdings are added.",
+                "Diversification limits damage from any one shock; it does not guarantee a gain."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Beginners’ Guide to Asset Allocation, Diversification, and Rebalancing",
+              "url": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Diversification",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/diversification",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "ia-03",
+          "title": "Index Funds vs Active Management",
+          "summary": "What an index fund does, what an active manager tries to do, and what the SEC says about costs and outcomes.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A market index is a list of securities, such as the shares of a set of large companies, with a rule for how much weight each gets. Its value tracks how the whole list performs. Nobody can buy an index directly, but an index fund is a pooled fund that tries to match one by holding the same securities in roughly the same proportions, or a representative sample. Because it copies a list rather than making choices, this is called a passive approach, and its return is meant to be roughly the index's return before fees."
+            },
+            {
+              "type": "paragraph",
+              "text": "An actively managed fund does the opposite. Its manager chooses which securities to hold and when to trade them, pursuing a stated goal, often to do better than a benchmark index. That effort costs money: analysts, research, and more frequent trading. The SEC puts the trade-off plainly: an active fund has the potential to do better than its benchmark, but the result depends heavily on the manager's skill, and the extra activity usually means higher fees and trading costs."
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "What the SEC's pages state",
+              "text": "Passive management usually means less trading, lower fees, and fewer taxable gains. If two funds hold the same securities and one charges more, the cheaper fund generally leaves more return for its owners. The SEC also cautions that not every index fund is cheaper than every active fund, and that an index fund can trail its own index because of fees, trading costs, and imperfect tracking."
+            },
+            {
+              "type": "paragraph",
+              "text": "There is also plain arithmetic behind the debate. Every share is owned by someone, so across all owners together the return before costs is simply the market's return. For one manager to do better, another owner must do worse. Active management as a whole therefore matches the market before costs and trails it after costs, because it spends more on research and trading. Individual managers can and do outpace their benchmarks in a given period; the arithmetic is about the average across all of them."
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-03-two-funds-costs",
+              "kind": "bar",
+              "title": "Same holdings, different costs: value of $10,000 over 30 years",
+              "caption": "Two synthetic funds hold identical securities that earn 6 percent a year before costs. One charges 0.2 percent a year, the other 1.0 percent. The bars show the value every five years. The gap is the cost difference compounding, not any difference in skill.",
+              "xLabel": "Years held",
+              "yLabel": "Value, dollars",
+              "dataNote": "Synthetic illustration — not real market data. Growth rate and costs are invented to show the mechanism.",
+              "series": [
+                {
+                  "name": "Cost 0.2 percent a year (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 10000
+                    },
+                    {
+                      "x": 5,
+                      "y": 13256
+                    },
+                    {
+                      "x": 10,
+                      "y": 17573
+                    },
+                    {
+                      "x": 15,
+                      "y": 23296
+                    },
+                    {
+                      "x": 20,
+                      "y": 30883
+                    },
+                    {
+                      "x": 25,
+                      "y": 40939
+                    },
+                    {
+                      "x": 30,
+                      "y": 54271
+                    }
+                  ]
+                },
+                {
+                  "name": "Cost 1.0 percent a year (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 10000
+                    },
+                    {
+                      "x": 5,
+                      "y": 12763
+                    },
+                    {
+                      "x": 10,
+                      "y": 16289
+                    },
+                    {
+                      "x": 15,
+                      "y": 20789
+                    },
+                    {
+                      "x": 20,
+                      "y": 26533
+                    },
+                    {
+                      "x": 25,
+                      "y": 33864
+                    },
+                    {
+                      "x": 30,
+                      "y": 43219
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Market index",
+                  "definition": "A rule-based list of securities whose combined value is used to measure how a market or a segment of it performs."
+                },
+                {
+                  "term": "Index fund",
+                  "definition": "A pooled fund that aims to match the return of a chosen index, before fees, by holding its securities or a sample of them."
+                },
+                {
+                  "term": "Active management",
+                  "definition": "A fund manager choosing holdings and trades in an attempt to meet a goal, often to outpace a benchmark index."
+                },
+                {
+                  "term": "Tracking error",
+                  "definition": "The gap between an index fund's return and its index, caused by fees, trading costs, and sampling."
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "This lesson compares two approaches and reports what a public regulator states. It does not say which approach anyone ought to use; both carry the full risk of the securities they hold."
+            },
+            {
+              "type": "quiz",
+              "question": "Two funds hold exactly the same securities. One charges 0.3 percent a year and the other 1.2 percent. What does the SEC say about the likely result?",
+              "choices": [
+                "The higher-cost fund earns more because it pays for better research",
+                "The two funds return the same amount to their owners",
+                "The lower-cost fund generally leaves more return for its owners, since costs are the only difference",
+                "Neither fund can lose money"
+              ],
+              "answerIndex": 2,
+              "explanation": "With identical holdings the returns before costs are identical, so the fee gap is the whole difference. Both funds still carry the full risk of the securities they hold."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "An index fund copies a list of securities to match an index's return before fees.",
+                "An active fund chooses holdings to pursue a goal, usually at higher cost, with results tied to manager skill.",
+                "Before costs, active owners as a group match the market; after costs, the group trails it.",
+                "The SEC notes that not every index fund is cheap and that any fund can trail its benchmark."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Investor Bulletin: Index Funds",
+              "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+              "publicationDate": "2018-08-06",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Mutual Funds",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "ia-04",
+          "title": "Value, Growth and Dividends",
+          "summary": "What the labels value and growth describe, what a dividend is, and how price relates to earnings.",
+          "estimatedMinutes": 6,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Value and growth are labels for styles of describing shares, not guarantees. A share labelled value trades at a low price relative to the company's earnings or assets; the buyer's idea is that the price understates what the business is worth. A share labelled growth trades at a high price relative to its earnings because buyers anticipate that those earnings will expand quickly. Both labels are judgments about a price and the profits behind it, and both can turn out wrong."
+            },
+            {
+              "type": "paragraph",
+              "text": "A dividend is a portion of a company's profit paid out in cash to its shareholders, usually on a regular schedule. It is distributed profit: money the company earned and chose to hand back rather than keep for new projects or debt repayment. Nothing obliges a company to pay one, and a board can cut or stop a dividend at any time. Companies paying large dividends are often mature, with fewer places to reinvest; companies labelled growth often pay little or nothing because they plough profit back into the business."
+            },
+            {
+              "type": "paragraph",
+              "text": "The most common way to relate a price to earnings is the price-to-earnings ratio, or P/E: the share price divided by earnings per share over the past twelve months. As an illustration, a share priced at $50 with earnings of $2.50 per share has a P/E of 20, so the buyer pays 20 dollars for each dollar of yearly profit. A high P/E says buyers expect earnings to grow or view them as safe; a low P/E says they expect little growth or see more risk. The ratio compares a price with its own past or with other companies; it is not a verdict on whether the price is right."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Earnings per share",
+                  "definition": "A company's profit over a period divided by the number of shares outstanding; the profit attributable to one share."
+                },
+                {
+                  "term": "Price-to-earnings ratio",
+                  "definition": "Share price divided by earnings per share; how many dollars a buyer pays for each dollar of yearly profit."
+                },
+                {
+                  "term": "Dividend",
+                  "definition": "A portion of profit paid out in cash to shareholders; declared by the board and never guaranteed."
+                },
+                {
+                  "term": "Dividend yield",
+                  "definition": "Yearly dividends per share divided by the share price, expressed as a percentage."
+                }
+              ]
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-04-pe-ranges",
+              "kind": "bar",
+              "title": "Illustrative price-to-earnings ranges by style label",
+              "caption": "Four invented style categories from left to right: high-dividend, value, broad market, and growth. For each, the two bars mark the low and high end of an illustrative P/E range. The point is the pattern, with growth labels sitting at higher multiples of earnings, not the specific numbers.",
+              "xLabel": "Style label (1 = high-dividend, 2 = value, 3 = broad market, 4 = growth)",
+              "yLabel": "Price divided by earnings per share",
+              "dataNote": "Synthetic illustration — not real market data. Ranges are invented to show how the labels relate to the ratio.",
+              "series": [
+                {
+                  "name": "Low end of range (illustrative)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 9
+                    },
+                    {
+                      "x": 2,
+                      "y": 14
+                    },
+                    {
+                      "x": 3,
+                      "y": 20
+                    },
+                    {
+                      "x": 4,
+                      "y": 28
+                    }
+                  ]
+                },
+                {
+                  "name": "High end of range (illustrative)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 14
+                    },
+                    {
+                      "x": 2,
+                      "y": 20
+                    },
+                    {
+                      "x": 3,
+                      "y": 30
+                    },
+                    {
+                      "x": 4,
+                      "y": 45
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 1,
+                  "label": "High-dividend"
+                },
+                {
+                  "x": 2,
+                  "label": "Value"
+                },
+                {
+                  "x": 3,
+                  "label": "Broad market"
+                },
+                {
+                  "x": 4,
+                  "label": "Growth"
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "Value, growth, and dividend are descriptions, not rankings. This lesson explains what the labels mean and does not suggest that one style is better than another or that any ratio signals a good price."
+            },
+            {
+              "type": "quiz",
+              "question": "A share is priced at $80 and the company earned $4 per share over the past year. What is its P/E ratio, and what does it mean?",
+              "choices": [
+                "4; the company pays a 4 percent dividend",
+                "20; buyers pay $20 for each dollar of yearly earnings",
+                "320; the company is worth $320 per share",
+                "0.05; the share is cheap"
+              ],
+              "answerIndex": 1,
+              "explanation": "P/E is price divided by earnings per share: 80 divided by 4 equals 20. It describes how much buyers pay per dollar of profit and says nothing on its own about whether that price is right."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Value and growth describe how a price relates to earnings and expectations; neither is a guarantee.",
+                "A dividend is distributed profit that a board can cut or stop at any time.",
+                "P/E = share price divided by earnings per share: dollars paid per dollar of yearly profit.",
+                "Ratios compare prices; they do not settle whether a price is right."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Price-earnings (P/E) Ratio",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Dividend",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dividend",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "ia-05",
+          "title": "Dollar-Cost Averaging, Allocation and Rebalancing",
+          "summary": "Buying a fixed amount at set intervals, choosing a mix of asset categories, and pulling the mix back when it drifts.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Dollar-cost averaging means putting the same amount of money into an investment at regular intervals, whatever the price is doing. Because the amount is fixed, each purchase buys more units when the price is low and fewer when it is high, so the average cost per unit comes out below the simple average of the prices paid. Anyone contributing a set sum from each paycheck into a retirement account is doing this, whether or not they call it that."
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-05-shares-per-100",
+              "kind": "bar",
+              "title": "Units bought with $100 a month at synthetic prices",
+              "caption": "Twelve monthly purchases of $100 each. When the price dips to $15 in month 4 the fixed sum buys 6.67 units; when it climbs to $26 in month 12 it buys 3.85. Across the year $1,200 buys 60.29 units at an average cost of $19.91 per unit, while the simple average of the twelve prices is $20.50.",
+              "xLabel": "Month",
+              "yLabel": "Units bought",
+              "dataNote": "Synthetic illustration — not real market data. Prices are invented to show the mechanism.",
+              "series": [
+                {
+                  "name": "Units bought (illustrative)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 5
+                    },
+                    {
+                      "x": 2,
+                      "y": 5.56
+                    },
+                    {
+                      "x": 3,
+                      "y": 6.25
+                    },
+                    {
+                      "x": 4,
+                      "y": 6.67
+                    },
+                    {
+                      "x": 5,
+                      "y": 5.88
+                    },
+                    {
+                      "x": 6,
+                      "y": 5.26
+                    },
+                    {
+                      "x": 7,
+                      "y": 4.55
+                    },
+                    {
+                      "x": 8,
+                      "y": 4
+                    },
+                    {
+                      "x": 9,
+                      "y": 4.35
+                    },
+                    {
+                      "x": 10,
+                      "y": 4.76
+                    },
+                    {
+                      "x": 11,
+                      "y": 4.17
+                    },
+                    {
+                      "x": 12,
+                      "y": 3.85
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "The average cost is lower than the average price by construction, not luck: more of the money lands on the cheap purchases. What the method does not do is guarantee a profit or protect against a falling price. If the price ends the year below the average cost of $19.91, the holding is worth less than the $1,200 put in. Spreading purchases across time spreads the risk of buying everything at a high point and removes the temptation to guess when to buy."
+            },
+            {
+              "type": "paragraph",
+              "text": "Asset allocation is the mix: what share of a holding sits in each broad category, such as shares, bonds, and cash. The SEC describes it as a personal decision that depends mainly on time horizon and risk tolerance. Shares have historically had the widest swings and highest long-run returns, bonds a middle position, and cash the steadiest values and lowest returns, with inflation as the main risk. Because the categories have not moved together, holding more than one tends to smooth the ride."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "allocation-pie",
+              "caption": "An illustrative mix of asset categories drawn as a pie. The slices are labelled illustrative because no single mix suits everyone: the right proportions depend on when the money is needed and how much variability the owner can live with."
+            },
+            {
+              "type": "paragraph",
+              "text": "Rebalancing deals with drift. Suppose a mix starts at 60 percent shares and 40 percent bonds. After a strong run, shares might grow to 75 percent of the total without anyone buying more; the mix now carries more variability than was chosen. Rebalancing brings it back, by selling some of what grew and buying what shrank, or by steering new contributions toward the smaller slice. It can follow a calendar, say every six or twelve months, or a band that a slice must not stray past. Selling can trigger transaction costs and taxes, which is part of the trade-off."
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "This lesson explains three mechanisms. It does not say how much to contribute, which mix to hold, or when to rebalance; those depend on personal facts a lesson cannot know."
+            },
+            {
+              "type": "quiz",
+              "question": "Why does dollar-cost averaging produce an average cost per unit below the average of the prices paid?",
+              "choices": [
+                "Because prices always rise over time",
+                "Because a fixed sum buys more units at low prices and fewer at high prices, so more of the money lands on cheaper purchases",
+                "Because the seller offers a discount for regular buyers"
+              ],
+              "answerIndex": 1,
+              "explanation": "With a fixed dollar amount, the number of units bought is larger when the price is low. Weighting purchases this way pulls the average cost below the simple average of prices, but it does not prevent a loss if the price ends up lower still."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "A fixed sum at fixed intervals buys more units when prices are low and fewer when high.",
+                "Average cost per unit ends up below the average price paid, but a loss is still possible.",
+                "Asset allocation is the mix of categories; it depends on time horizon and risk tolerance.",
+                "Rebalancing pulls a drifted mix back to its target, at the cost of possible fees and taxes."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Dollar Cost Averaging",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dollar-cost-averaging",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Beginners’ Guide to Asset Allocation, Diversification, and Rebalancing",
+              "url": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "ia-06",
+          "title": "Costs and Fees",
+          "summary": "Expense ratios, sales loads, and trading costs, and how a seemingly small yearly fee compounds over decades.",
+          "estimatedMinutes": 6,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Every pooled fund has running costs: paying the manager, keeping records, legal and audit work, sometimes marketing. Funds pass these to their owners through the expense ratio, the percentage of the fund's assets taken each year to cover them. An expense ratio of 1 percent means that on a $10,000 holding, $100 a year is deducted before the owner sees any return. It is not billed separately; it comes quietly out of the fund's value, which is why it is easy to overlook. The figure appears in a standardized fee table in the prospectus."
+            },
+            {
+              "type": "paragraph",
+              "text": "Two other costs sit alongside it. A sales load is a one-off charge, like a commission, paid when buying fund shares (front-end) or selling them (back-end). Trading costs arise whenever securities change hands: a broker's commission, a markup when a dealer sells from its own stock, and the spread between the price at which a security can be bought and the slightly lower price at which it can be sold at the same moment. The SEC groups these as transaction fees, charged per trade, as distinct from ongoing fees like the expense ratio, charged every year the holding exists."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Expense ratio",
+                  "definition": "The share of a fund's assets deducted each year to pay its operating costs, including management and distribution fees."
+                },
+                {
+                  "term": "Sales load",
+                  "definition": "A one-time charge, like a commission, paid on buying (front-end) or selling (back-end) shares of a fund."
+                },
+                {
+                  "term": "Bid-ask spread",
+                  "definition": "The gap between the price a buyer pays and the price a seller receives for the same security at the same moment."
+                },
+                {
+                  "term": "Fee drag",
+                  "definition": "The cumulative reduction in a holding's value caused by fees compounding year after year."
+                }
+              ]
+            },
+            {
+              "type": "diagram",
+              "diagramID": "fee-drag",
+              "caption": "Two growth paths that start together and drift apart as a yearly fee compounds. The gap is small in the early years and wide by the end, because each year's fee also removes the growth that money would have earned in every later year."
+            },
+            {
+              "type": "chart",
+              "chartID": "ia-06-fee-paths",
+              "kind": "line",
+              "title": "Value of $10,000 over 40 years: 0.1 percent vs 1.0 percent yearly fee",
+              "caption": "Both synthetic paths earn 5 percent a year before costs. After 40 years the low-fee path reaches about $67,767 and the high-fee path about $48,010. The fee gap is only 0.9 percentage points a year, yet it consumes roughly 29 percent of the ending value.",
+              "xLabel": "Years held",
+              "yLabel": "Value, dollars",
+              "dataNote": "Synthetic illustration — not real market data. The growth rate and fees are invented to show compounding.",
+              "series": [
+                {
+                  "name": "Fee 0.1 percent a year (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 10000
+                    },
+                    {
+                      "x": 2,
+                      "y": 11004
+                    },
+                    {
+                      "x": 4,
+                      "y": 12109
+                    },
+                    {
+                      "x": 6,
+                      "y": 13325
+                    },
+                    {
+                      "x": 8,
+                      "y": 14662
+                    },
+                    {
+                      "x": 10,
+                      "y": 16134
+                    },
+                    {
+                      "x": 12,
+                      "y": 17754
+                    },
+                    {
+                      "x": 14,
+                      "y": 19537
+                    },
+                    {
+                      "x": 16,
+                      "y": 21498
+                    },
+                    {
+                      "x": 18,
+                      "y": 23657
+                    },
+                    {
+                      "x": 20,
+                      "y": 26032
+                    },
+                    {
+                      "x": 22,
+                      "y": 28646
+                    },
+                    {
+                      "x": 24,
+                      "y": 31522
+                    },
+                    {
+                      "x": 26,
+                      "y": 34687
+                    },
+                    {
+                      "x": 28,
+                      "y": 38169
+                    },
+                    {
+                      "x": 30,
+                      "y": 42001
+                    },
+                    {
+                      "x": 32,
+                      "y": 46218
+                    },
+                    {
+                      "x": 34,
+                      "y": 50859
+                    },
+                    {
+                      "x": 36,
+                      "y": 55965
+                    },
+                    {
+                      "x": 38,
+                      "y": 61584
+                    },
+                    {
+                      "x": 40,
+                      "y": 67767
+                    }
+                  ]
+                },
+                {
+                  "name": "Fee 1.0 percent a year (illustrative)",
+                  "points": [
+                    {
+                      "x": 0,
+                      "y": 10000
+                    },
+                    {
+                      "x": 2,
+                      "y": 10816
+                    },
+                    {
+                      "x": 4,
+                      "y": 11699
+                    },
+                    {
+                      "x": 6,
+                      "y": 12653
+                    },
+                    {
+                      "x": 8,
+                      "y": 13686
+                    },
+                    {
+                      "x": 10,
+                      "y": 14802
+                    },
+                    {
+                      "x": 12,
+                      "y": 16010
+                    },
+                    {
+                      "x": 14,
+                      "y": 17317
+                    },
+                    {
+                      "x": 16,
+                      "y": 18730
+                    },
+                    {
+                      "x": 18,
+                      "y": 20258
+                    },
+                    {
+                      "x": 20,
+                      "y": 21911
+                    },
+                    {
+                      "x": 22,
+                      "y": 23699
+                    },
+                    {
+                      "x": 24,
+                      "y": 25633
+                    },
+                    {
+                      "x": 26,
+                      "y": 27725
+                    },
+                    {
+                      "x": 28,
+                      "y": 29987
+                    },
+                    {
+                      "x": 30,
+                      "y": 32434
+                    },
+                    {
+                      "x": 32,
+                      "y": 35081
+                    },
+                    {
+                      "x": 34,
+                      "y": 37943
+                    },
+                    {
+                      "x": 36,
+                      "y": 41039
+                    },
+                    {
+                      "x": 38,
+                      "y": 44388
+                    },
+                    {
+                      "x": 40,
+                      "y": 48010
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Why does a 1 percent fee do so much damage? Because it compounds against the owner. A fee taken in year one does not just cost that year's 1 percent; the money removed would have grown every year afterward, so its absence is felt for decades. The SEC's bulletin shows the same mechanism with a hypothetical $100,000 growing 4 percent a year for 20 years, where a 1.00 percent yearly fee leaves the portfolio tens of thousands of dollars behind the same portfolio charged 0.25 percent. Fees are one of the few facts about an investment known in advance."
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Education, not a recommendation",
+              "text": "This lesson explains how costs work and compound. It does not say the cheapest option is always right for anyone; a fee is one fact among many, and every fund carries the risks of what it holds."
+            },
+            {
+              "type": "quiz",
+              "question": "Why does a yearly fee of 1 percent remove far more than 1 percent of a holding's value after 30 years?",
+              "choices": [
+                "Because funds raise the fee every year",
+                "Because each year's fee also removes the growth that money would have earned in all later years",
+                "Because the fee is charged on the original amount plus a penalty"
+              ],
+              "answerIndex": 1,
+              "explanation": "Fees compound. Money removed early forfeits every later year of growth, so the cumulative gap between a low-fee and a high-fee path widens over time, far exceeding the simple sum of the yearly percentages."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "The expense ratio is deducted from a fund's value every year, whether or not the fund gains.",
+                "Loads and trading costs are charged per transaction; expense ratios are charged for as long as the holding exists.",
+                "A yearly fee compounds against the owner, so a small percentage becomes a large share of the ending value over decades.",
+                "Fees are disclosed in a standardized prospectus table and are knowable in advance."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "How Fees and Expenses Affect Your Investment Portfolio – Investor Bulletin",
+              "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+              "publicationDate": "2025-07-23",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Mutual Fund and ETF Fees and Expenses – Investor Bulletin",
+              "url": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/mutual-fund-and-etf-fees-and-expenses-investor-bulletin",
+              "publicationDate": "2025-07-23",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Expense Ratio",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/expense-ratio",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "courseID": "reading-price-charts",
+      "title": "Reading Price Charts",
+      "icon": "chart.xyaxis.line",
+      "summary": "Learn to read candlesticks, trends, levels, patterns, and moving averages as a vocabulary for describing past prices - and understand why the research says they are descriptions, not forecasts.",
+      "level": "intermediate",
+      "estimatedMinutes": 37,
+      "lessons": [
+        {
+          "lessonID": "rpc-01",
+          "title": "Candlestick Anatomy and Timeframes",
+          "summary": "What one candle records, how to tell an up candle from a down candle, and why a daily and a weekly chart of the same asset look different.",
+          "estimatedMinutes": 6,
+          "isPreview": true,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A price chart is a record of past trades. The most common style is the candlestick chart. Each candle summarises one slice of time - a minute, a day, a week - with four numbers. The open is the first trade of the period. The close is the last trade. The high is the most anyone paid during the period, and the low is the least. Those four numbers are often shortened to OHLC."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "candle-anatomy",
+              "caption": "One candle: the thick body runs from the open to the close; the thin lines above and below, called wicks or shadows, reach up to the high and down to the low."
+            },
+            {
+              "type": "paragraph",
+              "text": "The body shows where the period started and finished. If the close is above the open, the candle is an up candle and is usually drawn hollow or in a lighter colour. If the close is below the open, it is a down candle and is usually drawn filled or in a darker colour. The wicks show how far trading strayed from the body before coming back. A long wick means the price visited that level but did not stay there."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-01-candles",
+              "kind": "candlestick",
+              "title": "Twelve synthetic daily candles",
+              "caption": "Each candle is one trading day. Up candles close above their open; down candles close below it. The wicks mark the day's extremes.",
+              "xLabel": "Trading day",
+              "yLabel": "Price (illustrative units)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "candles": [
+                {
+                  "x": 1,
+                  "open": 100.0,
+                  "high": 101.2,
+                  "low": 99.4,
+                  "close": 100.8
+                },
+                {
+                  "x": 2,
+                  "open": 100.8,
+                  "high": 101.9,
+                  "low": 100.3,
+                  "close": 101.5
+                },
+                {
+                  "x": 3,
+                  "open": 101.5,
+                  "high": 101.8,
+                  "low": 100.1,
+                  "close": 100.4
+                },
+                {
+                  "x": 4,
+                  "open": 100.4,
+                  "high": 100.9,
+                  "low": 99.2,
+                  "close": 99.6
+                },
+                {
+                  "x": 5,
+                  "open": 99.6,
+                  "high": 100.6,
+                  "low": 99.1,
+                  "close": 100.3
+                },
+                {
+                  "x": 6,
+                  "open": 100.3,
+                  "high": 101.7,
+                  "low": 100.0,
+                  "close": 101.4
+                },
+                {
+                  "x": 7,
+                  "open": 101.4,
+                  "high": 102.4,
+                  "low": 101.0,
+                  "close": 102.0
+                },
+                {
+                  "x": 8,
+                  "open": 102.0,
+                  "high": 102.3,
+                  "low": 100.9,
+                  "close": 101.2
+                },
+                {
+                  "x": 9,
+                  "open": 101.2,
+                  "high": 101.6,
+                  "low": 100.2,
+                  "close": 100.6
+                },
+                {
+                  "x": 10,
+                  "open": 100.6,
+                  "high": 101.9,
+                  "low": 100.4,
+                  "close": 101.7
+                },
+                {
+                  "x": 11,
+                  "open": 101.7,
+                  "high": 102.8,
+                  "low": 101.3,
+                  "close": 102.5
+                },
+                {
+                  "x": 12,
+                  "open": 102.5,
+                  "high": 102.9,
+                  "low": 101.6,
+                  "close": 101.9
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "Which close counts?",
+              "text": "Even the close needs a definition. The SEC notes that for many U.S. markets the regular session runs from 9:30 a.m. to 4:00 p.m. Eastern Time, and that after-hours trades are tagged separately so they do not change the regular-session close, high, or low. Two data vendors can still print different closes for the same day if one includes after-hours trades. A chart is only as clear as the rules behind it."
+            },
+            {
+              "type": "paragraph",
+              "text": "Timeframe is the length of time each candle covers. A weekly candle is not a new set of facts; it is five daily candles squeezed into one. Its open is Monday's open, its close is Friday's close, and its high and low are the highest high and lowest low of the whole week. That is why a choppy week of daily candles can become a single calm-looking weekly candle."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Open",
+                  "definition": "The price of the first trade in the period the candle covers."
+                },
+                {
+                  "term": "Close",
+                  "definition": "The price of the last trade in the period the candle covers, under whatever session rules the data provider uses."
+                },
+                {
+                  "term": "Wick",
+                  "definition": "The thin line above or below the body showing how far price travelled beyond the open and close."
+                },
+                {
+                  "term": "Timeframe",
+                  "definition": "The span of time one candle represents, such as one minute, one day, or one week."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "A daily candle opens at 100.4, trades as high as 100.9 and as low as 99.2, and closes at 99.6. Which statement is correct?",
+              "choices": [
+                "It is an up candle because the high is above the open.",
+                "It is a down candle because the close is below the open.",
+                "It is a down candle because the low is below the open.",
+                "It cannot be classified without volume."
+              ],
+              "answerIndex": 1,
+              "explanation": "Up or down is decided only by comparing the close with the open. Here 99.6 is below 100.4, so the body is a down body. The high and low only set the wicks."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "A candle compresses one period of trading into open, high, low, and close.",
+                "The body compares close with open; the wicks show the extremes.",
+                "A weekly candle is a summary of its daily candles, so detail is lost as the timeframe lengthens.",
+                "Closing prices depend on session rules, so two charts of the same day can differ."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Closing Price",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: After-hours Trading",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/after-hours-trading",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "rpc-02",
+          "title": "Trends and Ranges",
+          "summary": "How chart readers describe rising, falling, and sideways price action, and why the label depends on the timeframe you choose.",
+          "estimatedMinutes": 6,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Chart readers use three words to describe the shape of past prices. An uptrend is a stretch where each swing high is above the last swing high and each swing low is above the last swing low - higher highs and higher lows. A downtrend is the mirror image: lower highs and lower lows. A range, also called a sideways market or consolidation, is a stretch where the swing highs and swing lows stay at roughly the same levels, so the price moves back and forth inside a band."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "trend-channel",
+              "caption": "An uptrend drawn as a channel: a line under the higher lows and a parallel line over the higher highs. The price zigzags between them while the whole channel slopes up."
+            },
+            {
+              "type": "paragraph",
+              "text": "A trend is a description of what already happened, not a rule about what comes next. It is defined by past swing points, and the label only becomes clear after the price has made them. A run of higher highs can end at any time, and an uptrend usually looks obvious only when you are looking backward. The chart below shows a synthetic series that rises for fourteen days and then drifts sideways for twelve more."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-02-trend-to-range",
+              "kind": "candlestick",
+              "title": "A synthetic uptrend that turns into a range",
+              "caption": "Days 1 to 14 print higher highs and higher lows. From day 15 the highs stall near 102.6 and the lows hold near 100.5, so the chart reads as a range.",
+              "xLabel": "Trading day",
+              "yLabel": "Price (illustrative units)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "candles": [
+                {
+                  "x": 1,
+                  "open": 96.0,
+                  "high": 97.1,
+                  "low": 95.6,
+                  "close": 96.8
+                },
+                {
+                  "x": 2,
+                  "open": 96.8,
+                  "high": 97.6,
+                  "low": 96.2,
+                  "close": 97.3
+                },
+                {
+                  "x": 3,
+                  "open": 97.3,
+                  "high": 97.5,
+                  "low": 96.4,
+                  "close": 96.7
+                },
+                {
+                  "x": 4,
+                  "open": 96.7,
+                  "high": 98.2,
+                  "low": 96.5,
+                  "close": 98.0
+                },
+                {
+                  "x": 5,
+                  "open": 98.0,
+                  "high": 98.9,
+                  "low": 97.6,
+                  "close": 98.6
+                },
+                {
+                  "x": 6,
+                  "open": 98.6,
+                  "high": 98.8,
+                  "low": 97.7,
+                  "close": 97.9
+                },
+                {
+                  "x": 7,
+                  "open": 97.9,
+                  "high": 99.5,
+                  "low": 97.8,
+                  "close": 99.3
+                },
+                {
+                  "x": 8,
+                  "open": 99.3,
+                  "high": 100.2,
+                  "low": 98.9,
+                  "close": 99.9
+                },
+                {
+                  "x": 9,
+                  "open": 99.9,
+                  "high": 100.1,
+                  "low": 98.9,
+                  "close": 99.2
+                },
+                {
+                  "x": 10,
+                  "open": 99.2,
+                  "high": 100.8,
+                  "low": 99.0,
+                  "close": 100.6
+                },
+                {
+                  "x": 11,
+                  "open": 100.6,
+                  "high": 101.6,
+                  "low": 100.2,
+                  "close": 101.3
+                },
+                {
+                  "x": 12,
+                  "open": 101.3,
+                  "high": 101.5,
+                  "low": 100.4,
+                  "close": 100.7
+                },
+                {
+                  "x": 13,
+                  "open": 100.7,
+                  "high": 102.1,
+                  "low": 100.5,
+                  "close": 101.9
+                },
+                {
+                  "x": 14,
+                  "open": 101.9,
+                  "high": 102.6,
+                  "low": 101.4,
+                  "close": 102.2
+                },
+                {
+                  "x": 15,
+                  "open": 102.2,
+                  "high": 102.5,
+                  "low": 101.1,
+                  "close": 101.4
+                },
+                {
+                  "x": 16,
+                  "open": 101.4,
+                  "high": 101.8,
+                  "low": 100.6,
+                  "close": 100.9
+                },
+                {
+                  "x": 17,
+                  "open": 100.9,
+                  "high": 102.0,
+                  "low": 100.7,
+                  "close": 101.8
+                },
+                {
+                  "x": 18,
+                  "open": 101.8,
+                  "high": 102.6,
+                  "low": 101.5,
+                  "close": 102.3
+                },
+                {
+                  "x": 19,
+                  "open": 102.3,
+                  "high": 102.5,
+                  "low": 101.2,
+                  "close": 101.5
+                },
+                {
+                  "x": 20,
+                  "open": 101.5,
+                  "high": 101.7,
+                  "low": 100.5,
+                  "close": 100.8
+                },
+                {
+                  "x": 21,
+                  "open": 100.8,
+                  "high": 101.9,
+                  "low": 100.6,
+                  "close": 101.6
+                },
+                {
+                  "x": 22,
+                  "open": 101.6,
+                  "high": 102.5,
+                  "low": 101.3,
+                  "close": 102.2
+                },
+                {
+                  "x": 23,
+                  "open": 102.2,
+                  "high": 102.4,
+                  "low": 101.0,
+                  "close": 101.3
+                },
+                {
+                  "x": 24,
+                  "open": 101.3,
+                  "high": 101.6,
+                  "low": 100.6,
+                  "close": 101.0
+                },
+                {
+                  "x": 25,
+                  "open": 101.0,
+                  "high": 102.1,
+                  "low": 100.8,
+                  "close": 101.9
+                },
+                {
+                  "x": 26,
+                  "open": 101.9,
+                  "high": 102.6,
+                  "low": 101.4,
+                  "close": 102.1
+                }
+              ],
+              "markers": [
+                {
+                  "x": 14,
+                  "label": "Last higher high"
+                },
+                {
+                  "x": 20,
+                  "label": "Range low"
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "example",
+              "title": "Same data, three answers",
+              "text": "Imagine an asset that fell for six months, rose for three years, and drifted sideways for the past two months. On a five-year weekly chart it is an uptrend. On a two-month daily chart it is a range. On a week of hourly candles it might read as a downtrend if the last few days slipped. None of those readers is wrong. Each timeframe throws away different detail, so each produces a different summary of the same trades."
+            },
+            {
+              "type": "paragraph",
+              "text": "This is why people who talk about a trend usually say which timeframe they mean. The SEC describes the stock market as the organised trading of shares through exchanges, over-the-counter dealers, and electronic venues; the chart is simply a drawing of the trades that flowed through those venues. The trades are the facts. The trend label is an interpretation laid on top, and it changes with the lens."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Uptrend",
+                  "definition": "A sequence of swing highs and swing lows that are each higher than the one before."
+                },
+                {
+                  "term": "Downtrend",
+                  "definition": "A sequence of swing highs and swing lows that are each lower than the one before."
+                },
+                {
+                  "term": "Range",
+                  "definition": "A period in which price moves back and forth between roughly the same upper and lower levels."
+                },
+                {
+                  "term": "Swing high",
+                  "definition": "A local peak on the chart with lower prices on both sides of it."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "A series prints swing highs at 98, 101, 104 and swing lows at 95, 97, 100. Which label fits that stretch of chart?",
+              "choices": [
+                "Downtrend",
+                "Range",
+                "Uptrend",
+                "It depends on the volume"
+              ],
+              "answerIndex": 2,
+              "explanation": "Each swing high (98, 101, 104) is above the previous one and each swing low (95, 97, 100) is also above the previous one. Higher highs plus higher lows is the definition of an uptrend."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Uptrend, downtrend, and range are descriptions of past swing highs and swing lows.",
+                "A trend label is only clear in hindsight, and it can end at any time.",
+                "Change the timeframe and the same trades can earn a different label.",
+                "Always ask which timeframe a trend claim refers to."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Stock Market",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/stock-market",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "How Stock Markets Work: Market Participants",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/market-participants",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "rpc-03",
+          "title": "Support and Resistance",
+          "summary": "Levels where a price has turned before, why chart readers watch them, and why they describe the past rather than promise the future.",
+          "estimatedMinutes": 6,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Support is a price level where a falling price has stopped and turned up more than once. Resistance is a level where a rising price has stopped and turned down more than once. Chart readers draw horizontal lines at these levels and watch how the price behaves near them. The idea is simple: a level that mattered to buyers and sellers in the past may be a place where they show up again."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "support-resistance",
+              "caption": "A price path bouncing between two horizontal bands. The lower band is support, where declines have stopped; the upper band is resistance, where rallies have stopped."
+            },
+            {
+              "type": "paragraph",
+              "text": "Why would a level repeat? A market is a meeting place for orders. The SEC describes a market order as an instruction to buy or sell at the going price, and many participants also leave standing orders at specific prices. If enough orders cluster near one price, they can absorb the pressure that pushed the price there, and the price turns. Round numbers such as 50 or 100 attract orders because people think in round numbers. A previous high attracts them because it is a level many people remember."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-03-band",
+              "kind": "candlestick",
+              "title": "A synthetic price bouncing inside a band",
+              "caption": "Rallies stall near 104 and declines stall near 96. Each touch is marked. The bands are drawn after the fact from the turns that already happened.",
+              "xLabel": "Trading day",
+              "yLabel": "Price (illustrative units)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "candles": [
+                {
+                  "x": 1,
+                  "open": 100.0,
+                  "high": 101.4,
+                  "low": 99.5,
+                  "close": 101.1
+                },
+                {
+                  "x": 2,
+                  "open": 101.1,
+                  "high": 102.6,
+                  "low": 100.8,
+                  "close": 102.3
+                },
+                {
+                  "x": 3,
+                  "open": 102.3,
+                  "high": 103.7,
+                  "low": 102.0,
+                  "close": 103.5
+                },
+                {
+                  "x": 4,
+                  "open": 103.5,
+                  "high": 104.0,
+                  "low": 102.6,
+                  "close": 102.9
+                },
+                {
+                  "x": 5,
+                  "open": 102.9,
+                  "high": 103.2,
+                  "low": 101.5,
+                  "close": 101.8
+                },
+                {
+                  "x": 6,
+                  "open": 101.8,
+                  "high": 102.1,
+                  "low": 100.2,
+                  "close": 100.5
+                },
+                {
+                  "x": 7,
+                  "open": 100.5,
+                  "high": 100.9,
+                  "low": 98.7,
+                  "close": 99.0
+                },
+                {
+                  "x": 8,
+                  "open": 99.0,
+                  "high": 99.4,
+                  "low": 97.4,
+                  "close": 97.7
+                },
+                {
+                  "x": 9,
+                  "open": 97.7,
+                  "high": 98.1,
+                  "low": 96.1,
+                  "close": 96.6
+                },
+                {
+                  "x": 10,
+                  "open": 96.6,
+                  "high": 98.0,
+                  "low": 96.2,
+                  "close": 97.8
+                },
+                {
+                  "x": 11,
+                  "open": 97.8,
+                  "high": 99.3,
+                  "low": 97.5,
+                  "close": 99.1
+                },
+                {
+                  "x": 12,
+                  "open": 99.1,
+                  "high": 100.8,
+                  "low": 98.9,
+                  "close": 100.6
+                },
+                {
+                  "x": 13,
+                  "open": 100.6,
+                  "high": 102.0,
+                  "low": 100.3,
+                  "close": 101.7
+                },
+                {
+                  "x": 14,
+                  "open": 101.7,
+                  "high": 103.1,
+                  "low": 101.4,
+                  "close": 102.9
+                },
+                {
+                  "x": 15,
+                  "open": 102.9,
+                  "high": 103.9,
+                  "low": 102.5,
+                  "close": 103.6
+                },
+                {
+                  "x": 16,
+                  "open": 103.6,
+                  "high": 104.0,
+                  "low": 102.7,
+                  "close": 103.0
+                },
+                {
+                  "x": 17,
+                  "open": 103.0,
+                  "high": 103.3,
+                  "low": 101.6,
+                  "close": 101.9
+                },
+                {
+                  "x": 18,
+                  "open": 101.9,
+                  "high": 102.2,
+                  "low": 100.4,
+                  "close": 100.7
+                },
+                {
+                  "x": 19,
+                  "open": 100.7,
+                  "high": 101.0,
+                  "low": 99.0,
+                  "close": 99.3
+                },
+                {
+                  "x": 20,
+                  "open": 99.3,
+                  "high": 99.6,
+                  "low": 97.6,
+                  "close": 97.9
+                },
+                {
+                  "x": 21,
+                  "open": 97.9,
+                  "high": 98.3,
+                  "low": 96.2,
+                  "close": 96.8
+                },
+                {
+                  "x": 22,
+                  "open": 96.8,
+                  "high": 98.2,
+                  "low": 96.4,
+                  "close": 98.0
+                }
+              ],
+              "markers": [
+                {
+                  "x": 4,
+                  "label": "Resistance touch"
+                },
+                {
+                  "x": 9,
+                  "label": "Support touch"
+                },
+                {
+                  "x": 16,
+                  "label": "Resistance touch"
+                },
+                {
+                  "x": 21,
+                  "label": "Support touch"
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Descriptive, not predictive",
+              "text": "A support line is a summary of past turns. It says the price turned here before; it does not say the price must turn here again. Prices break through support and resistance all the time, and when they do, chart readers simply redraw the lines. Treat these lines as a way to organise what you see, not as a barrier that the market has agreed to respect."
+            },
+            {
+              "type": "paragraph",
+              "text": "A useful habit is to count the touches. A line drawn through one turn is a guess; a line touched three or four times describes something the market actually did. Even so, more touches only improve the description of the past. Nothing in a support line says whether the next visit ends in a bounce or a break, and people drawing the same chart often place the lines a little differently."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Support",
+                  "definition": "A price level at which declines have repeatedly stopped and reversed upward."
+                },
+                {
+                  "term": "Resistance",
+                  "definition": "A price level at which rallies have repeatedly stopped and reversed downward."
+                },
+                {
+                  "term": "Round number",
+                  "definition": "A price such as 50 or 100 that people naturally anchor on when placing orders."
+                },
+                {
+                  "term": "Breakout",
+                  "definition": "A move through a support or resistance level that had previously held."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "A price has turned down at about 104 four separate times. What does that history tell you about the fifth approach to 104?",
+              "choices": [
+                "The price must turn down again at 104.",
+                "The price must break above 104 this time.",
+                "104 has been resistance so far, but the outcome of the next approach is unknown.",
+                "The level is meaningless because four touches is too few."
+              ],
+              "answerIndex": 2,
+              "explanation": "Support and resistance describe where the price has turned before. Four past turns make 104 a well-described resistance level, but past turns do not determine the next one."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Support and resistance are levels where the price has repeatedly turned in the past.",
+                "They exist because orders tend to cluster at remembered prices and round numbers.",
+                "Counting touches improves the description, not the prediction.",
+                "Levels break regularly; when they do, the lines get redrawn."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Market Order",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/market-order",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Stock",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/stock",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "rpc-04",
+          "title": "Common Candle Patterns and the Evidence",
+          "summary": "What a doji, a hammer, and an engulfing candle each describe, and an honest look at what academic research has found about chart patterns.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Three common candle shapes show how the vocabulary works. A doji has an open and close that are almost equal, so the body is a thin line and the wicks do the talking; it describes a period that ended where it began. A hammer has a small body near the top and a long lower wick and appears after a decline; it describes a period in which the price fell hard, then recovered most of the drop before the close."
+            },
+            {
+              "type": "paragraph",
+              "text": "An engulfing pattern uses two candles. In a bullish engulfing pattern, a small down candle is followed by a larger up candle whose body completely covers the previous body: the second period's buying more than undid the first period's selling. A bearish engulfing pattern is the reverse. Each name is a compact way of saying what the open, high, low, and close did."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-04-patterns",
+              "kind": "candlestick",
+              "title": "A synthetic hammer and a bullish engulfing pair",
+              "caption": "Day 6 is a hammer: a tiny body at the top of a long lower wick after five down days. Days 12 and 13 form a bullish engulfing pair: the up body on day 13 covers the whole down body of day 12.",
+              "xLabel": "Trading day",
+              "yLabel": "Price (illustrative units)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "candles": [
+                {
+                  "x": 1,
+                  "open": 102.0,
+                  "high": 102.4,
+                  "low": 100.9,
+                  "close": 101.2
+                },
+                {
+                  "x": 2,
+                  "open": 101.2,
+                  "high": 101.5,
+                  "low": 100.0,
+                  "close": 100.3
+                },
+                {
+                  "x": 3,
+                  "open": 100.3,
+                  "high": 100.7,
+                  "low": 99.1,
+                  "close": 99.4
+                },
+                {
+                  "x": 4,
+                  "open": 99.4,
+                  "high": 99.8,
+                  "low": 98.3,
+                  "close": 98.6
+                },
+                {
+                  "x": 5,
+                  "open": 98.6,
+                  "high": 98.9,
+                  "low": 97.4,
+                  "close": 97.7
+                },
+                {
+                  "x": 6,
+                  "open": 97.6,
+                  "high": 97.9,
+                  "low": 95.2,
+                  "close": 97.8
+                },
+                {
+                  "x": 7,
+                  "open": 97.8,
+                  "high": 98.9,
+                  "low": 97.5,
+                  "close": 98.6
+                },
+                {
+                  "x": 8,
+                  "open": 98.6,
+                  "high": 99.2,
+                  "low": 98.0,
+                  "close": 98.4
+                },
+                {
+                  "x": 9,
+                  "open": 98.4,
+                  "high": 98.7,
+                  "low": 97.3,
+                  "close": 97.6
+                },
+                {
+                  "x": 10,
+                  "open": 97.6,
+                  "high": 98.0,
+                  "low": 96.9,
+                  "close": 97.2
+                },
+                {
+                  "x": 11,
+                  "open": 97.2,
+                  "high": 97.5,
+                  "low": 96.4,
+                  "close": 96.7
+                },
+                {
+                  "x": 12,
+                  "open": 96.7,
+                  "high": 96.9,
+                  "low": 95.9,
+                  "close": 96.1
+                },
+                {
+                  "x": 13,
+                  "open": 95.9,
+                  "high": 98.1,
+                  "low": 95.7,
+                  "close": 97.9
+                },
+                {
+                  "x": 14,
+                  "open": 97.9,
+                  "high": 98.8,
+                  "low": 97.6,
+                  "close": 98.5
+                },
+                {
+                  "x": 15,
+                  "open": 98.5,
+                  "high": 99.1,
+                  "low": 98.0,
+                  "close": 98.3
+                },
+                {
+                  "x": 16,
+                  "open": 98.3,
+                  "high": 99.4,
+                  "low": 98.1,
+                  "close": 99.2
+                }
+              ],
+              "markers": [
+                {
+                  "x": 6,
+                  "label": "Hammer"
+                },
+                {
+                  "x": 13,
+                  "label": "Bullish engulfing"
+                }
+              ]
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Doji",
+                  "definition": "A candle whose open and close are nearly equal, leaving almost no body."
+                },
+                {
+                  "term": "Hammer",
+                  "definition": "A candle with a small body near its high and a long lower wick, seen after a decline."
+                },
+                {
+                  "term": "Engulfing pattern",
+                  "definition": "A two-candle shape in which the second body completely covers the first."
+                },
+                {
+                  "term": "Technical analysis",
+                  "definition": "The practice of studying past prices and volume, often through charts, to describe market behaviour."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Researchers have tested whether these shapes say anything about what happens next. In a National Bureau of Economic Research working paper issued in March 2000, Andrew Lo, Harry Mamaysky, and Jiang Wang used a computer method to detect classic chart patterns in U.S. stock prices from 1962 to 1996 and asked whether the days after a pattern differed statistically from ordinary days. They reported that several patterns carried some incremental information. They did not claim the patterns made money."
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Information is not profit",
+              "text": "A pattern can shift the odds a little and still be useless in practice, because acting on it costs money: commissions, the spread between buying and selling prices, and taxes. Tests of trading rules across many markets have found effects that are small, unstable from period to period, and that often shrink or vanish after costs or after publication. The honest summary is that the evidence on forecasting power is mixed at best, which makes patterns fine for reading a chart and poor as a reason to act."
+            },
+            {
+              "type": "quiz",
+              "question": "Lo, Mamaysky, and Wang (2000) found that some chart patterns carried statistical information about later prices. What does that finding show?",
+              "choices": [
+                "That trading the patterns is reliably profitable after costs.",
+                "That the days after a pattern differed statistically from ordinary days in their sample.",
+                "That every candle pattern works in every market.",
+                "That charts can replace company financial statements."
+              ],
+              "answerIndex": 1,
+              "explanation": "The paper reports incremental statistical information in historical U.S. data. It does not show that acting on the patterns earns a profit once trading costs are paid, and it covers one sample period."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "A doji, hammer, or engulfing candle is a name for a specific OHLC shape.",
+                "Academic tests find at most small, unstable information in chart patterns.",
+                "Information in a pattern is not the same as profit after costs.",
+                "Learn the vocabulary to read charts, not as a reason to trade."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Foundations of Technical Analysis: Computational Algorithms, Statistical Inference, and Empirical Implementation (Working Paper 7613)",
+              "url": "https://www.nber.org/papers/w7613",
+              "publicationDate": "2000-03-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "rpc-05",
+          "title": "Moving Averages and Volume",
+          "summary": "How a moving average smooths a price series and why it lags, plus what trading volume measures and what it cannot tell you.",
+          "estimatedMinutes": 6,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Raw prices jump around. A moving average is a way to smooth them. A five-day simple moving average takes the last five closing prices, adds them up, and divides by five. Each day it drops the oldest close and adds the newest, so the average moves with the price. Longer windows, such as 50 or 200 days, produce smoother lines; shorter windows hug the price more closely."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-05-ma",
+              "kind": "line",
+              "title": "A synthetic price and its five-day moving average",
+              "caption": "The average is smoother than the price but arrives late: it keeps falling for a few days after the price turns up, and keeps rising after the price turns down.",
+              "xLabel": "Trading day",
+              "yLabel": "Price (illustrative units)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "series": [
+                {
+                  "name": "Close",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 100.0
+                    },
+                    {
+                      "x": 2,
+                      "y": 100.6
+                    },
+                    {
+                      "x": 3,
+                      "y": 101.3
+                    },
+                    {
+                      "x": 4,
+                      "y": 100.9
+                    },
+                    {
+                      "x": 5,
+                      "y": 101.8
+                    },
+                    {
+                      "x": 6,
+                      "y": 102.6
+                    },
+                    {
+                      "x": 7,
+                      "y": 102.2
+                    },
+                    {
+                      "x": 8,
+                      "y": 103.1
+                    },
+                    {
+                      "x": 9,
+                      "y": 103.9
+                    },
+                    {
+                      "x": 10,
+                      "y": 103.4
+                    },
+                    {
+                      "x": 11,
+                      "y": 102.7
+                    },
+                    {
+                      "x": 12,
+                      "y": 101.9
+                    },
+                    {
+                      "x": 13,
+                      "y": 102.4
+                    },
+                    {
+                      "x": 14,
+                      "y": 101.6
+                    },
+                    {
+                      "x": 15,
+                      "y": 100.8
+                    },
+                    {
+                      "x": 16,
+                      "y": 100.2
+                    },
+                    {
+                      "x": 17,
+                      "y": 100.9
+                    },
+                    {
+                      "x": 18,
+                      "y": 101.7
+                    },
+                    {
+                      "x": 19,
+                      "y": 102.5
+                    },
+                    {
+                      "x": 20,
+                      "y": 103.2
+                    },
+                    {
+                      "x": 21,
+                      "y": 103.0
+                    },
+                    {
+                      "x": 22,
+                      "y": 103.8
+                    },
+                    {
+                      "x": 23,
+                      "y": 104.5
+                    },
+                    {
+                      "x": 24,
+                      "y": 104.1
+                    }
+                  ]
+                },
+                {
+                  "name": "5-day moving average",
+                  "points": [
+                    {
+                      "x": 5,
+                      "y": 100.92
+                    },
+                    {
+                      "x": 6,
+                      "y": 101.44
+                    },
+                    {
+                      "x": 7,
+                      "y": 101.76
+                    },
+                    {
+                      "x": 8,
+                      "y": 102.12
+                    },
+                    {
+                      "x": 9,
+                      "y": 102.72
+                    },
+                    {
+                      "x": 10,
+                      "y": 103.04
+                    },
+                    {
+                      "x": 11,
+                      "y": 103.06
+                    },
+                    {
+                      "x": 12,
+                      "y": 103.0
+                    },
+                    {
+                      "x": 13,
+                      "y": 102.86
+                    },
+                    {
+                      "x": 14,
+                      "y": 102.4
+                    },
+                    {
+                      "x": 15,
+                      "y": 101.88
+                    },
+                    {
+                      "x": 16,
+                      "y": 101.38
+                    },
+                    {
+                      "x": 17,
+                      "y": 101.18
+                    },
+                    {
+                      "x": 18,
+                      "y": 101.04
+                    },
+                    {
+                      "x": 19,
+                      "y": 101.22
+                    },
+                    {
+                      "x": 20,
+                      "y": 101.7
+                    },
+                    {
+                      "x": 21,
+                      "y": 102.26
+                    },
+                    {
+                      "x": 22,
+                      "y": 102.84
+                    },
+                    {
+                      "x": 23,
+                      "y": 103.4
+                    },
+                    {
+                      "x": 24,
+                      "y": 103.72
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Smoothing has a price of its own: lag. Because the average includes old closes, it can only respond to a turn after several new closes have pulled it along. In the chart above, the price bottoms on day 16, but the average keeps falling until day 18. The longer the window, the later the turn shows up. A moving average therefore describes where the price has been on average, and any signal it gives is by construction behind the price."
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "Crossovers are just arithmetic",
+              "text": "Chart readers often talk about the price crossing above or below its moving average, or a short average crossing a long one. Each crossing is a mechanical result of recent closes being higher or lower than the older closes inside the window - a description of the last few periods relative to the ones before. Whether a crossing has any bearing on future prices is a separate, empirical question, and the evidence in the previous lesson applies here too."
+            },
+            {
+              "type": "paragraph",
+              "text": "Volume is the number of shares or contracts that changed hands in a period, usually drawn as bars under the price. Volume measures activity, not direction: a heavy-volume day can close up or down. The SEC's note on closing prices points out that a single low-volume after-hours trade can print a price far from the 4:00 p.m. close, which is one reason readers check volume before trusting an unusual price."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-05-volume",
+              "kind": "bar",
+              "title": "Synthetic daily volume for the same 24 days",
+              "caption": "Bars show how many units traded each day. Busy days and quiet days both occur on up days and on down days.",
+              "xLabel": "Trading day",
+              "yLabel": "Volume (millions of units, illustrative)",
+              "dataNote": "Synthetic illustration — hand-designed numbers, not real market data.",
+              "series": [
+                {
+                  "name": "Volume",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 1.0
+                    },
+                    {
+                      "x": 2,
+                      "y": 1.1
+                    },
+                    {
+                      "x": 3,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 4,
+                      "y": 0.9
+                    },
+                    {
+                      "x": 5,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 6,
+                      "y": 1.9
+                    },
+                    {
+                      "x": 7,
+                      "y": 1.2
+                    },
+                    {
+                      "x": 8,
+                      "y": 1.7
+                    },
+                    {
+                      "x": 9,
+                      "y": 2.1
+                    },
+                    {
+                      "x": 10,
+                      "y": 1.3
+                    },
+                    {
+                      "x": 11,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 12,
+                      "y": 1.8
+                    },
+                    {
+                      "x": 13,
+                      "y": 1.0
+                    },
+                    {
+                      "x": 14,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 15,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 16,
+                      "y": 1.2
+                    },
+                    {
+                      "x": 17,
+                      "y": 0.9
+                    },
+                    {
+                      "x": 18,
+                      "y": 1.3
+                    },
+                    {
+                      "x": 19,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 20,
+                      "y": 1.7
+                    },
+                    {
+                      "x": 21,
+                      "y": 1.1
+                    },
+                    {
+                      "x": 22,
+                      "y": 1.4
+                    },
+                    {
+                      "x": 23,
+                      "y": 1.9
+                    },
+                    {
+                      "x": 24,
+                      "y": 1.2
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Simple moving average",
+                  "definition": "The arithmetic mean of the last N closing prices, recalculated as each new close arrives."
+                },
+                {
+                  "term": "Lag",
+                  "definition": "The delay between a change in price and the moment a smoothed indicator reflects it."
+                },
+                {
+                  "term": "Volume",
+                  "definition": "The quantity of shares or contracts traded during a period, a measure of activity rather than direction."
+                },
+                {
+                  "term": "Crossover",
+                  "definition": "The moment a price line passes through its moving average, or one average passes through another."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "The last five closes are 100, 101, 102, 103, and 104. A new close of 99 arrives. What is the new five-day simple moving average?",
+              "choices": [
+                "101.8",
+                "101.0",
+                "102.0",
+                "99.0"
+              ],
+              "answerIndex": 0,
+              "explanation": "Drop the oldest close (100) and add the newest (99): 101 + 102 + 103 + 104 + 99 = 509, and 509 divided by 5 is 101.8. Notice the average barely moved even though the price fell 5 points."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "A moving average is the mean of the last N closes, recomputed each period.",
+                "Smoothing always creates lag; longer windows lag more.",
+                "Volume counts how much traded, not which way the price went.",
+                "Crossovers are arithmetic facts about recent closes, not forecasts."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Closing Price",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Foundations of Technical Analysis: Computational Algorithms, Statistical Inference, and Empirical Implementation (Working Paper 7613)",
+              "url": "https://www.nber.org/papers/w7613",
+              "publicationDate": "2000-03-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "rpc-06",
+          "title": "Patterns Are Not Predictions",
+          "summary": "Hindsight, data-mining, survivorship, and costs: why patterns that look obvious on a chart are so hard to use, and why this course teaches reading rather than trading.",
+          "estimatedMinutes": 6,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "Human eyes are built to find shapes. The two series below were generated by coin flips: start at 100 and each day add or subtract a random amount. Nothing about tomorrow's move depends on what came before, yet both lines seem to show trends, support levels, and turning points."
+            },
+            {
+              "type": "chart",
+              "chartID": "rpc-06-random-walks",
+              "kind": "line",
+              "title": "Two synthetic random walks",
+              "caption": "Both series were produced by coin flips with no memory. Any trend, channel, or support level you see in them was created by chance and drawn by your eye.",
+              "xLabel": "Day",
+              "yLabel": "Value (illustrative units)",
+              "dataNote": "Synthetic random walks generated by coin flips — not real market data.",
+              "series": [
+                {
+                  "name": "Random walk A",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 100.87
+                    },
+                    {
+                      "x": 2,
+                      "y": 101.58
+                    },
+                    {
+                      "x": 3,
+                      "y": 100.78
+                    },
+                    {
+                      "x": 4,
+                      "y": 100.22
+                    },
+                    {
+                      "x": 5,
+                      "y": 99.37
+                    },
+                    {
+                      "x": 6,
+                      "y": 98.99
+                    },
+                    {
+                      "x": 7,
+                      "y": 99.58
+                    },
+                    {
+                      "x": 8,
+                      "y": 99.17
+                    },
+                    {
+                      "x": 9,
+                      "y": 99.56
+                    },
+                    {
+                      "x": 10,
+                      "y": 98.69
+                    },
+                    {
+                      "x": 11,
+                      "y": 98.02
+                    },
+                    {
+                      "x": 12,
+                      "y": 98.4
+                    },
+                    {
+                      "x": 13,
+                      "y": 98.02
+                    },
+                    {
+                      "x": 14,
+                      "y": 97.5
+                    },
+                    {
+                      "x": 15,
+                      "y": 96.85
+                    },
+                    {
+                      "x": 16,
+                      "y": 97.51
+                    },
+                    {
+                      "x": 17,
+                      "y": 97.1
+                    },
+                    {
+                      "x": 18,
+                      "y": 96.54
+                    },
+                    {
+                      "x": 19,
+                      "y": 95.87
+                    },
+                    {
+                      "x": 20,
+                      "y": 95.24
+                    },
+                    {
+                      "x": 21,
+                      "y": 96.02
+                    },
+                    {
+                      "x": 22,
+                      "y": 96.7
+                    },
+                    {
+                      "x": 23,
+                      "y": 97.25
+                    },
+                    {
+                      "x": 24,
+                      "y": 96.46
+                    },
+                    {
+                      "x": 25,
+                      "y": 96.06
+                    },
+                    {
+                      "x": 26,
+                      "y": 96.7
+                    },
+                    {
+                      "x": 27,
+                      "y": 97.46
+                    },
+                    {
+                      "x": 28,
+                      "y": 98.15
+                    },
+                    {
+                      "x": 29,
+                      "y": 97.72
+                    },
+                    {
+                      "x": 30,
+                      "y": 98.17
+                    },
+                    {
+                      "x": 31,
+                      "y": 98.61
+                    },
+                    {
+                      "x": 32,
+                      "y": 99.2
+                    },
+                    {
+                      "x": 33,
+                      "y": 98.43
+                    },
+                    {
+                      "x": 34,
+                      "y": 98.97
+                    },
+                    {
+                      "x": 35,
+                      "y": 99.65
+                    },
+                    {
+                      "x": 36,
+                      "y": 100.05
+                    },
+                    {
+                      "x": 37,
+                      "y": 99.18
+                    },
+                    {
+                      "x": 38,
+                      "y": 99.92
+                    },
+                    {
+                      "x": 39,
+                      "y": 99.52
+                    },
+                    {
+                      "x": 40,
+                      "y": 100.23
+                    }
+                  ]
+                },
+                {
+                  "name": "Random walk B",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 100.83
+                    },
+                    {
+                      "x": 2,
+                      "y": 101.43
+                    },
+                    {
+                      "x": 3,
+                      "y": 100.97
+                    },
+                    {
+                      "x": 4,
+                      "y": 101.67
+                    },
+                    {
+                      "x": 5,
+                      "y": 101.26
+                    },
+                    {
+                      "x": 6,
+                      "y": 101.7
+                    },
+                    {
+                      "x": 7,
+                      "y": 101.02
+                    },
+                    {
+                      "x": 8,
+                      "y": 101.9
+                    },
+                    {
+                      "x": 9,
+                      "y": 101.2
+                    },
+                    {
+                      "x": 10,
+                      "y": 100.81
+                    },
+                    {
+                      "x": 11,
+                      "y": 99.97
+                    },
+                    {
+                      "x": 12,
+                      "y": 99.19
+                    },
+                    {
+                      "x": 13,
+                      "y": 99.79
+                    },
+                    {
+                      "x": 14,
+                      "y": 99.15
+                    },
+                    {
+                      "x": 15,
+                      "y": 99.78
+                    },
+                    {
+                      "x": 16,
+                      "y": 99.17
+                    },
+                    {
+                      "x": 17,
+                      "y": 99.75
+                    },
+                    {
+                      "x": 18,
+                      "y": 99.01
+                    },
+                    {
+                      "x": 19,
+                      "y": 99.78
+                    },
+                    {
+                      "x": 20,
+                      "y": 100.16
+                    },
+                    {
+                      "x": 21,
+                      "y": 99.58
+                    },
+                    {
+                      "x": 22,
+                      "y": 100.15
+                    },
+                    {
+                      "x": 23,
+                      "y": 99.33
+                    },
+                    {
+                      "x": 24,
+                      "y": 98.86
+                    },
+                    {
+                      "x": 25,
+                      "y": 98.24
+                    },
+                    {
+                      "x": 26,
+                      "y": 98.83
+                    },
+                    {
+                      "x": 27,
+                      "y": 98.05
+                    },
+                    {
+                      "x": 28,
+                      "y": 98.59
+                    },
+                    {
+                      "x": 29,
+                      "y": 99.13
+                    },
+                    {
+                      "x": 30,
+                      "y": 99.9
+                    },
+                    {
+                      "x": 31,
+                      "y": 99.47
+                    },
+                    {
+                      "x": 32,
+                      "y": 99.1
+                    },
+                    {
+                      "x": 33,
+                      "y": 99.89
+                    },
+                    {
+                      "x": 34,
+                      "y": 99.16
+                    },
+                    {
+                      "x": 35,
+                      "y": 98.56
+                    },
+                    {
+                      "x": 36,
+                      "y": 97.67
+                    },
+                    {
+                      "x": 37,
+                      "y": 97.08
+                    },
+                    {
+                      "x": 38,
+                      "y": 97.51
+                    },
+                    {
+                      "x": 39,
+                      "y": 98.4
+                    },
+                    {
+                      "x": 40,
+                      "y": 97.89
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Four traps follow. Hindsight: patterns are easy to name after the outcome is known. Data-mining: test enough rules on enough history and some will look brilliant by luck. Survivorship: you hear about strategies that survived; failures drop out of the sample. Costs: every trade pays a spread, often a commission, and sometimes tax, so a rule must be right by a wide margin to break even."
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "The efficient-markets idea in plain words",
+              "text": "If a pattern in past prices reliably pointed to future prices, traders would act on it, and their trading would move the price until the pattern stopped working. On this view, whatever a public chart shows is already in the price by the time you look. Economists contest the idea at the edges, yet it explains why easy, visible patterns rarely stay useful for long."
+            },
+            {
+              "type": "paragraph",
+              "text": "The SEC's investor education site describes day trading - rapid buying and selling within one day to catch short moves - as extremely risky and able to produce large losses very quickly. FINRA adds that frequent intraday trading, especially on borrowed money, can end in losing some or all of what was put in. The SEC also warns of pump-and-dump schemes, where false hype lifts a price before insiders sell. A chart never tells you why the price moved."
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Why this course teaches reading, not trading",
+              "text": "These lessons give you vocabulary for following market reporting, not an edge over participants who know the same vocabulary and have faster tools. Risk, in the SEC's definition, is uncertainty about returns and the harm when they disappoint; reading a chart does not remove it."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Hindsight bias",
+                  "definition": "The tendency to see past events as having been predictable once their outcome is known."
+                },
+                {
+                  "term": "Data-mining",
+                  "definition": "Searching many rules or variables until one fits the past by chance, then mistaking the fit for a real relationship."
+                },
+                {
+                  "term": "Survivorship bias",
+                  "definition": "Drawing conclusions from the examples that survived while ignoring those that failed and dropped out of view."
+                },
+                {
+                  "term": "Random walk",
+                  "definition": "A series whose next change does not depend on its previous changes, so its past path carries no information about its future path."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "A rule tested on twenty years of past prices shows a strong record. Which of the following is the best reason to stay cautious?",
+              "choices": [
+                "Twenty years is too short to see any pattern.",
+                "It may have been selected from many tested rules, fitting the past by chance, and it has not yet paid trading costs.",
+                "Charts are illegal to use for research.",
+                "A strong past record guarantees a strong future record."
+              ],
+              "answerIndex": 1,
+              "explanation": "Data-mining, hindsight, survivorship, and transaction costs all make a strong historical record easy to produce and hard to repeat. A back-tested record is a description of the past sample, not evidence about the future."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Random series look patterned; the eye supplies the story.",
+                "Hindsight, data-mining, survivorship, and costs make chart rules hard to use.",
+                "If a visible pattern reliably paid, trading on it would tend to erase it.",
+                "The SEC describes day trading as extremely risky; charts show what happened, never why.",
+                "This course gives you a reading vocabulary, not an edge."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Day Trading",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/day-trading",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Financial Industry Regulatory Authority (FINRA)",
+              "documentTitle": "Frequent Intraday Trading: Understanding the Basics",
+              "url": "https://www.finra.org/investors/insights/frequent-intraday-trading",
+              "publicationDate": "2026-06-04",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Risk",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Glossary: Pump and Dump Schemes",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/pump-and-dump-schemes",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "National Bureau of Economic Research",
+              "documentTitle": "Foundations of Technical Analysis: Computational Algorithms, Statistical Inference, and Empirical Implementation (Working Paper 7613)",
+              "url": "https://www.nber.org/papers/w7613",
+              "publicationDate": "2000-03-01",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "courseID": "bonds-rates-yield-curve",
+      "title": "Bonds, Rates and the Yield Curve",
+      "icon": "percent",
+      "summary": "How a bond's price and yield are linked, why longer bonds swing more, what the yield curve shows, and how the central bank's policy rate connects to the rates people meet in daily life.",
+      "level": "intermediate",
+      "estimatedMinutes": 42,
+      "lessons": [
+        {
+          "lessonID": "bry-01",
+          "title": "Price and Yield",
+          "summary": "Face value, coupon and maturity, and why a bond's market price and its yield move in opposite directions.",
+          "estimatedMinutes": 7,
+          "isPreview": true,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A bond is a loan in the form of a tradable certificate. The borrower, called the issuer, might be a national government, a city, or a company. The lender is whoever holds the bond. Three numbers are printed into the deal at the start. The face value, also called par, is the amount repaid at the end. The coupon is the fixed interest payment, usually quoted as a yearly percentage of face value. The maturity is the date the loan ends and the face value comes back. Treasury notes and bonds, for example, pay their coupon every six months and repay face value on the maturity date."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Face value (par)",
+                  "definition": "The fixed amount the issuer repays when the bond matures, commonly $1,000 per bond in the United States."
+                },
+                {
+                  "term": "Coupon",
+                  "definition": "The fixed interest payment written into the bond, quoted as a yearly percentage of face value and paid on a set schedule."
+                },
+                {
+                  "term": "Maturity",
+                  "definition": "The date on which the loan ends and the issuer repays the face value to whoever holds the bond."
+                },
+                {
+                  "term": "Yield",
+                  "definition": "The return a buyer earns at the price actually paid, taking into account the coupons and the repayment of face value at maturity."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "The coupon never changes, but the price a bond trades at does. That is the whole puzzle. Suppose an illustrative bond has a $1,000 face value and a 4 percent coupon, so it pays $40 a year. If newly issued bonds of the same quality start paying 5 percent, nobody pays $1,000 for the old bond to collect only $40. Its price drops until $40 works out to roughly 5 percent of the purchase price, which is about $800. The reverse holds too. If new bonds pay only 3 percent, the old bond's $40 looks generous, and buyers bid its price up toward about $1,333, where $40 is roughly 3 percent of the price."
+            },
+            {
+              "type": "callout",
+              "style": "example",
+              "title": "The arithmetic is simplified on purpose",
+              "text": "The $800 and $1,333 figures use the simplest version of yield: the yearly coupon divided by the price. A full yield-to-maturity calculation also counts the gain or loss from being repaid exactly $1,000 at maturity, which pulls the price back toward face value as the end date nears. The direction is identical in both versions: price and yield move in opposite directions."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "price-yield-seesaw",
+              "caption": "A seesaw with price on one end and yield on the other. Push the price up and the yield comes down; let the price fall and the yield rises. The coupon in the middle never moves."
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-01-price-vs-yield",
+              "kind": "line",
+              "title": "Price of an illustrative 10-year, 4 percent bond at different yields",
+              "caption": "As the yield required by buyers rises from 1 percent to 8 percent, the price of the same bond falls from well above face value to well below it. The curve bends rather than running straight, so a fall in yields lifts the price by more than an equal rise in yields lowers it.",
+              "xLabel": "Yield (percent)",
+              "yLabel": "Price per $1,000 face value",
+              "dataNote": "Synthetic illustration — hand-designed points for a 10-year, 4 percent coupon bond, not real market data.",
+              "series": [
+                {
+                  "name": "Price",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 1284
+                    },
+                    {
+                      "x": 2,
+                      "y": 1180
+                    },
+                    {
+                      "x": 3,
+                      "y": 1085
+                    },
+                    {
+                      "x": 4,
+                      "y": 1000
+                    },
+                    {
+                      "x": 5,
+                      "y": 923
+                    },
+                    {
+                      "x": 6,
+                      "y": 853
+                    },
+                    {
+                      "x": 7,
+                      "y": 789
+                    },
+                    {
+                      "x": 8,
+                      "y": 731
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 4,
+                  "label": "Yield equals coupon: price equals face value"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "Notice what did not change in the example. The issuer still owes $40 a year and $1,000 at the end. Whoever holds the bond to maturity collects exactly that. Price moves only matter to someone buying or selling before the end date. That is why TreasuryDirect describes the price of a note or bond as depending on the gap between its coupon rate and the yield buyers demand: a coupon above the going yield sells above par, a coupon below it sells below par, and a coupon equal to it sells at par."
+            },
+            {
+              "type": "quiz",
+              "question": "An illustrative bond pays a fixed $50 coupon on a $1,000 face value. Yields on comparable new bonds fall from 5 percent to 4 percent. What happens to the old bond's market price?",
+              "choices": [
+                "It falls, because lower yields make all bonds less attractive",
+                "It rises, because a fixed $50 payment is worth more when new bonds pay less",
+                "It stays at $1,000, because face value never changes",
+                "It falls to $800, because the coupon is cut to $40"
+              ],
+              "answerIndex": 1,
+              "explanation": "The coupon is fixed at $50. When new bonds pay only 4 percent, buyers bid up the old bond until its $50 works out to roughly 4 percent of the price, which is above $1,000. Face value is unchanged, but the trading price is not the face value."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Face value, coupon and maturity are fixed when a bond is issued; only the market price moves.",
+                "Price and yield move in opposite directions because a fixed coupon is worth more when competing rates fall and less when they rise.",
+                "A holder who keeps the bond to maturity receives the coupons and face value regardless of price swings in between.",
+                "Coupon above the going yield means a price above par; coupon below it means a price below par."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Department of the Treasury, TreasuryDirect",
+              "documentTitle": "Understanding Pricing and Interest Rates",
+              "url": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Department of the Treasury, TreasuryDirect",
+              "documentTitle": "Treasury Notes",
+              "url": "https://www.treasurydirect.gov/marketable-securities/treasury-notes/",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "bry-02",
+          "title": "Duration and Interest-Rate Risk",
+          "summary": "Why a bond with a longer maturity moves more in price for the same change in rates, and how duration puts a number on that sensitivity.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "The previous lesson showed that a bond's price falls when yields rise. This lesson asks how much. The answer depends mostly on how long the money is tied up. A bond maturing in two years returns its face value soon, so a buyer is stuck with an old coupon for only a short time. A bond maturing in thirty years locks in that coupon for decades. Every one of those distant payments is worth less when competing rates rise, and there are many more of them, so the price of the long bond has to fall much further to compete. Interest-rate risk is the name for this exposure: the chance that a change in market rates changes the value of a bond before it matures."
+            },
+            {
+              "type": "paragraph",
+              "text": "Duration is the measure that turns this idea into a number. In plain words, duration is the approximate percentage change in a bond's price for a one-percentage-point change in its yield. A bond with a duration of 2 moves roughly 2 percent for each point; a bond with a duration of 15 moves roughly 15 percent. Duration is measured in years because it also equals the weighted average time until the bond's cash comes back. Longer maturity and lower coupon both push duration up, because more of the value sits in the distant future. A zero-coupon bond, which pays nothing until maturity, has a duration equal to its full maturity."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Interest-rate risk",
+                  "definition": "The risk that a rise in market interest rates lowers the price of an existing bond before it matures."
+                },
+                {
+                  "term": "Duration",
+                  "definition": "The approximate percentage price change for a one-percentage-point move in yield; also the weighted average time until a bond's payments arrive."
+                },
+                {
+                  "term": "Zero-coupon bond",
+                  "definition": "A bond that pays no periodic interest and is sold below face value; its duration equals its full maturity."
+                },
+                {
+                  "term": "Percentage point",
+                  "definition": "The unit for a change in a rate itself, so a move from 3 percent to 4 percent is one percentage point."
+                }
+              ]
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-02-duration-bars",
+              "kind": "bar",
+              "title": "Illustrative price change for a one-percentage-point move in yield, by maturity",
+              "caption": "Three illustrative bonds with the same coupon. A one-point rise in yields barely dents the 2-year bond but knocks roughly 15 percent off the 30-year bond. A one-point fall lifts each by a little more than the matching rise lowers it.",
+              "xLabel": "Maturity (years)",
+              "yLabel": "Price change (percent)",
+              "dataNote": "Synthetic illustration — hand-designed values for bonds of equal coupon, not real market data.",
+              "series": [
+                {
+                  "name": "Yield rises 1 point",
+                  "points": [
+                    {
+                      "x": 2,
+                      "y": -1.9
+                    },
+                    {
+                      "x": 10,
+                      "y": -7.8
+                    },
+                    {
+                      "x": 30,
+                      "y": -14.5
+                    }
+                  ]
+                },
+                {
+                  "name": "Yield falls 1 point",
+                  "points": [
+                    {
+                      "x": 2,
+                      "y": 1.9
+                    },
+                    {
+                      "x": 10,
+                      "y": 8.6
+                    },
+                    {
+                      "x": 30,
+                      "y": 17.5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "The same promise, a very different ride",
+              "text": "Investor.gov's guide to bonds puts the point plainly: held to maturity, a bond returns its face value plus interest, but sold before then it may fetch more or less than face value. Duration measures the size of that in-between swing. It says nothing about whether the issuer is able to pay, which is a separate risk called credit risk."
+            },
+            {
+              "type": "paragraph",
+              "text": "Duration also explains why the Treasury's longest securities behave so differently from its shortest. A Treasury bill maturing in a few weeks has almost no duration, so its price hardly moves when rates change. A 30-year Treasury bond, described on TreasuryDirect as paying interest every six months for up to three decades, carries a large duration and can gain or lose a substantial share of its value in a single year of rate changes, even though the government's promise to pay is identical in both cases."
+            },
+            {
+              "type": "quiz",
+              "question": "Two illustrative bonds have the same coupon and the same issuer. One matures in 3 years and one in 25 years. Market yields rise by one percentage point. Which statement is correct?",
+              "choices": [
+                "Both prices fall by about the same percentage, because the coupons are equal",
+                "The 25-year bond's price falls by a much larger percentage, because more of its value sits far in the future",
+                "The 3-year bond's price falls more, because it has less time to recover",
+                "Neither price changes, because the issuer is the same"
+              ],
+              "answerIndex": 1,
+              "explanation": "Duration rises with maturity. The 25-year bond locks in the old coupon for far longer, so its price must fall much further before its yield matches the new market rate."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Interest-rate risk is the chance that a move in market rates changes a bond's price before maturity.",
+                "Duration is the rough percentage price change for a one-percentage-point move in yield.",
+                "Longer maturity and lower coupon both raise duration and therefore price sensitivity.",
+                "Duration says nothing about whether the issuer can pay; that is credit risk, a separate question."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+              "documentTitle": "Bonds - FAQs",
+              "url": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Department of the Treasury, TreasuryDirect",
+              "documentTitle": "Treasury Bonds",
+              "url": "https://www.treasurydirect.gov/marketable-securities/treasury-bonds/",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "bry-03",
+          "title": "The Yield Curve",
+          "summary": "What you see when you plot yields by maturity, why the line usually slopes upward, and where the public data comes from.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "A yield curve is a simple picture. Take one borrower, usually the U.S. Treasury, and line up its debt from the shortest maturity to the longest: a few weeks, one year, two years, ten years, thirty years. Plot the yield of each on a chart with maturity along the bottom and yield up the side, then connect the dots. The resulting line is the yield curve. It answers one question at a glance: how much more, or less, does the market demand to lend to the same borrower for a longer stretch of time?"
+            },
+            {
+              "type": "paragraph",
+              "text": "Most of the time the line slopes upward, which is called a normal curve. Two ideas explain the slope. First, long yields bundle in expectations about where short rates are headed, so if the market expects short rates to climb, long yields sit higher. Second, lenders usually want extra compensation for locking money away for years, because a long bond carries more interest-rate risk, as the last lesson showed. That extra compensation is called the term premium. When the two ideas pull in opposite directions the curve can flatten, and when expectations of falling short rates overpower the premium it can slope downward, which is called inverted."
+            },
+            {
+              "type": "diagram",
+              "diagramID": "yield-curve-shapes",
+              "caption": "Three shapes side by side: a normal curve rising from left to right, a flat curve running level, and an inverted curve sloping downward as longer maturities yield less than shorter ones."
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-03-curve-shapes",
+              "kind": "line",
+              "title": "Three illustrative yield curves",
+              "caption": "The normal curve climbs about 1.5 points from the shortest to the longest maturity. The flat curve barely moves. The inverted curve starts high and drifts lower as maturity lengthens. Real curves rarely look this tidy, but these are the three shapes analysts name.",
+              "xLabel": "Maturity (years)",
+              "yLabel": "Yield (percent)",
+              "dataNote": "Synthetic illustration — hand-designed curves, not real Treasury yields.",
+              "series": [
+                {
+                  "name": "Normal",
+                  "points": [
+                    {
+                      "x": 0.25,
+                      "y": 3.0
+                    },
+                    {
+                      "x": 0.5,
+                      "y": 3.1
+                    },
+                    {
+                      "x": 1,
+                      "y": 3.2
+                    },
+                    {
+                      "x": 2,
+                      "y": 3.4
+                    },
+                    {
+                      "x": 3,
+                      "y": 3.55
+                    },
+                    {
+                      "x": 5,
+                      "y": 3.8
+                    },
+                    {
+                      "x": 7,
+                      "y": 3.95
+                    },
+                    {
+                      "x": 10,
+                      "y": 4.1
+                    },
+                    {
+                      "x": 20,
+                      "y": 4.4
+                    },
+                    {
+                      "x": 30,
+                      "y": 4.5
+                    }
+                  ]
+                },
+                {
+                  "name": "Flat",
+                  "points": [
+                    {
+                      "x": 0.25,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 0.5,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 1,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 2,
+                      "y": 3.92
+                    },
+                    {
+                      "x": 3,
+                      "y": 3.93
+                    },
+                    {
+                      "x": 5,
+                      "y": 3.95
+                    },
+                    {
+                      "x": 7,
+                      "y": 3.96
+                    },
+                    {
+                      "x": 10,
+                      "y": 3.98
+                    },
+                    {
+                      "x": 20,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 30,
+                      "y": 4.0
+                    }
+                  ]
+                },
+                {
+                  "name": "Inverted",
+                  "points": [
+                    {
+                      "x": 0.25,
+                      "y": 4.8
+                    },
+                    {
+                      "x": 0.5,
+                      "y": 4.75
+                    },
+                    {
+                      "x": 1,
+                      "y": 4.6
+                    },
+                    {
+                      "x": 2,
+                      "y": 4.3
+                    },
+                    {
+                      "x": 3,
+                      "y": 4.15
+                    },
+                    {
+                      "x": 5,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 7,
+                      "y": 3.95
+                    },
+                    {
+                      "x": 10,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 20,
+                      "y": 3.95
+                    },
+                    {
+                      "x": 30,
+                      "y": 3.95
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "Where the real curve is published",
+              "text": "The U.S. Treasury publishes a Daily Treasury Par Yield Curve on its Interest Rate Statistics pages. Its frequently-asked-questions page explains that the curve is built from closing bid quotes on Treasury securities and read at fixed maturity points, so a point on the curve may not match the yield of any single bond. The chart above is a sketch of shapes, not a copy of that data."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Yield curve",
+                  "definition": "A line connecting the yields of one borrower's debt across maturities, from the shortest to the longest."
+                },
+                {
+                  "term": "Term premium",
+                  "definition": "The extra yield lenders demand for committing money for a longer period and bearing more interest-rate risk."
+                },
+                {
+                  "term": "Par yield curve",
+                  "definition": "The Treasury's published curve, built so that each point is the coupon rate at which a bond of that maturity would trade at face value."
+                }
+              ]
+            },
+            {
+              "type": "quiz",
+              "question": "A yield curve slopes upward, with 30-year yields well above 3-month yields. Which explanation fits the term-premium idea?",
+              "choices": [
+                "Long bonds pay more because the government is more likely to repay them",
+                "Lenders demand extra yield to lock money away for decades and bear more interest-rate risk",
+                "Short bills pay less because they are harder to sell",
+                "The slope is set directly by the central bank at each maturity"
+              ],
+              "answerIndex": 1,
+              "explanation": "The term premium is compensation for tying money up longer and accepting bigger price swings if rates change. The borrower is the same at every maturity, so repayment odds do not explain the slope."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "A yield curve plots one borrower's yields by maturity, shortest to longest.",
+                "An upward slope is called normal; a level line is flat; a downward slope is inverted.",
+                "Long yields blend expectations about future short rates with a term premium for bearing interest-rate risk.",
+                "The Treasury publishes the real daily par yield curve; the shapes in this lesson are synthetic sketches."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Department of the Treasury",
+              "documentTitle": "Interest Rate Statistics",
+              "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Department of the Treasury",
+              "documentTitle": "Interest Rates - Frequently Asked Questions",
+              "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics/interest-rates-frequently-asked-questions",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "bry-04",
+          "title": "Inversions and What They Have Signaled",
+          "summary": "What it means when short yields sit above long yields, and the documented record linking past inversions to later recessions.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "An inverted yield curve is one where short-term yields are higher than long-term yields, so the line slopes downward. Analysts usually track it with a single number called the spread: a long yield minus a short yield. The Federal Reserve Bank of Cleveland, for instance, uses the 10-year Treasury yield minus the 3-month Treasury bill yield. When that spread is positive the curve is normal. When it falls below zero the curve has inverted. Inversion is unusual because it means lenders accept less to commit money for ten years than for three months."
+            },
+            {
+              "type": "paragraph",
+              "text": "Why would that happen? Recall that long yields bundle in expectations about future short rates. If markets expect the central bank to cut short rates substantially in the years ahead, perhaps because the economy is expected to weaken, then a ten-year yield can settle below the short rate of the moment. An inversion is therefore often read as the market's collective guess that short rates are on their way down. That guess can be right or wrong, and it can be driven by many things besides the outlook for growth."
+            },
+            {
+              "type": "paragraph",
+              "text": "The historical record is what makes the topic famous. In a 2018 Economic Letter, economists at the Federal Reserve Bank of San Francisco documented that every U.S. recession in the preceding sixty years had been preceded by a negative term spread, and that a negative spread was followed by a recession in all but one case. The Cleveland Fed's yield-curve page likewise records that inversions preceded each of the last eight recessions, while also listing several inversions that were not followed by one, including the long inversion that ran from late 2022 into 2024. The pattern is real, and so are the exceptions."
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-04-spread-crossing-zero",
+              "kind": "line",
+              "title": "An illustrative 10-year minus 3-month spread crossing below zero",
+              "caption": "The spread narrows month by month, turns negative around month 10, stays inverted for several months, then climbs back above zero. On a real chart, analysts would compare the timing of such a crossing with the later dates of any recession.",
+              "xLabel": "Month",
+              "yLabel": "Spread (percentage points)",
+              "dataNote": "Synthetic illustration — a hand-designed spread path, not real Treasury data.",
+              "series": [
+                {
+                  "name": "10-year minus 3-month",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 1.6
+                    },
+                    {
+                      "x": 2,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 3,
+                      "y": 1.3
+                    },
+                    {
+                      "x": 4,
+                      "y": 1.1
+                    },
+                    {
+                      "x": 5,
+                      "y": 0.9
+                    },
+                    {
+                      "x": 6,
+                      "y": 0.7
+                    },
+                    {
+                      "x": 7,
+                      "y": 0.5
+                    },
+                    {
+                      "x": 8,
+                      "y": 0.3
+                    },
+                    {
+                      "x": 9,
+                      "y": 0.1
+                    },
+                    {
+                      "x": 10,
+                      "y": -0.1
+                    },
+                    {
+                      "x": 11,
+                      "y": -0.3
+                    },
+                    {
+                      "x": 12,
+                      "y": -0.4
+                    },
+                    {
+                      "x": 13,
+                      "y": -0.5
+                    },
+                    {
+                      "x": 14,
+                      "y": -0.5
+                    },
+                    {
+                      "x": 15,
+                      "y": -0.4
+                    },
+                    {
+                      "x": 16,
+                      "y": -0.3
+                    },
+                    {
+                      "x": 17,
+                      "y": -0.1
+                    },
+                    {
+                      "x": 18,
+                      "y": 0.1
+                    },
+                    {
+                      "x": 19,
+                      "y": 0.3
+                    },
+                    {
+                      "x": 20,
+                      "y": 0.5
+                    },
+                    {
+                      "x": 21,
+                      "y": 0.7
+                    },
+                    {
+                      "x": 22,
+                      "y": 0.8
+                    },
+                    {
+                      "x": 23,
+                      "y": 0.9
+                    },
+                    {
+                      "x": 24,
+                      "y": 1.0
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 10,
+                  "label": "Spread turns negative: curve inverts"
+                },
+                {
+                  "x": 18,
+                  "label": "Spread turns positive again"
+                }
+              ]
+            },
+            {
+              "type": "callout",
+              "style": "caution",
+              "title": "Association is not prediction",
+              "text": "The record above is a description of the past, not a forecast. Inversions have come before recessions with gaps ranging from a few months to about two years, some inversions were not followed by any recession, and the economy has changed in ways that could weaken or strengthen the link. Reserve Bank researchers themselves warn against reading the signal too literally. This lesson explains why people watch the spread; it does not say what any inversion means for the future."
+            },
+            {
+              "type": "quiz",
+              "question": "The 10-year Treasury yield is 3.8 percent and the 3-month bill yield is 4.3 percent. Which statement is accurate?",
+              "choices": [
+                "The spread is +0.5 points and the curve is normal",
+                "The spread is -0.5 points and the curve is inverted",
+                "The curve is flat because the two yields are close",
+                "The spread cannot be computed from two yields"
+              ],
+              "answerIndex": 1,
+              "explanation": "The spread is the long yield minus the short yield: 3.8 minus 4.3 equals -0.5 percentage points. A negative spread means short yields exceed long yields, which is the definition of an inverted curve."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "An inversion means short yields exceed long yields; the 10-year minus 3-month spread turns negative.",
+                "Inversions are often read as markets expecting lower short rates ahead, for reasons that can vary.",
+                "Reserve Bank research documents that past U.S. recessions were preceded by inversions, with notable exceptions the other way.",
+                "That record is history, not a forecast; association is not prediction."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "Federal Reserve Bank of Cleveland",
+              "documentTitle": "Yield Curve and Predicted GDP Growth",
+              "url": "https://www.clevelandfed.org/indicators-and-data/yield-curve-and-predicted-gdp-growth",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Federal Reserve Bank of San Francisco",
+              "documentTitle": "FRBSF Economic Letter 2018-07: Economic Forecasts with the Yield Curve",
+              "url": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2018/03/economic-forecasts-with-yield-curve/",
+              "publicationDate": "2018-03-05",
+              "datePrecision": "stated-on-page",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "bry-05",
+          "title": "Real vs Nominal",
+          "summary": "The difference between a yield on paper and a yield after inflation, and how inflation-protected securities are built.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "The yield printed on a bond is a nominal yield: the percentage of money you receive, counted in dollars. It says nothing about what those dollars buy. If a bond yields 5 percent while prices in the shops rise 3 percent, the lender's purchasing power grows by only about 2 percent. That leftover is the real yield. As a rule of thumb, real yield is roughly the nominal yield minus the inflation rate. When inflation runs above the nominal yield, the real yield is negative, and the lender ends up able to buy less than before even though the account balance grew."
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Nominal yield",
+                  "definition": "The stated yield counted in money terms, before any adjustment for changes in the general price level."
+                },
+                {
+                  "term": "Inflation",
+                  "definition": "A sustained rise in the general level of prices, which lowers what each dollar can buy over time."
+                },
+                {
+                  "term": "Real yield",
+                  "definition": "The nominal yield adjusted for inflation; approximately the nominal yield minus the inflation rate."
+                },
+                {
+                  "term": "TIPS",
+                  "definition": "Treasury Inflation-Protected Securities, whose principal is adjusted with a consumer price index so the return is set in real terms."
+                }
+              ]
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-05-nominal-inflation-real",
+              "kind": "bar",
+              "title": "Illustrative nominal yield, inflation, and the real yield left over",
+              "caption": "Each year shows three bars. Nominal yield and inflation move around, and the real yield is what remains after subtracting one from the other. In years 3 and 4 a higher nominal yield still leaves only a 1 percent real yield because inflation climbed with it.",
+              "xLabel": "Year (illustrative)",
+              "yLabel": "Percent",
+              "dataNote": "Synthetic illustration — hand-designed yearly values, not real yields or inflation readings.",
+              "series": [
+                {
+                  "name": "Nominal yield",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 2,
+                      "y": 4.5
+                    },
+                    {
+                      "x": 3,
+                      "y": 5.0
+                    },
+                    {
+                      "x": 4,
+                      "y": 5.5
+                    },
+                    {
+                      "x": 5,
+                      "y": 5.0
+                    },
+                    {
+                      "x": 6,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 7,
+                      "y": 3.0
+                    },
+                    {
+                      "x": 8,
+                      "y": 3.5
+                    }
+                  ]
+                },
+                {
+                  "name": "Inflation",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 2.0
+                    },
+                    {
+                      "x": 2,
+                      "y": 3.0
+                    },
+                    {
+                      "x": 3,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 4,
+                      "y": 4.5
+                    },
+                    {
+                      "x": 5,
+                      "y": 3.5
+                    },
+                    {
+                      "x": 6,
+                      "y": 2.0
+                    },
+                    {
+                      "x": 7,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 8,
+                      "y": 2.0
+                    }
+                  ]
+                },
+                {
+                  "name": "Real yield (difference)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 2.0
+                    },
+                    {
+                      "x": 2,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 3,
+                      "y": 1.0
+                    },
+                    {
+                      "x": 4,
+                      "y": 1.0
+                    },
+                    {
+                      "x": 5,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 6,
+                      "y": 2.0
+                    },
+                    {
+                      "x": 7,
+                      "y": 1.5
+                    },
+                    {
+                      "x": 8,
+                      "y": 1.5
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "An ordinary bond leaves the lender exposed to this gap, because its coupon and face value are fixed in dollars no matter what prices do. The U.S. Treasury also issues a security designed to remove that exposure. Treasury Inflation-Protected Securities, or TIPS, are sold with maturities of 5, 10 and 30 years. Their principal is adjusted up or down in line with a consumer price index. The coupon rate is fixed, but because it is applied to the adjusted principal, the dollar amount of each interest payment rises when prices rise and falls when they fall."
+            },
+            {
+              "type": "callout",
+              "style": "example",
+              "title": "How the adjustment works, in numbers",
+              "text": "Take an illustrative TIPS with $1,000 of original principal and a 1 percent coupon. If the price index rises 3 percent over a year, the principal is adjusted to about $1,030 and the yearly interest becomes about $10.30 instead of $10.00. At maturity TreasuryDirect states that the holder receives the adjusted principal or the original principal, whichever is greater, so a period of falling prices cannot push the final repayment below the starting $1,000."
+            },
+            {
+              "type": "paragraph",
+              "text": "Because a TIPS coupon is quoted in real terms, its yield can be compared with the nominal yield on an ordinary Treasury of the same maturity. The gap between the two is sometimes called the breakeven inflation rate: roughly the average inflation at which the two securities would deliver the same result. The Treasury publishes a separate Daily Treasury Par Real Yield Curve alongside its nominal curve so that both can be read from the same source."
+            },
+            {
+              "type": "quiz",
+              "question": "An illustrative bond has a nominal yield of 4 percent. Over the year, prices rise 5 percent. What is the approximate real yield?",
+              "choices": [
+                "About +9 percent, because the two add together",
+                "About +4 percent, because inflation does not affect a fixed coupon",
+                "About -1 percent, because inflation exceeded the nominal yield",
+                "Exactly 0 percent, because bonds always keep pace with prices"
+              ],
+              "answerIndex": 2,
+              "explanation": "Real yield is roughly nominal yield minus inflation: 4 percent minus 5 percent is about -1 percent. The dollars grew, but they buy slightly less than before."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "Nominal yield counts dollars; real yield counts what those dollars buy.",
+                "Real yield is approximately nominal yield minus inflation, and it can be negative.",
+                "TIPS adjust their principal with a price index, so their coupon payments and final repayment move with inflation.",
+                "TIPS repay at least the original principal at maturity even after a spell of falling prices."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "U.S. Department of the Treasury, TreasuryDirect",
+              "documentTitle": "Treasury Inflation-Protected Securities (TIPS)",
+              "url": "https://www.treasurydirect.gov/marketable-securities/tips/",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "U.S. Department of the Treasury",
+              "documentTitle": "Interest Rate Statistics",
+              "url": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        },
+        {
+          "lessonID": "bry-06",
+          "title": "The Policy Rate and the Curve",
+          "summary": "How the Federal Reserve sets a target for the shortest rate, why long rates do not simply follow it, and how the two reach mortgages and savings accounts.",
+          "estimatedMinutes": 7,
+          "isPreview": false,
+          "blocks": [
+            {
+              "type": "paragraph",
+              "text": "The very short end of the yield curve is anchored by the central bank. In the United States the Federal Open Market Committee, or FOMC, meets eight times a year on a published schedule and sets a target range for the federal funds rate: the interest rate banks charge one another for overnight loans. The Federal Reserve then uses its policy tools, including the interest it pays on bank reserves and its open market purchases and sales of securities, to keep the overnight rate inside that range. Because this rate is set by decision rather than by supply and demand alone, it is called the policy rate."
+            },
+            {
+              "type": "paragraph",
+              "text": "Longer rates are not set by the committee. A ten-year yield reflects what the market expects the policy rate to average over the next ten years, plus the term premium described in earlier lessons. So when the FOMC raises its target, the two-year yield usually follows closely, but the ten-year yield may rise less, stay put, or even fall if investors conclude the increase makes future cuts more likely. This is why the curve flattens or inverts during many tightening cycles and steepens when the policy rate is cut. The central bank moves one end of the seesaw; the other end moves according to expectations."
+            },
+            {
+              "type": "chart",
+              "chartID": "bry-06-short-vs-long",
+              "kind": "line",
+              "title": "An illustrative policy rate and 10-year yield over twenty quarters",
+              "caption": "The short rate climbs in steps from 0.5 percent to 4.5 percent and then comes back down. The long rate drifts up by far less and then eases. Where the short rate rises above the long rate, around quarters 10 to 15, the illustrative curve is inverted.",
+              "xLabel": "Quarter",
+              "yLabel": "Rate (percent)",
+              "dataNote": "Synthetic illustration — hand-designed paths for a policy rate and a long yield, not real data.",
+              "series": [
+                {
+                  "name": "Policy rate (short end)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 0.5
+                    },
+                    {
+                      "x": 2,
+                      "y": 0.5
+                    },
+                    {
+                      "x": 3,
+                      "y": 0.75
+                    },
+                    {
+                      "x": 4,
+                      "y": 1.25
+                    },
+                    {
+                      "x": 5,
+                      "y": 1.75
+                    },
+                    {
+                      "x": 6,
+                      "y": 2.25
+                    },
+                    {
+                      "x": 7,
+                      "y": 2.75
+                    },
+                    {
+                      "x": 8,
+                      "y": 3.25
+                    },
+                    {
+                      "x": 9,
+                      "y": 3.75
+                    },
+                    {
+                      "x": 10,
+                      "y": 4.25
+                    },
+                    {
+                      "x": 11,
+                      "y": 4.5
+                    },
+                    {
+                      "x": 12,
+                      "y": 4.5
+                    },
+                    {
+                      "x": 13,
+                      "y": 4.5
+                    },
+                    {
+                      "x": 14,
+                      "y": 4.25
+                    },
+                    {
+                      "x": 15,
+                      "y": 4.0
+                    },
+                    {
+                      "x": 16,
+                      "y": 3.75
+                    },
+                    {
+                      "x": 17,
+                      "y": 3.5
+                    },
+                    {
+                      "x": 18,
+                      "y": 3.25
+                    },
+                    {
+                      "x": 19,
+                      "y": 3.0
+                    },
+                    {
+                      "x": 20,
+                      "y": 3.0
+                    }
+                  ]
+                },
+                {
+                  "name": "10-year yield (long end)",
+                  "points": [
+                    {
+                      "x": 1,
+                      "y": 2.5
+                    },
+                    {
+                      "x": 2,
+                      "y": 2.7
+                    },
+                    {
+                      "x": 3,
+                      "y": 2.9
+                    },
+                    {
+                      "x": 4,
+                      "y": 3.1
+                    },
+                    {
+                      "x": 5,
+                      "y": 3.3
+                    },
+                    {
+                      "x": 6,
+                      "y": 3.5
+                    },
+                    {
+                      "x": 7,
+                      "y": 3.6
+                    },
+                    {
+                      "x": 8,
+                      "y": 3.7
+                    },
+                    {
+                      "x": 9,
+                      "y": 3.8
+                    },
+                    {
+                      "x": 10,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 11,
+                      "y": 3.9
+                    },
+                    {
+                      "x": 12,
+                      "y": 3.8
+                    },
+                    {
+                      "x": 13,
+                      "y": 3.7
+                    },
+                    {
+                      "x": 14,
+                      "y": 3.7
+                    },
+                    {
+                      "x": 15,
+                      "y": 3.6
+                    },
+                    {
+                      "x": 16,
+                      "y": 3.6
+                    },
+                    {
+                      "x": 17,
+                      "y": 3.5
+                    },
+                    {
+                      "x": 18,
+                      "y": 3.5
+                    },
+                    {
+                      "x": 19,
+                      "y": 3.5
+                    },
+                    {
+                      "x": 20,
+                      "y": 3.5
+                    }
+                  ]
+                }
+              ],
+              "markers": [
+                {
+                  "x": 10,
+                  "label": "Short rate overtakes long rate"
+                }
+              ]
+            },
+            {
+              "type": "keyTerms",
+              "terms": [
+                {
+                  "term": "Federal funds rate",
+                  "definition": "The interest rate at which banks lend reserve balances to one another overnight; the FOMC sets a target range for it."
+                },
+                {
+                  "term": "FOMC",
+                  "definition": "The Federal Open Market Committee, the Federal Reserve body that meets eight times a year to set the policy rate target."
+                },
+                {
+                  "term": "Transmission",
+                  "definition": "The chain by which a change in the policy rate reaches borrowing and saving rates across the economy."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "text": "The policy rate matters to households because other rates are priced off the curve. Savings accounts, money market funds and short certificates of deposit tend to track the short end, so their rates move soon after the FOMC acts. A 30-year fixed mortgage is priced closer to long Treasury yields, which is why mortgage rates can move before a policy meeting, on expectations, and sometimes barely react to the meeting itself. The Federal Reserve describes this chain as the transmission of monetary policy: a change at the short end works its way through financial conditions to spending, hiring and prices, usually with a lag of months or longer."
+            },
+            {
+              "type": "callout",
+              "style": "note",
+              "title": "Two ends, two stories",
+              "text": "A useful habit is to ask which end of the curve a rate belongs to. Credit cards and savings rates live near the short end and follow the policy rate closely. Long mortgages and long-term borrowing costs live near the long end and follow expectations and the term premium. Both are shaped by the central bank, but only one is set by it."
+            },
+            {
+              "type": "quiz",
+              "question": "The FOMC raises its target range by a quarter of a percentage point. Which outcome is consistent with how the yield curve works?",
+              "choices": [
+                "Every yield from 3 months to 30 years rises by exactly a quarter point",
+                "Short yields rise with the target, while the 10-year yield may rise less, hold steady, or even fall on expectations",
+                "Long yields rise more than short yields, because they are more sensitive",
+                "Mortgage rates cannot change until the next meeting"
+              ],
+              "answerIndex": 1,
+              "explanation": "The committee anchors only the shortest rate. Longer yields reflect expected future policy plus a term premium, so they need not move in step, and they can move ahead of a meeting on expectations."
+            },
+            {
+              "type": "takeaways",
+              "items": [
+                "The FOMC sets a target range for the overnight federal funds rate, anchoring the short end of the curve.",
+                "Long yields reflect expected future short rates plus a term premium, so they do not simply follow the policy rate.",
+                "Savings and card rates track the short end; long fixed mortgages track long yields.",
+                "Policy changes reach spending and prices through transmission, with a lag of months or longer."
+              ]
+            }
+          ],
+          "sources": [
+            {
+              "organization": "Board of Governors of the Federal Reserve System",
+              "documentTitle": "Federal Open Market Committee",
+              "url": "https://www.federalreserve.gov/monetarypolicy/fomc.htm",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Board of Governors of the Federal Reserve System",
+              "documentTitle": "Policy Tools: Open Market Operations",
+              "url": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            },
+            {
+              "organization": "Board of Governors of the Federal Reserve System",
+              "documentTitle": "Monetary Policy: What Are Its Goals? How Does It Work?",
+              "url": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+              "publicationDate": "2026-09-14",
+              "datePrecision": "observed-on-verification-date",
+              "verificationDate": "2026-09-14"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -21,6 +21,11 @@ final class ContentStore: ObservableObject {
     /// never empties `topics`/`allCards`.
     let packLoadError: Error?
 
+    /// The Pro course library (1.1.4). `nil` when `courses-v1.json` failed to
+    /// load or validate — Home then shows no courses; cards are unaffected.
+    let courses: CourseCurriculum?
+    let courseLoadError: Error?
+
     /// Every pack card, in pack order. Kept apart from `allCards` (the core
     /// 120) so the core totals the listing states stay pinned.
     var packCards: [EconCard] { packs.flatMap(\.cards) }
@@ -61,11 +66,19 @@ final class ContentStore: ObservableObject {
     private init() {
         var loadedTopics: [EconTopic] = []
         var loadedPacks: [EconPack] = []
+        var loadedCourses: CourseCurriculum?
         var failure: Error?
         var packFailure: Error?
+        var courseFailure: Error?
         do {
             let catalog = try CurriculumCatalog.loadValidated()
             loadedTopics = catalog.topics.map(Self.viewModel(for:))
+            do {
+                loadedCourses = try CourseCatalog.loadValidated(core: catalog)
+            } catch {
+                NSLog("[ContentStore] courses failed to load: \(error)")
+                courseFailure = error
+            }
             do {
                 let packCatalog = try PackCatalog.loadValidated(core: catalog)
                 loadedPacks = packCatalog.packs.map { pack in
@@ -87,8 +100,10 @@ final class ContentStore: ObservableObject {
         topics = loadedTopics
         allCards = loadedTopics.flatMap(\.cards)
         packs = loadedPacks
+        courses = loadedCourses
         loadError = failure
         packLoadError = packFailure
+        courseLoadError = courseFailure
         loadStates()
     }
 
