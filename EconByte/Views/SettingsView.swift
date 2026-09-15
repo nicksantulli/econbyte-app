@@ -125,7 +125,7 @@ struct SettingsView: View {
                     onRequestProPaywall?()
                     dismiss()
                 } label: {
-                    HStack {
+                    EconAdaptiveRow {
                         SettingsRowLabel(title: "EconByte Pro", icon: "graduationcap.fill", tint: EconColor.accent)
                         Spacer()
                         Text("See plans")

@@ -35,7 +35,7 @@ struct BriefDocumentView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: EconSpace.xs) {
-            HStack {
+            EconAdaptiveRow {
                 Text(BriefDates.long(brief.briefDate).uppercased())
                     .font(EconType.overline)
                     .foregroundColor(EconColor.textTertiary)

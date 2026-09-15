@@ -77,7 +77,7 @@ struct StoryVisualView: View {
                 .font(EconType.subheadlineEmphasis)
                 .foregroundColor(EconColor.textPrimary)
                 .multilineTextAlignment(.center)
-                .fixedSize()
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, EconSpace.s)
                 .padding(.vertical, EconSpace.s)
                 .frame(minHeight: EconSize.tapTarget)

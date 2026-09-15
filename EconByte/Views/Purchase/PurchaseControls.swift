@@ -125,16 +125,18 @@ struct OfferCard<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: EconSpace.s) {
-            HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
-                Image(systemName: icon)
-                    .font(EconType.title3)
-                    .foregroundColor(EconColor.accent)
-                    .accessibilityHidden(true)
-                Text(title)
-                    .font(EconType.title3)
-                    .foregroundColor(EconColor.textPrimary)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityAddTraits(.isHeader)
+            EconAdaptiveRow {
+                HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
+                    Image(systemName: icon)
+                        .font(EconType.title3)
+                        .foregroundColor(EconColor.accent)
+                        .accessibilityHidden(true)
+                    Text(title)
+                        .font(EconType.title3)
+                        .foregroundColor(EconColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                }
                 Spacer(minLength: EconSpace.xxs)
                 if let status {
                     Text(status)

@@ -51,7 +51,7 @@ struct ProCourseRow: View {
         let done = progress.completedCount(of: course)
         let total = course.lessons.count
         return Button(action: action) {
-            HStack(spacing: EconSpace.s) {
+            EconAdaptiveRow(spacing: EconSpace.s) {
                 CourseProgressRing(done: done, total: total, icon: course.icon)
                     .frame(width: ringSize, height: ringSize)
                 VStack(alignment: .leading, spacing: 2) {
