@@ -152,6 +152,24 @@ final class CardGraphicsTests: XCTestCase {
         }
     }
 
+    /// No two diagram labels overlap at the sizes the card draws them (regular
+    /// and compact plates at iPhone width), for every diagram in both catalogs.
+    func testDiagramLabelsNeverOverlap() throws {
+        var failures: [String] = []
+        for card in try allCards() {
+            guard let diagram = card.graphic?.diagram else { continue }
+            for size in [CGSize(width: 298, height: 132), CGSize(width: 298, height: 120)] {
+                let placed = DiagramLabelLayout.place(diagram, in: size)
+                for (i, a) in placed.enumerated() {
+                    for b in placed[(i + 1)...] where a.rect.intersects(b.rect) {
+                        failures.append("\(card.cardID) @\(Int(size.height)): \"\(a.text)\" overlaps \"\(b.text)\"")
+                    }
+                }
+            }
+        }
+        XCTAssertEqual(failures, [], failures.joined(separator: "\n"))
+    }
+
     // MARK: - The validator rejects defects
 
     private func spec(_ json: String) throws -> CardGraphicSpec {

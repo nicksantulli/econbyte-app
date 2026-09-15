@@ -49,7 +49,7 @@ struct GraphicPlate: View {
     let size: GraphicSize
     @Environment(\.colorScheme) private var colorScheme
     @ScaledMetric(relativeTo: .caption) private var chartHeight: CGFloat = 132
-    @ScaledMetric(relativeTo: .caption) private var compactChartHeight: CGFloat = 76
+    @ScaledMetric(relativeTo: .caption) private var compactChartHeight: CGFloat = 100
 
     var body: some View {
         let palette = GraphicPalette.palette(for: colorScheme)
@@ -96,7 +96,8 @@ struct GraphicBody: View {
         case .line:
             if let line = spec.line { LineGraphicView(line: line, palette: palette).frame(height: chartHeight) }
         case .diagram:
-            if let diagram = spec.diagram { DiagramGraphicView(diagram: diagram, palette: palette).frame(height: chartHeight) }
+            // A schematic's labels need room; it never shrinks below 120 pt.
+            if let diagram = spec.diagram { DiagramGraphicView(diagram: diagram, palette: palette).frame(height: max(chartHeight, 120)) }
         case .flow:
             if let flow = spec.flow { FlowGraphicView(flow: flow, size: size, palette: palette, height: chartHeight) }
         case .compare:
