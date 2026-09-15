@@ -1,0 +1,798 @@
+[
+  {
+    "id": "course:investing-approaches",
+    "field": "summary",
+    "claim": "Course summary lists six lesson topics accurately",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Each listed topic matches a lesson; no advice or prediction wording."
+  },
+  {
+    "id": "ia-01#summary",
+    "field": "summary",
+    "claim": "Lesson summary says risk and return are \"inseparable\"",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "summary",
+        "old": "What a return is, what risk really means, and why the two are inseparable.",
+        "new": "What a return is, what risk really means, and why the two tend to travel together."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "\"Inseparable\" overstates a long-run tendency; block 5 itself says it is not a rule for any one asset. Softened to match."
+  },
+  {
+    "id": "ia-01#b0",
+    "field": "paragraph",
+    "claim": "Total return = income plus price change, divided by starting amount",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "Standard textbook definition."
+  },
+  {
+    "id": "ia-01#b1",
+    "field": "paragraph",
+    "claim": "Risk as uncertainty with two faces: variability and loss",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "Glossary: risk is the degree of uncertainty about the rate of return and potential harm when returns disappoint."
+  },
+  {
+    "id": "ia-01#b2",
+    "field": "keyTerms",
+    "claim": "Definitions of return, volatility, risk premium, time horizon",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Textbook definitions; time horizon framing matches the SEC guide."
+  },
+  {
+    "id": "ia-01#b3",
+    "field": "diagram",
+    "claim": "Ladder caption vs drawn steps (Cash, Gov. bonds, Corp. bonds, Stocks; rising return and variability)",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Caption matches the drawing; the guide supports cash lowest, stocks greatest risk and highest returns."
+  },
+  {
+    "id": "ia-01#b4",
+    "field": "chart",
+    "claim": "Caption says selling in month 9 or month 17 of the volatile path meant a loss",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "blocks[4].caption",
+        "old": "Both paths start at 100. The steady path rises a little every month. The volatile path swings up and down and ends higher, but an owner who had to sell in month 9 or month 17 would have taken a loss. The chart shows how variability and loss are two different things.",
+        "new": "Both paths start at 100. The steady path rises a little every month. The volatile path swings up and down and ends higher, but an owner who had to sell in month 4 or month 9 would have taken a loss. The chart shows how variability and loss are two different things."
+      },
+      {
+        "path": "blocks[4].markers[0].x",
+        "old": 9,
+        "new": 4
+      },
+      {
+        "path": "blocks[4].markers[1].x",
+        "old": 17,
+        "new": 9
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "Volatile path is below its start of 100 only at month 4 (99.48) and month 9 (98.66); month 17 is 109.51, a gain. Caption and Dip markers moved to months 4 and 9. Volatile path is far more variable (SD 4.0 vs 0.004)."
+  },
+  {
+    "id": "ia-01#b5",
+    "field": "paragraph",
+    "claim": "Risk premium arises because buyers demand a lower price for variable assets",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "Glossary: as risks rise, investors seek higher returns to compensate. Framed as a tendency."
+  },
+  {
+    "id": "ia-01#b6",
+    "field": "callout",
+    "claim": "Education-not-recommendation caution",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "No advice or prediction wording."
+  },
+  {
+    "id": "ia-01#b7",
+    "field": "quiz",
+    "claim": "Link between risk and expected return; answer 1",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "Only choice 1 is defensible; \"always\" in choice 0 makes it wrong; explanation matches."
+  },
+  {
+    "id": "ia-01#b8",
+    "field": "takeaways",
+    "claim": "Four takeaways on return, risk faces, compensation, long-run tendency",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "Consistent with the lesson body and sources."
+  },
+  {
+    "id": "ia-01#sources",
+    "field": "sources",
+    "claim": "Glossary: Risk and Beginners Guide URLs resolve and support lesson",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Both pages opened (HTTP 200 with a browser user agent; WebFetch gets 403). Glossary pages are undated, so observed-on-verification-date is appropriate."
+  },
+  {
+    "id": "ia-02#summary",
+    "field": "summary",
+    "claim": "Diversification smooths the ride but cannot remove shared risk",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Accurate."
+  },
+  {
+    "id": "ia-02#b0",
+    "field": "paragraph",
+    "claim": "Idiosyncratic vs market risk; only the first can be diluted",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Standard finance textbook distinction."
+  },
+  {
+    "id": "ia-02#b1",
+    "field": "diagram",
+    "claim": "Basket caption vs drawing (one basket one egg; five baskets, one shocked)",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/diversification",
+    "retrieved": "2026-09-14",
+    "note": "Matches DiagramView: one shock removes everything on the left and one egg on the right. Glossary uses the eggs-in-one-basket image."
+  },
+  {
+    "id": "ia-02#b2",
+    "field": "paragraph",
+    "claim": "SEC: four or five stocks is not diversified; at least a dozen carefully selected stocks needed",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "The guide says the stock portion \"won't be diversified\" with only four or five stocks and needs \"at least a dozen carefully selected\" stocks. Accurate paraphrase."
+  },
+  {
+    "id": "ia-02#b3",
+    "field": "chart",
+    "claim": "One holding ranges +31 to -24; basket narrower, same direction most years, has down years",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Checked: one-holding max 31, min -24; basket 11 to -8; same sign in 9 of 10 years; basket down in years 2, 6, 9. SD 19.2 vs 6.3."
+  },
+  {
+    "id": "ia-02#b4",
+    "field": "paragraph",
+    "claim": "Diversification cannot remove market risk; categories historically not moved together",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "The guide says returns of the three major asset categories have historically not moved up and down at the same time."
+  },
+  {
+    "id": "ia-02#b5",
+    "field": "keyTerms",
+    "claim": "Idiosyncratic risk, market risk, correlation definitions",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Textbook definitions."
+  },
+  {
+    "id": "ia-02#b6",
+    "field": "callout",
+    "claim": "Education-not-recommendation caution",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "No advice wording."
+  },
+  {
+    "id": "ia-02#b7",
+    "field": "quiz",
+    "claim": "40-company holding in a deep recession; answer 1",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Distractors are clearly wrong; explanation correct."
+  },
+  {
+    "id": "ia-02#b8",
+    "field": "takeaways",
+    "claim": "Four takeaways on risk types and limits of diversification",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Consistent with body."
+  },
+  {
+    "id": "ia-02#sources",
+    "field": "sources",
+    "claim": "Beginners Guide and Glossary: Diversification",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/diversification",
+    "retrieved": "2026-09-14",
+    "note": "Both opened and support the lesson."
+  },
+  {
+    "id": "ia-03#summary",
+    "field": "summary",
+    "claim": "Index funds, active managers, SEC on costs and outcomes",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "Accurate."
+  },
+  {
+    "id": "ia-03#b0",
+    "field": "paragraph",
+    "claim": "Index is a weighted list; cannot buy directly; index fund holds all or a sample; passive; about index return before fees",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+    "retrieved": "2026-09-14",
+    "note": "Index bulletin: cannot invest directly in a market index; funds hold all or a sample. Mutual funds page: aims for about the index return before fees."
+  },
+  {
+    "id": "ia-03#b1",
+    "field": "paragraph",
+    "claim": "SEC: active fund may outperform benchmark but depends heavily on manager skill; higher fees",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+    "retrieved": "2026-09-14",
+    "note": "The page says an active fund \"has the potential to outperform\" its benchmark, \"heavily dependent on the skill of the manager\"; passive means lower fees than active."
+  },
+  {
+    "id": "ia-03#b2",
+    "field": "callout",
+    "claim": "SEC: passive means less trading, lower fees, fewer taxable gains; not all index funds cheaper; index funds can trail index",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "Verified against both pages: identical holdings, lower cost generally gives higher returns; not all index funds cost less; index funds may trail due to fees, trading costs, tracking error."
+  },
+  {
+    "id": "ia-03#b3",
+    "field": "paragraph",
+    "claim": "Arithmetic: active managers as a group match market before costs, trail after",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "blocks[3].text",
+        "old": "There is also plain arithmetic behind the debate. Every share is owned by someone, so across all owners together the return before costs is simply the market's return. For one manager to do better, another owner must do worse. Active management as a whole therefore matches the market before costs and trails it after costs, because it spends more on research and trading. Individual managers can and do outpace their benchmarks in a given period; the arithmetic is about the average across all of them.",
+        "new": "There is also plain arithmetic behind the debate. Every share is owned by someone, so across all owners together the return before costs is simply the market's return. Index funds that hold the whole market earn roughly that return before costs, so the remaining owners, the active managers, must as a group earn it too. For one active manager to do better, another must do worse. Active management as a whole therefore roughly matches the market before costs and trails it after costs, because it spends more on research and trading. Individual managers can and do outpace their benchmarks in a given period; the arithmetic is about the average across all of them."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "Reasoning skipped the needed step: all owners earning the market does not by itself imply active managers match it; that requires passive holders earning the market. Added that premise and \"roughly\". Standard textbook argument, not a law."
+  },
+  {
+    "id": "ia-03#b4",
+    "field": "chart",
+    "claim": "$10,000 at 6% less 0.2% vs 1.0% fee, every 5 years to 30",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "All 14 values equal 10000*(1+0.06-fee)^t rounded (e.g. 54,271 and 43,219 at year 30). Gap comes only from costs, as the caption says."
+  },
+  {
+    "id": "ia-03#b5",
+    "field": "keyTerms",
+    "claim": "Market index, index fund, active management, tracking error",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "Consistent with the index bulletin (sampling, fees, trading costs cause tracking gaps)."
+  },
+  {
+    "id": "ia-03#b6",
+    "field": "callout",
+    "claim": "Education caution; both approaches carry full risk of holdings",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "Bulletin: an index fund is subject to the same general risks as the securities in its index."
+  },
+  {
+    "id": "ia-03#b7",
+    "field": "quiz",
+    "claim": "Two funds with identical holdings, 0.3% vs 1.2% cost; answer 2",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "Bulletin: with identical holdings, the lower-cost fund generally generates higher returns. No other choice is defensible."
+  },
+  {
+    "id": "ia-03#b8",
+    "field": "takeaways",
+    "claim": "Takeaway that active owners as a group match the market before costs",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "blocks[8].items[2]",
+        "old": "Before costs, active owners as a group match the market; after costs, the group trails it.",
+        "new": "Before costs, active owners as a group roughly match the market; after costs, the group trails it."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "Added \"roughly\" to match the revised block 3 wording; the other three takeaways are correct."
+  },
+  {
+    "id": "ia-03#sources",
+    "field": "sources",
+    "claim": "Investor Bulletin: Index Funds (2018-08-06) and Mutual Funds page",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins-26",
+    "retrieved": "2026-09-14",
+    "note": "Opened. Bulletin dated \"Aug. 6, 2018\", which matches publicationDate. The source page names trademarked indexes; the lesson does not."
+  },
+  {
+    "id": "ia-04#summary",
+    "field": "summary",
+    "claim": "Value, growth, dividends, price vs earnings",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+    "retrieved": "2026-09-14",
+    "note": "Accurate."
+  },
+  {
+    "id": "ia-04#b0",
+    "field": "paragraph",
+    "claim": "Value and growth label definitions; British spelling \"labelled\"",
+    "verdict": "fixed",
+    "severity": "spelling",
+    "edits": [
+      {
+        "path": "blocks[0].text",
+        "old": "Value and growth are labels for styles of describing shares, not guarantees. A share labelled value trades at a low price relative to the company's earnings or assets; the buyer's idea is that the price understates what the business is worth. A share labelled growth trades at a high price relative to its earnings because buyers anticipate that those earnings will expand quickly. Both labels are judgments about a price and the profits behind it, and both can turn out wrong.",
+        "new": "Value and growth are labels for styles of describing shares, not guarantees. A share labeled value trades at a low price relative to the company's earnings or assets; the buyer's idea is that the price understates what the business is worth. A share labeled growth trades at a high price relative to its earnings because buyers anticipate that those earnings will expand quickly. Both labels are judgments about a price and the profits behind it, and both can turn out wrong."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+    "retrieved": "2026-09-14",
+    "note": "Definitions are textbook-correct. Changed \"labelled\" to US \"labeled\" (two places)."
+  },
+  {
+    "id": "ia-04#b1",
+    "field": "paragraph",
+    "claim": "Dividend defined as profit \"paid out in cash\"; board discretion; \"labelled\", \"plough\"",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "blocks[1].text",
+        "old": "A dividend is a portion of a company's profit paid out in cash to its shareholders, usually on a regular schedule. It is distributed profit: money the company earned and chose to hand back rather than keep for new projects or debt repayment. Nothing obliges a company to pay one, and a board can cut or stop a dividend at any time. Companies paying large dividends are often mature, with fewer places to reinvest; companies labelled growth often pay little or nothing because they plough profit back into the business.",
+        "new": "A dividend is a portion of a company's profit paid out to its shareholders, usually in cash and on a regular schedule. It is distributed profit: money the company earned and chose to hand back rather than keep for new projects or debt repayment. Nothing obliges a company to pay one, and a board can cut or stop a dividend at any time. Companies paying large dividends are often mature, with fewer places to reinvest; companies labeled growth often pay little or nothing because they plow profit back into the business."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dividend",
+    "retrieved": "2026-09-14",
+    "note": "Glossary: a portion of profit paid to shareholders, with no cash-only limit (stock dividends exist). Now says \"usually in cash\". Also US spelling: labeled, plow."
+  },
+  {
+    "id": "ia-04#b2",
+    "field": "paragraph",
+    "claim": "P/E = price / EPS over past twelve months; $50/$2.50 = 20; compares with past or peers",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+    "retrieved": "2026-09-14",
+    "note": "Glossary: P/E is current price divided by EPS, with EPS from the past 12 months, used to compare with the past or other companies. 50/2.5 = 20."
+  },
+  {
+    "id": "ia-04#b3",
+    "field": "keyTerms",
+    "claim": "EPS, P/E, dividend (paid \"in cash\"), dividend yield",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "blocks[3].terms[2].definition",
+        "old": "A portion of profit paid out in cash to shareholders; declared by the board and never guaranteed.",
+        "new": "A portion of profit paid out to shareholders, usually in cash; declared by the board and never guaranteed."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dividend",
+    "retrieved": "2026-09-14",
+    "note": "Dividend definition said cash only; changed to \"usually in cash\" to match the glossary. Other three terms are correct."
+  },
+  {
+    "id": "ia-04#b4",
+    "field": "chart",
+    "claim": "Illustrative P/E ranges rise from high-dividend to growth; markers 1-4",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+    "retrieved": "2026-09-14",
+    "note": "Low and high ends rise monotonically (9-14, 14-20, 20-30, 28-45); all marker x values exist; dataNote is synthetic."
+  },
+  {
+    "id": "ia-04#b5",
+    "field": "callout",
+    "claim": "Labels are descriptions, not rankings",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+    "retrieved": "2026-09-14",
+    "note": "No advice wording."
+  },
+  {
+    "id": "ia-04#b6",
+    "field": "quiz",
+    "claim": "$80 price, $4 EPS; P/E 20; answer 1",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+    "retrieved": "2026-09-14",
+    "note": "80/4 = 20. The 0.05 choice (earnings yield) is paired with a wrong reading, so it is not a correct answer."
+  },
+  {
+    "id": "ia-04#b7",
+    "field": "takeaways",
+    "claim": "Labels, dividends, P/E formula, ratios do not settle price",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+    "retrieved": "2026-09-14",
+    "note": "Consistent with body."
+  },
+  {
+    "id": "ia-04#sources",
+    "field": "sources",
+    "claim": "Glossary P/E and Glossary Dividend",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dividend",
+    "retrieved": "2026-09-14",
+    "note": "Both opened. Value/growth labels are uncontroversial textbook descriptions without a dedicated source."
+  },
+  {
+    "id": "ia-05#summary",
+    "field": "summary",
+    "claim": "DCA, allocation, rebalancing",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Accurate."
+  },
+  {
+    "id": "ia-05#b0",
+    "field": "paragraph",
+    "claim": "DCA definition; fixed sum buys more units when low; average cost below average price",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dollar-cost-averaging",
+    "retrieved": "2026-09-14",
+    "note": "Glossary: equal amounts at regular intervals buy more when the price is low and less when high. Average cost is a harmonic mean, which is at most the simple average price."
+  },
+  {
+    "id": "ia-05#b1",
+    "field": "chart",
+    "claim": "12 x $100; $15 buys 6.67, $26 buys 3.85; 60.29 units; $19.91 avg cost; $20.50 avg price",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dollar-cost-averaging",
+    "retrieved": "2026-09-14",
+    "note": "Implied prices 20,18,16,15,17,19,22,25,23,21,24,26. Exact units 60.2857 (60.29); 1200/60.2857 = 19.905 ($19.91); mean price 20.50. Bars match 100/price to 2 dp."
+  },
+  {
+    "id": "ia-05#b2",
+    "field": "paragraph",
+    "claim": "DCA avg cost math, no profit guarantee; one-sided on DCA vs lump sum",
+    "verdict": "fixed",
+    "severity": "tone",
+    "edits": [
+      {
+        "path": "blocks[2].text",
+        "old": "The average cost is lower than the average price by construction, not luck: more of the money lands on the cheap purchases. What the method does not do is guarantee a profit or protect against a falling price. If the price ends the year below the average cost of $19.91, the holding is worth less than the $1,200 put in. Spreading purchases across time spreads the risk of buying everything at a high point and removes the temptation to guess when to buy.",
+        "new": "The average cost is lower than the average price by construction, not luck: more of the money lands on the cheap purchases. What the method does not do is guarantee a profit or protect against a falling price. If the price ends the year below the average cost of $19.91, the holding is worth less than the $1,200 put in. Spreading purchases across time spreads the risk of buying everything at a high point and removes the temptation to guess when to buy. The trade-off runs the other way too: money held back for later purchases sits uninvested and misses any rise in the meantime, so when a large sum is available all at once, spreading it out is a debated choice rather than a settled rule."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dollar-cost-averaging",
+    "retrieved": "2026-09-14",
+    "note": "Math and caveats are correct, but the paragraph lists only spreading benefits. DCA vs lump sum is contested, so added the neutral trade-off that money held back sits uninvested."
+  },
+  {
+    "id": "ia-05#b3",
+    "field": "paragraph",
+    "claim": "SEC: allocation personal, depends on horizon and risk tolerance; stocks/bonds/cash profile; inflation risk",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Guide: allocation \"very personal\", depends \"largely on your time horizon and your ability to tolerate risk\"; stocks greatest risk and highest returns; bonds less volatile; cash lowest return, inflation risk."
+  },
+  {
+    "id": "ia-05#b4",
+    "field": "diagram",
+    "claim": "Allocation pie caption vs drawing; British \"labelled\"",
+    "verdict": "fixed",
+    "severity": "spelling",
+    "edits": [
+      {
+        "path": "blocks[4].caption",
+        "old": "An illustrative mix of asset categories drawn as a pie. The slices are labelled illustrative because no single mix suits everyone: the right proportions depend on when the money is needed and how much variability the owner can live with.",
+        "new": "An illustrative mix of asset categories drawn as a pie. The slices are labeled illustrative because no single mix suits everyone: the right proportions depend on when the money is needed and how much variability the owner can live with."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Drawing shows Stocks, Bonds and Cash with an \"Illustration only\" label, so the caption matches. Changed \"labelled\" to \"labeled\"."
+  },
+  {
+    "id": "ia-05#b5",
+    "field": "paragraph",
+    "claim": "Rebalancing: sell or redirect contributions; calendar 6/12 months or band; costs and taxes",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Guide lists selling over-weighted categories, altering contributions, rebalancing every six or twelve months or at a preset percentage, and transaction fees or tax consequences. 60/40 to 75% drift is illustrative."
+  },
+  {
+    "id": "ia-05#b6",
+    "field": "callout",
+    "claim": "Education-not-recommendation caution",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "No advice wording."
+  },
+  {
+    "id": "ia-05#b7",
+    "field": "quiz",
+    "claim": "Why DCA avg cost below avg price; answer 1",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dollar-cost-averaging",
+    "retrieved": "2026-09-14",
+    "note": "Distractors clearly wrong; explanation correct and notes loss still possible."
+  },
+  {
+    "id": "ia-05#b8",
+    "field": "takeaways",
+    "claim": "Four takeaways on DCA, allocation, rebalancing",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Consistent with body and sources."
+  },
+  {
+    "id": "ia-05#sources",
+    "field": "sources",
+    "claim": "Glossary DCA and Beginners Guide",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/additional-resources/general-resources/publications-research/info-sheets/beginners-guide-asset",
+    "retrieved": "2026-09-14",
+    "note": "Both opened and support the lesson."
+  },
+  {
+    "id": "ia-06#summary",
+    "field": "summary",
+    "claim": "Expense ratios, loads, trading costs, fee compounding",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+    "retrieved": "2026-09-14",
+    "note": "Accurate."
+  },
+  {
+    "id": "ia-06#b0",
+    "field": "paragraph",
+    "claim": "Expense ratio: % of assets per year, paid from fund assets, standardized prospectus fee table; 1% of $10,000 = $100",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/mutual-fund-and-etf-fees-and-expenses-investor-bulletin",
+    "retrieved": "2026-09-14",
+    "note": "Bulletin: funds must give a standardized fee table; operating expenses are paid from fund assets, not billed directly. Glossary: based on average net assets, so $100 is approximate."
+  },
+  {
+    "id": "ia-06#b1",
+    "field": "paragraph",
+    "claim": "Loads, commissions, markups, spreads; \"SEC groups these as transaction fees\"",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "blocks[1].text",
+        "old": "Two other costs sit alongside it. A sales load is a one-off charge, like a commission, paid when buying fund shares (front-end) or selling them (back-end). Trading costs arise whenever securities change hands: a broker's commission, a markup when a dealer sells from its own stock, and the spread between the price at which a security can be bought and the slightly lower price at which it can be sold at the same moment. The SEC groups these as transaction fees, charged per trade, as distinct from ongoing fees like the expense ratio, charged every year the holding exists.",
+        "new": "Two other costs sit alongside it. A sales load is a one-off charge, like a commission, paid when buying fund shares (front-end) or selling them (back-end). Trading costs arise whenever securities change hands: a broker's commission, a markup when a dealer sells from its own stock, and the spread between the price at which a security can be bought and the slightly lower price at which it can be sold at the same moment. The SEC's fee bulletin lists commissions, markups, and sales loads as transaction fees, charged each time an investment is bought or sold, as distinct from ongoing fees like the expense ratio, charged every year the holding exists."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+    "retrieved": "2026-09-14",
+    "note": "The bulletin lists commissions, markups/markdowns and sales loads as transaction fees and never mentions bid-ask spreads. \"These\" wrongly put spreads under the SEC grouping, so the attribution now names only the listed items."
+  },
+  {
+    "id": "ia-06#b2",
+    "field": "keyTerms",
+    "claim": "Expense ratio, sales load, bid-ask spread, fee drag",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/expense-ratio",
+    "retrieved": "2026-09-14",
+    "note": "Glossary: the expense ratio includes management and 12b-1 distribution fees. Load definition matches the fee bulletin."
+  },
+  {
+    "id": "ia-06#b3",
+    "field": "diagram",
+    "claim": "Fee-drag caption vs drawing (two curves from same start, gap widens)",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+    "retrieved": "2026-09-14",
+    "note": "Matches DiagramView (no annual fee vs with a yearly fee, same starting level, widening gap)."
+  },
+  {
+    "id": "ia-06#b4",
+    "field": "chart",
+    "claim": "$10,000 at 5% less 0.1% vs 1.0% for 40 years; $67,767 vs $48,010; ~29% of ending value",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+    "retrieved": "2026-09-14",
+    "note": "All 42 points equal 10000*(1.05-fee)^t rounded. Gap 19,757 / 67,767 = 29.2%, so \"roughly 29 percent\" holds. Fee gap 0.9 pp is correct."
+  },
+  {
+    "id": "ia-06#b5",
+    "field": "paragraph",
+    "claim": "SEC example: $100,000 at 4% for 20 years, 1.00% vs 0.25% fee, tens of thousands apart",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+    "retrieved": "2026-09-14",
+    "note": "Bulletin: about $208,000 at 0.25% vs about $179,000 at 1.00%, a gap of about $29,000. \"Tens of thousands\" is accurate."
+  },
+  {
+    "id": "ia-06#b6",
+    "field": "callout",
+    "claim": "Cheapest not always right; fees one fact among many",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+    "retrieved": "2026-09-14",
+    "note": "Balanced, no advice."
+  },
+  {
+    "id": "ia-06#b7",
+    "field": "quiz",
+    "claim": "Why a 1% yearly fee removes far more than 1% over 30 years; answer 1",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+    "retrieved": "2026-09-14",
+    "note": "Distractors clearly wrong; explanation correct."
+  },
+  {
+    "id": "ia-06#b8",
+    "field": "takeaways",
+    "claim": "Expense ratio every year; loads per transaction; compounding; disclosed in prospectus",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/mutual-fund-and-etf-fees-and-expenses-investor-bulletin",
+    "retrieved": "2026-09-14",
+    "note": "Consistent with both bulletins: ongoing vs transaction fees and the standardized fee table."
+  },
+  {
+    "id": "ia-06#sources",
+    "field": "sources",
+    "claim": "Two fee bulletins (2025-07-23) and Glossary Expense Ratio",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/updated",
+    "retrieved": "2026-09-14",
+    "note": "All opened. Both bulletins show \"July 23, 2025\", which matches publicationDate."
+  }
+]

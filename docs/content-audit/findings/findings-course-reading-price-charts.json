@@ -1,0 +1,847 @@
+[
+ {
+  "id": "course:reading-price-charts",
+  "field": "summary",
+  "claim": "Course summary says research shows patterns are \"descriptions, not forecasts\".",
+  "verdict": "fixed",
+  "severity": "tone",
+  "edits": [
+   {
+    "path": "summary",
+    "old": "Learn to read candlesticks, trends, levels, patterns, and moving averages as a vocabulary for describing past prices - and understand why the research says they are descriptions, not forecasts.",
+    "new": "Learn to read candlesticks, trends, levels, patterns, and moving averages as a vocabulary for describing past prices - and understand why the evidence that they forecast prices is mixed and hard to use."
+   }
+  ],
+  "sourceURL": "https://www.nber.org/papers/w7613",
+  "retrieved": "2026-09-14",
+  "note": "Lo, Mamaysky & Wang report incremental information; saying research shows they are not forecasts overstates one side. Reworded to mixed evidence."
+ },
+ {
+  "id": "rpc-01#summary",
+  "field": "summary",
+  "claim": "Lesson title/summary: candle anatomy, up vs down, daily vs weekly.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Matches lesson content."
+ },
+ {
+  "id": "rpc-01#b0",
+  "field": "paragraph",
+  "claim": "OHLC definitions of open, close, high, low.",
+  "verdict": "fixed",
+  "severity": "spelling",
+  "edits": [
+   {
+    "path": "blocks[0].text",
+    "old": "A price chart is a record of past trades. The most common style is the candlestick chart. Each candle summarises one slice of time - a minute, a day, a week - with four numbers. The open is the first trade of the period. The close is the last trade. The high is the most anyone paid during the period, and the low is the least. Those four numbers are often shortened to OHLC.",
+    "new": "A price chart is a record of past trades. The most common style is the candlestick chart. Each candle summarizes one slice of time - a minute, a day, a week - with four numbers. The open is the first trade of the period. The close is the last trade. The high is the most anyone paid during the period, and the low is the least. Those four numbers are often shortened to OHLC."
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price",
+  "retrieved": "2026-09-14",
+  "note": "Definitions correct; British \"summarises\" changed to US spelling."
+ },
+ {
+  "id": "rpc-01#b1",
+  "field": "diagram",
+  "claim": "candle-anatomy caption vs drawn candle (body open-close, wicks to high/low).",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "Diagram draws one amber body with Open/Close/High/Low labels and sky wick; caption matches."
+ },
+ {
+  "id": "rpc-01#b2",
+  "field": "paragraph",
+  "claim": "Up/down candle coloring description vs how the app draws candles.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[2].text",
+    "old": "The body shows where the period started and finished. If the close is above the open, the candle is an up candle and is usually drawn hollow or in a lighter colour. If the close is below the open, it is a down candle and is usually drawn filled or in a darker colour. The wicks show how far trading strayed from the body before coming back. A long wick means the price visited that level but did not stay there.",
+    "new": "The body shows where the period started and finished. If the close is above the open, the candle is an up candle; if the close is below the open, it is a down candle. Color conventions vary between charting tools. In this app's charts, up candles are blue and down candles are amber. The wicks show how far trading strayed from the body before coming back. A long wick means the price visited that level but did not stay there."
+   }
+  ],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "App fills both: up = Econ.sky (blue), down = Econ.amber; nothing hollow. Text said hollow/lighter vs filled/darker, which does not match. Also fixed \"colour\". Lead removed an unverified reference to the diagram's body color."
+ },
+ {
+  "id": "rpc-01#b3",
+  "field": "chart",
+  "claim": "12 candles valid; caption up/down and wick definitions.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "All 12 candles valid (high>=max, low<=min); 7 up, 5 down; x increasing; dataNote starts \"Synthetic\"."
+ },
+ {
+  "id": "rpc-01#b4",
+  "field": "callout",
+  "claim": "SEC: 9:30-4:00 ET session; after-hours trades tagged, not changing regular close/high/low; vendors differ.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price",
+  "retrieved": "2026-09-14",
+  "note": "Investor.gov Closing Price: after-hours trades \"tagged\" T, do not affect regular-session close, high or low; vendors may report differently. Accurate."
+ },
+ {
+  "id": "rpc-01#b5",
+  "field": "paragraph",
+  "claim": "Weekly candle construction: Monday open, Friday close, five days.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[5].text",
+    "old": "Timeframe is the length of time each candle covers. A weekly candle is not a new set of facts; it is five daily candles squeezed into one. Its open is Monday's open, its close is Friday's close, and its high and low are the highest high and lowest low of the whole week. That is why a choppy week of daily candles can become a single calm-looking weekly candle.",
+    "new": "Timeframe is the length of time each candle covers. A weekly candle is not a new set of facts; it is that week's daily candles, usually five, squeezed into one. Its open is the first trading day's open, its close is the last trading day's close, and its high and low are the highest high and lowest low of the whole week. That is why a choppy week of daily candles can become a single calm-looking weekly candle."
+   }
+  ],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Holiday weeks have fewer than five sessions and may not start Monday or end Friday; changed to first/last trading day."
+ },
+ {
+  "id": "rpc-01#b6",
+  "field": "keyTerms",
+  "claim": "Open, Close, Wick, Timeframe definitions.",
+  "verdict": "fixed",
+  "severity": "spelling",
+  "edits": [
+   {
+    "path": "blocks[6].terms[2].definition",
+    "old": "The thin line above or below the body showing how far price travelled beyond the open and close.",
+    "new": "The thin line above or below the body showing how far price traveled beyond the open and close."
+   }
+  ],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Definitions correct; \"travelled\" changed to US \"traveled\"."
+ },
+ {
+  "id": "rpc-01#b7",
+  "field": "quiz",
+  "claim": "Candle O100.4 H100.9 L99.2 C99.6: down candle because close below open.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved: close < open, down. Distractor 2 has wrong reasoning, not a correct statement. Matches chart day 4."
+ },
+ {
+  "id": "rpc-01#b8",
+  "field": "takeaways",
+  "claim": "Four takeaways on OHLC, body/wicks, weekly summary, session rules.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price",
+  "retrieved": "2026-09-14",
+  "note": "Consistent with the lesson and the SEC closing-price page."
+ },
+ {
+  "id": "rpc-01#sources",
+  "field": "sources",
+  "claim": "Investor.gov Closing Price and After-hours Trading glossaries.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/after-hours-trading",
+  "retrieved": "2026-09-14",
+  "note": "Both pages load (browser UA; WebFetch 403). After-hours page confirms 9:30-4:00 ET regular hours."
+ },
+ {
+  "id": "rpc-02#summary",
+  "field": "summary",
+  "claim": "Lesson summary: rising, falling, sideways; label depends on timeframe.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Matches content."
+ },
+ {
+  "id": "rpc-02#b0",
+  "field": "paragraph",
+  "claim": "Uptrend HH/HL, downtrend LH/LL, range definitions.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Standard definitions."
+ },
+ {
+  "id": "rpc-02#b1",
+  "field": "diagram",
+  "claim": "trend-channel caption: parallel lines under lows/over highs, zigzag sloping up.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "Drawn lines have equal slope (0.66) with zigzag highs/lows touching them; caption matches."
+ },
+ {
+  "id": "rpc-02#b2",
+  "field": "paragraph",
+  "claim": "Trend descriptive not predictive; chart rises 14 days then sideways 12.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "26 candles = 14 + 12. Descriptive framing appropriate."
+ },
+ {
+  "id": "rpc-02#b3",
+  "field": "chart",
+  "claim": "Days 1-14 HH/HL; range highs ~102.6, lows ~100.5; markers x14, x20.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "Swing highs 97.6<98.9<100.2<101.6<102.6; pullback lows 96.4<97.7<98.9<100.4. Days 15-26 max high 102.6, min low 100.5 at x20. All valid."
+ },
+ {
+  "id": "rpc-02#b4",
+  "field": "callout",
+  "claim": "Same asset reads uptrend/range/downtrend on different timeframes.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Hypothetical example; logic sound."
+ },
+ {
+  "id": "rpc-02#b5",
+  "field": "paragraph",
+  "claim": "SEC description of stock market as organized trading via exchanges, OTC, electronic venues.",
+  "verdict": "fixed",
+  "severity": "spelling",
+  "edits": [
+   {
+    "path": "blocks[5].text",
+    "old": "This is why people who talk about a trend usually say which timeframe they mean. The SEC describes the stock market as the organised trading of shares through exchanges, over-the-counter dealers, and electronic venues; the chart is simply a drawing of the trades that flowed through those venues. The trades are the facts. The trend label is an interpretation laid on top, and it changes with the lens.",
+    "new": "This is why people who talk about a trend usually say which timeframe they mean. The SEC describes the stock market as the organized trading of stocks through exchanges, over-the-counter, and computerized trading venues; the chart is simply a drawing of the trades that flowed through those venues. The trades are the facts. The trend label is an interpretation laid on top, and it changes with the lens."
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/stock-market",
+  "retrieved": "2026-09-14",
+  "note": "\"organised\" changed to US spelling; wording aligned to the SEC glossary (\"organized trading of stocks through exchanges, over-the-counter, and computerized trading venues\")."
+ },
+ {
+  "id": "rpc-02#b6",
+  "field": "keyTerms",
+  "claim": "Uptrend, Downtrend, Range, Swing high definitions.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Standard."
+ },
+ {
+  "id": "rpc-02#b7",
+  "field": "quiz",
+  "claim": "Highs 98/101/104, lows 95/97/100 -> uptrend.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved; single best answer."
+ },
+ {
+  "id": "rpc-02#b8",
+  "field": "takeaways",
+  "claim": "Trend labels are hindsight descriptions tied to timeframe.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Consistent."
+ },
+ {
+  "id": "rpc-02#sources",
+  "field": "sources",
+  "claim": "Investor.gov Stock Market glossary and Market Participants page.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/market-participants",
+  "retrieved": "2026-09-14",
+  "note": "Both pages load. Market Participants lists broker-dealers, ATSs, exchanges; background for \"venues\" only."
+ },
+ {
+  "id": "rpc-03#summary",
+  "field": "summary",
+  "claim": "Lesson summary: levels where price turned; past not promise.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Matches content."
+ },
+ {
+  "id": "rpc-03#b0",
+  "field": "paragraph",
+  "claim": "Support/resistance definitions, framed as past behavior.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Standard; \"may be\" hedged."
+ },
+ {
+  "id": "rpc-03#b1",
+  "field": "diagram",
+  "claim": "support-resistance caption: path bouncing between two bands.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "Diagram draws path between amber top band and sky bottom band; caption matches."
+ },
+ {
+  "id": "rpc-03#b2",
+  "field": "paragraph",
+  "claim": "SEC market order definition; standing orders at specific prices; round numbers.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/market-order",
+  "retrieved": "2026-09-14",
+  "note": "SEC: market order = buy/sell at current market price. Standing orders at specific prices now sourced via Limit Orders glossary (see sources). Round-number clustering is uncontroversial description."
+ },
+ {
+  "id": "rpc-03#b3",
+  "field": "chart",
+  "claim": "Rallies stall ~104, declines ~96; markers x4,9,16,21.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "Highs 104.0 at x4 and x16; lows 96.1 at x9 and 96.2 at x21; all candles valid; markers on the right candles."
+ },
+ {
+  "id": "rpc-03#b4",
+  "field": "callout",
+  "claim": "Support is past summary; lines break and get redrawn.",
+  "verdict": "fixed",
+  "severity": "spelling",
+  "edits": [
+   {
+    "path": "blocks[4].text",
+    "old": "A support line is a summary of past turns. It says the price turned here before; it does not say the price must turn here again. Prices break through support and resistance all the time, and when they do, chart readers simply redraw the lines. Treat these lines as a way to organise what you see, not as a barrier that the market has agreed to respect.",
+    "new": "A support line is a summary of past turns. It says the price turned here before; it does not say the price must turn here again. Prices break through support and resistance all the time, and when they do, chart readers simply redraw the lines. Treat these lines as a way to organize what you see, not as a barrier that the market has agreed to respect."
+   }
+  ],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Good cautionary tone; \"organise\" changed to US spelling."
+ },
+ {
+  "id": "rpc-03#b5",
+  "field": "paragraph",
+  "claim": "Counting touches improves description, not prediction.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Balanced."
+ },
+ {
+  "id": "rpc-03#b6",
+  "field": "keyTerms",
+  "claim": "Support, Resistance, Round number, Breakout.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Standard."
+ },
+ {
+  "id": "rpc-03#b7",
+  "field": "quiz",
+  "claim": "Four turns at 104: resistance so far, next outcome unknown.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved; distractor 3 contradicts lesson (3-4 touches describe real behavior). Single best answer."
+ },
+ {
+  "id": "rpc-03#b8",
+  "field": "takeaways",
+  "claim": "Four takeaways on levels, clustering, touches, breaks.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Consistent."
+ },
+ {
+  "id": "rpc-03#sources",
+  "field": "sources",
+  "claim": "Glossary: Stock cited but no lesson claim uses it; standing-order claim unsourced.",
+  "verdict": "fixed",
+  "severity": "unsourced",
+  "edits": [
+   {
+    "path": "sources[1].documentTitle",
+    "old": "Glossary: Stock",
+    "new": "Glossary: Limit Orders"
+   },
+   {
+    "path": "sources[1].url",
+    "old": "https://www.investor.gov/introduction-investing/investing-basics/glossary/stock",
+    "new": "https://www.investor.gov/introduction-investing/investing-basics/glossary/limit-orders"
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/limit-orders",
+  "retrieved": "2026-09-14",
+  "note": "Limit Orders page: \"order to buy or sell a security at a specific price\". Supports the standing-orders sentence; Stock glossary was irrelevant. Org/date fields unchanged."
+ },
+ {
+  "id": "rpc-04#summary",
+  "field": "summary",
+  "claim": "Lesson summary: doji, hammer, engulfing plus honest evidence review.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Matches content."
+ },
+ {
+  "id": "rpc-04#b0",
+  "field": "paragraph",
+  "claim": "Doji and hammer definitions.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[0].text",
+    "old": "Three common candle shapes show how the vocabulary works. A doji has an open and close that are almost equal, so the body is a thin line and the wicks do the talking; it describes a period that ended where it began. A hammer has a small body near the top and a long lower wick and appears after a decline; it describes a period in which the price fell hard, then recovered most of the drop before the close.",
+    "new": "Three common candle shapes show how the vocabulary works. A doji has an open and close that are almost equal, so the body is a thin line and the wicks do the talking; it describes a period that ended where it began. A hammer appears after a decline and has a small body near the top of its range, a lower wick at least about twice as long as the body, and little or no upper wick; it describes a period in which the price fell hard, then recovered most of the drop before the close."
+   }
+  ],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Hammer definition lacked the standard lower-wick >= ~2x body and little/no upper-wick criteria. Doji definition correct."
+ },
+ {
+  "id": "rpc-04#b1",
+  "field": "paragraph",
+  "claim": "Bullish/bearish engulfing definition.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Second up body fully covers prior down body; standard."
+ },
+ {
+  "id": "rpc-04#b2",
+  "field": "chart",
+  "claim": "Day 6 hammer after five down days; day 13 body engulfs day 12 body.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "Day 6: body 0.2, lower wick 2.4 (12x), upper 0.1, days 1-5 all down. Day 12 body 96.1-96.7 inside day 13 body 95.9-97.9. Markers x6/x13 correct; all valid."
+ },
+ {
+  "id": "rpc-04#b3",
+  "field": "keyTerms",
+  "claim": "Doji, Hammer, Engulfing, Technical analysis definitions.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[3].terms[1].definition",
+    "old": "A candle with a small body near its high and a long lower wick, seen after a decline.",
+    "new": "A candle seen after a decline, with a small body near its high, a lower wick at least about twice the body's length, and little or no upper wick."
+   },
+   {
+    "path": "blocks[3].terms[3].definition",
+    "old": "The practice of studying past prices and volume, often through charts, to describe market behaviour.",
+    "new": "The practice of studying past prices and volume, often through charts, to describe market behavior."
+   }
+  ],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Hammer definition completed to standard criteria; \"behaviour\" changed to US spelling."
+ },
+ {
+  "id": "rpc-04#b4",
+  "field": "paragraph",
+  "claim": "Lo, Mamaysky & Wang (NBER w7613, Mar 2000): patterns, 1962-1996, incremental information.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[4].text",
+    "old": "Researchers have tested whether these shapes say anything about what happens next. In a National Bureau of Economic Research working paper issued in March 2000, Andrew Lo, Harry Mamaysky, and Jiang Wang used a computer method to detect classic chart patterns in U.S. stock prices from 1962 to 1996 and asked whether the days after a pattern differed statistically from ordinary days. They reported that several patterns carried some incremental information. They did not claim the patterns made money.",
+    "new": "Researchers have tested whether chart shapes say anything about what happens next. In a National Bureau of Economic Research working paper issued in March 2000, Andrew Lo, Harry Mamaysky, and Jiang Wang used a computer method to detect classic multi-day chart patterns, such as head-and-shoulders and double bottoms, in U.S. stock prices from 1962 to 1996 and asked whether the days after a pattern differed statistically from ordinary days. They reported that several patterns carried some incremental information and may have some practical value. Their test did not cover single-candle shapes such as the hammer, and it measured statistical differences, not profits after trading costs."
+   }
+  ],
+  "sourceURL": "https://www.nber.org/papers/w7613",
+  "retrieved": "2026-09-14",
+  "note": "Authors/date/sample correct, but \"these shapes\" implied doji/hammer/engulfing were tested; w7613 studied head-and-shoulders, double-bottoms etc. Also abstract says \"may have some practical value\"; added for fairness."
+ },
+ {
+  "id": "rpc-04#b5",
+  "field": "callout",
+  "claim": "Trading-rule effects small, unstable, vanish after costs or publication; evidence \"mixed at best\".",
+  "verdict": "fixed",
+  "severity": "unsourced",
+  "edits": [
+   {
+    "path": "blocks[5].text",
+    "old": "A pattern can shift the odds a little and still be useless in practice, because acting on it costs money: commissions, the spread between buying and selling prices, and taxes. Tests of trading rules across many markets have found effects that are small, unstable from period to period, and that often shrink or vanish after costs or after publication. The honest summary is that the evidence on forecasting power is mixed at best, which makes patterns fine for reading a chart and poor as a reason to act.",
+    "new": "A pattern can shift the odds a little and still be useless in practice, because acting on it costs money: commissions, the spread between buying and selling prices, and taxes. The wider evidence cuts both ways. Research on simple trading rules in currency markets found some predictive value, but one study found it shrank sharply once periods of central bank intervention were set aside. A study of many stock-return patterns found that few high-turnover strategies stayed statistically significant after trading costs. That makes patterns fine for reading a chart and a weak reason to act."
+   }
+  ],
+  "sourceURL": "https://www.nber.org/papers/w5505",
+  "retrieved": "2026-09-14",
+  "note": "Original claims (esp. \"after publication\") had no cited source. Rewritten to what NBER w5505 (LeBaron 1996) and w20721 (Novy-Marx & Velikov 2014) state; both added to sources."
+ },
+ {
+  "id": "rpc-04#b6",
+  "field": "quiz",
+  "claim": "What LMW (2000) finding shows: statistical difference, not profits.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.nber.org/papers/w7613",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved; answer 1 matches the abstract; other choices clearly wrong. Explanation accurate."
+ },
+ {
+  "id": "rpc-04#b7",
+  "field": "takeaways",
+  "claim": "\"Academic tests find at most small, unstable information in chart patterns.\"",
+  "verdict": "fixed",
+  "severity": "tone",
+  "edits": [
+   {
+    "path": "blocks[7].items[1]",
+    "old": "Academic tests find at most small, unstable information in chart patterns.",
+    "new": "Academic tests find some information in certain chart patterns, but the evidence is mixed and effects can fade."
+   }
+  ],
+  "sourceURL": "https://www.nber.org/papers/w7613",
+  "retrieved": "2026-09-14",
+  "note": "\"At most small, unstable\" was one-sided given LMW and LeBaron report information/predictive value. Rebalanced."
+ },
+ {
+  "id": "rpc-04#sources",
+  "field": "sources",
+  "claim": "Only NBER w7613 cited; callout evidence needs sources.",
+  "verdict": "fixed",
+  "severity": "unsourced",
+  "edits": [
+   {
+    "path": "sources[1]",
+    "old": null,
+    "new": {
+     "organization": "National Bureau of Economic Research",
+     "documentTitle": "Technical Trading Rule Profitability and Foreign Exchange Intervention (Working Paper 5505)",
+     "url": "https://www.nber.org/papers/w5505",
+     "publicationDate": "1996-03-01",
+     "datePrecision": "stated-on-page",
+     "verificationDate": "2026-09-14"
+    }
+   },
+   {
+    "path": "sources[2]",
+    "old": null,
+    "new": {
+     "organization": "National Bureau of Economic Research",
+     "documentTitle": "A Taxonomy of Anomalies and Their Trading Costs (Working Paper 20721)",
+     "url": "https://www.nber.org/papers/w20721",
+     "publicationDate": "2014-12-01",
+     "datePrecision": "stated-on-page",
+     "verificationDate": "2026-09-14"
+    }
+   }
+  ],
+  "sourceURL": "https://www.nber.org/papers/w20721",
+  "retrieved": "2026-09-14",
+  "note": "w7613 verified (Lo, Mamaysky, Wang; March 2000). Added w5505 (LeBaron, March 1996) and w20721 (Novy-Marx & Velikov, December 2014), both opened."
+ },
+ {
+  "id": "rpc-05#summary",
+  "field": "summary",
+  "claim": "Lesson summary: MA smoothing and lag; volume limits.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Matches content."
+ },
+ {
+  "id": "rpc-05#b0",
+  "field": "paragraph",
+  "claim": "Five-day SMA arithmetic; longer windows smoother.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Correct SMA description."
+ },
+ {
+  "id": "rpc-05#b1",
+  "field": "chart",
+  "claim": "Five-day MA series recomputed from Close series; lag caption.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "All 20 MA points match the mean of the prior five closes exactly. Price peaks day 9, MA rises to day 11; price bottoms day 16, MA falls to day 18."
+ },
+ {
+  "id": "rpc-05#b2",
+  "field": "paragraph",
+  "claim": "Price bottoms day 16; average keeps falling until day 18.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Close min 100.2 at day 16; MA 101.38, 101.18, 101.04, then 101.22 at day 19. Exact."
+ },
+ {
+  "id": "rpc-05#b3",
+  "field": "callout",
+  "claim": "Crossovers are arithmetic, not forecasts.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Balanced, no signal framing."
+ },
+ {
+  "id": "rpc-05#b4",
+  "field": "paragraph",
+  "claim": "Volume = activity not direction; SEC low-volume after-hours trade far from 4 p.m. close.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price",
+  "retrieved": "2026-09-14",
+  "note": "SEC page: confusion \"especially when a single, low-volume after-hours trade occurs at a price that is substantially different from the 4:00 p.m. closing price.\" Accurate."
+ },
+ {
+  "id": "rpc-05#b5",
+  "field": "chart",
+  "claim": "Volume bars; busy and quiet days occur on up and down days.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "Checked vs close series: busy down days 12 (1.8), 15 (1.6); quiet up days 13 (1.0), 17 (0.9); busy up day 9 (2.1); quiet down day 4 (0.9)."
+ },
+ {
+  "id": "rpc-05#b6",
+  "field": "keyTerms",
+  "claim": "SMA, Lag, Volume, Crossover definitions.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Standard."
+ },
+ {
+  "id": "rpc-05#b7",
+  "field": "quiz",
+  "claim": "Closes 100-104 then 99: new 5-day SMA = 101.8.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Recomputed (101+102+103+104+99)/5 = 101.8; explanation arithmetic and 5-point drop correct."
+ },
+ {
+  "id": "rpc-05#b8",
+  "field": "takeaways",
+  "claim": "MA mean of last N, lag, volume, crossovers not forecasts.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Consistent."
+ },
+ {
+  "id": "rpc-05#sources",
+  "field": "sources",
+  "claim": "Investor.gov Closing Price; NBER w7613.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/closing-price",
+  "retrieved": "2026-09-14",
+  "note": "Both verified; closing-price page supports volume paragraph."
+ },
+ {
+  "id": "rpc-06#summary",
+  "field": "summary",
+  "claim": "Lesson summary: hindsight, data-mining, survivorship, costs.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Matches content."
+ },
+ {
+  "id": "rpc-06#b0",
+  "field": "paragraph",
+  "claim": "Random walks from coin flips appear patterned.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Step data consistent with random sign and size (see chart)."
+ },
+ {
+  "id": "rpc-06#b1",
+  "field": "chart",
+  "claim": "Two 40-point random walks; dataNote starts \"Synthetic\".",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "EconByte/Views/Courses/ChartBlockView.swift + DiagramView.swift (repo)",
+  "retrieved": "2026-09-14",
+  "note": "Steps 0.37-0.89 in size; up steps 20/40 and 18/40; lag-1 autocorrelation 0.04 and -0.26 (small sample). Consistent with memoryless walks."
+ },
+ {
+  "id": "rpc-06#b2",
+  "field": "paragraph",
+  "claim": "Four traps: hindsight, data-mining, survivorship, costs.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Accurate plain-English descriptions."
+ },
+ {
+  "id": "rpc-06#b3",
+  "field": "callout",
+  "claim": "Efficient-markets idea; contested at the edges.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Fairly hedged."
+ },
+ {
+  "id": "rpc-06#b4",
+  "field": "paragraph",
+  "claim": "SEC day trading extremely risky; FINRA losses; SEC pump-and-dump by \"insiders\".",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[4].text",
+    "old": "The SEC's investor education site describes day trading - rapid buying and selling within one day to catch short moves - as extremely risky and able to produce large losses very quickly. FINRA adds that frequent intraday trading, especially on borrowed money, can end in losing some or all of what was put in. The SEC also warns of pump-and-dump schemes, where false hype lifts a price before insiders sell. A chart never tells you why the price moved.",
+    "new": "The SEC's investor education site describes day trading - rapid buying and selling within one day to catch short moves - as extremely risky and able to produce large losses very quickly. FINRA adds that frequent intraday trading, especially on borrowed money, can end in losing some or all of what was put in. The SEC also warns of pump-and-dump schemes, where fraudsters spread false or misleading hype to lift a price, then sell their own shares. A chart never tells you why the price moved."
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/pump-and-dump-schemes",
+  "retrieved": "2026-09-14",
+  "note": "Day trading (\"extremely risky... substantial financial losses in a very short period\") and FINRA verified. SEC says \"fraudsters\", not insiders, sell at the inflated price."
+ },
+ {
+  "id": "rpc-06#b5",
+  "field": "callout",
+  "claim": "SEC definition of risk; course teaches reading not trading.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+  "retrieved": "2026-09-14",
+  "note": "SEC: uncertainty about rate of return and potential harm when returns are not as expected. Paraphrase accurate."
+ },
+ {
+  "id": "rpc-06#b6",
+  "field": "keyTerms",
+  "claim": "Hindsight bias, Data-mining, Survivorship bias, Random walk.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Standard definitions."
+ },
+ {
+  "id": "rpc-06#b7",
+  "field": "quiz",
+  "claim": "Best reason to be cautious about a strong backtest.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved; answer 1 is the only defensible choice."
+ },
+ {
+  "id": "rpc-06#b8",
+  "field": "takeaways",
+  "claim": "Five takeaways incl. SEC day-trading description.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/day-trading",
+  "retrieved": "2026-09-14",
+  "note": "Consistent and supported."
+ },
+ {
+  "id": "rpc-06#sources",
+  "field": "sources",
+  "claim": "Investor.gov Day Trading, Risk, Pump and Dump; FINRA intraday (2026-06-04); NBER w7613.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.finra.org/investors/insights/frequent-intraday-trading",
+  "retrieved": "2026-09-14",
+  "note": "All opened; FINRA page date June 04, 2026 matches."
+ }
+]

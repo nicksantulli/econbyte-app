@@ -1,0 +1,663 @@
+[
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "pack:personal",
+    "field": "summary",
+    "claim": "Pack covers budgets, borrowing, retirement saving, insurance and public programs.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "",
+    "note": "Accurately scopes the 32 cards; neutral, no advice or stale wording."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "topic:household-budgets",
+    "field": "summary",
+    "claim": "Income, spending, prices at household level: take-home pay, emergency funds, real income, cost of living.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "",
+    "note": "Matches hb-001..hb-008."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "topic:credit-borrowing",
+    "field": "summary",
+    "claim": "APRs, credit reports, amortization, grace periods; secured, variable, student debt.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "",
+    "note": "Matches cr-001..cr-008."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "topic:saving-retirement",
+    "field": "summary",
+    "claim": "Deposit insurance, CDs, savings bonds, 401(k)s, Social Security claiming ages as rules, not recommendations.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "",
+    "note": "Matches sr-001..sr-008; explicit non-advice framing."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "topic:safety-nets",
+    "field": "summary",
+    "claim": "Insurance pooling, deductibles, out-of-pocket limits, public programs from UI to Medicare.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "",
+    "note": "Matches sn-001..sn-008 (also PBGC/FDIC funding, covered by \"public programs\")."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2019-06-05"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "hb-001",
+    "field": "definition",
+    "claim": "Budget sets income against spending; timing of bills vs paychecks matters.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/archive/blog/budgeting-how-to-create-a-budget-and-stick-with-it/",
+    "note": "Content matches (multiple jobs, child support, benefits; bill timing by week). Metadata only: archived blog post is dated JUN 05, 2019 on page, not an undated page."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2025-01-23"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "hb-002",
+    "field": "definition",
+    "claim": "Fixed expenses same each month; variable expenses change; $1,200 rent vs $180/$40 heating.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/consumer-tools/educator-tools/youth-financial-education/glossary/",
+    "note": "Definitions match CFPB glossary. Metadata only: page shows last modified Jan. 23, 2025."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2025-10-29"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "hb-003",
+    "field": "definition",
+    "claim": "Emergency fund is cash for unplanned expenses; amount depends on household.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/an-essential-guide-to-building-an-emergency-fund/",
+    "note": "Matches CFPB (\"cash reserve... for unplanned expenses\"; amount depends on circumstances). Metadata only: page last modified Oct. 29, 2025. Related but distinct from personalfinance cmp-006."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "hb-004",
+    "field": "definition",
+    "claim": "Take-home pay is gross pay minus taxes, Social Security/Medicare, retirement, health premiums.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.mymoney.gov/earn",
+    "note": "Deduction list matches MyMoney.gov; Last-Modified header 2026-08-11 matches publicationDate. $4,000 to about $3,000 is plausible illustration."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2026-08-26"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "hb-005",
+    "field": "definition",
+    "claim": "Real vs nominal income; 4% raise vs 3%/5% inflation ~ +/-1% real; BEA reports DPI both ways.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.bea.gov/news/2026/personal-income-and-outlays-july-2026",
+    "note": "Arithmetic right (+0.97%, -0.95%); release shows current-dollar and real DPI. Metadata only: release dated August 26, 2026 on page."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2026-02-19"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "hb-006",
+    "field": "example",
+    "claim": "2024 RPPs: CA 110.7, HI 110.0, NJ 108.8, DC 109.9; AR 86.9, MS 87.0; $60k CA ~ $47k AR.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area",
+    "note": "All 2024 values match latest release; 60,000x86.9/110.7 = 47,100. Metadata only: page shows \"Current Release: February 19, 2026\" (next Dec 10, 2026)."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "example",
+        "old": "A $5 coffee on 250 working days is $1,250 a year. Its opportunity cost is not the coffee; it is whatever else that $1,250 would have done - a car repair covered without borrowing, or 2 months of a utility bill. Naming the alternative is what turns a habit into a decision.",
+        "new": "A $5 coffee on 250 working days is $1,250 a year. Its opportunity cost is not the coffee; it is whatever else that $1,250 would have done - a car repair covered without borrowing, or several months of utility bills. Naming the alternative is what turns a habit into a decision."
+      },
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2025-01-23"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "hb-007",
+    "field": "example",
+    "claim": "Opportunity cost = next-best alternative; $5 coffee x 250 days = $1,250 a year.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/consumer-tools/educator-tools/youth-financial-education/glossary/",
+    "note": "Definition matches glossary; $1,250 correct. \"2 months of a utility bill\" implied an implausible $625 monthly bill; softened. Page last modified Jan. 23, 2025."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "hb-008",
+    "field": "example",
+    "claim": "2026 standard deduction $16,100 single / $32,200 MFJ, up from $15,750 / $31,500 for 2025.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2026-including-amendments-from-the-one-big-beautiful-bill",
+    "note": "IR-2025-103, Oct 9, 2025: all four figures match; date and precision correct."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2026-08-28"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "cr-001",
+    "field": "definition",
+    "claim": "APR folds interest rate plus points, broker fees, other charges; usually above the rate.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-mortgage-interest-rate-and-an-apr-en-135/",
+    "note": "Matches CFPB. Illustrative 6.6/6.8 APRs plausible for a ~$300k loan. Metadata only: page last reviewed AUG 28, 2026."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2024-01-22"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "cr-002",
+    "field": "example",
+    "claim": "$3,000 at 24% APR accrues ~$2/day, ~$60/month; $150 payment cuts ~$90.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/how-does-my-credit-card-company-calculate-the-amount-of-interest-i-owe-en-51/",
+    "note": "3,000x0.24/365 = $1.97/day; daily periodic rate and average daily balance match. Metadata only: last reviewed JAN 22, 2024."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2022-12-28"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "cr-003",
+    "field": "definition",
+    "claim": "Credit report is the file; score is a model reading; 3 nationwide companies; free report every 12 months.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/consumer-tools/credit-reports-and-scores/answers/key-terms/",
+    "note": "Matches key terms. Last sentence overlaps personalfinance csc-002 (free reports) but card focus differs; left. Metadata only: last modified Dec. 28, 2022."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "example",
+        "old": "On an illustrative 60-month car loan, roughly 40 percent of the first payment may be interest and less than 2 percent of the last. Stretching the same loan to 84 months lowers the monthly payment but raises the total interest paid, because a larger balance is outstanding for longer.",
+        "new": "On an illustrative 60-month car loan at a 10 percent APR, roughly 40 percent of the first payment is interest and less than 1 percent of the last. Stretching the same loan to 84 months lowers the monthly payment but raises the total interest paid, because a larger balance is outstanding for longer."
+      },
+      {
+        "path": "claim",
+        "old": "{\"units\":\"percent of payment and months (illustrative auto loan)\",\"geography\":\"United States\",\"claimKind\":\"illustration\",\"observationPeriod\":\"amortization as described by the CFPB\",\"retrievalDate\":\"2026-09-14\"}",
+        "new": "{\"units\":\"percent of payment, percent APR, and months (illustrative auto loan)\",\"geography\":\"United States\",\"claimKind\":\"illustration\",\"observationPeriod\":\"amortization as described by the CFPB\",\"retrievalDate\":\"2026-09-14\"}"
+      },
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2024-09-24"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "cr-004",
+    "field": "example",
+    "claim": "Amortizing loan: early payments mostly interest; longer term lowers payment, raises total interest.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-amortization-and-how-could-it-affect-my-auto-loan-en-771/",
+    "note": "\"40 percent of first payment\" depends on an unstated rate (~29% at 7%). Anchored at 10% APR: first 39.2%, last 0.83%. Page last reviewed SEP 24, 2024."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2020-08-28"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "cr-005",
+    "field": "definition",
+    "claim": "Fixed APR changes need notice, usually new transactions only; variable APR follows an index like prime.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-apr-and-a-variable-apr-en-45/",
+    "note": "Content matches CFPB (notice; higher rate generally only on later transactions; index e.g. prime). Metadata only: last reviewed AUG 28, 2020."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2026-09-01"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "cr-006",
+    "field": "definition",
+    "claim": "Secured credit backed by collateral (HELOC, auto); unsecured (personal line, most cards) is not.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/consumer-tools/bank-accounts/answers/key-terms/",
+    "note": "Page: personal line of credit is unsecured, HELOC secured by a mortgage on the home. Metadata only: last modified Sept. 1, 2026."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "example",
+        "old": "A $1,000 statement balance paid in full by the due date, 25 days after the cycle closes, costs $0 in interest. The same balance with only a $35 minimum paid starts accruing interest on the remaining $965 from the day the grace period lapses, and the minimum shrinks the debt very slowly.",
+        "new": "A $1,000 statement balance paid in full by the due date, 25 days after the cycle closes, costs $0 in interest. Paying only a $35 minimum leaves $965 on which interest is charged, and purchases in the next cycle accrue interest from the day each is made, so the minimum shrinks the debt very slowly."
+      },
+      {
+        "path": "source.documentTitle",
+        "old": "Credit cards key terms",
+        "new": "What is a grace period for a credit card?"
+      },
+      {
+        "path": "source.url",
+        "old": "https://www.consumerfinance.gov/consumer-tools/credit-cards/answers/key-terms/",
+        "new": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-grace-period-for-a-credit-card-en-47/"
+      },
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2024-09-23"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "cr-007",
+    "field": "example",
+    "claim": "Grace period avoids purchase interest if paid in full; not required but common; minimum leaves interest-bearing balance.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-grace-period-for-a-credit-card-en-47/",
+    "note": "Interest does not start \"from the day the grace period lapses\"; CFPB: interest on unpaid portion, and new-cycle purchases accrue from purchase date. Re-cited to CFPB en-47 (last reviewed SEP 23, 2024)."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2023-09-12"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "cr-008",
+    "field": "definition",
+    "claim": "Subsidized Direct Loans: need-based undergrad, Dept pays interest in school and grace; unsubsidized accrues from start.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-federal-direct-loan-en-1553/",
+    "note": "Matches CFPB; undergrad sub/unsub rates are the same. Metadata only: last reviewed SEP 12, 2023."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "example",
+        "old": "A depositor with $200,000 in a single account and $200,000 in a joint account at 1 bank is fully covered - 2 categories, 2 limits. The same $400,000 in 2 single-name accounts at the same bank is insured only to $250,000. Since the FDIC was founded in 1933, no depositor has lost a penny of insured funds.",
+        "new": "A depositor with $200,000 in a single account and $200,000 in a joint account at 1 bank is fully covered - 2 categories, 2 limits. The same $400,000 split between 2 single accounts in that depositor's name at the same bank is insured only to $250,000."
+      },
+      {
+        "path": "claim",
+        "old": "{\"units\":\"U.S. dollars (FDIC standard insurance amount; illustrative account balances)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"coverage rules as published by the FDIC on 2026-09-14; agency founded 1933\",\"retrievalDate\":\"2026-09-14\"}",
+        "new": "{\"units\":\"U.S. dollars (FDIC standard insurance amount; illustrative account balances)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"coverage rules as published by the FDIC, page last updated 2024-04-01\",\"retrievalDate\":\"2026-09-14\"}"
+      },
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2024-04-01"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "sr-001",
+    "field": "example",
+    "claim": "FDIC covers $250,000 per depositor, per bank, per ownership category; same-category deposits aggregate.",
+    "verdict": "fixed",
+    "severity": "duplicate",
+    "sourceURL": "https://www.fdic.gov/resources/deposit-insurance/understanding-deposit-insurance/",
+    "note": "Rules correct. \"No depositor has lost a penny\" repeated sn-008 (with 1933 vs 1934 framing); removed. \"2 single-name accounts\" clarified as same owner. Page Last Updated April 1, 2024."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sr-002",
+    "field": "definition",
+    "claim": "Deposit insurance covers checking, savings, MMDAs, CDs; not stocks, bonds, mutual funds, annuities.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.fdic.gov/resources/deposit-insurance/",
+    "note": "Covered/not-covered lists match FDIC page; no stated page date, so observed-on-verification-date is honest."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sr-003",
+    "field": "definition",
+    "claim": "CD: money kept for a term, early withdrawal penalty, FDIC/NCUA insured to $250,000.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-certificate-of-deposit-cd-en-917/",
+    "note": "Matches CFPB. Page shows last modified Aug. 31, 2026 (reviewed Aug 28), consistent with publicationDate 2026-08-31."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sr-004",
+    "field": "example",
+    "claim": "I bond: fixed rate plus inflation rate reset every 6 months; 30 years; 12-month hold; 3-month penalty before 5 years; $10,000.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.treasurydirect.gov/savings-bonds/i-bonds/",
+    "note": "All rules match TreasuryDirect; Last-Modified 2026-09-13 matches. 18 months redeemed pays 15 months correct."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sr-005",
+    "field": "example",
+    "claim": "2026 401(k) deferral limit $24,500; catch-up $8,000 (50+); $11,250 for ages 60-63.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.irs.gov/retirement-plans/plan-participant-employee/retirement-topics-401k-and-profit-sharing-plan-contribution-limits",
+    "note": "All 2026 figures match; page last reviewed 08-Apr-2026 matches."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sr-006",
+    "field": "definition",
+    "claim": "Roth vs traditional is timing of tax: pre-tax in, taxed out; Roth after-tax in, qualified out tax-free.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.irs.gov/retirement-plans/roth-comparison-chart",
+    "note": "Matches chart (designated Roth 401(k), Roth IRA, pre-tax 401(k)); page updated 04-Sep-2026 matches. Chart omits traditional IRAs but statement that both exist as IRAs is true."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sr-007",
+    "field": "example",
+    "claim": "Employer match conditioned on deferrals; IRS example 50 cents per dollar; vesting may apply.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.irs.gov/retirement-plans/plan-sponsor/401k-plan-overview",
+    "note": "IRS example quoted accurately; vesting schedules on page; $4,000 to $2,000 correct; date 04-Aug-2026 matches."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "claim",
+        "old": "{\"units\":\"percent of the full retirement benefit (claiming-age adjustments)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"rules for people born on or after January 2, 1960, as published by the CFPB on 2026-09-14\",\"retrievalDate\":\"2026-09-14\"}",
+        "new": "{\"units\":\"percent of the full retirement benefit (claiming-age adjustments)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"rules for people born on or after January 2, 1960, as published by the CFPB, page last modified 2026-01-29\",\"retrievalDate\":\"2026-09-14\"}"
+      },
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2026-01-29"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "sr-008",
+    "field": "example",
+    "claim": "Claim at 62 to 70; FRA 67 for born 1960+; 30% less at 62, 24% more at 70; COLA.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.consumerfinance.gov/consumer-tools/retirement/before-you-claim/",
+    "note": "All figures match CFPB and SSA rules (1958/1959 FRA 66+8/66+10 months). Metadata only: page last modified Jan. 29, 2026."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sn-001",
+    "field": "definition",
+    "claim": "Insurance pools premiums to pay the few with losses; $400 x 12 = $4,800.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.healthcare.gov/glossary/premium/",
+    "note": "Premium definition consistent; arithmetic right; Last-Modified 2026-08-25 matches."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sn-002",
+    "field": "definition",
+    "claim": "Deductible paid before plan pays; then copayment or coinsurance; premium separate.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.healthcare.gov/glossary/deductible/",
+    "note": "Matches glossary including its $2,000 deductible example; date matches header."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sn-003",
+    "field": "example",
+    "claim": "2026 Marketplace out-of-pocket limit $10,600 individual / $21,200 family; 20% of $198k + $2k = $41,600.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.healthcare.gov/glossary/out-of-pocket-maximum-limit/",
+    "note": "2026 limits and exclusions match; arithmetic right. Page also lists 2027 limits ($12,000/$24,000); 2026 remains the stated, in-force plan year, so not outdated."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "example",
+        "old": "A worker laid off in 2020 from a job across a state line filed with the state where the job was, not the state of residence. Two neighbors laid off the same week by employers in 2 different states can face 2 different sets of rules and receive different benefits, because 2 rulebooks apply.",
+        "new": "A worker who lives in one state and is laid off from a job across the state line generally files with the state where the job was, not the state of residence. Two neighbors laid off the same week by employers in 2 different states can face 2 different sets of rules and receive different benefits, because 2 rulebooks apply."
+      }
+    ],
+    "id": "sn-004",
+    "field": "example",
+    "claim": "No federal UI program; each state runs its own; file in the state where you worked.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.usa.gov/unemployment-benefits",
+    "note": "Definition matches USAGov. Example's unsourced \"laid off in 2020... filed\" read as a specific case and dropped USAGov's \"in most cases\" qualifier; generalized."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sn-005",
+    "field": "definition",
+    "claim": "Social Security is social insurance paying retirement and disability (SSDI) income on insured events.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.usa.gov/social-security",
+    "note": "USAGov supports retirement/disability income and SSDI; \"social insurance\" framing matches the program's legal name (Old-Age, Survivors, and Disability Insurance). Example is qualitative, no magnitudes."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [],
+    "id": "sn-006",
+    "field": "definition",
+    "claim": "Medicare for 65+ and some younger; Parts A, B, D; Part C bundles A, B, usually D.",
+    "verdict": "correct",
+    "severity": "none",
+    "sourceURL": "https://www.medicare.gov/basics/get-started-with-medicare/medicare-basics/parts-of-medicare",
+    "note": "All part descriptions match Medicare.gov; no stated page date."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2026-07-15"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "sn-007",
+    "field": "example",
+    "claim": "PBGC created by ERISA 1974; two separate programs; financing; SFA (2021) taxpayer-funded.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.pbgc.gov/about/operate",
+    "note": "All financing and separation statements match PBGC (SFA from American Rescue Plan Act of 2021). Metadata only: page Last Updated July 15, 2026."
+  },
+  {
+    "retrieved": "2026-09-14",
+    "edits": [
+      {
+        "path": "claim",
+        "old": "{\"units\":\"number of institutions (FDIC-insured and FDIC-supervised)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"as published by the FDIC on 2026-09-14; insurance in force since January 1, 1934\",\"retrievalDate\":\"2026-09-14\"}",
+        "new": "{\"units\":\"number of institutions (FDIC-insured and FDIC-supervised)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"as published by the FDIC, page last updated 2026-01-28; insurance in force since January 1, 1934\",\"retrievalDate\":\"2026-09-14\"}"
+      },
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2026-01-28"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "id": "sn-008",
+    "field": "example",
+    "claim": "FDIC est. 1933, no appropriations, assessment-funded; insures 4,000+ institutions, supervises 2,700+; no insured loss since 1934.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "sourceURL": "https://www.fdic.gov/about/what-we-do",
+    "note": "All figures match FDIC. Metadata only: page Last Updated January 28, 2026."
+  }
+]

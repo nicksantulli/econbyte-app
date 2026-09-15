@@ -1,0 +1,714 @@
+[
+ {
+  "id": "pack:personalfinance",
+  "field": "summary",
+  "claim": "Pack summary: paychecks, car/home purchase, credit score, savings mechanics.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.irs.gov/payments/tax-withholding",
+  "retrieved": "2026-09-14",
+  "note": "Accurately describes the four topics; no stale words or advice."
+ },
+ {
+  "id": "topic:paychecks-taxes",
+  "field": "summary",
+  "claim": "Topic summary lists withholding, W-4, W-2, payroll taxes, filing status, brackets, refunds, self-employment.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.irs.gov/payments/tax-withholding",
+  "retrieved": "2026-09-14",
+  "note": "Matches the eight cards."
+ },
+ {
+  "id": "pay-001",
+  "field": "definition",
+  "claim": "Withholding is a prepayment set by earnings and W-4; employers must withhold income, SS, Medicare; also pensions, bonuses, commissions.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.irs.gov/payments/tax-withholding",
+  "retrieved": "2026-09-14",
+  "note": "All statements match the IRS page (reviewed 26-May-2026), including the Tax Withholding Estimator. Refund/balance logic is standard. Minor overlap with Personal hb-004 (take-home pay) but distinct focus."
+ },
+ {
+  "id": "pay-002",
+  "field": "example",
+  "claim": "W-4 tells employer filing status, other jobs, dependents; two-earner couples can be under-withheld.",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "example",
+    "old": "Two common triggers are a marriage and a second job. A couple who both work and both leave their W-4 set for a single earner with 1 job can end up under-withheld, because each employer assumes its paycheck is the only one. Filing a new W-4 within a few weeks of the change corrects the estimate for the remaining paychecks of the year.",
+    "new": "Two common triggers are a marriage and a second job. A couple who both work and each file a W-4 as married filing jointly without completing Step 2, for multiple jobs or a working spouse, can end up under-withheld, because each employer assumes its paycheck is the household's only income. Filing a new W-4 after the change corrects the estimate for the remaining paychecks of the year."
+   }
+  ],
+  "sourceURL": "https://www.irs.gov/forms-pubs/about-form-w-4",
+  "retrieved": "2026-09-14",
+  "note": "\"Set for a single earner with 1 job\" was unclear (Single status usually over-withholds). Real mechanism is married-joint W-4s skipping Step 2. \"Within a few weeks\" timing was unsourced."
+ },
+ {
+  "id": "pay-003",
+  "field": "example",
+  "claim": "W-2 reports wages/withholding; one per employer; W-2c corrects errors; missing form requested from employer.",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "example",
+    "old": "Someone who held 3 jobs during a year receives 3 W-2 forms, 1 from each employer, and adds the wage and withholding boxes together on the return. If an employer discovers an error after issuing the form, it files a corrected statement, Form W-2c, so that the worker’s record and the return can be matched. A missing form is requested from the employer, not the IRS.",
+    "new": "Someone who held 3 jobs during a year receives 3 W-2 forms, 1 from each employer, and adds the wage and withholding boxes together on the return. If an employer discovers an error after issuing the form, it files a corrected statement, Form W-2c, so that the worker's record and the return can be matched. A missing form is requested from the employer first."
+   }
+  ],
+  "sourceURL": "https://www.irs.gov/forms-pubs/about-form-w-2",
+  "retrieved": "2026-09-14",
+  "note": "\"Not the IRS\" is inaccurate: the IRS helps if a W-2 still has not arrived by the end of February. Softened. Also normalized a curly apostrophe."
+ },
+ {
+  "id": "pay-004",
+  "field": "example",
+  "claim": "FICA 6.2%+6.2% SS, 1.45%+1.45% Medicare; 2026 wage base $184,500; 0.9% Additional Medicare above $200,000, no match.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.irs.gov/taxtopics/tc751",
+  "retrieved": "2026-09-14",
+  "note": "Every figure matches Topic 751 (reviewed 20-Jan-2026), including the 2026 base of $184,500. Overlaps core tax-003/tax-004 conceptually but adds the specific rates."
+ },
+ {
+  "id": "pay-005",
+  "field": "definition",
+  "claim": "Five filing statuses; status set on last day of year; HOH and qualifying surviving spouse rules; joint filing usually cheaper.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.irs.gov/filing/filing-status",
+  "retrieved": "2026-09-14",
+  "note": "Matches IRS page (reviewed 29-Jun-2026). HOH larger standard deduction and choosing the lowest-tax status are standard IRS rules (Pub 501)."
+ },
+ {
+  "id": "pay-006",
+  "field": "definition",
+  "claim": "Brackets are marginal; 2025 single brackets $11,925/$48,475/$103,350; $60,000 taxable owes $8,114, avg 13.5%.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "definition",
+    "old": "Federal income tax is charged in layers called brackets. Each bracket's rate applies only to the slice of taxable income that falls inside it, not to the whole amount. Moving into a higher bracket therefore raises the tax on the next dollar earned, not on the dollars already taxed at lower rates. The rate on the last dollar is the marginal rate; total tax divided by total income is the average rate, and it is always lower than the marginal rate.",
+    "new": "Federal income tax is charged in layers called brackets. Each bracket's rate applies only to the slice of taxable income that falls inside it, not to the whole amount. Moving into a higher bracket therefore raises the tax on the next dollar earned, not on the dollars already taxed at lower rates. The rate on the last dollar is the marginal rate; total tax divided by total income is the average rate, and once income reaches a second bracket the average rate is lower than the marginal rate."
+   }
+  ],
+  "sourceURL": "https://www.irs.gov/filing/federal-income-tax-rates-and-brackets",
+  "retrieved": "2026-09-14",
+  "note": "Figures and math verified ($1,192.50+$4,386+$2,535.50=$8,114; 13.52%). 2025 is the latest full table on the page. But \"always lower\" is false inside the 10% bracket, where average equals marginal. Overlaps core tax-001."
+ },
+ {
+  "id": "pay-007",
+  "field": "example",
+  "claim": "Refunds ~3 weeks e-file, 6+ weeks paper; status 24 hours/4 weeks; offsets; EITC/ACTC held to mid-February.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.irs.gov/refunds",
+  "retrieved": "2026-09-14",
+  "note": "All timing and offset statements match the IRS Refunds page (updated 28-Jun-2026)."
+ },
+ {
+  "id": "pay-008",
+  "field": "example",
+  "claim": "SE tax 15.3% (12.4+2.9); $400 threshold; 2024 wage base $168,600; Additional Medicare 0.9%.",
+  "verdict": "fixed",
+  "severity": "outdated",
+  "edits": [
+   {
+    "path": "example",
+    "old": "The self-employment tax rate is 15.3 percent: 12.4 percent for Social Security plus 2.9 percent for Medicare. It applies once net self-employment earnings reach $400 or more in a year. For 2024, the IRS page states, only the first $168,600 of combined wages and net earnings was subject to the Social Security part, while the Medicare part applied to all of it, with an extra 0.9 percent above a filing-status threshold.",
+    "new": "The self-employment tax rate is 15.3 percent: 12.4 percent for Social Security plus 2.9 percent for Medicare. It applies once net self-employment earnings reach $400 or more in a year. Only earnings up to the annual Social Security wage base, a limit shared with any wages from a job, are subject to the Social Security part, while the Medicare part applies to all of them, with an extra 0.9 percent above a filing-status threshold."
+   },
+   {
+    "path": "claim",
+    "old": "{\"units\":\"percent of net earnings and U.S. dollars (self-employment tax rates, filing threshold, and 2024 wage base)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"2024 wage base as stated by the IRS (page updated 2026-06-27)\",\"retrievalDate\":\"2026-09-14\"}",
+    "new": "{\"units\":\"percent of net earnings and U.S. dollars (self-employment tax rates and filing threshold)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"rates and threshold as published by the IRS (page updated 2026-06-27)\",\"retrievalDate\":\"2026-09-14\"}"
+   }
+  ],
+  "sourceURL": "https://www.irs.gov/businesses/small-businesses-self-employed/self-employment-tax-social-security-and-medicare-taxes",
+  "retrieved": "2026-09-14",
+  "note": "The page still states only the 2024 base ($168,600), and pay-004 gives 2026 = $184,500, so the two cards conflict. Removed the stale year and dollar figure; the base is described as shared with job wages. Rates and $400 verified."
+ },
+ {
+  "id": "topic:cars-and-homes",
+  "field": "summary",
+  "claim": "Topic summary: auto loans, leases, mortgages, negative equity, down payments, PMI, Loan Estimate, escrow, renting vs owning.",
+  "verdict": "fixed",
+  "severity": "duplicate",
+  "edits": [
+   {
+    "path": "summary",
+    "old": "How auto loans, leases, and mortgages are priced and disclosed, and the mechanics of negative equity, down payments, PMI, the Loan Estimate, escrow, and renting versus owning.",
+    "new": "How auto loans, leases, and mortgages are priced and disclosed, and the mechanics of negative equity, down payments, PMI, the Loan Estimate, escrow, and home equity."
+   }
+  ],
+  "sourceURL": "https://www.consumerfinance.gov/archive/blog/making-decision-rent-or-buy/",
+  "retrieved": "2026-09-14",
+  "note": "Follows the byg-008 change from renting versus owning (duplicate of core hm-006) to home equity."
+ },
+ {
+  "id": "byg-001",
+  "field": "example",
+  "claim": "TILA disclosure: APR, finance charge, amount financed, total of payments; $25,000 at 7% for 48 vs 72 months.",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "example",
+    "old": "An illustrative $25,000 loan at a 7 percent rate costs about $599 a month over 48 months, a finance charge near $3,735 and a total of payments around $28,735. The same loan stretched to 72 months costs about $426 a month - but the finance charge rises to roughly $5,688 and the total to about $30,688. The disclosure puts those totals side by side; the sales pitch usually does not.",
+    "new": "An illustrative $25,000 loan at a 7 percent rate costs about $599 a month over 48 months, a finance charge near $3,735 and a total of payments around $28,735. The same loan stretched to 72 months costs about $426 a month - but the finance charge rises to roughly $5,688 and the total to about $30,688. Each disclosure states those totals in writing; a quoted monthly payment alone does not."
+   }
+  ],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-truth-in-lending-disclosure-for-an-auto-loan-en-787/",
+  "retrieved": "2026-09-14",
+  "note": "Math verified ($598.66/$3,735.49; $426.23/$5,688.21). But one loan's disclosure does not show two terms \"side by side\", and \"the sales pitch usually does not\" is an unsourced claim about sellers. Overlaps Personal cr-004 on longer terms."
+ },
+ {
+  "id": "byg-002",
+  "field": "example",
+  "claim": "Lease pays depreciation plus rent charge; mileage caps usually 15,000/yr or less; excess-mile fees; early termination.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://consumer.ftc.gov/articles/financing-or-leasing-car",
+  "retrieved": "2026-09-14",
+  "note": "All claims match the FTC page. The page is dated July 2022 (month only), so observed-on-verification-date is an acceptable precision."
+ },
+ {
+  "id": "byg-003",
+  "field": "example",
+  "claim": "Negative equity: owe $18,000 on $15,000 car; rolling into $25,000 purchase finances $28,000; check payoff; confirm in a week.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/should-i-trade-in-my-car-if-its-not-paid-off-en-2045/",
+  "retrieved": "2026-09-14",
+  "note": "Math right; payoff vs statement balance and \"wait one week\" match the CFPB (reviewed 12-Sep-2023)."
+ },
+ {
+  "id": "byg-004",
+  "field": "example",
+  "claim": "Fixed vs ARM; index plus margin plus caps; 4% index + 2.5 margin = 6.5%; do not assume sale/refi before reset.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-rate-and-adjustable-rate-mortgage-arm-loan-en-100/",
+  "retrieved": "2026-09-14",
+  "note": "Matches the CFPB (reviewed 14-Jan-2025); arithmetic correct."
+ },
+ {
+  "id": "byg-005",
+  "field": "example",
+  "claim": "PMI required under 20% down on conventional loans; monthly/upfront/both; no-PMI loans at higher rate may cost more or less.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-private-mortgage-insurance-en-122/",
+  "retrieved": "2026-09-14",
+  "note": "All statements match the CFPB (reviewed 28-Aug-2023), including \"more or less expensive... how long you plan to stay\". $30,000/$270,000 and $60,000/$240,000 correct."
+ },
+ {
+  "id": "byg-006",
+  "field": "definition",
+  "claim": "Loan Estimate: standardized 3-page form within 3 business days; compare offers; flags prepayment penalty, negative amortization; not approval.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-loan-estimate-en-1995/",
+  "retrieved": "2026-09-14",
+  "note": "Matches the CFPB (reviewed 9-Aug-2024)."
+ },
+ {
+  "id": "byg-007",
+  "field": "example",
+  "claim": "Escrow/impound pays taxes and insurance; recalculated yearly; $3,600+$1,200 = $400/month; force-placed insurance.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/what-is-an-escrow-or-impound-account-en-140/",
+  "retrieved": "2026-09-14",
+  "note": "Matches the CFPB; $4,800/12 = $400."
+ },
+ {
+  "id": "byg-008",
+  "field": "definition",
+  "claim": "Rent vs own: owning builds equity slowly, has transaction/maintenance costs; early sellers may gain no equity; 2007-2012 declines.",
+  "verdict": "fixed",
+  "severity": "duplicate",
+  "edits": [
+   {
+    "path": "title",
+    "old": "Renting Versus Owning",
+    "new": "Home Equity"
+   },
+   {
+    "path": "definition",
+    "old": "The rent-or-own question is a comparison of two cost streams under uncertainty. Owning builds equity - the home's value minus the mortgage balance - but slowly at first, because early payments are mostly interest, and equity also moves with market prices. It carries transaction costs at purchase and sale, plus maintenance and repairs. Renting avoids those costs and preserves the option to move, at the price of building no equity. Calculators that compare the two depend heavily on assumed price growth.",
+    "new": "Home equity is the home's market value minus what is still owed on the mortgage. It grows two ways: as payments reduce the loan balance and as the home's price rises. Early payments are mostly interest, so the first route is slow at first, and the second can run in reverse when prices fall. Selling also costs money, so after a short stay the transaction costs can leave an owner with no more equity than at purchase."
+   },
+   {
+    "path": "example",
+    "old": "The CFPB's guide notes that someone who sells within the first few years may end up with no more equity than they started with after paying the transaction costs, and that when prices fell between 2007 and 2012 many owners lost some or all of their equity. Owners also bear repairs a landlord would otherwise cover, so the comparison must include more than a rent check against a mortgage payment.",
+    "new": "An illustrative buyer puts $30,000 down on a $300,000 home. If the price stays flat, 3 years of payments on the 30-year, $270,000 loan at 6.5 percent cut the balance by about $9,700; selling costs of $10,000 would leave about $29,700, slightly less than was put in. The CFPB notes that when prices fell between 2007 and 2012, many owners lost some or all of their equity."
+   },
+   {
+    "path": "claim",
+    "old": "null",
+    "new": "{\"units\":\"U.S. dollars and percent (illustrative down payment, principal repaid, and selling costs)\",\"geography\":\"United States\",\"claimKind\":\"illustration\",\"observationPeriod\":\"home equity as described by the CFPB\",\"retrievalDate\":\"2026-09-14\"}"
+   },
+   {
+    "path": "source.documentTitle",
+    "old": "Making the decision to rent or buy (archived)",
+    "new": "Making the decision to rent or buy"
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2017-05-02"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.consumerfinance.gov/archive/blog/making-decision-rent-or-buy/",
+  "retrieved": "2026-09-14",
+  "note": "Duplicates core hm-006 (Renting and Owning). Reframed around home equity, with a new illustrative example. Source date was wrong: the post is from 2017-05-02 (stated), not 2026-09-14. Title normalized to the exact page title. Lead added the 30-year term the arithmetic assumes (balance after 36 payments $260,326; equity after $10,000 costs $29,674)."
+ },
+ {
+  "id": "topic:credit-scores-scams",
+  "field": "summary",
+  "claim": "Topic summary: credit score drivers, reading/correcting reports, identity theft, imposter scams, fraud loss reporting.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/how-do-i-get-and-keep-a-good-credit-score-en-318/",
+  "retrieved": "2026-09-14",
+  "note": "Matches the eight cards."
+ },
+ {
+  "id": "csc-001",
+  "field": "example",
+  "claim": "Score drivers: payment history, utilization (30% guideline), history length, new applications; closing cards can raise utilization.",
+  "verdict": "fixed",
+  "severity": "unsourced",
+  "edits": [
+   {
+    "path": "example",
+    "old": "The CFPB relays a common guideline: keep balances at no more than 30 percent of total credit limits. Closing 2 unused cards can therefore lower a score if the same balances now sit on 1 card near its limit. Carrying a balance is not required; paying in full each month produces the strongest scores and the lowest interest cost.",
+    "new": "The CFPB relays a common guideline: keep balances at no more than 30 percent of total credit limits. Closing 2 unused cards can therefore lower a score if the same balances now sit on 1 card near its limit. Carrying a balance on a card is not required for a good score, and paying in full each month avoids interest charges."
+   }
+  ],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/how-do-i-get-and-keep-a-good-credit-score-en-318/",
+  "retrieved": "2026-09-14",
+  "note": "Factors and the 30% guideline match the CFPB (reviewed 12-Dec-2024). The CFPB only says carrying a balance is not needed; \"paying in full produces the strongest scores\" was an overclaim. Overlaps Personal cr-003."
+ },
+ {
+  "id": "csc-002",
+  "field": "example",
+  "claim": "Free report every 12 months by law; stagger 1 every 4 months; $14.50 cap on paid report; 60 days after denial.",
+  "verdict": "fixed",
+  "severity": "outdated",
+  "edits": [
+   {
+    "path": "example",
+    "old": "Because the 3 reports can be ordered separately, one approach the CFPB describes is to request 1 every 4 months to watch the file across the year. Beyond the free copies, a company may charge no more than $14.50 for a report. A denial notice gives 60 days to request a free report from the company named in it.",
+    "new": "Beyond the free copy the law guarantees every 12 months, the 3 nationwide credit reporting companies have permanently extended a program that offers each report free once a week through the official website set up for free reports. A denial notice gives 60 days to request an additional free report from the company named in it."
+   },
+   {
+    "path": "claim",
+    "old": "{\"units\":\"U.S. dollars (statutory cap on the price of an additional credit report) and days\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"as published by the CFPB, page last reviewed 2023-08-28\",\"retrievalDate\":\"2026-09-14\"}",
+    "new": "{\"units\":\"days (window to request a free report after an adverse action notice) and report frequency\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"as published by the FTC, page dated June 2026\",\"retrievalDate\":\"2026-09-14\"}"
+   },
+   {
+    "path": "source.organization",
+    "old": "Consumer Financial Protection Bureau",
+    "new": "Federal Trade Commission, Consumer Advice"
+   },
+   {
+    "path": "source.documentTitle",
+    "old": "How do I get a free copy of my credit reports?",
+    "new": "Free Credit Reports"
+   },
+   {
+    "path": "source.url",
+    "old": "https://www.consumerfinance.gov/ask-cfpb/how-do-i-get-a-free-copy-of-my-credit-reports-en-5/",
+    "new": "https://consumer.ftc.gov/articles/free-credit-reports"
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2023-08-28",
+    "new": "2026-09-14"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "stated-on-page",
+    "new": "observed-on-verification-date"
+   }
+  ],
+  "sourceURL": "https://consumer.ftc.gov/articles/free-credit-reports",
+  "retrieved": "2026-09-14",
+  "note": "$14.50 cap is outdated (CFPB Appendix O: $16.00 for 2026). Staggering every 4 months predates permanent free weekly reports. Re-cited to the FTC page (June 2026): 12-month right, weekly access, 60-day window. Lead clarified 'the same official website' (no antecedent)."
+ },
+ {
+  "id": "csc-003",
+  "field": "definition",
+  "claim": "Dispute errors with the reporting company and furnisher; company must investigate, forward, report back; may skip frivolous disputes.",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "definition",
+    "old": "Errors in a credit report can lower a score and raise borrowing costs, and federal law gives the consumer a right to dispute them. A dispute goes to the credit reporting company, in writing with copies of supporting documents, and often also to the company that supplied the information, called the furnisher. The reporting company must investigate, forward the dispute and evidence to the furnisher, and report the result back; it may decline only disputes it reasonably finds frivolous.",
+    "new": "Errors in a credit report can lower a score and raise borrowing costs, and federal law gives the consumer a right to dispute them. A dispute goes to the credit reporting company - online, by phone, or by mail with copies of supporting documents - and often also to the company that supplied the information, called the furnisher. The reporting company must investigate, forward the dispute and evidence to the furnisher, and report the result back; it may decline only disputes it reasonably finds frivolous."
+   }
+  ],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/how-do-i-dispute-an-error-on-my-credit-report-en-314/",
+  "retrieved": "2026-09-14",
+  "note": "\"In writing\" was too narrow: the CFPB lists online, phone, and mail options for each company. The investigate/forward/report duty and the frivolous exception match word for word. The letter checklist in the example is accurate."
+ },
+ {
+  "id": "csc-004",
+  "field": "definition",
+  "claim": "Negative info 7 years, bankruptcy up to 10; judgments; exceptions above $75,000 jobs and $150,000 insurance; no early removal.",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "definition",
+    "old": "Credit reporting companies may report most negative information for a limited time, after which it must drop off the report even though the company may keep it on file. Positive information can stay longer, and an on-time history can remain after an account is closed, which helps scores that reward long histories. No one can lawfully remove accurate negative information early; companies that charge fees to 'repair' credit cannot do what a consumer can do alone for free, which is dispute actual errors.",
+    "new": "Credit reporting companies may report most negative information for a limited time, after which it must drop off the report even though the company may keep it on file. Positive information can stay longer, and an on-time history can remain after an account is closed, which helps scores that reward long histories. No one can lawfully remove accurate negative information early; companies that charge fees to 'repair' credit can do nothing a consumer cannot do alone for free, which is to dispute actual errors."
+   }
+  ],
+  "sourceURL": "https://www.consumerfinance.gov/ask-cfpb/how-long-does-information-stay-on-my-credit-report-en-323/",
+  "retrieved": "2026-09-14",
+  "note": "Time limits and exceptions match the CFPB (reviewed 2-Sep-2026). As written, the sentence said credit repair firms cannot dispute errors, which is the opposite of what was meant. Reworded."
+ },
+ {
+  "id": "csc-005",
+  "field": "definition",
+  "claim": "Identity theft methods, warning signs, recovery via FTC and bureaus, IRS Form 14039 invalidates fraudulent return.",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-10",
+    "new": "2025-07-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-last-modified",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.usa.gov/identity-theft",
+  "retrieved": "2026-09-14",
+  "note": "Content matches USAGov. The page states \"Last updated July 22, 2025\", but the card used a server header date (2026-09-10, observed-last-modified), which makes the source look a year newer. Switched to the stated date."
+ },
+ {
+  "id": "csc-006",
+  "field": "example",
+  "claim": "Freeze free, no score effect, placed with each bureau; initial alert 1 yr, extended 7 yrs/5 yrs off lists, active-duty 2 yrs off lists.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://consumer.ftc.gov/articles/credit-freezes-and-fraud-alerts",
+  "retrieved": "2026-09-14",
+  "note": "All durations and freeze facts match the FTC (page dated August 2025, month only, so the observed date is acceptable)."
+ },
+ {
+  "id": "csc-007",
+  "field": "example",
+  "claim": "FTC 2024 fraud: $12.5B losses, +25%, 2.6M reports; imposters $2.95B; government $789M; investment $5.7B; 27%->38%.",
+  "verdict": "fixed",
+  "severity": "outdated",
+  "edits": [
+   {
+    "path": "example",
+    "old": "For 2024 the FTC reported more than $12.5 billion in losses to fraud, up 25 percent from the prior year, from about 2.6 million fraud reports. Imposter scams were the most commonly reported category, with $2.95 billion lost, and losses to government imposters alone reached $789 million. Investment scams cost the most, $5.7 billion. The share of reporters who lost money rose from 27 percent in 2023 to 38 percent in 2024.",
+    "new": "For 2025 the FTC reported $15.9 billion in fraud losses from 3 million fraud reports, up from 2.6 million reports and more than $12 billion in losses the year before. Imposter scams were the most frequently reported fraud, with more than 1 million reports and more than $3.5 billion lost. Investment scams cost the most, $7.9 billion."
+   },
+   {
+    "path": "claim",
+    "old": "{\"units\":\"U.S. dollars, percent, and number of reports (Consumer Sentinel Network fraud data)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"2024, as published by the FTC in March 2025\",\"retrievalDate\":\"2026-09-14\"}",
+    "new": "{\"units\":\"U.S. dollars and number of reports (Consumer Sentinel Network fraud data)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"2025, as reported by the FTC on 2026-03-25\",\"retrievalDate\":\"2026-09-14\"}"
+   },
+   {
+    "path": "source.documentTitle",
+    "old": "New FTC Data Show a Big Jump in Reported Losses to Fraud to $12.5 Billion in 2024",
+    "new": "FTC Testifies before the Joint Economic Committee on Agency’s Efforts to Combat Fraud"
+   },
+   {
+    "path": "source.url",
+    "old": "https://www.ftc.gov/news-events/news/press-releases/2025/03/new-ftc-data-show-big-jump-reported-losses-fraud-125-billion-2024",
+    "new": "https://www.ftc.gov/news-events/news/press-releases/2026/03/ftc-testifies-joint-economic-committee-agencys-efforts-combat-fraud"
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2025-03-10",
+    "new": "2026-03-25"
+   }
+  ],
+  "sourceURL": "https://www.ftc.gov/news-events/news/press-releases/2026/03/ftc-testifies-joint-economic-committee-agencys-efforts-combat-fraud",
+  "retrieved": "2026-09-14",
+  "note": "2024 figures were correct, but the FTC published 2025 totals in March 2026. Updated to those and re-cited: $15.9B, 3M reports, imposters >1M reports and >$3.5B, investment $7.9B."
+ },
+ {
+  "id": "csc-008",
+  "field": "definition",
+  "claim": "Ponzi: pays old investors with new money; collapses; red flags; Charles Ponzi 1920s postage stamps; rollover incentives.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/protect-your-investments/fraud/types-fraud/ponzi-scheme",
+  "retrieved": "2026-09-14",
+  "note": "Checked with a browser user agent (WebFetch got 403). Red flags, origin, and \"even higher returns for staying put\" all match."
+ },
+ {
+  "id": "topic:compounding-time",
+  "field": "summary",
+  "claim": "Topic summary: interest, compounding and time, inflation and purchasing power, savings in months.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.fdic.gov/consumer-resource-center/chapter-5-compound-interest",
+  "retrieved": "2026-09-14",
+  "note": "Accurate as written. If cmp-002/cmp-003 are replaced, review the inflation clause (cmp-008 still covers inflation)."
+ },
+ {
+  "id": "cmp-001",
+  "field": "example",
+  "claim": "Simple vs compound: $1,000 at 4% earns $400 simple vs ~$480 compounded annually over 10 years.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.fdic.gov/consumer-resource-center/chapter-5-compound-interest",
+  "retrieved": "2026-09-14",
+  "note": "$480.24 verified; the paraphrase matches the FDIC primer (page dated 2023-10-25). Overlaps Markets rr-003 on the definition, but the simple-interest contrast is new."
+ },
+ {
+  "id": "cmp-002",
+  "field": "definition",
+  "claim": "Compound interest defined; SEC $100 at 5%: $105, $110.25, >$162 at 10 yrs, ~$340 at 25 yrs.",
+  "verdict": "removed",
+  "severity": "duplicate",
+  "edits": [
+   {
+    "path": "title",
+    "old": "Compound Interest",
+    "new": "Regular Deposits Over Time"
+   },
+   {
+    "path": "definition",
+    "old": "Compounding is interest earning interest. After the first period, the credited interest joins the principal, and the next period's interest is calculated on the larger sum. Early on the effect is barely visible - a few cents of interest on interest. But the extra amount itself compounds, so growth accelerates over time, and the final balance depends far more on how long the money was left than on the size of any single year's gain. The same mathematics works against a borrower who carries a balance.",
+    "new": "Compounding also works on money added along the way. Each deposit starts earning interest once it is in the account, so a steady monthly amount builds a balance with two parts: the deposits themselves and the interest they have earned. Deposits made early have the longest to compound, so the interest share of the balance keeps growing the longer the schedule runs. The SEC's compound interest calculator asks for the same inputs: a starting amount, a monthly contribution, a number of years, a rate, and how often interest compounds."
+   },
+   {
+    "path": "example",
+    "old": "The SEC's classroom example: $100 earning 5 percent a year becomes $105 after 1 year and $110.25 after 2, the extra 25 cents being interest on the first year's $5. Left alone, the $100 grows to more than $162 after 10 years and to almost $340 after 25 years, without another cent deposited. Nearly all of the later gain is interest on earlier interest.",
+    "new": "An illustrative  a month at 5 percent a year, compounded monthly, grows to about ,500 after 10 years, of which ,000 is deposits and about ,500 is interest. After 30 years the balance is about ,200 on ,000 of deposits, so interest makes up more than half of it. The rate is an assumption; real returns vary from year to year."
+   },
+   {
+    "path": "source",
+    "old": {
+     "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+     "documentTitle": "What is compound interest? (Teachers and Classroom Resources)",
+     "url": "https://www.investor.gov/additional-resources/information/youth/teachers-classroom-resources/what-compound-interest",
+     "publicationDate": "2026-09-11",
+     "datePrecision": "observed-last-modified",
+     "verificationDate": "2026-09-14"
+    },
+    "new": {
+     "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+     "documentTitle": "Compound Interest Calculator",
+     "url": "https://www.investor.gov/financial-tools-calculators/calculators/compound-interest-calculator",
+     "publicationDate": "2026-09-11",
+     "datePrecision": "observed-last-modified",
+     "verificationDate": "2026-09-14"
+    }
+   },
+   {
+    "path": "claim",
+    "old": {
+     "units": "U.S. dollars and percent (illustrative compound growth of $100 at 5 percent, as published by the SEC)",
+     "geography": "United States",
+     "claimKind": "illustration",
+     "observationPeriod": "compound interest as described by the SEC's Office of Investor Education",
+     "retrievalDate": "2026-09-14"
+    },
+    "new": {
+     "units": "U.S. dollars and percent (illustrative monthly deposits of $100 at 5 percent, compounded monthly)",
+     "geography": "United States",
+     "claimKind": "illustration",
+     "observationPeriod": "future value of regular deposits, inputs as described by the SEC calculator",
+     "retrievalDate": "2026-09-14"
+    }
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/financial-tools-calculators/calculators/compound-interest-calculator",
+  "retrieved": "2026-09-14",
+  "note": "Figures match the SEC and are correct ($162.89, $338.64). But the definition repeats Markets rr-003 almost word for word, and cmp-001 already defines compounding. Needs a replacement card (topic needs 8), e.g. future value of regular deposits. Lead replaced the card (same id, topic keeps 8): 'Regular Deposits Over Time', math checked (monthly FV: $15,528 at 10y, $83,226 at 30y; interest 57%); calculator page opened via browser-UA fetch."
+ },
+ {
+  "id": "cmp-003",
+  "field": "definition",
+  "claim": "Inflation erodes purchasing power; FOMC 2% PCE longer-run goal; at 2% prices double in ~35 years.",
+  "verdict": "removed",
+  "severity": "duplicate",
+  "edits": [
+   {
+    "path": "title",
+    "old": "Inflation and Purchasing Power",
+    "new": "A Guaranteed Doubling"
+   },
+   {
+    "path": "definition",
+    "old": "Inflation is a general rise in prices, which is the same thing as a fall in what a unit of money buys. A savings balance that stays fixed in dollars shrinks in purchasing power every year prices rise. Because it compounds like interest, even a low rate matters over decades. Central banks aim for a low, stable rate so that households and businesses can plan; the U.S. Federal Reserve states its objective as a specific number measured by a specific price index.",
+    "new": "A Series EE savings bond is a U.S. Treasury bond that earns a fixed rate of interest for up to 30 years. Treasury adds one promise on top of the rate: the bond will double in value 20 years after purchase, and if the fixed rate has not done that by then, Treasury adds the difference at 20 years. Because the guarantee arrives only at that date, how long the bond is held matters as much as the rate printed on it."
+   },
+   {
+    "path": "example",
+    "old": "The Federal Open Market Committee judges that inflation of 2 percent over the longer run, measured by the annual change in the price index for personal consumption expenditures, is most consistent with its mandate for price stability and maximum employment. At exactly that pace, prices double in roughly 35 years, so $100 set aside at the start buys about what $50 did.",
+    "new": "EE bonds issued from May 1 to October 31, 2026 earn a fixed 2.40 percent. At that rate alone, ,000 would grow to only about ,600 in 20 years, so Treasury makes up the rest to bring it to ,000. Doubling in 20 years works out to roughly 3.5 percent a year, paid in full only to an owner who waits the whole 20 years."
+   },
+   {
+    "path": "source",
+    "old": {
+     "organization": "Board of Governors of the Federal Reserve System",
+     "documentTitle": "Why does the Federal Reserve aim for inflation of 2 percent over the longer run?",
+     "url": "https://www.federalreserve.gov/faqs/economy_14400.htm",
+     "publicationDate": "2026-07-08",
+     "datePrecision": "observed-last-modified",
+     "verificationDate": "2026-09-14"
+    },
+    "new": {
+     "organization": "U.S. Department of the Treasury, TreasuryDirect",
+     "documentTitle": "EE bonds",
+     "url": "https://www.treasurydirect.gov/savings-bonds/ee-bonds/",
+     "publicationDate": "2026-09-14",
+     "datePrecision": "observed-on-verification-date",
+     "verificationDate": "2026-09-14"
+    }
+   },
+   {
+    "path": "claim",
+    "old": {
+     "units": "percent (FOMC longer-run inflation objective; illustrative doubling period)",
+     "geography": "United States",
+     "claimKind": "observation",
+     "observationPeriod": "objective as published by the Federal Reserve, page updated 2026-07-08",
+     "retrievalDate": "2026-09-14"
+    },
+    "new": {
+     "units": "percent (EE bond fixed rate and implied yearly rate) and U.S. dollars (illustrative $1,000 bond)",
+     "geography": "United States",
+     "claimKind": "observation",
+     "observationPeriod": "EE bonds issued May 1 to October 31, 2026, as published by TreasuryDirect",
+     "retrievalDate": "2026-09-14"
+    }
+   }
+  ],
+  "sourceURL": "https://www.treasurydirect.gov/savings-bonds/ee-bonds/",
+  "retrieved": "2026-09-14",
+  "note": "Figures correct (35.0 years). The concept repeats core inf-001 (purchasing power), inf-008 (the 2 percent goal), and Markets rr-004. If kept, the page states Last Update 2025-08-22 (header says 2026-07-08). Replace with a new concept, e.g. present value. Lead replaced the card (same id): 'A Guaranteed Doubling' (EE bonds). TreasuryDirect: double in 20 years with a top-up, 30-year interest, 2.40% fixed for May 1-Oct 31 2026. 1.024^20=1.608 (~$1,600); 2^(1/20)-1=3.53%. Lock-up/penalty left to sr-004."
+ },
+ {
+  "id": "cmp-004",
+  "field": "example",
+  "claim": "APY includes compounding; Reg DD example $53.90 on $1,000 = 5.39%; 4% monthly 4.07%, daily 4.08%.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.consumerfinance.gov/rules-policy/regulations/1030/a/",
+  "retrieved": "2026-09-14",
+  "note": "Regulation example matches (365-day term, daily compounding); 4.0742% and 4.0808% verified."
+ },
+ {
+  "id": "cmp-005",
+  "field": "definition",
+  "claim": "Rule of 72 approximation; claims it overstates at higher rates; 9%->8 yrs, 2%->36 vs 35, 24%->3 vs 3.2.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "definition",
+    "old": "The Rule of 72 is a mental shortcut for compounding: dividing 72 by an annual growth rate gives the approximate number of years for an amount to double. It is an approximation, most accurate for rates in the single digits and steadily less so at higher rates, where it overstates the doubling time. It works in reverse too: dividing 72 by an inflation rate gives roughly how long until money buys half as much. It assumes a constant rate, which real returns rarely deliver.",
+    "new": "The Rule of 72 is a mental shortcut for compounding: dividing 72 by an annual growth rate gives the approximate number of years for an amount to double. It is an approximation, most accurate for rates near 8 percent; it slightly overstates the doubling time at lower rates and understates it at higher ones. It works in reverse too: dividing 72 by an inflation rate gives roughly how long until money buys half as much. It assumes a constant rate, which real returns rarely deliver."
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/additional-resources/information/youth/teachers-classroom-resources/what-compound-interest",
+  "retrieved": "2026-09-14",
+  "note": "Wrong direction: the rule overstates doubling time below about 8% and understates it above (the card's own 24% case: 3 vs 3.22). Accuracy peaks near 8%, not across single digits. The SEC 9%/8-year example is verified. Partly overlaps Markets rr-003."
+ },
+ {
+  "id": "cmp-006",
+  "field": "definition",
+  "claim": "Size a cash reserve in months of essential spending; CFPB ties amount to own history; $2,400/mo: 3 mo $7,200, 6 mo $14,400.",
+  "verdict": "fixed",
+  "severity": "tone",
+  "edits": [
+   {
+    "path": "definition",
+    "old": "A useful way to size a cash reserve is in time rather than dollars: how many months of essential spending it would cover if income stopped. Measured that way, the target scales automatically with a household's costs, and it can be built in steps. The CFPB's guidance ties the amount to the person's own history of unexpected expenses and income swings rather than to a universal figure, and notes that a reserve of any size shortens recovery from a shock and reduces reliance on borrowing.",
+    "new": "A cash reserve can also be measured in time rather than dollars: how many months of essential spending it would cover if income stopped. Measured that way, the target scales automatically with a household's costs, and it can be built in steps. The CFPB's guidance ties the amount to the person's own history of unexpected expenses and income swings rather than to a universal figure, and notes that a reserve of any size shortens recovery from a shock and reduces reliance on borrowing."
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2025-10-29"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.consumerfinance.gov/an-essential-guide-to-building-an-emergency-fund/",
+  "retrieved": "2026-09-14",
+  "note": "Math correct ($7,200 / $200 = 36 months). The CFPB never frames savings in months, so \"A useful way\" read as advice. Page states \"last modified Oct. 29, 2025\". Overlaps Personal hb-003, same source."
+ },
+ {
+  "id": "cmp-007",
+  "field": "example",
+  "claim": "$1,000 at 5%: ~$1,629 at 10 yrs, ~$4,322 at 30; later 20 yrs add ~$2,693, over 4x the first 10.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.fdic.gov/consumer-resource-center/chapter-5-compound-interest",
+  "retrieved": "2026-09-14",
+  "note": "$1,628.89, $4,321.94, $2,693.05, and 4.28x verified. The FDIC names rate and time as the drivers. Overlaps cmp-001 slightly; distinct focus on time."
+ },
+ {
+  "id": "cmp-008",
+  "field": "definition",
+  "claim": "Real return = rate minus inflation; FDIC national rates Aug 17 2026: savings 0.38%, MMA 0.63%, 12-mo CD 1.71%.",
+  "verdict": "fixed",
+  "severity": "duplicate",
+  "edits": [
+   {
+    "path": "title",
+    "old": "Real Return",
+    "new": "The National Deposit Rate"
+   },
+   {
+    "path": "definition",
+    "old": "The real return on savings is the interest rate minus the inflation rate: what the balance gains in purchasing power rather than in dollars. A deposit earning less than inflation loses ground even as its balance rises. The FDIC publishes a national deposit rate, the average of what insured banks and credit unions pay on common account types, weighted by each institution's share of deposits, which shows how far typical savings rates sit from the rates on other instruments.",
+    "new": "The FDIC publishes a national deposit rate for common account types: the average rate paid by insured banks and credit unions for which data is available, weighted by each institution's share of domestic deposits. It is a benchmark for what typical balances earn, not an offer from any institution. Set against inflation, it gives a rough real return - the deposit rate minus the inflation rate - which is negative whenever prices rise faster than the balance grows."
+   }
+  ],
+  "sourceURL": "https://www.fdic.gov/national-rates-and-rate-caps",
+  "retrieved": "2026-09-14",
+  "note": "Rates match the FDIC August 2026 release (latest). The definition duplicated core ir-003 (real vs nominal rates), so it is refocused on the FDIC national rate, a new concept, and marks the subtraction as approximate."
+ }
+]

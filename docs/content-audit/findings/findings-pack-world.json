@@ -1,0 +1,486 @@
+[
+  {
+    "id": "pack:world",
+    "field": "summary",
+    "claim": "Pack draws on each economy's own official statistics",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "summary",
+        "old": "The United States, the euro area, China and the emerging world through their own official statistics: how each measures output, prices, jobs and debt, and what makes each one work differently.",
+        "new": "The United States, the euro area, China and the emerging world through official national and international statistics: how each measures output, prices, jobs and debt, and what makes each one work differently."
+      }
+    ],
+    "sourceURL": "https://www.worldbank.org/en/country/china/overview",
+    "retrieved": "2026-09-14",
+    "note": "Emerging-markets cards cite World Bank, UNCTAD and Fed History, and two China cards use World Bank data, so \"their own official statistics\" mislabels part of the pack."
+  },
+  {
+    "id": "topic:us-economy",
+    "field": "summary",
+    "claim": "U.S. topic uses U.S. official statistics on output, jobs, prices, population, debt and the Fed",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://fred.stlouisfed.org/series/GDP",
+    "retrieved": "2026-09-14",
+    "note": "All 8 U.S. cards cite BEA, BLS, Census, OMB (via FRED) or the Federal Reserve Board; summary accurate."
+  },
+  {
+    "id": "topic:eurozone",
+    "field": "summary",
+    "claim": "21 countries share the euro",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.ecb.europa.eu/press/pr/date/2026/html/ecb.pr260101~c830245e42.en.html",
+    "retrieved": "2026-09-14",
+    "note": "ECB press release of 1 January 2026 confirms Bulgaria became the 21st euro area member."
+  },
+  {
+    "id": "topic:china-economy",
+    "field": "summary",
+    "claim": "China topic presented in its own official statistics",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "summary",
+        "old": "The world's second-largest economy in its own official statistics: growth since 1978, the 2025 numbers, a shrinking population, a managed currency, and how its central bank works.",
+        "new": "The world's second-largest economy in official Chinese and World Bank statistics: growth since 1978, the 2025 numbers, a shrinking population, a managed currency, and how its central bank works."
+      }
+    ],
+    "sourceURL": "https://data.worldbank.org/country/china",
+    "retrieved": "2026-09-14",
+    "note": "chn-002 and chn-008 use World Bank data (including a 2026 projection), not NBS figures; summary now attributes both."
+  },
+  {
+    "id": "topic:emerging-markets",
+    "field": "summary",
+    "claim": "Classification, capital flows, and 1980s/1990s debt and currency crises",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.federalreservehistory.org/essays/latin-american-debt-crisis",
+    "retrieved": "2026-09-14",
+    "note": "Summary matches the 8 cards; no numbers."
+  },
+  {
+    "id": "usa-001",
+    "field": "example",
+    "claim": "U.S. GDP Q2 2026 SAAR $32,486 billion, posted on FRED Aug 26, 2026",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://fred.stlouisfed.org/series/GDP",
+    "retrieved": "2026-09-14",
+    "note": "FRED shows 2026-Q2 = 32,486.066 billion dollars SAAR, updated Aug 26, 2026. Definition matches BEA wording."
+  },
+  {
+    "id": "usa-002",
+    "field": "example",
+    "claim": "Real GDP rose at 1.5% annual rate in Q2 2026, second estimate Aug 26, 2026; ~0.37% within quarter",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.bea.gov/data/gdp/gross-domestic-product",
+    "retrieved": "2026-09-14",
+    "note": "BEA headline quotes 1.5% second estimate released Aug 26, 2026; 1.015^0.25 = 1.0037, so \"a little under 0.4 percent\" is right. Definition overlaps core gdp-006 but adds live data."
+  },
+  {
+    "id": "usa-003",
+    "field": "example",
+    "claim": "U.S. unemployment rate 4.1% SA in August 2026, FRED updated Sep 4, 2026",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://fred.stlouisfed.org/series/UNRATE",
+    "retrieved": "2026-09-14",
+    "note": "FRED shows Aug 2026 = 4.1%, updated Sep 4, 2026. Concept overlaps core lm-001 but card is country-data application, not a duplicate."
+  },
+  {
+    "id": "usa-004",
+    "field": "example",
+    "claim": "CPI-U +0.4% SA in Aug 2026 after +0.1% July; +3.4% over 12 months NSA; release Sep 11, 2026",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.bls.gov/news.release/cpi.nr0.htm",
+    "retrieved": "2026-09-14",
+    "note": "BLS summary confirms all three figures and the Sep 11, 2026 release. Overlaps core inf-002 in concept only."
+  },
+  {
+    "id": "usa-005",
+    "field": "example",
+    "claim": "Fed Act 1913; 7 governors, 14-year terms; 12 Banks, 24 branches; FOMC 12 voters, 8+ meetings; 5 functions",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.federalreserve.gov/aboutthefed/fedexplained/who-we-are.htm",
+    "retrieved": "2026-09-14",
+    "note": "Every count matches the Board page; page has no date, so observed-on-verification-date is honest."
+  },
+  {
+    "id": "usa-006",
+    "field": "example",
+    "claim": "FOMC 2% longer-run goal measured by PCE price index; FAQ updated Aug 22, 2025",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.federalreserve.gov/faqs/what-economic-goals-does-federal-reserve-seek-to-achieve-through-monetary-policy.htm",
+    "retrieved": "2026-09-14",
+    "note": "Page quote and Last Update Aug 22, 2025 match. Overlaps core inf-008 in concept only."
+  },
+  {
+    "id": "usa-007",
+    "field": "example",
+    "claim": "US population 341.8M July 1 2025, +1.8M/0.5%; NIM 2.7M to 1.3M; natural change ~519,000 vs ~1.1M in 2017",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.census.gov/newsroom/press-releases/2026/population-growth-slows.html",
+    "retrieved": "2026-09-14",
+    "note": "All figures and the Jan 27, 2026 release date confirmed on the Census page."
+  },
+  {
+    "id": "usa-008",
+    "field": "example",
+    "claim": "Total public debt 122.59% of GDP in Q1 2026, FRED updated June 25, 2026",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://fred.stlouisfed.org/series/GFDEGDQ188S",
+    "retrieved": "2026-09-14",
+    "note": "FRED shows 2026-Q1 = 122.59387, updated Jun 25, 2026 (next release Sep 30, 2026, so not yet superseded). Definition overlaps core dd-002 in concept."
+  },
+  {
+    "id": "eur-001",
+    "field": "source.documentTitle",
+    "claim": "Euro launched 1 Jan 1999, cash 2002; 21 of 27 EU states; ~358 million cash users; Bulgaria latest",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "source.documentTitle",
+        "old": "The euro",
+        "new": "Our money"
+      }
+    ],
+    "sourceURL": "https://www.ecb.europa.eu/euro/intro/html/index.en.html",
+    "retrieved": "2026-09-14",
+    "note": "Facts confirmed (21 of 27, 358 million); Bulgaria entry 1 Jan 2026 confirmed by ECB press release pr260101. Page heading is \"Our money\", not \"The euro\"."
+  },
+  {
+    "id": "eur-002",
+    "field": "example",
+    "claim": "ESCB vs Eurosystem; 11 founders 1999, then Greece 2001 through Croatia 2023 and Bulgaria 2026",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.ecb.europa.eu/ecb/orga/escb/html/index.en.html",
+    "retrieved": "2026-09-14",
+    "note": "Definitions and every accession year match the ECB page; Bulgaria 2026 confirmed at ecb.pr260101."
+  },
+  {
+    "id": "eur-003",
+    "field": "definition",
+    "claim": "Convergence criteria tested at application, \"not enforced afterwards\"",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "Before a country can adopt the euro it must meet convergence criteria written into the EU Treaty. The idea is that economies sharing one interest rate should already look alike: low inflation, sound public finances, a stable exchange rate and long-term interest rates close to the best performers. The criteria are tested when a country applies for membership, not enforced afterwards, which is one reason the tests are strict.",
+        "new": "Before a country can adopt the euro it must meet convergence criteria written into the EU Treaty. The idea is that economies sharing one interest rate should already look alike: low inflation, sound public finances, a stable exchange rate and long-term interest rates close to the best performers. The criteria are tested before a country is allowed in; once it has joined it can no longer devalue or set its own interest rate, which is one reason the entry tests are strict."
+      }
+    ],
+    "sourceURL": "https://www.ecb.europa.eu/ecb/orga/escb/html/convergence-criteria.en.html",
+    "retrieved": "2026-09-14",
+    "note": "\"Not enforced afterwards\" is wrong: the 3% deficit and 60% debt reference values keep applying to members through EU fiscal rules. Example thresholds (1.5 pp, 3%, 60%, 2 years, 2 pp) all confirmed."
+  },
+  {
+    "id": "eur-004",
+    "field": "source.documentTitle",
+    "claim": "ECB 2% symmetric medium-term target adopted July 2021, measured by HICP",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "source.documentTitle",
+        "old": "Price stability",
+        "new": "Two per cent inflation target"
+      }
+    ],
+    "sourceURL": "https://www.ecb.europa.eu/mopo/strategy/pricestab/html/index.en.html",
+    "retrieved": "2026-09-14",
+    "note": "Facts confirmed. Page heading/title is \"Two per cent inflation target\". \"Harmonised Index of Consumer Prices\" kept: it is the official proper name used on the ECB page."
+  },
+  {
+    "id": "eur-005",
+    "field": "example",
+    "claim": "Euro area flash HICP Aug 2026 3.3% (July 2.9%); energy 14.3 (10.3), services 3.0 (3.3), NEIG 1.2, food 1.2",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://ec.europa.eu/eurostat/web/products-euro-indicators/w/2-01092026-ap",
+    "retrieved": "2026-09-14",
+    "note": "All component rates and the 1 Sep 2026 date match the Eurostat release."
+  },
+  {
+    "id": "eur-006",
+    "field": "example",
+    "claim": "Q2 2026 GDP EA +0.6% q/q, +1.2% y/y; EU +0.7/+1.4; employment +0.1%; 176.4M EA, 221.4M EU",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://ec.europa.eu/eurostat/web/products-euro-indicators/w/2-07092026-ap",
+    "retrieved": "2026-09-14",
+    "note": "All figures and the 7 Sep 2026 date match; \"6 members that do not use the euro\" is right after Bulgaria joined."
+  },
+  {
+    "id": "eur-007",
+    "field": "example",
+    "claim": "EA debt 88.9% GDP end Q1 2026 (87.2% a year earlier); Greece 143.5, Italy 138.9, France 117.6; Estonia 25.2",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://ec.europa.eu/eurostat/web/products-euro-indicators/w/2-21072026-ap",
+    "retrieved": "2026-09-14",
+    "note": "All ratios and composition (84.3/13.2/2.5) match the 21 Jul 2026 release; Estonia lowest in the EU."
+  },
+  {
+    "id": "eur-008",
+    "field": "source.documentTitle",
+    "claim": "Belgian franc 40.3399 per euro fixed 1 Jan 1999; Slovak koruna 30.1260 in 2009",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "source.documentTitle",
+        "old": "The euro",
+        "new": "Our money"
+      }
+    ],
+    "sourceURL": "https://www.ecb.europa.eu/euro/intro/html/index.en.html",
+    "retrieved": "2026-09-14",
+    "note": "Both conversion rates and years confirmed on the ECB page; its heading is \"Our money\", not \"The euro\"."
+  },
+  {
+    "id": "chn-001",
+    "field": "example",
+    "claim": "China 2025 GDP 140,187.9 bn yuan, +5.0%; quarters 5.4, 5.2, 4.8, 4.5% y/y (NBS preliminary)",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.stats.gov.cn/english/PressRelease/202601/t20260121_1962363.html",
+    "retrieved": "2026-09-14",
+    "note": "NBS: 1,401,879 hundred million yuan = 140,187.9 bn; growth and quarterly sequence match."
+  },
+  {
+    "id": "chn-002",
+    "field": "example",
+    "claim": "Growth >9%/yr since 1978; ~800M out of extreme poverty; World Bank 2026 growth projection 4.4%",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "GDP growth averaged more than 9 percent a year from 1978 into the 2020s, and almost 800 million people were lifted out of extreme poverty. China moved from the low-income group to the upper-middle-income group. The World Bank's 2026 update projected growth easing to 4.4 percent in 2026 as aging and weaker demand weigh.",
+        "new": "GDP growth averaged more than 9 percent a year from 1978 into the 2020s, and almost 800 million people were lifted out of extreme poverty. China moved from the low-income group to the upper-middle-income group. The World Bank's July 2026 China Economic Update projected growth slowing to 4.4 percent in 2026, citing weak domestic demand and a long property downturn."
+      },
+      {
+        "path": "claim.observationPeriod",
+        "old": "1978 to 2026",
+        "new": "1978 to 2025, with a World Bank projection for 2026"
+      }
+    ],
+    "sourceURL": "https://www.worldbank.org/en/country/china/overview",
+    "retrieved": "2026-09-14",
+    "note": "Figures confirmed. Page attributes the 2026 slowdown to a property downturn and weak domestic demand; projection now named and dated, and the claim period no longer implies a 2026 outcome."
+  },
+  {
+    "id": "chn-003",
+    "field": "example",
+    "claim": "End-2025 population 1,404.89M, -3.39M; births 7.92M, deaths 11.31M; urbanization 67.89%, +0.89 pp",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.stats.gov.cn/english/PressRelease/202602/t20260228_1962661.html",
+    "retrieved": "2026-09-14",
+    "note": "All figures match the NBS 2025 communiqué of Feb 28, 2026."
+  },
+  {
+    "id": "chn-004",
+    "field": "example",
+    "claim": "2025 value added: primary 9.93 tn yuan +3.9%, secondary 49.97 tn +4.5%, tertiary 80.89 tn +5.4%; construction -1.1%",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "example",
+        "old": "In 2025 primary industry added 9.93 trillion yuan of value, up 3.9 percent; secondary industry 49.97 trillion yuan, up 4.5 percent; and tertiary industry 80.89 trillion yuan, up 5.4 percent. Within secondary industry, construction shrank 1.1 percent. Services were both the largest sector and the fastest growing.",
+        "new": "In 2025 primary industry added 9.33 trillion yuan of value, up 3.9 percent; secondary industry 49.97 trillion yuan, up 4.5 percent; and tertiary industry 80.89 trillion yuan, up 5.4 percent. Within secondary industry, construction shrank 1.1 percent. Services were both the largest sector and the fastest growing."
+      }
+    ],
+    "sourceURL": "https://www.stats.gov.cn/english/PressRelease/202601/t20260121_1962363.html",
+    "retrieved": "2026-09-14",
+    "note": "NBS table: primary industry 93,347 hundred million yuan = 9.33 trillion, not 9.93 (the three sectors sum to 140,187.9 bn GDP only with 9.33). Other values confirmed."
+  },
+  {
+    "id": "chn-005",
+    "field": "example",
+    "claim": "2025 per capita disposable income 43,377 yuan +5.0%; retail sales 50,120.2 bn +3.7%; CPI 0.0%; unemployment 5.2% avg, 5.1% end",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.stats.gov.cn/english/PressRelease/202602/t20260228_1962661.html",
+    "retrieved": "2026-09-14",
+    "note": "All figures match the NBS communiqué."
+  },
+  {
+    "id": "chn-006",
+    "field": "definition",
+    "claim": "Managed float: basket reference, daily central parity and band; 1994 unification; 2005 reform; band 0.3% to 0.5% in 2007",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "A managed floating exchange rate lets the currency move with market supply and demand inside limits set by the central bank. China's version references a basket of currencies rather than the U.S. dollar alone, and the central bank publishes a daily central parity around which trading may move within a band. It is neither a hard peg nor a free float.",
+        "new": "A managed floating exchange rate lets the currency move with market supply and demand inside limits set by the central bank. China's version references a basket of currencies rather than the U.S. dollar alone, and a daily central parity is set around which trading may move within a band. It is neither a hard peg nor a free float."
+      }
+    ],
+    "sourceURL": "https://www.pbc.gov.cn/english/130724/2025080815071284369/index.html",
+    "retrieved": "2026-09-14",
+    "note": "Dates and bands confirmed. The parity is announced through the interbank market system, not published by the central bank itself; neutral wording used. Example is correctly historical (band widened again after 2007)."
+  },
+  {
+    "id": "chn-007",
+    "field": "example",
+    "claim": "7-day reverse repo policy rate from July 2024; RRR cut 9 times, 3.5 pp, ~7 tn yuan; 1-yr LPR -0.85 pp; loans ~3.1% Aug 2025",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.pbc.gov.cn/en/3688006/5876310/5877235/index.html",
+    "retrieved": "2026-09-14",
+    "note": "Interview dated 2025年10月14日 on page (footer \"2018\" is a template date). All figures confirmed \"since the start of the 14th Five-Year Plan in 2021\"."
+  },
+  {
+    "id": "chn-008",
+    "field": "example",
+    "claim": "World Bank 2025: China GDP ~$19.5 tn, 1.41 bn people, $13,862 per capita, growth 5.0%; life expectancy 78 (2024)",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://data.worldbank.org/country/china",
+    "retrieved": "2026-09-14",
+    "note": "All values and vintages match the World Bank country page; attribution to World Bank is explicit."
+  },
+  {
+    "id": "emg-001",
+    "field": "example",
+    "claim": "World Bank 4 income groups by Atlas GNI per capita, updated July 1; July 2022: low <=$1,085, lower-middle $1,086-$4,255",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.worldbank.org/en/news/statement/2022/07/07/a-statement-on-the-world-bank-approach-to-global-income-classification",
+    "retrieved": "2026-09-14",
+    "note": "Thresholds and July 2022 vintage confirmed; card dates the thresholds explicitly, so no stale presentation."
+  },
+  {
+    "id": "emg-002",
+    "field": "example",
+    "claim": "$3.00/day at 2021 PPP; ~831M in extreme poverty (2025) vs ~2.3bn in 1990; 412M children in 2024",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.worldbank.org/en/topic/poverty/overview",
+    "retrieved": "2026-09-14",
+    "note": "All figures, the regional concentration and the slowdown over the past decade match the World Bank page."
+  },
+  {
+    "id": "emg-003",
+    "field": "example",
+    "claim": "Remittances to LMICs $669bn in 2023, +3.8%; top recipients India 125, Mexico 67, China 50, Philippines 40, Egypt 24; cost 6.2%",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "Remittances to low- and middle-income countries reached $669 billion in 2023, up 3.8 percent, and exceeded foreign direct investment and official aid combined. The largest recipients were India at $125 billion, Mexico $67 billion, China $50 billion, the Philippines $40 billion and Egypt $24 billion. Sending $200 cost 6.2 percent on average in the second quarter of 2023.",
+        "new": "Remittances to low- and middle-income countries were estimated at $669 billion in 2023, up 3.8 percent, and exceeded foreign direct investment and official aid combined. The largest recipients were India at $125 billion, Mexico $67 billion, China $50 billion, the Philippines $40 billion and Egypt $24 billion. Sending $200 cost 6.2 percent on average in the second quarter of 2023."
+      }
+    ],
+    "sourceURL": "https://www.worldbank.org/en/news/press-release/2023/12/18/remittance-flows-grow-2023-slower-pace-migration-development-brief",
+    "retrieved": "2026-09-14",
+    "note": "Figures match, but the December 2023 brief gives 2023 values as estimates; the card presented them as final outcomes."
+  },
+  {
+    "id": "emg-004",
+    "field": "example",
+    "claim": "2024 FDI -11% ex conduits, headline +4% to $1.5tn; developed -22%, Europe -58%; SE Asia +10% to $225bn; LatAm -12%; project finance -26%",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://unctad.org/news/global-foreign-direct-investment-falls-second-consecutive-year-posing-acute-challenges",
+    "retrieved": "2026-09-14",
+    "note": "All figures match UNCTAD release of June 19, 2025 (Latin America = Latin America and the Caribbean)."
+  },
+  {
+    "id": "emg-005",
+    "field": "example",
+    "claim": "LatAm debt $29bn 1970, $159bn 1978, $327bn 1982; Mexico Aug 1982 $80bn; 16 LatAm + 11 others rescheduled",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.federalreservehistory.org/essays/latin-american-debt-crisis",
+    "retrieved": "2026-09-14",
+    "note": "All figures confirmed; near-zero real rates and shortened repayment periods are in the essay."
+  },
+  {
+    "id": "emg-006",
+    "field": "definition",
+    "claim": "9 largest US banks 176% of capital by 1982; lost decade; Brady plan forgave $61bn (~one-third) 1989-94; regulators vetted banks",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "A debt crisis becomes a lost decade when the cure, austerity to keep paying, chokes growth for years. Debt reduction breaks the cycle by writing part of the debt off in exchange for new bonds the borrower can service. Lenders accept a loss because a smaller debt that gets paid is worth more than a larger one that does not. Regulators first had to be sure the banks could absorb the write-offs.",
+        "new": "A debt crisis becomes a lost decade when the cure, austerity to keep paying, chokes growth for years. Debt reduction breaks the cycle by writing part of the debt off in exchange for new bonds the borrower can service. Lenders accept a loss because a smaller debt that gets paid is worth more than a larger one that does not. Banks first had to set aside enough loss reserves to absorb the write-offs."
+      }
+    ],
+    "sourceURL": "https://www.federalreservehistory.org/essays/latin-american-debt-crisis",
+    "retrieved": "2026-09-14",
+    "note": "Example figures confirmed. The essay says regulators let banks delay recognizing losses, while banks (Citibank first, 1987) built loss provisions; the regulator sentence was unsupported."
+  },
+  {
+    "id": "emg-007",
+    "field": "definition",
+    "claim": "Peg fixes rate to the dollar; Thailand devalued July 2, 1997; spread through Dec 1998; $118bn mobilized for 3 countries",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "A currency peg fixes the exchange rate to the dollar. It invites firms and banks to borrow in dollars, often short term, because the rate seems guaranteed. If foreign lenders lose confidence and pull out, the central bank runs short of reserves and the peg breaks. The currency falls, and every dollar debt suddenly costs far more in local money, pushing borrowers into insolvency.",
+        "new": "A currency peg fixes the exchange rate to another currency, often the U.S. dollar. It invites firms and banks to borrow in dollars, often short term, because the rate seems guaranteed. If foreign lenders lose confidence and pull out, the central bank runs short of reserves and the peg breaks. The currency falls, and every dollar debt suddenly costs far more in local money, pushing borrowers into insolvency."
+      }
+    ],
+    "sourceURL": "https://www.federalreservehistory.org/essays/asian-financial-crisis",
+    "retrieved": "2026-09-14",
+    "note": "Example facts confirmed. A peg is not by definition to the dollar; general definition corrected."
+  },
+  {
+    "id": "emg-008",
+    "field": "example",
+    "claim": "Pre-1997 growth 5-10%; after July 1997 inflows reversed; US saw lower inflation pressure and lower bond yields",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.federalreservehistory.org/essays/asian-financial-crisis",
+    "retrieved": "2026-09-14",
+    "note": "Essay states growth exceeding 5 and approaching 10 percent, and the three U.S. effects described."
+  }
+]

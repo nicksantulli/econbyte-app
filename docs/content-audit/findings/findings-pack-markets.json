@@ -1,0 +1,565 @@
+[
+  {
+    "id": "pack:markets",
+    "field": "summary",
+    "claim": "Pack covers stocks, bonds, funds, risk-return link, and how markets work.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+    "retrieved": "2026-09-14",
+    "note": "Accurate scope summary; matches the four topics."
+  },
+  {
+    "id": "topic:stocks-bonds",
+    "field": "summary",
+    "claim": "Topic covers shares, bonds, coupons, yields, prices, Treasury debt, credit ratings.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+    "retrieved": "2026-09-14",
+    "note": "Matches cards sb-001 to sb-008."
+  },
+  {
+    "id": "topic:funds-diversification",
+    "field": "summary",
+    "claim": "Topic covers pooled funds, costs, diversification across holdings and asset classes.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+    "retrieved": "2026-09-14",
+    "note": "Matches cards fdv-001 to fdv-008."
+  },
+  {
+    "id": "topic:risk-return",
+    "field": "summary",
+    "claim": "Higher returns come with more uncertainty; compounding, inflation, liquidity, horizon shape outcomes.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "summary",
+        "old": "Why higher returns come with more uncertainty, and how compounding, inflation, liquidity, and time horizon shape the outcome.",
+        "new": "Why higher expected returns come with more uncertainty, and how compounding, inflation, liquidity, and time horizon shape the outcome."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "Risk-return tradeoff concerns expected returns (SEC Risk glossary: investors seek higher returns for higher risk); realized returns do not reliably follow risk. Aligns summary with rr-001."
+  },
+  {
+    "id": "topic:market-structure",
+    "field": "summary",
+    "claim": "Topic covers venues, orders, indexes, regulators, investor protection, settlement, circuit breakers.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/role-sec",
+    "retrieved": "2026-09-14",
+    "note": "Matches cards mk-001 to mk-008."
+  },
+  {
+    "id": "sb-001",
+    "field": "definition",
+    "claim": "Common stock votes and gets dividends; preferred usually cannot vote but has dividend and liquidation priority.",
+    "verdict": "fixed",
+    "severity": "spelling",
+    "edits": [
+      {
+        "path": "example",
+        "old": "Ownership is proportional. A company that has issued 1,000 shares has sold 1,000 equal slices of itself, so a holder of 10 of them owns 1 percent of the firm and collects 1 percent of whatever dividend is declared - no bigger say and no bigger cheque than that slice carries.",
+        "new": "Ownership is proportional. A company that has issued 1,000 shares has sold 1,000 equal slices of itself, so a holder of 10 of them owns 1 percent of the firm and collects 1 percent of whatever dividend is declared - no bigger say and no bigger payout than that slice carries."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/stocks",
+    "retrieved": "2026-09-14",
+    "note": "Definition matches SEC Stocks FAQ verbatim in substance. 10/1,000 = 1 percent correct. British \"cheque\" replaced (US spelling)."
+  },
+  {
+    "id": "sb-002",
+    "field": "definition",
+    "claim": "Dividend is a portion of profit paid to shareholders; special/extra dividends; no obligation to pay.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dividend",
+    "retrieved": "2026-09-14",
+    "note": "Matches SEC glossary. $0.50 x 4 = $2.00; $2.00/$6.00 = one third. Claim metadata correct."
+  },
+  {
+    "id": "sb-003",
+    "field": "definition",
+    "claim": "A bond is a loan to a government, municipality, or corporation; holder is a creditor.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "Held to maturity, a bond with a $1,000 face value returns exactly $1,000 at the end plus every interest payment along the way. Sold before maturity, it fetches whatever the market will pay, which may be more or less than $1,000 - the promise is fixed, the resale price is not.",
+        "new": "Held to maturity, a bond with a $1,000 face value returns exactly $1,000 at the end plus every interest payment along the way, as long as the issuer does not default. Sold before maturity, it fetches whatever the market will pay, which may be more or less than $1,000 - the promise is fixed, the resale price is not."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+    "retrieved": "2026-09-14",
+    "note": "Definition matches SEC Bonds FAQ. Example said held-to-maturity return is exact with no default caveat; the same SEC page lists credit risk. Added caveat."
+  },
+  {
+    "id": "sb-004",
+    "field": "definition",
+    "claim": "Coupon is the stated rate on face value; yield depends on price; below-par price means yield above coupon.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "A bond's coupon is the interest rate written into the security and paid on its face value. Its yield to maturity is the annual return an investor actually earns, which depends on the price paid. At a price equal to face value the two match; at a price above par the yield falls below the coupon, and at a price below par it rises above it.",
+        "new": "A bond's coupon is the interest rate written into the security and paid on its face value. Its yield to maturity is the annual return an investor earns by holding the bond to maturity, which depends on the price paid. At a price equal to face value the two match; at a price above par the yield falls below the coupon, and at a price below par it rises above it."
+      }
+    ],
+    "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+    "retrieved": "2026-09-14",
+    "note": "Auction example verified exactly: 20-year, 1.750%, high yield 1.850%, price 98.336995. Last-Modified 2026-09-14 confirmed. YTM \"actually earns\" overstated; it assumes holding to maturity."
+  },
+  {
+    "id": "sb-005",
+    "field": "definition",
+    "claim": "Bond prices and market rates move inversely; older low-coupon bonds sell at a discount when rates rise.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "An older bond paying 2 percent competes with new issues paying 4 percent. Nobody pays full price for half the income, so its price drops until the two offer a comparable return. Its owner still receives every coupon and $1,000 at maturity - the loss is real only if the bond is sold early.",
+        "new": "An older bond paying 2 percent competes with new issues paying 4 percent. Nobody pays full price for half the income, so its price drops until the two offer a comparable return. Its owner still receives every coupon and $1,000 at maturity - the price loss is locked in only if the bond is sold early, though the owner keeps earning less than new bonds pay."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+    "retrieved": "2026-09-14",
+    "note": "Mechanism matches SEC interest rate risk text. \"Loss is real only if sold early\" ignores the opportunity cost of holding a below-market coupon; reworded. Overlaps course bry-01 conceptually, not verbatim."
+  },
+  {
+    "id": "sb-006",
+    "field": "definition",
+    "claim": "Bills 4-52 weeks at discount; notes 2-10 years; bonds 20 and 30 years; semiannual interest.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.treasurydirect.gov/marketable-securities/",
+    "retrieved": "2026-09-14",
+    "note": "TreasuryDirect: bills 4 to 52 weeks at face or discount; notes 2,3,5,7,10 years; bonds 30-year and 20-year; six-month interest. Last-Modified 2026-09-13 matches publicationDate."
+  },
+  {
+    "id": "sb-007",
+    "field": "definition",
+    "claim": "TIPS principal adjusts for inflation; fixed rate on adjusted principal; greater of adjusted or original at maturity.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+    "retrieved": "2026-09-14",
+    "note": "TreasuryDirect confirms 5/10/30-year terms, six-month interest, greater-of payout at maturity, CPI basis. Last-Modified 2026-09-14 matches."
+  },
+  {
+    "id": "sb-008",
+    "field": "definition",
+    "claim": "Ratings are default-risk opinions; BBB/Baa and above is investment grade; lower grades pay higher yields.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/investment-grade-bond-or-high-grade-bond",
+    "retrieved": "2026-09-14",
+    "note": "SEC glossary: Baa (Moody's) or BBB (S&P, Fitch) or above; issued at lower yields. Market Participants page confirms BB and below is non-investment grade/high-yield."
+  },
+  {
+    "id": "fdv-001",
+    "field": "definition",
+    "claim": "Mutual fund pools money; investors buy from and redeem to the fund at end-of-day NAV.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "Net asset value is arithmetic, not a quote. A fund holding securities worth $101 million, carrying $1 million of expenses and liabilities, with 10 million shares outstanding has an NAV of $10.00 a share - and every order placed that day, large or small, clears at that one figure after the market closes.",
+        "new": "Net asset value is arithmetic, not a quote. A fund holding securities worth $101 million, carrying $1 million of expenses and liabilities, with 10 million shares outstanding has an NAV of $10.00 a share - and every order received before that day's calculation, large or small, clears at that one figure."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+    "retrieved": "2026-09-14",
+    "note": "NAV arithmetic ($101M - $1M) / 10M = $10.00 correct. SEC: orders fill at the next calculated NAV, so orders placed after the calculation get the next day's price; reworded."
+  },
+  {
+    "id": "fdv-002",
+    "field": "definition",
+    "claim": "ETF is an SEC-registered pooled fund whose shares trade on exchanges; price can differ from holdings value.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/exchange-traded-fund-etf",
+    "retrieved": "2026-09-14",
+    "note": "SEC glossary: registers as open-end investment company (or UIT); shares trade on exchanges at market prices. Example consistent."
+  },
+  {
+    "id": "fdv-003",
+    "field": "definition",
+    "claim": "Index fund passively tries to match an index before fees by holding its securities or a sample.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/index-fund",
+    "retrieved": "2026-09-14",
+    "note": "Matches SEC glossary including representative sample and lower transaction costs. Overlaps course ia-03 conceptually, not verbatim."
+  },
+  {
+    "id": "fdv-004",
+    "field": "definition",
+    "claim": "Expense ratio is share of average net assets taken yearly for operating costs; SEC 20-year fee illustration.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "The SEC's own illustration: $100,000 growing 4 percent a year for 20 years ends near $208,000 with a 0.25 percent annual fee and near $179,000 with a 1.00 percent fee. The 0.75-point difference in fees costs roughly $29,000 - about 14 percent of the final balance.",
+        "new": "The SEC's own illustration: $100,000 growing 4 percent a year for 20 years ends near $208,000 with a 0.25 percent annual fee and near $179,000 with a 1.00 percent fee. The 0.75-point difference in fees costs roughly $29,000 - about 14 percent of the low-fee balance."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/getting-started/understanding-fees",
+    "retrieved": "2026-09-14",
+    "note": "SEC figures verified: $100,000, 4%, 20 years, ~$208,000 at 0.25%, ~$179,000 at 1.00%. $29,000 is 13.9% of $208,000 but 16.2% of $179,000; specified which balance. Definition matches SEC Expense Ratio glossary."
+  },
+  {
+    "id": "fdv-005",
+    "field": "definition",
+    "claim": "Diversification spreads money so losses offset; reduces single-holding risk but not market-wide risk.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/save-and-invest/diversify-your-investments",
+    "retrieved": "2026-09-14",
+    "note": "Consistent with SEC: cannot guarantee against a market drop. 1/30 = 3.3 percent, \"about 3 percent\" fine. Overlaps course ia-02 conceptually, not verbatim."
+  },
+  {
+    "id": "fdv-006",
+    "field": "definition",
+    "claim": "Asset classes are groups of similar investments; stocks, bonds, cash are the three main ones.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "example",
+        "old": "In a year when a stock index falls 20 percent, a Treasury bill still pays what it was bought to yield and a bond's coupons keep arriving. A portfolio split 60-40 between stocks and bonds moves less than either piece alone - by design, not by luck.",
+        "new": "In a year when a stock index falls 20 percent, a Treasury bill still pays what it was bought to yield and a bond's coupons keep arriving. A portfolio split 60-40 between stocks and bonds swings less than an all-stock portfolio would - by design, not by luck - though bond prices can fall in the same year."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/asset-classes",
+    "retrieved": "2026-09-14",
+    "note": "Definition matches SEC glossary. Example claimed a 60-40 mix moves less than either piece alone; bonds alone typically move less than a 60-40 mix, so the claim was false. Also noted bonds can fall together with stocks."
+  },
+  {
+    "id": "fdv-007",
+    "field": "definition",
+    "claim": "Target-date fund is a fund of funds that shifts toward conservative holdings as the target year nears.",
+    "verdict": "fixed",
+    "severity": "unsourced",
+    "edits": [
+      {
+        "path": "source.documentTitle",
+        "old": "Mutual Funds",
+        "new": "Target Date Funds - Investor Bulletin"
+      },
+      {
+        "path": "source.url",
+        "old": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+        "new": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/target-date-funds-investor-bulletin"
+      },
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2025-03-25"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "stated-on-page"
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/target-date-funds-investor-bulletin",
+    "retrieved": "2026-09-14",
+    "note": "Cited Mutual Funds page lacks glide paths and \"to\" vs \"through\" the target date. SEC bulletin (March 25, 2025) states fund of funds, glide path, to/through, and same-date funds differing. Text accurate; re-cited."
+  },
+  {
+    "id": "fdv-008",
+    "field": "definition",
+    "claim": "Money market fund holds liquid short-term debt and cash; low risk, lower returns, tracks short-term rates.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/money-market-fund",
+    "retrieved": "2026-09-14",
+    "note": "Matches SEC glossary. Example turnover arithmetic (90-day paper, about 4 times a year) is illustrative and consistent; no magnitude requiring a claim."
+  },
+  {
+    "id": "rr-001",
+    "field": "definition",
+    "claim": "Risk is uncertainty about return and potential harm; higher expected returns generally require higher risk.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/risk",
+    "retrieved": "2026-09-14",
+    "note": "Closely matches SEC Risk glossary. Example is qualitative and balanced."
+  },
+  {
+    "id": "rr-002",
+    "field": "definition",
+    "claim": "Volatility measures size of price swings, not direction; claimed to be the most persistent part of a fund record.",
+    "verdict": "fixed",
+    "severity": "unsourced",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "Volatility describes how widely and how fast an asset's price or return swings around its average. A volatile asset can post large gains and large losses in short stretches; a stable one moves in a narrow band. Volatility measures the size of the swings, not their direction, and it is the part of a fund's record most likely to persist.",
+        "new": "Volatility describes how widely and how fast an asset's price or return swings around its average. A volatile asset can post large gains and large losses in short stretches; a stable one moves in a narrow band. Volatility measures the size of the swings, not their direction, and the SEC notes that a fund's past record shows how volatile it has been even though it does not predict future returns."
+      },
+      {
+        "path": "source.documentTitle",
+        "old": "Glossary: Mutual Funds, Past Performance",
+        "new": "Mutual Funds"
+      },
+      {
+        "path": "source.url",
+        "old": "https://www.investor.gov/introduction-investing/investing-basics/glossary/mutual-funds-past-performance",
+        "new": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds"
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/mutual-funds-and-exchange-traded-funds-etfs/mutual-funds",
+    "retrieved": "2026-09-14",
+    "note": "Cited past-performance glossary says nothing about volatility; \"most likely to persist\" unsupported. SEC Mutual Funds page says past performance shows how volatile a fund has been. Reworded and re-cited."
+  },
+  {
+    "id": "rr-003",
+    "field": "definition",
+    "claim": "Compound interest is interest on principal and accumulated interest; Rule of 72 estimates doubling time.",
+    "verdict": "fixed",
+    "severity": "unsourced",
+    "edits": [
+      {
+        "path": "source.documentTitle",
+        "old": "Glossary: Compound Interest",
+        "new": "What is compound interest?"
+      },
+      {
+        "path": "source.url",
+        "old": "https://www.investor.gov/introduction-investing/investing-basics/glossary/compound-interest",
+        "new": "https://www.investor.gov/additional-resources/information/youth/teachers-classroom-resources/what-compound-interest"
+      },
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2026-09-11"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-on-verification-date",
+        "new": "observed-last-modified"
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/additional-resources/information/youth/teachers-classroom-resources/what-compound-interest",
+    "retrieved": "2026-09-14",
+    "note": "Math verified: 72/6 = 12 years; 1.06^12 = 2.01. Rule of 72 absent from cited glossary; SEC classroom page covers both (Last-Modified 2026-09-11). Concept overlaps personalfinance cmp-002/cmp-005, not verbatim."
+  },
+  {
+    "id": "rr-004",
+    "field": "definition",
+    "claim": "Inflation risk erodes fixed payments; $1,000 buys about 74 percent after 10 years at 3 percent.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+    "retrieved": "2026-09-14",
+    "note": "1/1.03^10 = 0.744, so about 74 percent is correct. TIPS terms verified on TreasuryDirect. Overlaps course bry TIPS text conceptually."
+  },
+  {
+    "id": "rr-005",
+    "field": "definition",
+    "claim": "Liquidity is how easily an asset converts to cash near its value without steep cost.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/liquidity-or-marketability",
+    "retrieved": "2026-09-14",
+    "note": "Consistent with SEC glossary (sold readily, no hefty fee). Example qualitative; no claim needed."
+  },
+  {
+    "id": "rr-006",
+    "field": "definition",
+    "claim": "Time horizon is how long until money is needed; short horizons make downturns more damaging.",
+    "verdict": "fixed",
+    "severity": "tone",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "A time horizon is the number of months, years, or decades before invested money is needed for its purpose. It matters because short-term swings that are irrelevant to someone spending the money in 30 years can be decisive for someone spending it in 3, when a downturn could arrive at exactly the wrong time.",
+        "new": "A time horizon is the number of months, years, or decades before invested money is needed for its purpose. It matters because short-term swings that matter little to someone spending the money in 30 years can be decisive for someone spending it in 3, when a downturn could arrive at exactly the wrong time."
+      },
+      {
+        "path": "example",
+        "old": "Money for a tuition bill due in 18 months and money for a retirement 35 years away face the same market but different problems. A 20 percent drop just before the tuition is due is a permanent loss; the same drop 35 years out is one of many along a long road, with time to recover.",
+        "new": "Money for a tuition bill due in 18 months and money for a retirement 35 years away face the same market but different problems. A 20 percent drop just before the tuition is due is a permanent loss; the same drop 35 years out is one of many along a long road, with time for prices to recover, though a recovery is never guaranteed."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/time-horizon",
+    "retrieved": "2026-09-14",
+    "note": "Definition matches SEC glossary. Swings are not \"irrelevant\" to long-horizon savers, and \"time to recover\" implied a recovery; hedged both to avoid an implicit prediction."
+  },
+  {
+    "id": "rr-007",
+    "field": "definition",
+    "claim": "Dollar-cost averaging invests a fixed sum regularly; average cost per share falls below average price.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "Dollar-cost averaging means putting the same amount of money into an investment at regular intervals regardless of its price. Because the fixed sum buys more shares when the price is low and fewer when it is high, the average cost per share ends up below the average of the prices paid. It is a schedule, not a forecast.",
+        "new": "Dollar-cost averaging means putting the same amount of money into an investment at regular intervals regardless of its price. Because the fixed sum buys more shares when the price is low and fewer when it is high, the average cost per share ends up at or below the average of the prices paid. It is a schedule, not a forecast, and it does not prevent a loss if prices fall."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/dollar-cost-averaging",
+    "retrieved": "2026-09-14",
+    "note": "Math verified: 10+20+10 = 40 shares for $300, $7.50 cost vs $8.33 average price. Cost equals average price when prices do not change (\"at or below\"); added no-loss-protection balance, as course ia-05 does."
+  },
+  {
+    "id": "rr-008",
+    "field": "definition",
+    "claim": "Past returns do not predict future returns; SEC requires funds to disclose this; claimed volatility more durable.",
+    "verdict": "fixed",
+    "severity": "unsourced",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "A fund's past returns do not predict its future returns. Top performers in one year frequently post average or below-average results the next, which is why the SEC requires funds to say so in their materials. What history does show is how volatile a fund has been, and that is more durable than its ranking.",
+        "new": "A fund's past returns do not necessarily predict its future returns. Top performers in one year frequently post average or below-average results the next, which is why the SEC requires funds to say so in their materials. What history can show is how volatile a fund has been, which says something about its risk even when it says little about future returns."
+      },
+      {
+        "path": "example",
+        "old": "A fund that returned 30 percent in one year and 2 percent the next has told an investor nothing reliable about year 3 - except that swings of that size are part of its character. The required disclosure exists because the first number is the one people remember.",
+        "new": "A fund that returned 30 percent in one year and 2 percent the next has told an investor nothing reliable about year 3 - only that its returns have swung widely so far. The SEC requires the warning because a strong year is often not repeated."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/mutual-funds-past-performance",
+    "retrieved": "2026-09-14",
+    "note": "SEC glossary: past performance \"does not necessarily predict\" results; top performers often not repeated. \"More durable than its ranking\" and \"part of its character\" unsupported; disclosure motive restated per SEC text."
+  },
+  {
+    "id": "mk-001",
+    "field": "definition",
+    "claim": "Exchanges and FINRA are SROs; investors trade through fee-charging broker-dealers, exchanges, inventory, or ATSs.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/market-participants",
+    "retrieved": "2026-09-14",
+    "note": "SEC Market Participants: exchanges are SROs, FINRA largest SRO, broker-dealers charge a fee and may sell from inventory, ATSs described. Consistent."
+  },
+  {
+    "id": "mk-002",
+    "field": "definition",
+    "claim": "Bid and ask; market orders guarantee execution not price; limit orders guarantee price not execution.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/how-stock-markets-work/types-orders",
+    "retrieved": "2026-09-14",
+    "note": "Matches SEC Types of Orders: market order executes at or near bid/ask, guaranteed execution; limit at price or better. $10 limit example parallels SEC's; arithmetic fine."
+  },
+  {
+    "id": "mk-003",
+    "field": "definition",
+    "claim": "Market cap is share price times shares outstanding; measures market value, not assets or earnings.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/market-capitalization",
+    "retrieved": "2026-09-14",
+    "note": "Matches SEC glossary. 10B x $10 = $100B; 100M x $500 = $50B; \"by half\" correct."
+  },
+  {
+    "id": "mk-004",
+    "field": "definition",
+    "claim": "Indexes track baskets of stocks; card names three trademarked U.S. indexes and their sizes.",
+    "verdict": "fixed",
+    "severity": "tone",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "A market index tracks the performance of a specific basket of stocks chosen to represent a market or a sector. The Dow Jones Industrial Average follows 30 large U.S. companies, the S&P 500 roughly 500, and the Wilshire 5000 most publicly traded U.S. stocks. An index is a measuring stick, not something anyone can buy directly.",
+        "new": "A market index tracks the performance of a specific basket of stocks chosen to represent a market or a sector. One long-running U.S. index follows 30 large companies, a broad one follows roughly 500, and total-market indexes include most publicly traded U.S. stocks. An index is a measuring stick, not something anyone can buy directly."
+      },
+      {
+        "path": "example",
+        "old": "When a headline says the market fell 2 percent, it means an index did. The Dow's 30 stocks and the S&P 500's roughly 500 can move by different amounts on the same day because they hold different companies. Neither is the whole market; the Wilshire 5000 comes closest.",
+        "new": "When a headline says the market fell 2 percent, it means an index did. A 30-stock index and a 500-stock index can move by different amounts on the same day because they hold different companies. Neither is the whole market; a total-market index comes closest."
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/market-indices",
+    "retrieved": "2026-09-14",
+    "note": "Facts match SEC glossary (30 blue-chip stocks; total-market index includes most U.S. stocks), but naming trademarked indexes violates the content-schema house rule. Replaced names with generic descriptions."
+  },
+  {
+    "id": "mk-005",
+    "field": "definition",
+    "claim": "SEC mission: protect investors, fair orderly efficient markets, capital formation; created by 1934 Act after 1929 crash.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/role-sec",
+    "retrieved": "2026-09-14",
+    "note": "SEC Role page confirms three-part mission, October 1929 crash, Securities Act of 1933 truthful disclosure, and 1934 Act creating the SEC."
+  },
+  {
+    "id": "mk-006",
+    "field": "definition",
+    "claim": "SIPC restores missing customer cash and securities at failed brokers; $500,000 limit incl. $250,000 cash.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.sipc.org/for-investors/what-sipc-protects",
+    "retrieved": "2026-09-14",
+    "note": "SIPC page: non-profit created by Congress; $500,000 including $250,000 cash; market declines not covered. $300,000 + $100,000 example within limits. Last-Modified 2026-09-14."
+  },
+  {
+    "id": "mk-007",
+    "field": "definition",
+    "claim": "U.S. settlement moved from T+2 (since 2017) to T+1; adopted February 2023, effective May 28, 2024.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/new-t1-settlement-cycle-what-investors-need-know-investor-bulletin",
+    "retrieved": "2026-09-14",
+    "note": "Bulletin dated March 27, 2024: adopted February 15, 2023; compliance May 28, 2024; T+2 since 2017; Monday sale settles Tuesday; covered securities list matches."
+  },
+  {
+    "id": "mk-008",
+    "field": "definition",
+    "claim": "Market-wide halts at 7, 13, 20 percent single-day index declines; 15-minute halts before 3:25 p.m.",
+    "verdict": "fixed",
+    "severity": "tone",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "Market-wide circuit breakers are coordinated trading halts triggered when the S&P 500 falls by set amounts in a single day: 7 percent at Level 1, 13 percent at Level 2, and 20 percent at Level 3. They pause trading so information can be absorbed and orders reconsidered, rather than letting a cascade of sell orders exhaust liquidity.",
+        "new": "Market-wide circuit breakers are coordinated trading halts triggered when a broad index of 500 large U.S. stocks falls by set amounts in a single day: 7 percent at Level 1, 13 percent at Level 2, and 20 percent at Level 3. They pause trading so information can be absorbed and orders reconsidered, rather than letting a cascade of sell orders exhaust liquidity."
+      },
+      {
+        "path": "claim",
+        "old": "{\"units\":\"percent decline in the S&P 500 and minutes (market-wide circuit breaker rules)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"thresholds as published by the SEC on 2026-09-14\",\"retrievalDate\":\"2026-09-14\"}",
+        "new": "{\"units\":\"percent decline in a broad 500-stock U.S. index and minutes (market-wide circuit breaker rules)\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"thresholds as published by the SEC on 2026-09-14\",\"retrievalDate\":\"2026-09-14\"}"
+      }
+    ],
+    "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/glossary/stock-market-circuit-breakers",
+    "retrieved": "2026-09-14",
+    "note": "All thresholds, 15-minute halts, 3:25 p.m. cutoff, Level 3 close, and limit up-limit down verified on SEC glossary. Trademarked index name replaced per house rule, in prose and claim units."
+  }
+]

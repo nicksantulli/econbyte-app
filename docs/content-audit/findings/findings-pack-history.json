@@ -1,0 +1,688 @@
+[
+ {
+  "id": "pack:history",
+  "field": "summary",
+  "claim": "Pack covers bubbles, Depression, stagflation, 2008, told from primary sources",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "summary",
+    "old": "Four episodes that still shape how economies are run: the first great bubbles, the Great Depression, 1970s stagflation, and the 2008 financial crisis, told from primary sources.",
+    "new": "Four episodes that still shape how economies are run: the first great bubbles, the Great Depression, 1970s stagflation, and the 2008 financial crisis, told from official sources."
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-inflation",
+  "retrieved": "2026-09-14",
+  "note": "Cited pages are Fed/Treasury/FDIC histories and letters written decades later (secondary accounts), not primary historical sources. Episodes list matches the four topics."
+ },
+ {
+  "id": "topic:tulip-south-sea",
+  "field": "summary",
+  "claim": "Tulip bulbs and South Sea shares outran value; crashes of 1637 and 1720",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.bankofengland.co.uk/about/history",
+  "retrieved": "2026-09-14",
+  "note": "Crash years 1637 (Feb) and 1720 confirmed by St. Louis Fed and Bank of England pages. Severity debate handled in tsb-004 fix."
+ },
+ {
+  "id": "topic:great-depression",
+  "field": "summary",
+  "claim": "Crash became decade-long slump; bank runs, money supply, gold standard, 1933 holiday, reforms",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "summary",
+    "old": "How a stock market crash became a decade-long slump: bank runs, a shrinking money supply, the gold standard, the 1933 bank holiday, and the reforms that followed.",
+    "new": "How a stock market crash was followed by a decade-long slump: bank runs, a shrinking money supply, the gold standard, the 1933 bank holiday, and the reforms that followed."
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-depression",
+  "retrieved": "2026-09-14",
+  "note": "\"Became\" states the crash caused the Depression; the cited essay stresses banking panics and the money-supply collapse. Sequence wording avoids overstating a contested causal link."
+ },
+ {
+  "id": "topic:stagflation-1970s",
+  "field": "summary",
+  "claim": "Inflation and unemployment rose together 1965-1982; gold window, oil shocks, controls, 1979-82 cure",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-inflation",
+  "retrieved": "2026-09-14",
+  "note": "Great Inflation essay dates the episode 1965 to 1982; all listed elements are covered by cited essays."
+ },
+ {
+  "id": "topic:crisis-2008",
+  "field": "summary",
+  "claim": "Housing boom to deepest downturn since 1930s; subprime, run, TARP, zero rates, 2010 reforms",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-recession-of-200709",
+  "retrieved": "2026-09-14",
+  "note": "Consistent with Great Recession, TARP and Dodd-Frank sources; \"deepest since the 1930s\" is the standard characterization."
+ },
+ {
+  "id": "tsb-001",
+  "field": "definition",
+  "claim": "Bubble = price above discounted expected cash flows; late-1990s stocks and early-2000s houses described as bubbles",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2007/10/asset-price-bubbles/",
+  "retrieved": "2026-09-14",
+  "note": "Letter by Kevin Lansing, Oct 26 2007, gives the fundamentals definition and names both U.S. episodes. Metadata matches."
+ },
+ {
+  "id": "tsb-002",
+  "field": "definition",
+  "claim": "Tulips reached Western Europe from Turkey; fourth-largest Dutch export by 1636; bulb worth an Amsterdam house Jan 1637",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "definition",
+    "old": "Tulips reached Western Europe from Turkey in the 1600s and quickly became a status symbol in the Netherlands, prized because they were rare and beautiful. Bulbs that produced flowers with streaked, flame-like petals were valued far above plain single-colour ones. A market for bulbs developed, growers began bidding prices up, and buyers who had never grown a flower joined in, hoping to resell at a profit.",
+    "new": "Tulips reached Western Europe from Turkey in the late 1500s and by the early 1600s had become a status symbol in the Netherlands, prized because they were rare and beautiful. Bulbs that produced flowers with streaked, flame-like petals were valued far above plain single-color ones. A market for bulbs developed, growers began bidding prices up, and buyers who had never grown a flower joined in, hoping to resell at a profit."
+   },
+   {
+    "path": "example",
+    "old": "By 1636 tulip bulbs had become the fourth-largest export of the Netherlands. By January 1637 a single rare bulb was valued at about the price of one of the finest houses in Amsterdam. The flower had not changed; only the number of people expecting to resell it had.",
+    "new": "One Fed account says that by 1636 tulip bulbs had become the fourth-largest export of the Netherlands. By January 1637 a single rare bulb was valued at about the price of one of the finest houses in Amsterdam. The flower had not changed; only the number of people expecting to resell it had."
+   }
+  ],
+  "sourceURL": "https://www.stlouisfed.org/publications/page-one-economics/2018/03/01/bitcoin-money-or-financial-investment",
+  "retrieved": "2026-09-14",
+  "note": "Tulips arrived in Western Europe in the 16th century (Clusius planted them at Leiden in 1593); the source says only that they were new in the 1600s. \"colour\" to US spelling. Export ranking is disputed by historians, so attributed."
+ },
+ {
+  "id": "tsb-003",
+  "field": "definition",
+  "claim": "Futures and options markets developed once tulip prices rose, allowing bets without possession",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.stlouisfed.org/publications/page-one-economics/2018/03/01/bitcoin-money-or-financial-investment",
+  "retrieved": "2026-09-14",
+  "note": "Source explicitly says \"futures\" and \"options\" markets developed once prices rose, letting investors bet without taking possession. Resale-chain example is a fair illustration."
+ },
+ {
+  "id": "tsb-004",
+  "field": "example",
+  "claim": "Tulip market collapsed February 1637 as speculators pulled out",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "example",
+    "old": "In February 1637 buyers stepped back from Dutch tulip bulbs. Sellers rushed to get out before prices fell further, and the market collapsed entirely. Bulbs valued weeks earlier at the price of an Amsterdam mansion found no one willing to pay anything close, because the only reason to pay had been the next buyer.",
+    "new": "In February 1637 buyers stepped back from Dutch tulip bulbs. Sellers rushed to get out before prices fell further, and the market collapsed. Bulbs valued weeks earlier at the price of an Amsterdam mansion found no buyer near that price. Historians still debate how far the losses spread beyond the traders directly involved."
+   }
+  ],
+  "sourceURL": "https://www.stlouisfed.org/publications/page-one-economics/2018/03/01/bitcoin-money-or-financial-investment",
+  "retrieved": "2026-09-14",
+  "note": "Feb 1637 collapse confirmed. \"Only reason to pay had been the next buyer\" overstated; rare bulbs kept some value, and Garber/Goldgar dispute the scale of wider damage. Added one balancing sentence."
+ },
+ {
+  "id": "tsb-005",
+  "field": "example",
+  "claim": "Bank of England opened 1 Aug 1694 to fund war with France; South Sea Company 1711 targeted debt servicing",
+  "verdict": "fixed",
+  "severity": "spelling",
+  "edits": [
+   {
+    "path": "example",
+    "old": "The Bank of England opened for business on 1 August 1694, founded chiefly to pay for the war against France. Seventeen years later, in 1711, the South Sea Company was created and set its sights on the same job of servicing the national debt, the work that had largely been the Bank's.",
+    "new": "The Bank of England opened for business on August 1, 1694, founded chiefly to pay for the war against France. Seventeen years later, in 1711, the South Sea Company was created and set its sights on the same job of servicing the national debt, the work that had largely been the Bank's."
+   }
+  ],
+  "sourceURL": "https://www.bankofengland.co.uk/about/history",
+  "retrieved": "2026-09-14",
+  "note": "Facts match the Bank of England page (opened 1 Aug 1694; South Sea Company 1711; 17-year gap correct). Date changed to the U.S. month-day-year style used on every other pack card."
+ },
+ {
+  "id": "tsb-006",
+  "field": "definition",
+  "claim": "1720 South Sea Company granted part of national debt; stock rose dramatically, crashed, thousands ruined",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.bankofengland.co.uk/about/history",
+  "retrieved": "2026-09-14",
+  "note": "Matches Bank of England page wording on the 1720 debt grant, frenzy, crash and ruin; whole cycle within 1720 is consistent with the record (peak mid-1720, collapse by autumn)."
+ },
+ {
+  "id": "tsb-007",
+  "field": "example",
+  "claim": "\"Bubble\" coined 1720; copycat schemes; Bubble Act 1720; scheme whose purpose nobody knew",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "example",
+    "old": "One scheme of 1720 advertised itself as a venture of great advantage whose purpose nobody was allowed to know, and still found subscribers. The Bubble Act passed the same year. The pattern of a genuine boom surrounded by fraud recurred in later episodes; the 1720 case simply gave it a name.",
+    "new": "One scheme of 1720 reportedly advertised itself as a venture of great advantage whose purpose nobody was allowed to know, and still found subscribers. The Bubble Act passed in June 1720, before the crash rather than after it. The pattern of a genuine boom surrounded by fraud recurred in later episodes; the 1720 case simply gave it a name."
+   }
+  ],
+  "sourceURL": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2007/10/asset-price-bubbles/",
+  "retrieved": "2026-09-14",
+  "note": "Letter confirms coinage, Bubble Act and the scheme quote. The scheme story traces to Mackay (1841) and is unverified, hence \"reportedly\". The Act received royal assent June 1720, before the autumn crash; card implied it followed."
+ },
+ {
+  "id": "tsb-008",
+  "field": "example",
+  "claim": "Stock run-ups tied to rail/radio/power (1900s), cars/electrification (1920s), TV/space (1950s-60s), internet (1990s)",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2008/06/speculative-bubbles-technology-innovation/",
+  "retrieved": "2026-09-14",
+  "note": "Era list matches the June 20 2008 Lansing letter (citing Shiller); new-era overreaction description matches."
+ },
+ {
+  "id": "dep-001",
+  "field": "example",
+  "claim": "Margin ~10%; index -13% Oct 28, -12% Oct 29 1929; 381 (Sept 1929) to 41 (July 1932), -89%; regained 1954",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreservehistory.org/essays/stock-market-crash-of-1929",
+  "retrieved": "2026-09-14",
+  "note": "All figures match the essay (\"typically 10 percent\", 41.22, 89 percent, November 23 1954); page states written as of Nov 22 2013. Unbranded index name is fine."
+ },
+ {
+  "id": "dep-002",
+  "field": "example",
+  "claim": "Nov 1930 Nashville (Caldwell) collapse; hundreds of banks suspended; one-third reopened; June 1931 Chicago crisis",
+  "verdict": "fixed",
+  "severity": "spelling",
+  "edits": [
+   {
+    "path": "example",
+    "old": "In November 1930 the collapse of a large banking group centred in Nashville, Tennessee set off a cascade across the South; in December 1930 hundreds of banks suspended operations. About one-third of those reopened within a few months, but most were liquidated. In June 1931 a new crisis erupted in Chicago.",
+    "new": "In November 1930 the collapse of a large banking group centered in Nashville, Tennessee set off a cascade across the South; in December 1930 hundreds of banks suspended operations. About one-third of those reopened within a few months, but most were liquidated. In June 1931 a new crisis erupted in Chicago."
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/banking-panics-1930-31",
+  "retrieved": "2026-09-14",
+  "note": "Facts match the essay (Caldwell network, hundreds suspended within weeks, about one-third reopened, June 1931 Chicago). \"centred\" changed to US spelling."
+ },
+ {
+  "id": "dep-003",
+  "field": "example",
+  "claim": "Holiday proclaimed 1:00 a.m. March 6 1933; EBA March 9; reopenings March 13; 90% of resources by March 15; ~4,000 never reopened",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreservehistory.org/essays/bank-holiday-of-1933",
+  "retrieved": "2026-09-14",
+  "note": "Every date and figure matches the essay; stated date Nov 22 2013 correct."
+ },
+ {
+  "id": "dep-004",
+  "field": "example",
+  "claim": "Money supply fell nearly 30% fall 1930 to winter 1933; prices fell by an equivalent amount",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-depression",
+  "retrieved": "2026-09-14",
+  "note": "Essay: money supply \"fell by nearly 30 percent\" and reduced average prices \"by an equivalent amount\". $1,000 debt arithmetic is illustrative and labeled in units."
+ },
+ {
+  "id": "dep-005",
+  "field": "source",
+  "claim": "Britain left gold Sept 21 1931; NY Fed raised discount rate early Oct 1931; Board suspended gold reserve requirement March 3 1933",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/banking-panics-1931-33",
+  "retrieved": "2026-09-14",
+  "note": "Content matches essay exactly. Page states \"Written as of November 22, 2013\", so publicationDate/datePrecision corrected from verification-date fallback."
+ },
+ {
+  "id": "dep-006",
+  "field": "source",
+  "claim": "$1.78 billion withdrawn in 4 weeks ending March 8 1933; about two-thirds redeposited by month end",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/emergency-banking-act-of-1933",
+  "retrieved": "2026-09-14",
+  "note": "Figures, titles (conservators, RFC preferred stock, Federal Reserve Bank Notes) and reopening dates match. Page states written as of Nov 22 2013; date metadata corrected."
+ },
+ {
+  "id": "dep-007",
+  "field": "example",
+  "claim": "Banking Act signed June 16 1933; temporary fund Jan 1 1934 at $2,500; $5,000 from July 1934; separation repealed 1999",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "example",
+    "old": "The temporary insurance fund began on January 1, 1934, covering deposits up to $2,500; the permanent plan in July 1934 raised the limit to $5,000. Insurance was the most controversial provision and drew veto threats. The law's separation of banks from securities firms was repealed in 1999.",
+    "new": "The temporary insurance fund began on January 1, 1934, covering deposits up to $2,500; in July 1934 the limit was raised to $5,000. Insurance was the most controversial provision and drew veto threats. The law's separation of banks from securities firms was repealed in 1999."
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.fdic.gov/history/1930-1939",
+  "retrieved": "2026-09-14",
+  "note": "FDIC history: a June 16 1934 law extended the temporary fund and raised coverage to $5,000; the Banking Act of 1935 made the FDIC permanent. The essay (also opened) wrongly calls July 1934 permanent. Page date also corrected."
+ },
+ {
+  "id": "dep-008",
+  "field": "source",
+  "claim": "Gold suspended April 20 1933; 50% gold-content authority May; gold clauses voided June 5; purchases from $20.67; Gold Reserve Act 1934",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/roosevelts-gold-program",
+  "retrieved": "2026-09-14",
+  "note": "All content matches the essay (Thomas amendment 50 percent, $20.67, Gold Reserve Act Jan 1934). Page states written as of Nov 22 2013; date metadata corrected."
+ },
+ {
+  "id": "stg-001",
+  "field": "example",
+  "claim": "1964 inflation 1%, unemployment 5%; 1974 over 12% and above 7%; summer 1980 near 14.5% and over 7.5%",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-inflation",
+  "retrieved": "2026-09-14",
+  "note": "Exact essay figures. BLS CPI-U 12-month: Dec 1974 12.3%, June 1980 14.4% (computed from BLS API), unemployment 7.2% and 7.6%: consistent."
+ },
+ {
+  "id": "stg-002",
+  "field": "definition",
+  "claim": "Aug 15 1971: gold convertibility at $35 ended, 90-day freeze, 10% import surcharge; Bretton Woods 1944",
+  "verdict": "fixed",
+  "severity": "spelling",
+  "edits": [
+   {
+    "path": "definition",
+    "old": "Under the Bretton Woods system, designed in 1944, foreign governments could exchange U.S. dollars for gold at a fixed price, and other currencies were pegged to the dollar. Closing the gold window meant the United States stopped honouring that exchange. Without the gold anchor, currencies moved to floating rates set by markets, and the dollar's value depended on confidence rather than a metal.",
+    "new": "Under the Bretton Woods system, designed in 1944, foreign governments could exchange U.S. dollars for gold at a fixed price, and other currencies were pegged to the dollar. Closing the gold window meant the United States stopped honoring that exchange. Without the gold anchor, currencies moved to floating rates set by markets, and the dollar's value depended on confidence rather than a metal."
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/gold-convertibility-ends",
+  "retrieved": "2026-09-14",
+  "note": "All facts match the essay (Smithsonian agreement, fiat system). \"honouring\" to US spelling; page states written as of Nov 22 2013, so date metadata corrected."
+ },
+ {
+  "id": "stg-003",
+  "field": "example",
+  "claim": "Embargo Oct 19 1973; oil $2.90 to $11.65 by Jan 1974; lifted March 1974; wholesale industrial prices >10% mid-1973",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "example",
+    "old": "On October 19, 1973 Arab oil exporters embargoed the United States. Crude oil went from about $2.90 a barrel before the embargo to $11.65 by January 1974, nearly 4 times the price. The embargo was lifted in March 1974, but by mid-1973 wholesale industrial prices had already been rising more than 10 percent a year.",
+    "new": "On October 19, 1973 Arab oil exporters embargoed the United States. Crude oil went from about $2.90 a barrel before the embargo to $11.65 by January 1974, about 4 times the price. The embargo was lifted in March 1974, but by mid-1973 wholesale industrial prices had already been rising more than 10 percent a year."
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/oil-shock-of-1973-74",
+  "retrieved": "2026-09-14",
+  "note": "$11.65 / $2.90 = 4.02, slightly more than 4 times, so \"nearly\" was wrong. Other figures match essay; page states written as of Nov 22 2013."
+ },
+ {
+  "id": "stg-004",
+  "field": "example",
+  "claim": "1971 controls ran in phases to 1974, slowed prices temporarily, worsened shortages; inflation over 12% in 1974",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "example",
+    "old": "The controls announced in 1971 ran in 3 phases until 1974. They slowed price rises only temporarily and made shortages worse, especially for food and energy. Once they lapsed, the delayed increases arrived: inflation exceeded 12 percent in 1974, higher than before the freeze began.",
+    "new": "The controls announced in 1971 ran in a series of phases until April 1974. They slowed price rises only temporarily and made shortages worse, especially for food and energy. After they lapsed, with an oil shock also under way, inflation exceeded 12 percent in 1974, far higher than before the freeze began."
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-inflation",
+  "retrieved": "2026-09-14",
+  "note": "Essay says \"three phases\", but the program had Phases I-IV plus a second 1973 freeze, ending April 1974. Card blamed 1974 inflation solely on controls lapsing; the 1973-74 oil shock (stg-003) was a major cause."
+ },
+ {
+  "id": "stg-005",
+  "field": "example",
+  "claim": "Iran output down 4.8 mb/d (7% of world); oil more than doubled Apr 1979-Apr 1980; consumer inflation <5% 1976, ~7% Mar 1979, 9% end-1979",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "example",
+    "old": "Revolution in Iran between early 1978 and early 1979 cut its oil output by 4.8 million barrels a day, about 7 percent of world production. Oil prices more than doubled between April 1979 and April 1980. U.S. consumer inflation, below 5 percent in early 1976, was near 7 percent by March 1979 and 9 percent by the end of 1979.",
+    "new": "Revolution in Iran between early 1978 and early 1979 cut its oil output by 4.8 million barrels a day, about 7 percent of world production. Oil prices more than doubled between April 1979 and April 1980."
+   },
+   {
+    "path": "claim",
+    "old": "{\"units\":\"million barrels per day; percent of world oil production; percent inflation rate\",\"geography\":\"United States and world oil market\",\"claimKind\":\"observation\",\"observationPeriod\":\"1978 to 1980\",\"retrievalDate\":\"2026-09-14\"}",
+    "new": "{\"units\":\"million barrels per day; percent of world oil production\",\"geography\":\"Iran and world oil market\",\"claimKind\":\"observation\",\"observationPeriod\":\"1978 to 1980\",\"retrievalDate\":\"2026-09-14\"}"
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/oil-shock-of-1978-79",
+  "retrieved": "2026-09-14",
+  "note": "Essay says 12-month CPI, but BLS CPI-U was 6.7% (Jan 1976), 10.1% (Mar 1979), 13.3% (Dec 1979); PCE and core also miss. Contradicted stg-007 (11% June 1979). Sentence removed; oil figures verified."
+ },
+ {
+  "id": "stg-006",
+  "field": "example",
+  "claim": "Oct 6 1979 reserves targeting; inflation 7.7% Jan 1979, peak 11.6% Mar 1980; fed funds 20% late 1980; unemployment 10.8% late 1982",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "claim",
+    "old": "{\"units\":\"percent inflation rate; percent federal funds rate; percent unemployment rate\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"1979 to 1983\",\"retrievalDate\":\"2026-09-14\"}",
+    "new": "{\"units\":\"percent inflation rate (PCE price index); percent federal funds rate; percent unemployment rate\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"1979 to 1983\",\"retrievalDate\":\"2026-09-14\"}"
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   },
+   {
+    "path": "example",
+    "old": "Inflation was 7.7 percent in January 1979 and peaked at 11.6 percent in March 1980. The federal funds rate reached a record 20 percent in late 1980. The medicine worked slowly: inflation was down to 6.1 percent in early 1982 and 3.7 percent the year after, but unemployment peaked at 10.8 percent in late 1982.",
+    "new": "Inflation, measured by the price index for personal consumption expenditures, was 7.7 percent in January 1979 and peaked at 11.6 percent in March 1980. The federal funds rate reached a record 20 percent in late 1980. The medicine worked slowly: inflation came down substantially over 1982 and 1983, but unemployment peaked at 10.8 percent in late 1982."
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/anti-inflation-measures",
+  "retrieved": "2026-09-14",
+  "note": "Essay names PCE only for 7.7% (Jan 1979); FRED PCEPI confirms 7.7% and 11.6% (Mar 1980). Lead check: '6.1% early 1982' matches neither PCE nor core PCE and '3.7% the year after' matches CPI (Jan 1983), not PCE (4.4-4.7%) - mixed/unspecified measures, so those two figures were removed and the measure named for the rest."
+ },
+ {
+  "id": "stg-007",
+  "field": "example",
+  "claim": "Recession July 1981-Nov 1982; unemployment near 11% postwar high; inflation 11% to 5%; 90% of job losses goods sector; 22%/24%",
+  "verdict": "fixed",
+  "severity": "outdated",
+  "edits": [
+   {
+    "path": "example",
+    "old": "The recession ran from July 1981 to November 1982. Unemployment neared 11 percent at the end of 1982, the postwar high, while inflation fell from 11 percent in June 1979 to 5 percent by October 1982. Goods-producing sectors took 90 percent of the job losses in 1982; unemployment reached 22 percent in residential construction and 24 percent in auto manufacturing.",
+    "new": "The recession ran from July 1981 to November 1982. Unemployment neared 11 percent at the end of 1982, then the highest since World War II, while inflation fell from 11 percent in June 1979 to 5 percent by October 1982. Goods-producing sectors took 90 percent of the job losses in 1982; unemployment reached 22 percent in residential construction and 24 percent in auto manufacturing."
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/recession-of-1981-82",
+  "retrieved": "2026-09-14",
+  "note": "Essay written 2013 says it \"remains the apex\"; unemployment reached 14.8% in April 2020, so no longer the postwar high. Other figures match; CPI-U June 1979 10.9%, Oct 1982 5.1% (BLS)."
+ },
+ {
+  "id": "stg-008",
+  "field": "definition",
+  "claim": "Friedman and Phelps warned Phillips curve would shift with expectations; Employment Act 1946; Humphrey-Hawkins 1978 dual charge",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-inflation",
+  "retrieved": "2026-09-14",
+  "note": "Matches essay. Example reuses the 1964/1980 figures from stg-001 and topic overlaps core lm-005, but the historical framing differs; not a substantial duplicate."
+ },
+ {
+  "id": "gfc-001",
+  "field": "example",
+  "claim": "Home prices more than doubled 1998-2006, peaked early 2007, fell over a fifth Q1 2007-Q2 2011",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "example",
+    "old": "Across the United States, home prices roughly doubled between 1998 and 2006 and peaked in early 2007. They then fell by more than a fifth on average from the first quarter of 2007 to the second quarter of 2011, a decline of a size the country had not seen since the 1930s.",
+    "new": "On one national index, U.S. home prices more than doubled between 1998 and 2006 and peaked in early 2007. They then fell by more than a fifth on average from the first quarter of 2007 to the second quarter of 2011, a decline of a size the country had not seen since the 1930s."
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-recession-and-its-aftermath",
+  "retrieved": "2026-09-14",
+  "note": "Essay says \"more than doubled\" (FHFA index, peak early 2007). gfc-003 cites a different index peaking mid-2006 with a 30% fall; naming the index basis avoids an apparent contradiction."
+ },
+ {
+  "id": "gfc-002",
+  "field": "source",
+  "claim": "New Century subprime lender bankrupt April 2007; mass MBS downgrades; homeownership around 65% before boom",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/subprime-mortgage-crisis",
+  "retrieved": "2026-09-14",
+  "note": "Content matches essay. Reset-rate detail is not on the page but is well established. Page states written as of Nov 22 2013; date metadata corrected."
+ },
+ {
+  "id": "gfc-003",
+  "field": "source",
+  "claim": "Dec 2007-June 2009; GDP -4.3%; unemployment 5% to 10% Oct 2009; home prices -30%; net worth $69T to $55T",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-recession-of-200709",
+  "retrieved": "2026-09-14",
+  "note": "Every figure matches the essay and NBER dating. Page states written as of Nov 22 2013; date metadata corrected."
+ },
+ {
+  "id": "gfc-004",
+  "field": "source",
+  "claim": "TAF Dec 12 2007 peak $493B; CPFF Oct 2008 peak $350B; swaps with 14 central banks peak $586B Dec 4 2008; closures Feb 1 2010",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2015-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/fed-credit-programs",
+  "retrieved": "2026-09-14",
+  "note": "All figures match the essay. Page states \"Written as of November 22, 2015\"; date metadata corrected. Concept overlaps core cb-005 but the example is historical."
+ },
+ {
+  "id": "gfc-005",
+  "field": "example",
+  "claim": "TARP $700B authorized, cut to $475B; $443.5B disbursed, $425.5B collected, $13.1B interest, net cost $31.1B as of Sept 30 2023",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/data/troubled-asset-relief-program",
+  "retrieved": "2026-09-14",
+  "note": "Figures match Treasury page; arithmetic checks (443.5 - 425.5 + 13.1 = 31.1). All programs closed as of Sept 30 2023."
+ },
+ {
+  "id": "gfc-006",
+  "field": "source",
+  "claim": "Fed funds 5.25% Sept 2007 to 0-0.25% Dec 2008; first purchases ~$1.75T; second $600B in 2010-11",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/great-recession-of-200709",
+  "retrieved": "2026-09-14",
+  "note": "Figures match essay. Concept overlaps core cb-003 but example is historical. Page states written as of Nov 22 2013; date metadata corrected."
+ },
+ {
+  "id": "gfc-007",
+  "field": "example",
+  "claim": "Coverage $250,000 per depositor, bank, ownership category; no insured loss since 1933",
+  "verdict": "fixed",
+  "severity": "duplicate",
+  "edits": [
+   {
+    "path": "definition",
+    "old": "Deposit insurance removes the reason to run on a bank: if the bank fails, the insurer pays depositors up to the limit, so there is nothing to gain by pulling money out first. Coverage is counted per depositor, per insured bank, per ownership category, so one person can be covered separately for a single account, a joint account, and a retirement account at the same bank.",
+    "new": "Deposit insurance removes the reason to run on a bank: if the bank fails, the insurer pays depositors up to the limit, so there is nothing to gain by pulling money out first. The promise works only if depositors trust it, which is why the U.S. coverage limit was raised during the 2008 crisis."
+   },
+   {
+    "path": "example",
+    "old": "The FDIC was founded in 1933, and since then no depositor has lost a penny of insured funds. The standard limit is $250,000 per depositor, per insured bank, per ownership category. A saver with $250,000 in a single account and $250,000 in a joint account at 1 bank is fully covered on both.",
+    "new": "In October 2008, in the middle of the crisis, Congress raised the standard coverage limit to $250,000, at first only until the end of 2009. The Dodd-Frank Act of July 2010 then made the $250,000 limit permanent."
+   },
+   {
+    "path": "source.documentTitle",
+    "old": "Understanding Deposit Insurance",
+    "new": "Dodd-Frank Wall Street Reform and Consumer Protection Act of 2010"
+   },
+   {
+    "path": "source.url",
+    "old": "https://www.fdic.gov/resources/deposit-insurance/understanding-deposit-insurance",
+    "new": "https://www.fdic.gov/resources/deposit-insurance/deposit-insurance-fund/dif-historical/dif-dodd-frank-act.html"
+   },
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2023-06-21"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   },
+   {
+    "path": "claim",
+    "old": "{\"units\":\"U.S. dollars of standard deposit insurance coverage per depositor per ownership category\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"standard maximum in force at verification in 2026; FDIC founded 1933\",\"retrievalDate\":\"2026-09-14\"}",
+    "new": "{\"units\":\"U.S. dollars of standard deposit insurance coverage per depositor\",\"geography\":\"United States\",\"claimKind\":\"observation\",\"observationPeriod\":\"2008 to 2010\",\"retrievalDate\":\"2026-09-14\"}"
+   }
+  ],
+  "sourceURL": "https://www.fdic.gov/resources/deposit-insurance/deposit-insurance-fund/dif-historical/dif-dodd-frank-act.html",
+  "retrieved": "2026-09-14",
+  "note": "Original facts were correct but duplicated personal sr-001/sn-008 almost exactly and said nothing about 2008. Rewritten to the 2008 temporary rise and 2010 permanent limit, verified on FDIC page (Last Updated June 21 2023). Lead removed an unsourced generalization from the definition and set datePrecision to stated-on-page (page shows Last Updated)."
+ },
+ {
+  "id": "gfc-008",
+  "field": "source",
+  "claim": "Dodd-Frank signed July 21 2010: FSOC, CFPB, Volcker rule, stress tests, orderly liquidation, ability-to-repay, risk retention",
+  "verdict": "fixed",
+  "severity": "ambiguous",
+  "edits": [
+   {
+    "path": "source.publicationDate",
+    "old": "2026-09-14",
+    "new": "2013-11-22"
+   },
+   {
+    "path": "source.datePrecision",
+    "old": "observed-on-verification-date",
+    "new": "stated-on-page"
+   }
+  ],
+  "sourceURL": "https://www.federalreservehistory.org/essays/dodd-frank-act",
+  "retrieved": "2026-09-14",
+  "note": "Provisions match essay; \"broadest rewrite since the 1930s\" is the standard description, not on page. Stress tests were annual for large firms under the 2010 law. Page written as of Nov 22 2013; date corrected."
+ }
+]

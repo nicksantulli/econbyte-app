@@ -1,0 +1,502 @@
+[
+  {
+    "id": "pack:systems",
+    "field": "summary",
+    "claim": "Pack covers market, mixed, planned, and welfare-state systems through institutions and records.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.federalreservehistory.org/about",
+    "retrieved": "2026-09-14",
+    "note": "Neutral, accurate description of the four topics; no stale words or advocacy."
+  },
+  {
+    "id": "topic:market-economies",
+    "field": "summary",
+    "claim": "Prices, property, competition, entry/exit coordinate markets; record when competition or prices are suspended.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.archives.gov/milestone-documents/national-industrial-recovery-act",
+    "retrieved": "2026-09-14",
+    "note": "Matches the eight cards (NIRA suspension, price controls). Neutral wording."
+  },
+  {
+    "id": "topic:mixed-economies",
+    "field": "summary",
+    "claim": "Government roles inside market systems: measurement, enterprises, infrastructure, money, finance and labor rules.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.bea.gov/data/gdp/gross-domestic-product",
+    "retrieved": "2026-09-14",
+    "note": "Matches card coverage; neutral."
+  },
+  {
+    "id": "topic:planned-economies",
+    "field": "summary",
+    "claim": "Central planning via quotas and plans, administered prices and rationing, transition toward markets.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.imf.org/external/np/exr/ib/2000/110300.htm",
+    "retrieved": "2026-09-14",
+    "note": "Matches card coverage; neutral."
+  },
+  {
+    "id": "topic:welfare-states",
+    "field": "summary",
+    "claim": "Welfare states pool risk and redistribute via insurance and assistance; poverty/coverage measurement; financing.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.worldbank.org/ext/en/topic/social-protection",
+    "retrieved": "2026-09-14",
+    "note": "Matches card coverage; neutral."
+  },
+  {
+    "id": "mkt-001",
+    "field": "example",
+    "claim": "Greenspan 2005 Kirkcaldy lecture quotes Smith: dinner from butcher/brewer/baker self-interest; invisible hand.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.federalreserve.gov/boarddocs/speeches/2005/20050206/default.htm",
+    "retrieved": "2026-09-14",
+    "note": "Speech dated Feb 6, 2005, Kirkcaldy named as Smith birthplace; dinner passage and invisible hand both present. 5-business chain correctly flagged as illustration."
+  },
+  {
+    "id": "mkt-002",
+    "field": "example",
+    "claim": "St. Louis Fed 2013: $20-$25 first checked bag fees led to more carry-ons, bin shortage, carry-on fees.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.stlouisfed.org/publications/page-one-economics/2013/04/01/prices-the-marketplaces-communication-system",
+    "retrieved": "2026-09-14",
+    "note": "All quoted: fees $20 to $25 first bag, carry-on shift, overhead storage shortage, some airlines charging carry-on fees. Definitions of signal, incentive, shortage/surplus match."
+  },
+  {
+    "id": "mkt-003",
+    "field": "example",
+    "claim": "Homestead Act: 160 acres, 5 years, $1.25/acre option; 80M of ~500M acres to homesteaders 1862-1904.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.archives.gov/milestone-documents/homestead-act",
+    "retrieved": "2026-09-14",
+    "note": "Page: 160 acres, five years residence, $10 filing fee, $1.25/acre after six months; 80 of 500 million acres to homesteaders, rest to speculators, railroads etc. Last reviewed 2022-06-07."
+  },
+  {
+    "id": "mkt-004",
+    "field": "example",
+    "claim": "Sherman 1890, Clayton and FTC Acts 1914; Sherman criminal max $100M corporations, $1M and 10 years individuals.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.ftc.gov/advice-guidance/competition-guidance/guide-antitrust-laws/antitrust-laws",
+    "retrieved": "2026-09-14",
+    "note": "FTC page confirms all three laws and penalty maxima verbatim."
+  },
+  {
+    "id": "mkt-005",
+    "field": "example",
+    "claim": "ICC Act 1887: railroads first federally regulated; rates reasonable and just; rebates, short-haul discrimination banned; 5 commissioners.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "example",
+        "old": "The Interstate Commerce Act of 1887 made railroads the first industry under federal regulation. Farmers on branch lines had faced 1 carrier, rebates for large shippers, and higher rates for short hauls than long ones. The act required 'just and reasonable' rates, banned rebates and short-haul discrimination, and created a 5-member Interstate Commerce Commission. Its own contradictory terms made it only partly effective.",
+        "new": "The Interstate Commerce Act of 1887 made railroads the first industry under federal regulation. Railroads competed for long hauls but not short ones, and large shippers won rebates that small farmers could not. The act required rates to be 'reasonable and just', banned rebates and charging more for a short haul than a long one on the same line, and created a 5-member Interstate Commerce Commission. Its contradictory terms left it not very effective in practice."
+      }
+    ],
+    "sourceURL": "https://www.archives.gov/milestone-documents/interstate-commerce-act",
+    "retrieved": "2026-09-14",
+    "note": "Statute reads 'reasonable and just', not 'just and reasonable'; page says no short-haul competition (not '1 carrier') and law 'was not very effective', not 'partly effective'."
+  },
+  {
+    "id": "mkt-006",
+    "field": "example",
+    "claim": "Census BDS: annual births/deaths, startups/shutdowns, job creation/destruction, 1978-2023, by establishment/firm characteristics.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "The Census Bureau's Business Dynamics Statistics measure exactly this churn: establishment births and deaths, firm startups and shutdowns, and job creation and destruction, published every year for the United States from 1978 through 2023 and broken out by industry, firm size, and firm age. The net change in employment at a location is what a headline jobs number shows; the gross flows underneath it are far larger.",
+        "new": "The Census Bureau's Business Dynamics Statistics measure exactly this churn: establishment births and deaths, firm startups and shutdowns, and job creation and destruction, published annually for the United States with data from 1978 through 2023, for the economy overall and by establishment and firm characteristics. A headline jobs report shows only the net change in employment; the gross flows of jobs created and destroyed underneath it are far larger."
+      }
+    ],
+    "sourceURL": "https://www.census.gov/programs-surveys/bds.html",
+    "retrieved": "2026-09-14",
+    "note": "Landing page says 'establishment and firm characteristics', not a specific industry/size/age list; 'net change in employment at a location' was unclear. Coverage 1978-2023 confirmed."
+  },
+  {
+    "id": "mkt-007",
+    "field": "example",
+    "claim": "NIRA 1933 suspended antitrust; 500+ codes fixed prices/wages/quotas/entry; Blue Eagle; struck down May 1935; worsened conditions.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.archives.gov/milestone-documents/national-industrial-recovery-act",
+    "retrieved": "2026-09-14",
+    "note": "All confirmed, including 'by raising prices, they actually made the economic situation worse' (Schechter, May 1935). Card attributes the evaluation to the National Archives."
+  },
+  {
+    "id": "mkt-008",
+    "field": "source.organization",
+    "claim": "Great Inflation: CPI a little over 1% in 1964 to 14%+ in 1980; Nixon controls 3 phases 1971-74 worsened shortages.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "source.organization",
+        "old": "Federal Reserve History (Federal Reserve Bank of Richmond)",
+        "new": "Federal Reserve History (Federal Reserve Bank of St. Louis)"
+      }
+    ],
+    "sourceURL": "https://www.federalreservehistory.org/essays/great-inflation",
+    "retrieved": "2026-09-14",
+    "note": "Figures and controls text verified verbatim (CPI). Organization wrong: site maintained by St. Louis Fed (about page); essay by Michael Bryan, not Richmond. Matches 26 other cards."
+  },
+  {
+    "id": "mix-001",
+    "field": "source.publicationDate",
+    "claim": "BEA: Q2 2026 real GDP +1.5% (second estimate) after 2.1% Q1; consumer spending, exports, investment up, government down.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-02",
+        "new": "2026-08-26"
+      },
+      {
+        "path": "claim.observationPeriod",
+        "old": "second quarter of 2026, as published by BEA on 2026-09-02",
+        "new": "second quarter of 2026, as published by BEA on 2026-08-26"
+      }
+    ],
+    "sourceURL": "https://www.bea.gov/data/gdp/gross-domestic-product",
+    "retrieved": "2026-09-14",
+    "note": "Figures and components match. BEA page shows release date August 26, 2026 (next Sept 30); Sept 2 is only a motor-vehicle file date."
+  },
+  {
+    "id": "mix-002",
+    "field": "example",
+    "claim": "TVA created May 18, 1933; 7 states; 29 hydro dams, 3 nuclear plants, 27,000+ MW, 16,000+ miles lines, 80,000 sq mi.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.archives.gov/milestone-documents/tennessee-valley-authority-act",
+    "retrieved": "2026-09-14",
+    "note": "All figures and largest-public-power-company description on page (last reviewed 2022-02-08); claim period discloses vintage."
+  },
+  {
+    "id": "mix-003",
+    "field": "example",
+    "claim": "1956 Highway Act: June 29, 41,000 miles, $25B FY1957-1969, fuel/tire/truck/bus taxes; reshaped settlement.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.archives.gov/milestone-documents/national-interstate-and-defense-highways-act",
+    "retrieved": "2026-09-14",
+    "note": "All verified verbatim, including urban neighborhoods and bypassed small towns."
+  },
+  {
+    "id": "mix-004",
+    "field": "example",
+    "claim": "US only major financial power without central bank in 1907; 18-member National Monetary Commission 1908; Fed Act Dec 1913.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.federalreservehistory.org/essays/federal-reserve-act-signed",
+    "retrieved": "2026-09-14",
+    "note": "Verified: 18 members, May 1908, banker-led Aldrich plan, signed Dec 23, 1913. Organization (Kansas City) is the essay author, acceptable though site maintainer is St. Louis."
+  },
+  {
+    "id": "mix-005",
+    "field": "source.organization",
+    "claim": "Banking Act June 16, 1933: 10% securities income limit; FDIC funded by bank pool; separation uncontroversial; affiliation limits repealed 1999.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "source.organization",
+        "old": "Federal Reserve History (Federal Reserve Bank of Richmond)",
+        "new": "Federal Reserve History (Federal Reserve Bank of St. Louis)"
+      }
+    ],
+    "sourceURL": "https://www.federalreservehistory.org/essays/glass-steagall-act",
+    "retrieved": "2026-09-14",
+    "note": "Example facts verified verbatim. Organization wrong: essay by Julia Maues; site maintained by St. Louis Fed, not Richmond."
+  },
+  {
+    "id": "mix-006",
+    "field": "example",
+    "claim": "NLRA July 5, 1935 guaranteed organizing/bargaining, created NLRB; upheld 1937; union membership surged.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "example",
+        "old": "The National Labor Relations Act of July 5, 1935 guaranteed private-sector workers the right to form unions and bargain collectively, and created a 5-member National Labor Relations Board, assisted by 33 regional directors, to run union elections and rule on unfair labor practices. The Supreme Court upheld the law in 1937, and union membership surged in the years that followed.",
+        "new": "The National Labor Relations Act of July 5, 1935 guaranteed private-sector workers the right to form unions and bargain collectively, and created the National Labor Relations Board to run union elections and rule on unfair labor practices. The Supreme Court upheld the law in 1937, and the National Archives credits it with contributing to a dramatic surge in union membership."
+      }
+    ],
+    "sourceURL": "https://www.archives.gov/milestone-documents/national-labor-relations-act",
+    "retrieved": "2026-09-14",
+    "note": "Page's '5 members... 33 regional directors' describes the Board 'to this day'. The 1935 Board had 3 members (5 from Taft-Hartley, 1947, per nlrb.gov). Card implied 1935."
+  },
+  {
+    "id": "mix-007",
+    "field": "example",
+    "claim": "1900 census ~2 million child workers; Keating-Owen 1916 age 14/16 and 8-hour/night limits; voided 1918.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.archives.gov/milestone-documents/keating-owen-child-labor-act",
+    "retrieved": "2026-09-14",
+    "note": "Verified: 2 million, under 14 factories, under 16 mines, 14-16 over 8 hours or nights; Hammer v. Dagenhart 1918 on commerce power."
+  },
+  {
+    "id": "mix-008",
+    "field": "example",
+    "claim": "G.I. Bill: ~8M veterans in 7 years, $14.5B education by 1956, 4.3M loans $33B by 1955, degrees 4.6% (1945) to 25%.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "The Servicemen's Readjustment Act of 1944, the G.I. Bill, paid tuition and living costs for veterans. Within 7 years about 8 million had used its education benefits; by 1956 the education portion had cost $14.5 billion, and 4.3 million home loans worth $33 billion had been guaranteed by 1955. The share of Americans holding a bachelor's degree rose from 4.6 percent in 1945 to 25 percent 50 years later.",
+        "new": "The Servicemen's Readjustment Act of 1944, the G.I. Bill, paid tuition and living costs for veterans. Within 7 years about 8 million had used its education benefits; by 1956 the education portion had cost $14.5 billion, and 4.3 million home loans worth $33 billion had been guaranteed by 1955. The share of Americans holding a bachelor's or advanced degree rose from 4.6 percent in 1945 to 25 percent 50 years later."
+      }
+    ],
+    "sourceURL": "https://www.archives.gov/milestone-documents/servicemens-readjustment-act",
+    "retrieved": "2026-09-14",
+    "note": "All figures verified; page says 'bachelor's or advanced degrees', so the 4.6%/25% share covers both."
+  },
+  {
+    "id": "pln-001",
+    "field": "example",
+    "claim": "Greenspan 1997: Berlin Wall division near-controlled experiment; surpluses/shortages; as much as 5-7x energy per output; verdict negative.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "example",
+        "old": "In a 1997 speech titled 'The Embrace of Free Markets', the Federal Reserve chairman described the fall of the Berlin Wall in 1989 as a natural experiment between the 2 systems: planned economies, lacking price signals, produced surpluses of goods nobody wanted beside shortages of goods people needed, and used 5 to 7 times as much energy per unit of output as Western economies. His verdict on rigid central planning: unequivocally negative.",
+        "new": "In a 1997 speech titled 'The Embrace of Free Markets', the Federal Reserve chairman called the division of Europe, which ended with the fall of the Berlin Wall in 1989, as close to a controlled experiment between the 2 systems as could be run. Planned economies, lacking price signals, produced surpluses of goods nobody wanted beside shortages of goods people needed, and used as much as 5 to 7 times more energy per unit of output than the West. His verdict on rigid central planning: unequivocally negative."
+      }
+    ],
+    "sourceURL": "https://www.federalreserve.gov/boarddocs/speeches/1997/19970610.htm",
+    "retrieved": "2026-09-14",
+    "note": "Speech says energy use was 'as much as five to seven times higher' (upper bound, dropped in card) and calls the division, not the Wall's fall, 'as close to a controlled experiment' as possible."
+  },
+  {
+    "id": "pln-002",
+    "field": "example",
+    "claim": "First Five-Year Plan 1928: 250% industrial, 330% heavy industry targets; nationalization; quotas; unrealistic.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.loc.gov/exhibits/archives/intn.html",
+    "retrieved": "2026-09-14",
+    "note": "WebFetch 403; page read via curl with browser user agent. All figures and wording verified verbatim."
+  },
+  {
+    "id": "pln-003",
+    "field": "definition",
+    "claim": "Collectivization 20% planned, ~97% by 1940; ~1M kulak households (~5M people) deported; famine 1932-33.",
+    "verdict": "fixed",
+    "severity": "tone",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "Collectivization replaces individual farms with large state-directed collectives. The economic logic planners gave was scale and control: pooled land and machinery would raise yields, and the state could take the grain surplus to feed cities and pay for industry. The record shows the reverse in the Soviet case. Removing ownership removed the incentive to produce, resistance was met with force, and output collapsed. It is the clearest historical illustration of what happens when property rights in food are abolished.",
+        "new": "Collectivization replaces individual farms with large state-directed collectives. The economic logic planners gave was scale and control: pooled land and machinery would raise yields, and the state could take the grain surplus to feed cities and pay for industry. The record shows the reverse in the Soviet case. Removing ownership removed the incentive to produce, resistance was met with force, and output collapsed. Historians often cite it as a stark case of what can follow when farmers lose ownership of what they grow."
+      }
+    ],
+    "sourceURL": "https://www.loc.gov/exhibits/archives/intn.html",
+    "retrieved": "2026-09-14",
+    "note": "Example figures verified verbatim on LOC page (curl). Definition stated a sweeping superlative as fact; softened and attributed."
+  },
+  {
+    "id": "pln-004",
+    "field": "definition",
+    "claim": "Price held below clearing level causes shortage; planned prices fixed by decree so queues ration; St. Louis Fed rent-control example.",
+    "verdict": "fixed",
+    "severity": "duplicate",
+    "edits": [
+      {
+        "path": "definition",
+        "old": "When a price is held below the level at which supply equals demand, more is wanted than is offered, and the gap is a shortage. In a market that shortage pushes the price up until some buyers drop out and sellers add supply. A planned economy fixes prices by decree, so the adjustment cannot happen through price. It happens instead through waiting: queues, waiting lists, connections, and informal markets at higher prices. Time, not money, becomes the rationing device.",
+        "new": "A planned economy sets prices by decree and changes them rarely, so when a fixed price sits below the level at which supply equals demand, the resulting shortage cannot close through a price rise as it would in a market. The gap is closed instead by waiting and access: queues, waiting lists, personal connections, and informal markets at higher prices. Time and influence, not money alone, become the rationing devices."
+      },
+      {
+        "path": "example",
+        "old": "The St. Louis Fed's primer on prices describes the mechanism with a rent-control example: at a ceiling below the market rent, the number of apartments renters want exceeds the number landlords supply, and a shortage results. Administered prices in a planned economy are ceilings on nearly everything at once, so the queue for 1 good was matched by queues for dozens of others.",
+        "new": "The St. Louis Fed's primer on prices describes the mechanism with rent control: at a ceiling below the market rent, the quantity of apartments renters demand exceeds the quantity landlords supply, and a shortage results. Where a planner holds many prices below that level at once, the same gap opens in 1 market after another, so queues become a routine part of shopping rather than an exception."
+      }
+    ],
+    "sourceURL": "https://www.stlouisfed.org/publications/page-one-economics/2013/04/01/prices-the-marketplaces-communication-system",
+    "retrieved": "2026-09-14",
+    "note": "Definition largely repeated core sd-006 and mkt-008 (ceiling means shortage/queues); refocused on planning. 'Ceilings on nearly everything' overstated and not sourced. Rent-control passage verified."
+  },
+  {
+    "id": "pln-005",
+    "field": "example",
+    "claim": "WWII US rationed gasoline, rubber, sugar, butter, meat; 1943 posters; WPB chairman quote.",
+    "verdict": "fixed",
+    "severity": "factual",
+    "edits": [
+      {
+        "path": "example",
+        "old": "During the Second World War the United States rationed gasoline, rubber, sugar, butter, and meat. National Archives posters from 1943 urged civilians to share rides and to save waste fats for explosives, explaining that shortages existed because the goods were going to the troops. The War Production Board's chairman put the priority bluntly: the military would get 'astronomical quantities of everything.'",
+        "new": "During the Second World War the United States rationed gasoline, rubber, sugar, butter, and meat. National Archives posters from 1943 urged civilians to share rides and to save waste fats for explosives, explaining that shortages existed because the goods were going to the troops. The War Production Board's chairman described the military's view of wartime industry as a demand for 'astronomical quantities of everything', with little regard for civilian needs."
+      }
+    ],
+    "sourceURL": "https://www.archives.gov/exhibits/powers_of_persuasion/use_it_up/use_it_up.html",
+    "retrieved": "2026-09-14",
+    "note": "Nelson was describing the military's view ('...and to hell with civilian needs'), not stating the priority himself. Card misattributed the stance. Other facts verified."
+  },
+  {
+    "id": "pln-006",
+    "field": "example",
+    "claim": "IMF 2000: output fell ~40% at start of transition; inflation 450% CEE, ~900% Baltics, 1,000%+ CIS; by 1998 single digits/~30%.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.imf.org/external/np/exr/ib/2000/110300.htm",
+    "retrieved": "2026-09-14",
+    "note": "All figures verified verbatim in Issues Brief 00/08, Nov 3, 2000."
+  },
+  {
+    "id": "pln-007",
+    "field": "example",
+    "claim": "World Bank: since 1978 growth over 9%/yr, ~800M out of extreme poverty, eliminated by 2020; 15.2% below $8.30/day 2024.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.worldbank.org/ext/en/country/china",
+    "retrieved": "2026-09-14",
+    "note": "All verified; Last-Modified header 2026-08-24 matches datePrecision observed-last-modified."
+  },
+  {
+    "id": "pln-008",
+    "field": "example",
+    "claim": "IMF 2000: voucher assets sold and consolidated in funds without restructuring; loans-for-shares non-transparent; Hungary gradual better.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.imf.org/external/np/exr/ib/2000/110300.htm",
+    "retrieved": "2026-09-14",
+    "note": "Verified verbatim, including vouchers 'sold by the recipients' and consolidated in funds. CEE and Baltics 'knocking on the doors' of the EU; they were formal candidates by 2000."
+  },
+  {
+    "id": "wlf-001",
+    "field": "example",
+    "claim": "World Bank: 2B lack adequate protection; 3 of 4 in low-income countries lack basic; $29.5B April 2025; $2.50 per $1.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "example",
+        "old": "Coverage is far from universal worldwide. The World Bank's 2025 State of Social Protection report counts 2 billion people without adequate protection, and 3 out of 4 people in low-income countries without basic protection. The Bank reports $29.5 billion in social protection financing as of April 2025 and estimates that each dollar transferred to poor families generates about $2.50 of activity in the local economy.",
+        "new": "Coverage is far from universal worldwide. The World Bank reports that 2 billion people lack adequate social protection and that 3 out of 4 people in low-income countries lack basic protection; its State of Social Protection Report 2025 tracks these gaps. The Bank reports $29.5 billion in social protection financing as of April 2025 and estimates that each dollar transferred to poor families generates about $2.50 of activity in the local economy."
+      }
+    ],
+    "sourceURL": "https://www.worldbank.org/ext/en/topic/social-protection",
+    "retrieved": "2026-09-14",
+    "note": "Figures verified, but the page does not attribute the 2 billion and 3-in-4 counts to the 2025 report as the card did. Re-attributed to the Bank."
+  },
+  {
+    "id": "wlf-002",
+    "field": "example",
+    "claim": "Medicare/Medicaid signed July 30, 1965; Medicare 65+ payroll tax matched; Medicaid joint; ~20M enrolled first 3 years; 1 in 8 insured 1950.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.archives.gov/milestone-documents/medicare-and-medicaid-act",
+    "retrieved": "2026-09-14",
+    "note": "All verified verbatim (last reviewed 2022-02-08). Universal vs means-tested framing accurate."
+  },
+  {
+    "id": "wlf-003",
+    "field": "example",
+    "claim": "2024 official poverty 10.6% (-0.4 pt), 35.9M; SPM 12.9% unchanged; Social Security moved 28.7M out of SPM poverty.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.census.gov/library/publications/2025/demo/p60-287.html",
+    "retrieved": "2026-09-14",
+    "note": "All figures verified; official measure since 1960s and SPM since 2011 confirmed."
+  },
+  {
+    "id": "wlf-004",
+    "field": "example",
+    "claim": "2024: 92.0% (310M) insured some or all of year; employment 53.8%, Medicare 19.1%, Medicaid 17.6%, direct 10.7%.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.census.gov/library/publications/2025/demo/p60-288.html",
+    "retrieved": "2026-09-14",
+    "note": "All figures verified verbatim; overlap explanation accurate."
+  },
+  {
+    "id": "wlf-005",
+    "field": "example",
+    "claim": "No federal UI program; states run own; earnings in last 12-24 months; file in state where you worked.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.usa.gov/unemployment-benefits",
+    "retrieved": "2026-09-14",
+    "note": "All verified; Last-Modified header 2026-09-10 matches metadata. Definition overlaps core rec-005 on automatic stabilizers, but the example (state administration) differs, so not a duplicate."
+  },
+  {
+    "id": "wlf-006",
+    "field": "example",
+    "claim": "Extreme poverty ~2.3B (1990) to 831M (2025) under $3/day; East/South Asia growth; slowed last decade; 412M children 2024.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.worldbank.org/ext/en/topic/poverty",
+    "retrieved": "2026-09-14",
+    "note": "All verified verbatim; 'over the last decade' slowdown matches 'decade to 2025'."
+  },
+  {
+    "id": "wlf-007",
+    "field": "source.publicationDate",
+    "claim": "Social Security Act Aug 14, 1935: employee tax 1% 1937-39 rising to 3% by 1949; $49.75M OAA, $24.75M ADC FY1936.",
+    "verdict": "fixed",
+    "severity": "ambiguous",
+    "edits": [
+      {
+        "path": "source.publicationDate",
+        "old": "2026-09-14",
+        "new": "2022-02-08"
+      },
+      {
+        "path": "source.datePrecision",
+        "old": "observed-last-modified",
+        "new": "stated-on-page"
+      }
+    ],
+    "sourceURL": "https://www.archives.gov/milestone-documents/social-security-act",
+    "retrieved": "2026-09-14",
+    "note": "Facts verified in act text. Date was dishonest: archives.gov Last-Modified header is generated per request; page says 'last reviewed on February 8, 2022', like the other NARA cards."
+  },
+  {
+    "id": "wlf-008",
+    "field": "example",
+    "claim": "2024 median household income $83,730, not statistically different from 2023; Gini unchanged; post-tax estimates in appendix.",
+    "verdict": "correct",
+    "severity": "none",
+    "edits": [],
+    "sourceURL": "https://www.census.gov/library/publications/2025/demo/p60-286.html",
+    "retrieved": "2026-09-14",
+    "note": "Verified: $83,730 vs $82,690; Gini no significant change; money income pretax excluding in-kind; post-tax in Appendix B."
+  }
+]

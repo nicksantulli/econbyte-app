@@ -1,0 +1,754 @@
+[
+ {
+  "id": "course:bonds-rates-yield-curve",
+  "field": "summary",
+  "claim": "Course summary: price-yield link, long-bond sensitivity, yield curve, policy rate transmission.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+  "retrieved": "2026-09-14",
+  "note": "Matches lesson content; no advice or prediction wording."
+ },
+ {
+  "id": "bry-01",
+  "field": "summary",
+  "claim": "Lesson title/summary: face value, coupon, maturity; price and yield move oppositely.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "Accurate framing."
+ },
+ {
+  "id": "bry-01#b0",
+  "field": "paragraph",
+  "claim": "Bond basics: issuer, par, coupon as yearly % of face, maturity; Treasury notes and bonds pay coupon every six months.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/treasury-notes/",
+  "retrieved": "2026-09-14",
+  "note": "TreasuryDirect: notes and bonds pay a fixed rate of interest every six months until they mature."
+ },
+ {
+  "id": "bry-01#b1",
+  "field": "keyTerms",
+  "claim": "Definitions of face value (commonly $1,000), coupon, maturity, yield.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Investor.gov: principal also known as face value or par value, repaid when the bond matures. \"Commonly $1,000\" is hedged and fine."
+ },
+ {
+  "id": "bry-01#b2",
+  "field": "paragraph",
+  "claim": "$40 coupon: at 5% price ≈ $800; at 3% price ≈ $1,333 (current-yield arithmetic).",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "Recomputed: 40/0.05 = 800; 40/0.03 = 1,333.33. Callout b3 correctly flags these as current-yield simplifications."
+ },
+ {
+  "id": "bry-01#b3",
+  "field": "callout",
+  "claim": "Current yield vs yield to maturity; pull to par near maturity; direction identical.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "Conceptually accurate."
+ },
+ {
+  "id": "bry-01#b4",
+  "field": "diagram",
+  "claim": "Seesaw caption vs drawing: price up arrow, yield down arrow, label about fixed coupon; no coupon object at pivot.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[4].caption",
+    "old": "A seesaw with price on one end and yield on the other. Push the price up and the yield comes down; let the price fall and the yield rises. The coupon in the middle never moves.",
+    "new": "A seesaw with price on one end and yield on the other. Push the price up and the yield comes down; let the price fall and the yield rises. A fixed coupon paid on a higher price works out to a smaller percentage."
+   }
+  ],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "DiagramView draws an unlabeled pivot plus the caption \"A fixed coupon paid on a higher price is a smaller percentage\"; nothing labeled coupon sits in the middle. Caption now matches what is drawn."
+ },
+ {
+  "id": "bry-01#b5",
+  "field": "chart",
+  "claim": "10-year 4% bond prices at yields 1-8%: values, downward slope, convexity, par marker at 4.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "Recomputed (annual coupons): 1284.1, 1179.7, 1085.3, 1000, 922.8, 852.8, 789.3, 731.6 — data matches within $1. Successive drops 104,95,85,77,70,64,58: convex. Marker x=4 exists; dataNote Synthetic."
+ },
+ {
+  "id": "bry-01#b6",
+  "field": "paragraph",
+  "claim": "TreasuryDirect: coupon above yield sells above par, below yield below par, equal at par.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "Page table: yield greater than rate -> price below par; equal -> par; less -> above par. Matches."
+ },
+ {
+  "id": "bry-01#b7",
+  "field": "quiz",
+  "claim": "$50 coupon bond, yields fall 5%->4%: price rises; answerIndex 1.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved; distractors unambiguously wrong; explanation correct."
+ },
+ {
+  "id": "bry-01#b8",
+  "field": "takeaways",
+  "claim": "Four takeaways on fixed terms, inverse price-yield, hold to maturity, premium/discount.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "Consistent with sources."
+ },
+ {
+  "id": "bry-01#sources",
+  "field": "sources",
+  "claim": "TreasuryDirect Understanding Pricing and Treasury Notes pages opened and support lesson.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/understanding-pricing/",
+  "retrieved": "2026-09-14",
+  "note": "Both pages load (200) and contain cited facts: pricing table; notes 2/3/5/7/10 years, six-month interest."
+ },
+ {
+  "id": "bry-02",
+  "field": "summary",
+  "claim": "Lesson title/summary: longer maturity more price-sensitive; duration measures it.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Accurate."
+ },
+ {
+  "id": "bry-02#b0",
+  "field": "paragraph",
+  "claim": "Interest-rate risk explanation: long bonds lock in coupon longer, fall further when rates rise.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Investor.gov: interest rate changes can affect a bond's value; sold before maturity may be worth more or less than face."
+ },
+ {
+  "id": "bry-02#b1",
+  "field": "paragraph",
+  "claim": "Duration as % price change per 1-point yield move; \"also equals\" weighted average time; coupon/maturity effects; zero-coupon.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[1].text",
+    "old": "Duration is the measure that turns this idea into a number. In plain words, duration is the approximate percentage change in a bond's price for a one-percentage-point change in its yield. A bond with a duration of 2 moves roughly 2 percent for each point; a bond with a duration of 15 moves roughly 15 percent. Duration is measured in years because it also equals the weighted average time until the bond's cash comes back. Longer maturity and lower coupon both push duration up, because more of the value sits in the distant future. A zero-coupon bond, which pays nothing until maturity, has a duration equal to its full maturity.",
+    "new": "Duration is the measure that turns this idea into a number. In plain words, duration is the approximate percentage change in a bond's price for a one-percentage-point change in its yield. A bond with a duration of 2 moves roughly 2 percent for each point; a bond with a duration of 15 moves roughly 15 percent. Duration is quoted in years because it is closely tied to the weighted average time until the bond's cash comes back. Longer maturity and lower coupon both push duration up, because more of the value sits in the distant future. A zero-coupon bond, which pays nothing until maturity, has a duration equal to its full maturity."
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "The price-sensitivity measure (modified duration) equals the weighted average time (Macaulay duration) divided by (1 + yield per period), so it does not exactly equal it. Reworded to \"closely tied\". Other statements correct."
+ },
+ {
+  "id": "bry-02#b2",
+  "field": "keyTerms",
+  "claim": "Definitions: interest-rate risk, duration, zero-coupon bond, percentage point.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[2].terms[1].definition",
+    "old": "The approximate percentage price change for a one-percentage-point move in yield; also the weighted average time until a bond's payments arrive.",
+    "new": "The approximate percentage price change for a one-percentage-point move in yield; closely tied to the weighted average time until a bond's payments arrive."
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Same modified vs Macaulay precision fix as b1. Zero-coupon duration equal to maturity holds for the weighted-average-time measure; acceptable."
+ },
+ {
+  "id": "bry-02#b3",
+  "field": "chart",
+  "claim": "Price change for ±1 point by maturity (2/10/30 years), equal coupon; caption \"roughly 15 percent\" off 30-year.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[3].series[0].points[2].y",
+    "old": -14.5,
+    "new": -15.5
+   },
+   {
+    "path": "blocks[3].series[1].points[2].y",
+    "old": 17.5,
+    "new": 19.7
+   },
+   {
+    "path": "blocks[3].caption",
+    "old": "Three illustrative bonds with the same coupon. A one-point rise in yields barely dents the 2-year bond but knocks roughly 15 percent off the 30-year bond. A one-point fall lifts each by a little more than the matching rise lowers it.",
+    "new": "Three illustrative bonds with the same coupon. A one-point rise in yields barely dents the 2-year bond but knocks roughly 15 percent off the 30-year bond. A one-point fall lifts each by more than the matching rise lowers it."
+   }
+  ],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Recomputed 4% par bonds, semiannual (the convention the 10y bars -7.8/+8.6 already use): 2y -1.88/+1.93, 10y -7.79/+8.58, 30y -15.45/+19.69 -> -15.5/+19.7 (lead corrected the sub-agent's -15.4 rounding). 'A little more' understated a 4.2-point gap."
+ },
+ {
+  "id": "bry-02#b4",
+  "field": "callout",
+  "claim": "Investor.gov: held to maturity returns face plus interest; sold early may fetch more or less; credit risk separate.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Opened with browser user agent (WebFetch got 403). Page \"Bonds - FAQs\" states both points and lists credit risk separately. Duration line is our own explanation, not attributed."
+ },
+ {
+  "id": "bry-02#b5",
+  "field": "paragraph",
+  "claim": "T-bills have almost no duration; 30-year bond pays interest every six months for up to three decades.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/treasury-bonds/",
+  "retrieved": "2026-09-14",
+  "note": "TreasuryDirect: bonds have a term of 20 or 30 years and pay interest every six months. \"Up to three decades\" is accurate."
+ },
+ {
+  "id": "bry-02#b6",
+  "field": "quiz",
+  "claim": "3-year vs 25-year same coupon, yields +1 point: 25-year falls more; answerIndex 1.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved; single best answer; explanation correct."
+ },
+ {
+  "id": "bry-02#b7",
+  "field": "takeaways",
+  "claim": "Takeaways on interest-rate risk, duration, drivers, credit risk.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Consistent with corrected lesson."
+ },
+ {
+  "id": "bry-02#sources",
+  "field": "sources",
+  "claim": "Investor.gov Bonds - FAQs and TreasuryDirect Treasury Bonds pages.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/bonds",
+  "retrieved": "2026-09-14",
+  "note": "Both opened; title \"Bonds - FAQs | Investor.gov\" matches. Investor.gov returns 403 to non-browser clients but 200 with a browser user agent."
+ },
+ {
+  "id": "bry-03",
+  "field": "summary",
+  "claim": "Lesson title/summary: yields by maturity, usual upward slope, public data source.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+  "retrieved": "2026-09-14",
+  "note": "Accurate."
+ },
+ {
+  "id": "bry-03#b0",
+  "field": "paragraph",
+  "claim": "Yield curve definition: one borrower, yields plotted by maturity.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+  "retrieved": "2026-09-14",
+  "note": "Accurate plain-English definition."
+ },
+ {
+  "id": "bry-03#b1",
+  "field": "paragraph",
+  "claim": "Normal slope explained by expectations plus term premium; flat and inverted shapes.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics/interest-rates-frequently-asked-questions",
+  "retrieved": "2026-09-14",
+  "note": "Standard expectations-plus-term-premium account; no prediction."
+ },
+ {
+  "id": "bry-03#b2",
+  "field": "diagram",
+  "claim": "Caption: normal rising, flat level, inverted falling side by side.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "/Users/nicksantulli/Documents/GitHub/econbyte-app/EconByte/Views/Courses/DiagramView.swift",
+  "retrieved": "2026-09-14",
+  "note": "DiagramView draws normal (0.25->0.75), dashed flat (0.50->0.52), inverted (0.75->0.35) on one axis, maturity 3 months to 30 years. Caption matches."
+ },
+ {
+  "id": "bry-03#b3",
+  "field": "chart",
+  "claim": "Normal rises 1.5 points (3.0->4.5), flat ~3.9-4.0, inverted starts high and drifts lower.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+  "retrieved": "2026-09-14",
+  "note": "Normal 4.5-3.0 = 1.5 exactly, monotonic up; flat within 0.1; inverted 4.8 -> 3.9 at 10y with 3.95 at 20/30y, still well below short end. Axes and Synthetic dataNote fine."
+ },
+ {
+  "id": "bry-03#b4",
+  "field": "callout",
+  "claim": "Treasury Daily Par Yield Curve built from closing bid quotes, read at fixed maturities, may not match any single security.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics/interest-rates-frequently-asked-questions",
+  "retrieved": "2026-09-14",
+  "note": "FAQ: derived from indicative closing bid market price quotations; read from fixed constant maturity points and may not match the exact yield on any one security."
+ },
+ {
+  "id": "bry-03#b5",
+  "field": "keyTerms",
+  "claim": "Definitions: yield curve, term premium, par yield curve (coupon at which bond prices at par).",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics/interest-rates-frequently-asked-questions",
+  "retrieved": "2026-09-14",
+  "note": "Par yield definition is standard and consistent with the FAQ."
+ },
+ {
+  "id": "bry-03#b6",
+  "field": "quiz",
+  "claim": "Upward slope explained by term premium; answerIndex 1.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics/interest-rates-frequently-asked-questions",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved; distractors clearly wrong; explanation correct."
+ },
+ {
+  "id": "bry-03#b7",
+  "field": "takeaways",
+  "claim": "Takeaways on curve definition, shapes, expectations plus term premium, Treasury data.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+  "retrieved": "2026-09-14",
+  "note": "Consistent."
+ },
+ {
+  "id": "bry-03#sources",
+  "field": "sources",
+  "claim": "Treasury Interest Rate Statistics and Interest Rates FAQ pages.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+  "retrieved": "2026-09-14",
+  "note": "Both opened; list Daily Treasury Par Yield Curve Rates and Par Real Yield Curve Rates; FAQ supports construction details."
+ },
+ {
+  "id": "bry-04",
+  "field": "summary",
+  "claim": "Lesson title/summary: inversion meaning and documented historical record.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.clevelandfed.org/indicators-and-data/yield-curve-and-predicted-gdp-growth",
+  "retrieved": "2026-09-14",
+  "note": "Framed as history, not prediction."
+ },
+ {
+  "id": "bry-04#b0",
+  "field": "paragraph",
+  "claim": "Inversion definition; Cleveland Fed uses 10-year minus 3-month spread; negative spread = inverted.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.clevelandfed.org/indicators-and-data/yield-curve-and-predicted-gdp-growth",
+  "retrieved": "2026-09-14",
+  "note": "Cleveland Fed: spread between 10-year Treasury bonds and 3-month Treasury bills."
+ },
+ {
+  "id": "bry-04#b1",
+  "field": "paragraph",
+  "claim": "Inversion read as expected future cuts; can be wrong or driven by other factors.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2018/03/economic-forecasts-with-yield-curve/",
+  "retrieved": "2026-09-14",
+  "note": "Balanced; no prediction."
+ },
+ {
+  "id": "bry-04#b2",
+  "field": "paragraph",
+  "claim": "FRBSF 2018: every recession in ~60 years preceded by negative spread, one false positive; Cleveland: last eight recessions, \"several inversions\" not followed.",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[2].text",
+    "old": "The historical record is what makes the topic famous. In a 2018 Economic Letter, economists at the Federal Reserve Bank of San Francisco documented that every U.S. recession in the preceding sixty years had been preceded by a negative term spread, and that a negative spread was followed by a recession in all but one case. The Cleveland Fed's yield-curve page likewise records that inversions preceded each of the last eight recessions, while also listing several inversions that were not followed by one, including the long inversion that ran from late 2022 into 2024. The pattern is real, and so are the exceptions.",
+    "new": "The historical record is what makes the topic famous. In a 2018 Economic Letter, economists at the Federal Reserve Bank of San Francisco documented that every U.S. recession in the preceding sixty years had been preceded by a negative term spread, and that a negative spread was followed by a recession in all but one case. The Cleveland Fed's yield-curve page likewise records that inversions preceded each of the last eight recessions, while also listing three notable false signals, including the long inversion that ran from late 2022 through late 2024. The pattern is real, and so are the exceptions."
+   }
+  ],
+  "sourceURL": "https://www.clevelandfed.org/indicators-and-data/yield-curve-and-predicted-gdp-growth",
+  "retrieved": "2026-09-14",
+  "note": "FRBSF (Jan 1955-Feb 2018) supports the first sentence. Cleveland lists three false positives: late-1966 inversion, a very flat curve (not an inversion) in late 1998, and late 2022 through late 2024. \"Several inversions\" and \"into 2024\" were inaccurate."
+ },
+ {
+  "id": "bry-04#b3",
+  "field": "chart",
+  "claim": "Synthetic 10y-3m spread turns negative at month 10, positive at month 18; markers.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.clevelandfed.org/indicators-and-data/yield-curve-and-predicted-gdp-growth",
+  "retrieved": "2026-09-14",
+  "note": "Month 9 = 0.1, month 10 = -0.1; month 17 = -0.1, month 18 = 0.1; negative for months 10-17 (several). Markers at 10 and 18 exist. Synthetic dataNote."
+ },
+ {
+  "id": "bry-04#b4",
+  "field": "callout",
+  "claim": "Lags from a few months to about two years; false signals; \"Reserve Bank researchers themselves warn against reading the signal too literally\".",
+  "verdict": "fixed",
+  "severity": "tone",
+  "edits": [
+   {
+    "path": "blocks[4].text",
+    "old": "The record above is a description of the past, not a forecast. Inversions have come before recessions with gaps ranging from a few months to about two years, some inversions were not followed by any recession, and the economy has changed in ways that could weaken or strengthen the link. Reserve Bank researchers themselves warn against reading the signal too literally. This lesson explains why people watch the spread; it does not say what any inversion means for the future.",
+    "new": "The record above is a description of the past, not a forecast. Inversions have come before recessions with gaps ranging from a few months to about two years, some inversions were not followed by any recession, and the economy has changed in ways that could weaken or strengthen the link. Some Reserve Bank researchers urge caution against reading the signal too literally, while others have found that its record holds up. This lesson explains why people watch the spread; it does not say what any inversion means for the future."
+   }
+  ],
+  "sourceURL": "https://www.clevelandfed.org/indicators-and-data/yield-curve-and-predicted-gdp-growth",
+  "retrieved": "2026-09-14",
+  "note": "Lag range supported by FRBSF (6 to 24 months). Cleveland urges caution; the FRBSF letter rejects \"this time is different\" and finds the signal not diminished. Attributed both views for balance."
+ },
+ {
+  "id": "bry-04#b5",
+  "field": "quiz",
+  "claim": "10y 3.8% minus 3m 4.3% = -0.5, inverted; answerIndex 1.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.clevelandfed.org/indicators-and-data/yield-curve-and-predicted-gdp-growth",
+  "retrieved": "2026-09-14",
+  "note": "3.8 - 4.3 = -0.5 percentage points. Single best answer."
+ },
+ {
+  "id": "bry-04#b6",
+  "field": "takeaways",
+  "claim": "Takeaways on inversion definition, expectations reading, historical record with exceptions, not a forecast.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2018/03/economic-forecasts-with-yield-curve/",
+  "retrieved": "2026-09-14",
+  "note": "Consistent and non-predictive."
+ },
+ {
+  "id": "bry-04#sources",
+  "field": "sources",
+  "claim": "Cleveland Fed Yield Curve and Predicted GDP Growth; FRBSF Economic Letter 2018-07 (2018-03-05).",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.frbsf.org/research-and-insights/publications/economic-letter/2018/03/economic-forecasts-with-yield-curve/",
+  "retrieved": "2026-09-14",
+  "note": "Both opened. FRBSF: title, number 2018-07, date March 5, 2018 (Bauer and Mertens) match. Note FRBSF uses 10y-1y spread; the lesson does not attribute 10y-3m to it."
+ },
+ {
+  "id": "bry-05",
+  "field": "summary",
+  "claim": "Lesson title/summary: nominal vs real yield and inflation-protected securities.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "Accurate."
+ },
+ {
+  "id": "bry-05#b0",
+  "field": "paragraph",
+  "claim": "5% nominal minus 3% inflation ≈ 2% real; negative real yield when inflation exceeds nominal.",
+  "verdict": "fixed",
+  "severity": "spelling",
+  "edits": [
+   {
+    "path": "blocks[0].text",
+    "old": "The yield printed on a bond is a nominal yield: the percentage of money you receive, counted in dollars. It says nothing about what those dollars buy. If a bond yields 5 percent while prices in the shops rise 3 percent, the lender's purchasing power grows by only about 2 percent. That leftover is the real yield. As a rule of thumb, real yield is roughly the nominal yield minus the inflation rate. When inflation runs above the nominal yield, the real yield is negative, and the lender ends up able to buy less than before even though the account balance grew.",
+    "new": "The yield printed on a bond is a nominal yield: the percentage of money you receive, counted in dollars. It says nothing about what those dollars buy. If a bond yields 5 percent while prices in stores rise 3 percent, the lender's purchasing power grows by only about 2 percent. That leftover is the real yield. As a rule of thumb, real yield is roughly the nominal yield minus the inflation rate. When inflation runs above the nominal yield, the real yield is negative, and the lender ends up able to buy less than before even though the account balance grew."
+   }
+  ],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "Arithmetic correct. \"Prices in the shops\" is British usage; changed to US \"in stores\"."
+ },
+ {
+  "id": "bry-05#b1",
+  "field": "keyTerms",
+  "claim": "Definitions: nominal yield, inflation, real yield, TIPS principal adjusted by a CPI.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "TreasuryDirect: principal adjusted with the Consumer Price Index."
+ },
+ {
+  "id": "bry-05#b2",
+  "field": "chart",
+  "claim": "Nominal, inflation, real = difference for 8 years; years 3-4 real 1%.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "All eight differences recomputed exactly (2,1.5,1,1,1.5,2,1.5,1.5). Caption claim for years 3 and 4 matches. Synthetic dataNote."
+ },
+ {
+  "id": "bry-05#b3",
+  "field": "paragraph",
+  "claim": "TIPS maturities 5, 10, 30 years; CPI-adjusted principal; fixed rate on adjusted principal.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "TreasuryDirect: 5, 10, or 30 years; interest paid on adjusted principal so the payment varies."
+ },
+ {
+  "id": "bry-05#b4",
+  "field": "callout",
+  "claim": "$1,000 TIPS, 1% coupon, 3% CPI rise -> $1,030 principal, $10.30 interest; greater of adjusted or original at maturity.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "1000 x 1.03 = 1030; 1% = 10.30. TreasuryDirect: at maturity receive adjusted or original principal, whichever is greater."
+ },
+ {
+  "id": "bry-05#b5",
+  "field": "paragraph",
+  "claim": "Breakeven inflation as TIPS vs nominal yield gap; Treasury publishes Daily Par Real Yield Curve.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://home.treasury.gov/policy-issues/financing-the-government/interest-rate-statistics",
+  "retrieved": "2026-09-14",
+  "note": "Interest Rate Statistics lists Daily Treasury Par Real Yield Curve Rates alongside nominal curve. Breakeven definition standard."
+ },
+ {
+  "id": "bry-05#b6",
+  "field": "quiz",
+  "claim": "4% nominal, 5% inflation -> about -1% real; answerIndex 2.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved; single best answer."
+ },
+ {
+  "id": "bry-05#b7",
+  "field": "takeaways",
+  "claim": "Takeaways on nominal vs real, negative real yields, TIPS adjustment and floor.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "Consistent with TreasuryDirect."
+ },
+ {
+  "id": "bry-05#sources",
+  "field": "sources",
+  "claim": "TreasuryDirect TIPS page and Treasury Interest Rate Statistics.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.treasurydirect.gov/marketable-securities/tips/",
+  "retrieved": "2026-09-14",
+  "note": "Both opened and support lesson facts."
+ },
+ {
+  "id": "bry-06",
+  "field": "summary",
+  "claim": "Lesson title/summary: FOMC target for shortest rate; long rates not simply following; household rates.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/fomc.htm",
+  "retrieved": "2026-09-14",
+  "note": "Accurate."
+ },
+ {
+  "id": "bry-06#b0",
+  "field": "paragraph",
+  "claim": "FOMC eight meetings a year sets fed funds target range; overnight interbank rate; tools include interest on reserves and open market operations.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/policytools.htm",
+  "retrieved": "2026-09-14",
+  "note": "FOMC page: eight regularly scheduled meetings; fed funds is the overnight rate for reserves. Policy Tools page lists Interest on Reserve Balances and Open Market Operations."
+ },
+ {
+  "id": "bry-06#b1",
+  "field": "paragraph",
+  "claim": "10-year yield = expected average policy rate plus term premium; 2-year follows hikes closely; curve flattens in tightening, steepens with cuts.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+  "retrieved": "2026-09-14",
+  "note": "Fed: longer-term rates relate to expectations of how policy and the economy evolve. Hedged (\"usually\", \"many tightening cycles\")."
+ },
+ {
+  "id": "bry-06#b2",
+  "field": "chart",
+  "claim": "Policy rate 0.5->4.5->3; 10-year 2.5->3.9->3.5; inverted \"around quarters 10 to 15\".",
+  "verdict": "fixed",
+  "severity": "factual",
+  "edits": [
+   {
+    "path": "blocks[2].caption",
+    "old": "The short rate climbs in steps from 0.5 percent to 4.5 percent and then comes back down. The long rate drifts up by far less and then eases. Where the short rate rises above the long rate, around quarters 10 to 15, the illustrative curve is inverted.",
+    "new": "The short rate climbs in steps from 0.5 percent to 4.5 percent and then comes back down. The long rate drifts up by far less and then eases. Where the short rate rises above the long rate, around quarters 10 to 16, the illustrative curve is inverted."
+   }
+  ],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+  "retrieved": "2026-09-14",
+  "note": "Short > long at quarters 10-16 (q16: 3.75 vs 3.6); equal at q17 (3.5). Caption said 10 to 15. Short rise 4.0 vs long rise 1.4 supports \"far less\". Marker x=10 exists."
+ },
+ {
+  "id": "bry-06#b3",
+  "field": "keyTerms",
+  "claim": "Definitions: federal funds rate, FOMC (eight meetings), transmission.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm",
+  "retrieved": "2026-09-14",
+  "note": "Open Market Operations page: rate at which depository institutions lend reserve balances to others overnight; FOMC page: eight meetings."
+ },
+ {
+  "id": "bry-06#b4",
+  "field": "paragraph",
+  "claim": "Short rates track short end; mortgages track long yields; Fed calls chain transmission \"usually with a lag of months or longer\".",
+  "verdict": "fixed",
+  "severity": "unsourced",
+  "edits": [
+   {
+    "path": "blocks[4].text",
+    "old": "The policy rate matters to households because other rates are priced off the curve. Savings accounts, money market funds and short certificates of deposit tend to track the short end, so their rates move soon after the FOMC acts. A 30-year fixed mortgage is priced closer to long Treasury yields, which is why mortgage rates can move before a policy meeting, on expectations, and sometimes barely react to the meeting itself. The Federal Reserve describes this chain as the transmission of monetary policy: a change at the short end works its way through financial conditions to spending, hiring and prices, usually with a lag of months or longer.",
+    "new": "The policy rate matters to households because other rates are priced off the curve. Savings accounts, money market funds and short certificates of deposit tend to track the short end, so their rates move soon after the FOMC acts. A 30-year fixed mortgage is priced closer to long Treasury yields, which is why mortgage rates can move before a policy meeting, on expectations, and sometimes barely react to the meeting itself. The Federal Reserve describes this chain as the transmission of monetary policy: a change at the short end works its way through financial conditions to spending, hiring and prices, and those effects build over time."
+   }
+  ],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+  "retrieved": "2026-09-14",
+  "note": "Fed page uses \"transmission of monetary policy\" and says effects arrive \"over time\" but states no lag length; the sentence attributed a months-long lag to the Fed. Reworded to match the cited page."
+ },
+ {
+  "id": "bry-06#b5",
+  "field": "callout",
+  "claim": "Cards and savings rates near short end; long mortgages near long end; only short end set by the Fed.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+  "retrieved": "2026-09-14",
+  "note": "Fed: fed funds changes rapidly reflected in short-term loan rates; longer-term rates tied to expectations."
+ },
+ {
+  "id": "bry-06#b6",
+  "field": "quiz",
+  "claim": "FOMC hikes 25 bp: short yields rise, 10-year may rise less, hold, or fall; answerIndex 1.",
+  "verdict": "correct",
+  "severity": "none",
+  "edits": [],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+  "retrieved": "2026-09-14",
+  "note": "Re-solved. Choice 2 gives a wrong reason and \"exactly\"/\"cannot\" choices are clearly false; single best answer."
+ },
+ {
+  "id": "bry-06#b7",
+  "field": "takeaways",
+  "claim": "Takeaways on FOMC target, long yields, household rates, transmission lag.",
+  "verdict": "fixed",
+  "severity": "unsourced",
+  "edits": [
+   {
+    "path": "blocks[7].items[3]",
+    "old": "Policy changes reach spending and prices through transmission, with a lag of months or longer.",
+    "new": "Policy changes reach spending and prices through transmission, and the effects take time to build."
+   }
+  ],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/monetary-policy-what-are-its-goals-how-does-it-work.htm",
+  "retrieved": "2026-09-14",
+  "note": "Aligned with b4 fix; cited Fed page says effects come \"over time\" without specifying months."
+ },
+ {
+  "id": "bry-06#sources",
+  "field": "sources",
+  "claim": "FOMC, Open Market Operations, Monetary Policy goals pages; interest on reserves not covered by any cited page.",
+  "verdict": "fixed",
+  "severity": "unsourced",
+  "edits": [
+   {
+    "path": "sources[1].url",
+    "old": "https://www.federalreserve.gov/monetarypolicy/openmarket.htm",
+    "new": "https://www.federalreserve.gov/monetarypolicy/policytools.htm"
+   },
+   {
+    "path": "sources[1].documentTitle",
+    "old": "Policy Tools: Open Market Operations",
+    "new": "Policy Tools"
+   }
+  ],
+  "sourceURL": "https://www.federalreserve.gov/monetarypolicy/policytools.htm",
+  "retrieved": "2026-09-14",
+  "note": "Open Market Operations page does not mention interest on reserve balances (b0). Policy Tools page (opened) lists both Open Market Operations and Interest on Reserve Balances. Date fields unchanged."
+ }
+]
