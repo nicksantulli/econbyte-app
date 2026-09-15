@@ -177,7 +177,7 @@ struct CompareGraphicView: View {
                         Text(row.label)
                             .font(.system(.caption2, design: .rounded).weight(.semibold))
                             .foregroundColor(palette.secondary)
-                            .lineLimit(2)
+                            .lineLimit(3)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     ForEach(Array(row.values.enumerated()), id: \.offset) { _, value in
@@ -201,7 +201,7 @@ struct TimelineGraphicView: View {
     let timeline: TimelineGraphic
     let size: GraphicSize
     let palette: GraphicPalette
-    @ScaledMetric(relativeTo: .caption2) private var whenWidth: CGFloat = 84
+    private let whenWidth: CGFloat = 88
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -225,7 +225,7 @@ struct TimelineGraphicView: View {
                     Text(event.label)
                         .font(.system(size == .regular ? .caption : .caption2, design: .rounded))
                         .foregroundColor(palette.ink)
-                        .lineLimit(2)
+                        .lineLimit(3)
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.vertical, size == .regular ? 3 : 1)
                         .frame(maxWidth: .infinity, alignment: .leading)

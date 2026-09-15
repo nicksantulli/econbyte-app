@@ -8,8 +8,9 @@ struct BarsGraphicView: View {
     let bars: BarsGraphic
     let size: GraphicSize
     let palette: GraphicPalette
-    @ScaledMetric(relativeTo: .caption2) private var labelWidth: CGFloat = 104
-    @ScaledMetric(relativeTo: .caption2) private var valueWidth: CGFloat = 58
+    // Fixed columns: at large text the label wraps instead of squeezing the bar.
+    private let labelWidth: CGFloat = 108
+    private let valueWidth: CGFloat = 64
 
     var body: some View {
         let maxValue = max(bars.items.map(\.value).max() ?? 1, 1e-9)
@@ -19,7 +20,7 @@ struct BarsGraphicView: View {
                     Text(item.label)
                         .font(.system(size == .regular ? .caption : .caption2, design: .rounded))
                         .foregroundColor(palette.ink)
-                        .lineLimit(2)
+                        .lineLimit(3)
                         .minimumScaleFactor(0.8)
                         .frame(width: labelWidth, alignment: .leading)
                     GeometryReader { geo in
@@ -36,6 +37,7 @@ struct BarsGraphicView: View {
                         .foregroundColor(palette.ink)
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(width: valueWidth, alignment: .trailing)
                 }
             }
