@@ -1788,7 +1788,7 @@
       "name": "Economic History",
       "productID": "com.nsantulli.econbyte.pack.history",
       "icon": "clock.arrow.circlepath",
-      "summary": "Four episodes that still shape how economies are run: the first great bubbles, the Great Depression, 1970s stagflation, and the 2008 financial crisis, told from primary sources.",
+      "summary": "Four episodes that still shape how economies are run: the first great bubbles, the Great Depression, 1970s stagflation, and the 2008 financial crisis, told from official sources.",
       "topics": [
         {
           "topicID": "tulip-south-sea",
@@ -1823,8 +1823,8 @@
               "cardID": "tsb-002",
               "topicID": "tulip-south-sea",
               "title": "Tulip Mania: How It Began",
-              "definition": "Tulips reached Western Europe from Turkey in the 1600s and quickly became a status symbol in the Netherlands, prized because they were rare and beautiful. Bulbs that produced flowers with streaked, flame-like petals were valued far above plain single-colour ones. A market for bulbs developed, growers began bidding prices up, and buyers who had never grown a flower joined in, hoping to resell at a profit.",
-              "example": "By 1636 tulip bulbs had become the fourth-largest export of the Netherlands. By January 1637 a single rare bulb was valued at about the price of one of the finest houses in Amsterdam. The flower had not changed; only the number of people expecting to resell it had.",
+              "definition": "Tulips reached Western Europe from Turkey in the late 1500s and by the early 1600s had become a status symbol in the Netherlands, prized because they were rare and beautiful. Bulbs that produced flowers with streaked, flame-like petals were valued far above plain single-color ones. A market for bulbs developed, growers began bidding prices up, and buyers who had never grown a flower joined in, hoping to resell at a profit.",
+              "example": "One Fed account says that by 1636 tulip bulbs had become the fourth-largest export of the Netherlands. By January 1637 a single rare bulb was valued at about the price of one of the finest houses in Amsterdam. The flower had not changed; only the number of people expecting to resell it had.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -1866,7 +1866,7 @@
               "topicID": "tulip-south-sea",
               "title": "February 1637: The Crash",
               "definition": "A speculative market lives on a steady arrival of new buyers willing to pay more than the last one. When they stop arriving, holders who bought only to resell all want out at once, and with no bids underneath, the price does not drift down; it collapses. This is the greater-fool problem: the plan depends on finding someone who will pay more, whatever the asset is really worth.",
-              "example": "In February 1637 buyers stepped back from Dutch tulip bulbs. Sellers rushed to get out before prices fell further, and the market collapsed entirely. Bulbs valued weeks earlier at the price of an Amsterdam mansion found no one willing to pay anything close, because the only reason to pay had been the next buyer.",
+              "example": "In February 1637 buyers stepped back from Dutch tulip bulbs. Sellers rushed to get out before prices fell further, and the market collapsed. Bulbs valued weeks earlier at the price of an Amsterdam mansion found no buyer near that price. Historians still debate how far the losses spread beyond the traders directly involved.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -1887,7 +1887,7 @@
               "topicID": "tulip-south-sea",
               "title": "The South Sea Company",
               "definition": "The South Sea Company was set up in England in 1711. It lent money to the government and, in return, received exclusive trading rights in Spanish South America, although very little trade ever happened. Its real business was government debt, which made it a rival to the Bank of England, itself founded in 1694 as a private bank that acted as banker to the state and raised money for war.",
-              "example": "The Bank of England opened for business on 1 August 1694, founded chiefly to pay for the war against France. Seventeen years later, in 1711, the South Sea Company was created and set its sights on the same job of servicing the national debt, the work that had largely been the Bank's.",
+              "example": "The Bank of England opened for business on August 1, 1694, founded chiefly to pay for the war against France. Seventeen years later, in 1711, the South Sea Company was created and set its sights on the same job of servicing the national debt, the work that had largely been the Bank's.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -1929,7 +1929,7 @@
               "topicID": "tulip-south-sea",
               "title": "Where the Word \"Bubble\" Comes From",
               "definition": "The financial meaning of the word bubble was coined in England in 1720, after the rise and collapse of South Sea Company shares. That boom drew in a swarm of copycat companies selling shares in schemes with little or no real business behind them, some openly fraudulent. Parliament answered with the Bubble Act of 1720, which restricted the raising of money from the public without a royal charter.",
-              "example": "One scheme of 1720 advertised itself as a venture of great advantage whose purpose nobody was allowed to know, and still found subscribers. The Bubble Act passed the same year. The pattern of a genuine boom surrounded by fraud recurred in later episodes; the 1720 case simply gave it a name.",
+              "example": "One scheme of 1720 reportedly advertised itself as a venture of great advantage whose purpose nobody was allowed to know, and still found subscribers. The Bubble Act passed in June 1720, before the crash rather than after it. The pattern of a genuine boom surrounded by fraud recurred in later episodes; the 1720 case simply gave it a name.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -1974,7 +1974,7 @@
           "icon": "building.columns",
           "order": 2,
           "access": "pack",
-          "summary": "How a stock market crash became a decade-long slump: bank runs, a shrinking money supply, the gold standard, the 1933 bank holiday, and the reforms that followed.",
+          "summary": "How a stock market crash was followed by a decade-long slump: bank runs, a shrinking money supply, the gold standard, the 1933 bank holiday, and the reforms that followed.",
           "cards": [
             {
               "cardID": "dep-001",
@@ -2009,7 +2009,7 @@
               "topicID": "great-depression",
               "title": "A Run on the Bank",
               "definition": "A bank run happens when many depositors demand their cash at the same time. Banks lend most of their deposits out, so even a sound bank cannot pay everyone at once. Fear spreads: when one bank closes, depositors at others rush to withdraw before their bank is next. A run that jumps from bank to bank is a banking panic.",
-              "example": "In November 1930 the collapse of a large banking group centred in Nashville, Tennessee set off a cascade across the South; in December 1930 hundreds of banks suspended operations. About one-third of those reopened within a few months, but most were liquidated. In June 1931 a new crisis erupted in Chicago.",
+              "example": "In November 1930 the collapse of a large banking group centered in Nashville, Tennessee set off a cascade across the South; in December 1930 hundreds of banks suspended operations. About one-third of those reopened within a few months, but most were liquidated. In June 1931 a new crisis erupted in Chicago.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -2093,8 +2093,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Banking Panics of 1931-33",
                 "url": "https://www.federalreservehistory.org/essays/banking-panics-1931-33",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2114,8 +2114,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Emergency Banking Act of 1933",
                 "url": "https://www.federalreservehistory.org/essays/emergency-banking-act-of-1933",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2135,15 +2135,15 @@
               "topicID": "great-depression",
               "title": "Deposit Insurance Is Born",
               "definition": "Deposit insurance is a promise that if a bank fails, depositors get their money back up to a stated limit, paid from a fund the banks themselves finance. The Banking Act of 1933, signed on June 16, 1933, created the Federal Deposit Insurance Corporation to run it. The same law separated commercial banking from investment banking and let regulators cap the interest banks paid on deposits.",
-              "example": "The temporary insurance fund began on January 1, 1934, covering deposits up to $2,500; the permanent plan in July 1934 raised the limit to $5,000. Insurance was the most controversial provision and drew veto threats. The law's separation of banks from securities firms was repealed in 1999.",
+              "example": "The temporary insurance fund began on January 1, 1934, covering deposits up to $2,500; in July 1934 the limit was raised to $5,000. Insurance was the most controversial provision and drew veto threats. The law's separation of banks from securities firms was repealed in 1999.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Banking Act of 1933 (Glass-Steagall)",
                 "url": "https://www.federalreservehistory.org/essays/glass-steagall-act",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2170,8 +2170,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Roosevelt's Gold Program",
                 "url": "https://www.federalreservehistory.org/essays/roosevelts-gold-program",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2228,7 +2228,7 @@
               "cardID": "stg-002",
               "topicID": "stagflation-1970s",
               "title": "Closing the Gold Window",
-              "definition": "Under the Bretton Woods system, designed in 1944, foreign governments could exchange U.S. dollars for gold at a fixed price, and other currencies were pegged to the dollar. Closing the gold window meant the United States stopped honouring that exchange. Without the gold anchor, currencies moved to floating rates set by markets, and the dollar's value depended on confidence rather than a metal.",
+              "definition": "Under the Bretton Woods system, designed in 1944, foreign governments could exchange U.S. dollars for gold at a fixed price, and other currencies were pegged to the dollar. Closing the gold window meant the United States stopped honoring that exchange. Without the gold anchor, currencies moved to floating rates set by markets, and the dollar's value depended on confidence rather than a metal.",
               "example": "On August 15, 1971 the president announced three measures at once: foreign governments could no longer convert dollars into gold at $35 an ounce, wages and prices were frozen for 90 days, and imports carried a new 10 percent surcharge. A later agreement tried to re-peg exchange rates, but the fixed-rate era was over.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
@@ -2236,8 +2236,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Nixon Ends Convertibility of U.S. Dollars to Gold and Announces Wage/Price Controls",
                 "url": "https://www.federalreservehistory.org/essays/gold-convertibility-ends",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2257,15 +2257,15 @@
               "topicID": "stagflation-1970s",
               "title": "The 1973 Oil Embargo",
               "definition": "A supply shock is a sudden jump in the cost of something the whole economy depends on. It raises prices and cuts output at the same time, which puts a central bank in a bind: fighting the inflation deepens the slump, and fighting the slump feeds the inflation. Oil in 1973 was the textbook case, because almost every good needed energy to make and move.",
-              "example": "On October 19, 1973 Arab oil exporters embargoed the United States. Crude oil went from about $2.90 a barrel before the embargo to $11.65 by January 1974, nearly 4 times the price. The embargo was lifted in March 1974, but by mid-1973 wholesale industrial prices had already been rising more than 10 percent a year.",
+              "example": "On October 19, 1973 Arab oil exporters embargoed the United States. Crude oil went from about $2.90 a barrel before the embargo to $11.65 by January 1974, about 4 times the price. The embargo was lifted in March 1974, but by mid-1973 wholesale industrial prices had already been rising more than 10 percent a year.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Oil Shock of 1973-74",
                 "url": "https://www.federalreservehistory.org/essays/oil-shock-of-1973-74",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2285,7 +2285,7 @@
               "topicID": "stagflation-1970s",
               "title": "Wage and Price Controls",
               "definition": "Price controls are legal limits on what sellers may charge and employers may pay. They can hold measured inflation down for a while, but they do not remove the pressure underneath. Sellers respond with shortages and lower quality, and when the controls end, prices catch up. Controls treat the symptom; the cause, too much money chasing too few goods, is untouched.",
-              "example": "The controls announced in 1971 ran in 3 phases until 1974. They slowed price rises only temporarily and made shortages worse, especially for food and energy. Once they lapsed, the delayed increases arrived: inflation exceeded 12 percent in 1974, higher than before the freeze began.",
+              "example": "The controls announced in 1971 ran in a series of phases until April 1974. They slowed price rises only temporarily and made shortages worse, especially for food and energy. After they lapsed, with an oil shock also under way, inflation exceeded 12 percent in 1974, far higher than before the freeze began.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -2313,15 +2313,15 @@
               "topicID": "stagflation-1970s",
               "title": "The Second Oil Shock",
               "definition": "A second supply shock is more dangerous than the first when people have learned to expect inflation. Workers demand raises to keep up, firms raise prices to cover them, and the shock feeds a spiral. By 1979 the Federal Reserve had concluded that if inflation was going to be dealt with at all, it would have to be through monetary policy.",
-              "example": "Revolution in Iran between early 1978 and early 1979 cut its oil output by 4.8 million barrels a day, about 7 percent of world production. Oil prices more than doubled between April 1979 and April 1980. U.S. consumer inflation, below 5 percent in early 1976, was near 7 percent by March 1979 and 9 percent by the end of 1979.",
+              "example": "Revolution in Iran between early 1978 and early 1979 cut its oil output by 4.8 million barrels a day, about 7 percent of world production. Oil prices more than doubled between April 1979 and April 1980.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Oil Shock of 1978-79",
                 "url": "https://www.federalreservehistory.org/essays/oil-shock-of-1978-79",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2329,8 +2329,8 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "million barrels per day; percent of world oil production; percent inflation rate",
-                "geography": "United States and world oil market",
+                "units": "million barrels per day; percent of world oil production",
+                "geography": "Iran and world oil market",
                 "claimKind": "observation",
                 "observationPeriod": "1978 to 1980",
                 "retrievalDate": "2026-09-14"
@@ -2341,15 +2341,15 @@
               "topicID": "stagflation-1970s",
               "title": "October 1979: A New Way to Tighten",
               "definition": "A central bank can steer by setting a short-term interest rate or by controlling the quantity of reserves banks hold. On October 6, 1979 the Federal Reserve switched from the first to the second, letting interest rates swing much more widely so that money growth could be reined in. The change was a signal that inflation would be fought whatever the cost to rates.",
-              "example": "Inflation was 7.7 percent in January 1979 and peaked at 11.6 percent in March 1980. The federal funds rate reached a record 20 percent in late 1980. The medicine worked slowly: inflation was down to 6.1 percent in early 1982 and 3.7 percent the year after, but unemployment peaked at 10.8 percent in late 1982.",
+              "example": "Inflation, measured by the price index for personal consumption expenditures, was 7.7 percent in January 1979 and peaked at 11.6 percent in March 1980. The federal funds rate reached a record 20 percent in late 1980. The medicine worked slowly: inflation was down to 6.1 percent in early 1982 and 3.7 percent the year after, but unemployment peaked at 10.8 percent in late 1982.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Volcker's Announcement of Anti-Inflation Measures",
                 "url": "https://www.federalreservehistory.org/essays/anti-inflation-measures",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2357,7 +2357,7 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "percent inflation rate; percent federal funds rate; percent unemployment rate",
+                "units": "percent inflation rate (PCE price index); percent federal funds rate; percent unemployment rate",
                 "geography": "United States",
                 "claimKind": "observation",
                 "observationPeriod": "1979 to 1983",
@@ -2369,7 +2369,7 @@
               "topicID": "stagflation-1970s",
               "title": "The 1981-82 Recession",
               "definition": "Disinflation is a fall in the rate of inflation, and it usually has a price. Tight money raises interest rates, borrowing slows, and firms cut output and jobs before prices respond. Interest-sensitive industries such as home building and cars are hit first, because their customers borrow to buy. The recession of 1981 to 1982 was the bill for ending the Great Inflation.",
-              "example": "The recession ran from July 1981 to November 1982. Unemployment neared 11 percent at the end of 1982, the postwar high, while inflation fell from 11 percent in June 1979 to 5 percent by October 1982. Goods-producing sectors took 90 percent of the job losses in 1982; unemployment reached 22 percent in residential construction and 24 percent in auto manufacturing.",
+              "example": "The recession ran from July 1981 to November 1982. Unemployment neared 11 percent at the end of 1982, then the highest since World War II, while inflation fell from 11 percent in June 1979 to 5 percent by October 1982. Goods-producing sectors took 90 percent of the job losses in 1982; unemployment reached 22 percent in residential construction and 24 percent in auto manufacturing.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
@@ -2435,7 +2435,7 @@
               "topicID": "crisis-2008",
               "title": "A Housing Bubble",
               "definition": "A housing bubble is a run-up in home prices driven by the expectation that they will keep rising rather than by rents or incomes. Because most homes are bought with borrowed money, rising prices make lenders confident and loans easy, which pushes prices higher. When prices turn, borrowers owe more than the house is worth and lenders discover the collateral was the bubble itself.",
-              "example": "Across the United States, home prices roughly doubled between 1998 and 2006 and peaked in early 2007. They then fell by more than a fifth on average from the first quarter of 2007 to the second quarter of 2011, a decline of a size the country had not seen since the 1930s.",
+              "example": "On one national index, U.S. home prices more than doubled between 1998 and 2006 and peaked in early 2007. They then fell by more than a fifth on average from the first quarter of 2007 to the second quarter of 2011, a decline of a size the country had not seen since the 1930s.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -2470,8 +2470,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Subprime Mortgage Crisis",
                 "url": "https://www.federalreservehistory.org/essays/subprime-mortgage-crisis",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2498,8 +2498,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "The Great Recession",
                 "url": "https://www.federalreservehistory.org/essays/great-recession-of-200709",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2526,8 +2526,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Federal Reserve Credit Programs During the Meltdown",
                 "url": "https://www.federalreservehistory.org/essays/fed-credit-programs",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2015-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2582,8 +2582,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "The Great Recession",
                 "url": "https://www.federalreservehistory.org/essays/great-recession-of-200709",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2602,16 +2602,16 @@
               "cardID": "gfc-007",
               "topicID": "crisis-2008",
               "title": "Deposit Insurance in a Panic",
-              "definition": "Deposit insurance removes the reason to run on a bank: if the bank fails, the insurer pays depositors up to the limit, so there is nothing to gain by pulling money out first. Coverage is counted per depositor, per insured bank, per ownership category, so one person can be covered separately for a single account, a joint account, and a retirement account at the same bank.",
-              "example": "The FDIC was founded in 1933, and since then no depositor has lost a penny of insured funds. The standard limit is $250,000 per depositor, per insured bank, per ownership category. A saver with $250,000 in a single account and $250,000 in a joint account at 1 bank is fully covered on both.",
+              "definition": "Deposit insurance removes the reason to run on a bank: if the bank fails, the insurer pays depositors up to the limit, so there is nothing to gain by pulling money out first. The promise works only if depositors trust it, which is why the U.S. coverage limit was raised during the 2008 crisis.",
+              "example": "In October 2008, in the middle of the crisis, Congress raised the standard coverage limit to $250,000, at first only until the end of 2009. The Dodd-Frank Act of July 2010 then made the $250,000 limit permanent.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intermediate",
               "source": {
                 "organization": "Federal Deposit Insurance Corporation",
-                "documentTitle": "Understanding Deposit Insurance",
-                "url": "https://www.fdic.gov/resources/deposit-insurance/understanding-deposit-insurance",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "documentTitle": "Dodd-Frank Wall Street Reform and Consumer Protection Act of 2010",
+                "url": "https://www.fdic.gov/resources/deposit-insurance/deposit-insurance-fund/dif-historical/dif-dodd-frank-act.html",
+                "publicationDate": "2023-06-21",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
@@ -2619,10 +2619,10 @@
                 "reviewer": "EconByte editorial review (Dudley Development)"
               },
               "claim": {
-                "units": "U.S. dollars of standard deposit insurance coverage per depositor per ownership category",
+                "units": "U.S. dollars of standard deposit insurance coverage per depositor",
                 "geography": "United States",
                 "claimKind": "observation",
-                "observationPeriod": "standard maximum in force at verification in 2026; FDIC founded 1933",
+                "observationPeriod": "2008 to 2010",
                 "retrievalDate": "2026-09-14"
               }
             },
@@ -2638,8 +2638,8 @@
                 "organization": "Federal Reserve History (Federal Reserve Bank of St. Louis)",
                 "documentTitle": "Dodd-Frank Act",
                 "url": "https://www.federalreservehistory.org/essays/dodd-frank-act",
-                "publicationDate": "2026-09-14",
-                "datePrecision": "observed-on-verification-date",
+                "publicationDate": "2013-11-22",
+                "datePrecision": "stated-on-page",
                 "verificationDate": "2026-09-14"
               },
               "editorial": {
