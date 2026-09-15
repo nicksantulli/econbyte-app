@@ -79,6 +79,7 @@ struct LessonView: View {
         VStack(spacing: 0) {
             VStack(spacing: EconSpace.xs) {
                 StoryProgressBar(pages: lesson.pageCount, current: page)
+                    .padding(.trailing, EconSpace.gutter - EconSpace.xxs)
                 HStack(spacing: EconSpace.xs) {
                     Text(course.title.uppercased())
                         .font(EconType.overline)
@@ -94,8 +95,9 @@ struct LessonView: View {
             .padding(.top, EconSpace.xs)
 
             GeometryReader { geo in
+                ScrollViewReader { proxy in
                 ScrollView {
-                    pageContent
+                    pageContent(proxy)
                         .padding(.horizontal, EconSpace.gutter)
                         .padding(.vertical, EconSpace.m)
                         .frame(maxWidth: .infinity, minHeight: geo.size.height, alignment: .top)
@@ -117,6 +119,7 @@ struct LessonView: View {
                         go(to: dx < 0 ? min(page + 1, lastPage) : page - 1)
                     }
                 )
+                }
             }
             .clipped()
 
@@ -154,10 +157,15 @@ struct LessonView: View {
     // MARK: Pages
 
     @ViewBuilder
-    private var pageContent: some View {
+    private func pageContent(_ proxy: ScrollViewProxy) -> some View {
         if let beat {
             StoryBeatView(beat: beat, lesson: lesson, beatIndex: page - 1,
-                          onSources: { showSources = true })
+                          onSources: { showSources = true },
+                          onReveal: {
+                              withAnimation(reduceMotion ? nil : .easeOut(duration: 0.25)) {
+                                  proxy.scrollTo(StoryCheckView.feedbackAnchor, anchor: .bottom)
+                              }
+                          })
                 .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("storyPage-\(page)")
         } else {
@@ -270,10 +278,13 @@ struct StoryBeatView: View {
     let lesson: Lesson
     let beatIndex: Int
     var onSources: () -> Void
+    var onReveal: () -> Void = {}
 
     var body: some View {
         VStack(alignment: .leading, spacing: EconSpace.l) {
-            if let visual = beat.visual {
+            // A check puts its question first and its picture after the
+            // feedback, so the answer's explanation lands on screen.
+            if beat.kind != .check, let visual = beat.visual {
                 StoryVisualView(visual: visual, lesson: lesson)
             }
             switch beat.kind {
@@ -281,9 +292,12 @@ struct StoryBeatView: View {
             case .term: terms
             case .check:
                 if let check = beat.check, let ordinal = lesson.checkOrdinal(forBeat: beatIndex) {
-                    StoryCheckView(quiz: check, lessonID: lesson.lessonID, ordinal: ordinal)
+                    StoryCheckView(quiz: check, lessonID: lesson.lessonID, ordinal: ordinal, onReveal: onReveal)
                 }
             case .recap: recap
+            }
+            if beat.kind == .check, let visual = beat.visual {
+                StoryVisualView(visual: visual, lesson: lesson)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -405,6 +419,8 @@ struct StoryCheckView: View {
     let quiz: Quiz
     let lessonID: String
     let ordinal: Int
+    var onReveal: () -> Void = {}
+    static let feedbackAnchor = "storyCheckFeedback"
     @EnvironmentObject private var progress: CourseProgressStore
     @State private var chosen: Int?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -426,6 +442,7 @@ struct StoryCheckView: View {
                         progress.recordCheck(lessonID: lessonID, ordinal: ordinal, correct: index == quiz.answerIndex)
                         UINotificationFeedbackGenerator().notificationOccurred(index == quiz.answerIndex ? .success : .warning)
                     }
+                    DispatchQueue.main.async { onReveal() }
                 } label: {
                     HStack(spacing: EconSpace.s) {
                         Image(systemName: symbol(for: index))
@@ -460,6 +477,7 @@ struct StoryCheckView: View {
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("quizExplanation")
+                .id(Self.feedbackAnchor)
                 .transition(.opacity)
             }
         }

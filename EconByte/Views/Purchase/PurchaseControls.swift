@@ -44,7 +44,6 @@ struct PurchaseButton: View {
                             Text(detail)
                                 .font(EconType.subheadlineEmphasis)
                                 .monospacedDigit()
-                                .accessibilityIdentifier("\(identifier)-price")
                         }
                     }
                     .multilineTextAlignment(.center)
@@ -65,8 +64,8 @@ struct PurchaseButton: View {
             .buttonStyle(PurchaseButtonPressStyle())
             .disabled(!model.isEnabled)
             .opacity(model.isEnabled || model.style == .owned ? 1 : 0.55)
-            .accessibilityElement(children: .ignore)
-            .accessibilityAddTraits(.isButton)
+            // The Button stays its own accessibility element (so "not enabled"
+            // is announced and testable); the label joins action and price.
             .accessibilityLabel(Text(model.label))
             .accessibilityIdentifier(identifier)
 
