@@ -5130,7 +5130,7 @@
               "topicID": "compounding-time",
               "title": "Regular Deposits Over Time",
               "definition": "Compounding also works on money added along the way. Each deposit starts earning interest once it is in the account, so a steady monthly amount builds a balance with two parts: the deposits themselves and the interest they have earned. Deposits made early have the longest to compound, so the interest share of the balance keeps growing the longer the schedule runs. The SEC's compound interest calculator asks for the same inputs: a starting amount, a monthly contribution, a number of years, a rate, and how often interest compounds.",
-              "example": "An illustrative  a month at 5 percent a year, compounded monthly, grows to about ,500 after 10 years, of which ,000 is deposits and about ,500 is interest. After 30 years the balance is about ,200 on ,000 of deposits, so interest makes up more than half of it. The rate is an assumption; real returns vary from year to year.",
+              "example": "An illustrative $100 a month at 5 percent a year, compounded monthly, grows to about $15,500 after 10 years, of which $12,000 is deposits and about $3,500 is interest. After 30 years the balance is about $83,200 on $36,000 of deposits, so interest makes up more than half of it. The rate is an assumption; real returns vary from year to year.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {
@@ -5158,7 +5158,7 @@
               "topicID": "compounding-time",
               "title": "A Guaranteed Doubling",
               "definition": "A Series EE savings bond is a U.S. Treasury bond that earns a fixed rate of interest for up to 30 years. Treasury adds one promise on top of the rate: the bond will double in value 20 years after purchase, and if the fixed rate has not done that by then, Treasury adds the difference at 20 years. Because the guarantee arrives only at that date, how long the bond is held matters as much as the rate printed on it.",
-              "example": "EE bonds issued from May 1 to October 31, 2026 earn a fixed 2.40 percent. At that rate alone, ,000 would grow to only about ,600 in 20 years, so Treasury makes up the rest to bring it to ,000. Doubling in 20 years works out to roughly 3.5 percent a year, paid in full only to an owner who waits the whole 20 years.",
+              "example": "EE bonds issued from May 1 to October 31, 2026 earn a fixed 2.40 percent. At that rate alone, $1,000 would grow to only about $1,600 in 20 years, so Treasury makes up the rest to bring it to $2,000. Doubling in 20 years works out to roughly 3.5 percent a year, paid in full only to an owner who waits the whole 20 years.",
               "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
               "difficulty": "intro",
               "source": {

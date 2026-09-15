@@ -517,7 +517,7 @@
    {
     "path": "example",
     "old": "The SEC's classroom example: $100 earning 5 percent a year becomes $105 after 1 year and $110.25 after 2, the extra 25 cents being interest on the first year's $5. Left alone, the $100 grows to more than $162 after 10 years and to almost $340 after 25 years, without another cent deposited. Nearly all of the later gain is interest on earlier interest.",
-    "new": "An illustrative  a month at 5 percent a year, compounded monthly, grows to about ,500 after 10 years, of which ,000 is deposits and about ,500 is interest. After 30 years the balance is about ,200 on ,000 of deposits, so interest makes up more than half of it. The rate is an assumption; real returns vary from year to year."
+    "new": "An illustrative $100 a month at 5 percent a year, compounded monthly, grows to about $15,500 after 10 years, of which $12,000 is deposits and about $3,500 is interest. After 30 years the balance is about $83,200 on $36,000 of deposits, so interest makes up more than half of it. The rate is an assumption; real returns vary from year to year."
    },
    {
     "path": "source",
@@ -580,7 +580,7 @@
    {
     "path": "example",
     "old": "The Federal Open Market Committee judges that inflation of 2 percent over the longer run, measured by the annual change in the price index for personal consumption expenditures, is most consistent with its mandate for price stability and maximum employment. At exactly that pace, prices double in roughly 35 years, so $100 set aside at the start buys about what $50 did.",
-    "new": "EE bonds issued from May 1 to October 31, 2026 earn a fixed 2.40 percent. At that rate alone, ,000 would grow to only about ,600 in 20 years, so Treasury makes up the rest to bring it to ,000. Doubling in 20 years works out to roughly 3.5 percent a year, paid in full only to an owner who waits the whole 20 years."
+    "new": "EE bonds issued from May 1 to October 31, 2026 earn a fixed 2.40 percent. At that rate alone, $1,000 would grow to only about $1,600 in 20 years, so Treasury makes up the rest to bring it to $2,000. Doubling in 20 years works out to roughly 3.5 percent a year, paid in full only to an owner who waits the whole 20 years."
    },
    {
     "path": "source",
