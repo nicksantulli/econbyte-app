@@ -52,10 +52,22 @@ struct AdBannerSlot: View {
                 .accessibilityElement(children: .contain)
                 .accessibilityHidden(loadedHeight == 0)
                 .accessibilityLabel("Advertisement")
+                // DEBUG only: the loaded strip height, so a UI test can measure
+                // the VISIBLE strip (the element's frame also spans the safe
+                // area below it). Empty in Release.
+                .accessibilityValue(Text(Self.debugHeightValue(loadedHeight)))
                 .accessibilityIdentifier("ad.banner.\(placement.rawValue)")
             }
         }
         // A removed slot must not come back reserving the old ad's height.
         .onChange(of: surface) { _ in loadedHeight = 0 }
+    }
+
+    static func debugHeightValue(_ height: CGFloat) -> String {
+        #if DEBUG
+        return String(Int(height.rounded()))
+        #else
+        return ""
+        #endif
     }
 }

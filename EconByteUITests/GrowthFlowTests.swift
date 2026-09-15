@@ -164,6 +164,10 @@ final class GrowthFlowTests: XCTestCase {
 
         openSettings(app)
         let reminders = app.switches["settingsRemindersToggle"]
+        // Notifications sits below Pro and Purchases; a List does not build
+        // rows under the fold, so scroll to it (Phase 11: the Purchases footer
+        // can now carry "Prices unavailable — Try again", which is taller).
+        for _ in 0..<6 where !(reminders.exists && reminders.isHittable) { app.swipeUp() }
         XCTAssertTrue(reminders.waitForExistence(timeout: 8))
         XCTAssertEqual(reminders.value as? String, "0", "reminders default off")
     }

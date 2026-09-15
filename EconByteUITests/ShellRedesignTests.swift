@@ -217,17 +217,27 @@ final class ShellRedesignTests: XCTestCase {
             return nil
         }
 
-        guard let home = waitForBanner("ad.banner.home") else {
+        guard let home = waitForBanner("ad.banner.home", timeout: 45) else {
+            capture("p11-10-banner-home-nofill")
             throw XCTSkip("Google's test banner did not fill on this simulator; banner layout not asserted")
         }
+        /// The visible strip: the element's top plus the loaded ad height the
+        /// slot reports (DEBUG accessibility value). The element's own frame
+        /// runs on through the bottom safe area, so its maxY is not the ad.
+        func visibleMaxY(_ banner: XCUIElement) -> CGFloat {
+            let height = Double(banner.value as? String ?? "").map { CGFloat($0) } ?? banner.frame.height
+            return banner.frame.minY + height
+        }
         let tabBar = app.tabBars.firstMatch
-        XCTAssertLessThanOrEqual(home.frame.maxY, tabBar.frame.minY + 1, "Home banner sits above the tab bar")
         capture("p11-10-banner-home")
+        NSLog("[p11] home banner frame \(home.frame) value \(String(describing: home.value)) tab bar \(tabBar.frame)")
+        XCTAssertGreaterThanOrEqual(visibleMaxY(home) - home.frame.minY, 50, "an adaptive banner is at least 50 pt tall")
+        XCTAssertLessThanOrEqual(visibleMaxY(home), tabBar.frame.minY + 1, "Home banner sits above the tab bar")
 
         app.tabBars.buttons["Browse"].tap()
         if let browse = waitForBanner("ad.banner.browse") {
-            XCTAssertLessThanOrEqual(browse.frame.maxY, tabBar.frame.minY + 1, "Browse banner sits above the tab bar")
             capture("p11-11-banner-browse")
+            XCTAssertLessThanOrEqual(visibleMaxY(browse), tabBar.frame.minY + 1, "Browse banner sits above the tab bar")
         } else {
             XCTFail("the Browse banner did not fill although Home's did")
         }
@@ -237,18 +247,24 @@ final class ShellRedesignTests: XCTestCase {
                       "no banner while searching (sensitive surface; keyboard would lift it over results)")
         capture("p11-12-browse-search-no-banner")
         app.buttons["browseSearchClearButton"].tap()
+        if app.keyboards.count > 0 { app.swipeDown() }
 
-        app.tabBars.buttons["Home"].tap()
-        app.buttons["homeGroceryLine"].tap()
+        let homeTab = app.tabBars.buttons["Home"]
+        XCTAssertTrue(homeTab.waitForExistence(timeout: 10))
+        homeTab.tap()
+        let grocery = app.buttons["homeGroceryLine"]
+        for _ in 0..<4 where !(grocery.exists && grocery.isHittable) { app.swipeDown() }
+        XCTAssertTrue(grocery.waitForExistence(timeout: 10), "Home's grocery line starts today's set")
+        grocery.tap()
         XCTAssertTrue(app.buttons["cardModeCloseButton"].waitForExistence(timeout: 10))
         if let card = waitForBanner("ad.banner.card") {
             let window = app.windows.firstMatch.frame
-            XCTAssertLessThanOrEqual(card.frame.maxY, window.maxY - 20, "card banner clears the home indicator")
+            capture("p11-13-banner-card")
+            XCTAssertLessThanOrEqual(visibleMaxY(card), window.maxY - 20, "card banner clears the home indicator")
             let next = app.buttons["Next →"]
             if next.exists {
                 XCTAssertLessThanOrEqual(next.frame.maxY, card.frame.minY + 1, "the banner never covers Next")
             }
-            capture("p11-13-banner-card")
         } else {
             XCTFail("the card-session banner did not fill although Home's did")
         }
