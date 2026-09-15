@@ -21,6 +21,11 @@ struct DiagramView: View {
             case .supportResistance:     SupportResistanceDiagram()
             case .feeDrag:               FeeDragDiagram()
             case .trendChannel:          TrendChannelDiagram()
+            case .rebalanceBands:        RebalanceBandsDiagram()
+            case .trendlineAnchors:      TrendlineAnchorsDiagram()
+            case .baseRateGrid:          BaseRateGridDiagram()
+            case .creditSpreadStack:     CreditSpreadStackDiagram()
+            case .breakevenSplit:        BreakevenSplitDiagram()
             }
         }
         .frame(maxWidth: .infinity)
@@ -53,6 +58,16 @@ struct DiagramView: View {
             return "Diagram of two growth curves starting at the same point; the one paying a yearly fee ends lower, and the gap widens over time."
         case .trendChannel:
             return "Diagram of an up-sloping channel with the price making higher highs and higher lows between two parallel lines."
+        case .rebalanceBands:
+            return "Diagram of one category's share of a mix over time: a dashed target line inside a shaded tolerance band. The share drifts up to the top of the band, is rebalanced back to the target, and then drifts again."
+        case .trendlineAnchors:
+            return "Diagram of a rising price path with three marked lows. Line A runs through lows 1 and 2; the shallower Line B runs through lows 1 and 3. At the right the price dips below Line A but not below Line B."
+        case .baseRateGrid:
+            return "Diagram of 100 illustrative past cases as dots. 20 are ringed because a pattern appeared, and 11 of those were followed by a higher price. Of the other 80, 44 were also followed by a higher price: 55 percent either way."
+        case .creditSpreadStack:
+            return "Diagram of three yield bars: a Treasury, a higher-rated company and a lower-rated company. Each has the same Treasury yield at the bottom; the company bars add a credit spread on top, larger for the lower-rated company."
+        case .breakevenSplit:
+            return "Diagram of two yield bars for the same maturity: a taller nominal Treasury yield and a shorter TIPS real yield, with the gap between them marked as breakeven inflation, approximately nominal minus real."
         }
     }
 }
@@ -419,6 +434,284 @@ private struct TrendChannelDiagram: View {
                     .stroke(Econ.white.opacity(0.9), lineWidth: 2)
                 DiagramLabel(text: "Higher highs", color: Econ.amberLight).position(x: x0 + 70, y: point(0.14, 0.42).y - 22)
                 DiagramLabel(text: "Higher lows", color: Econ.sky).position(x: x0 + 140, y: point(0.56, 0.38).y + 22)
+            }
+        }
+    }
+}
+
+// MARK: - 10. Rebalance bands (Phase 13)
+
+private struct RebalanceBandsDiagram: View {
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width, h = geo.size.height
+            let x0: CGFloat = 34, x1 = w - 12
+            let yBottom = h - 30, yTop: CGFloat = 16
+            let point: (CGFloat, CGFloat) -> CGPoint = { t, level in
+                CGPoint(x: x0 + (x1 - x0) * t, y: yBottom - (yBottom - yTop) * level)
+            }
+            let target: CGFloat = 0.42, half: CGFloat = 0.17
+            let drift: [CGPoint] = [(0, 0.42), (0.1, 0.47), (0.2, 0.45), (0.3, 0.52), (0.4, 0.55), (0.5, 0.59)]
+                .map { point($0.0, $0.1) }
+            let after: [CGPoint] = [(0.5, 0.42), (0.62, 0.46), (0.74, 0.44), (0.87, 0.50), (1.0, 0.53)]
+                .map { point($0.0, $0.1) }
+            ZStack(alignment: .topLeading) {
+                Axes(xLabel: "Time", yLabel: "Share of the mix")
+                Rectangle()
+                    .fill(Econ.sky.opacity(0.14))
+                    .frame(width: x1 - x0, height: point(0, target - half).y - point(0, target + half).y)
+                    .position(x: (x0 + x1) / 2, y: point(0, target).y)
+                Path { p in p.move(to: point(0, target)); p.addLine(to: point(1, target)) }
+                    .stroke(Econ.sky, style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+                Path { p in p.move(to: drift[0]); for pt in drift.dropFirst() { p.addLine(to: pt) } }
+                    .stroke(Econ.white.opacity(0.9), lineWidth: 2)
+                Path { p in p.move(to: point(0.5, 0.59)); p.addLine(to: point(0.5, target)) }
+                    .stroke(Econ.amber, style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
+                Path { p in p.move(to: after[0]); for pt in after.dropFirst() { p.addLine(to: pt) } }
+                    .stroke(Econ.white.opacity(0.9), lineWidth: 2)
+                Circle().fill(Econ.amber).frame(width: 8, height: 8).position(point(0.5, 0.59))
+                DiagramLabel(text: "Tolerance band", color: Econ.sky)
+                    .position(x: x0 + 52, y: point(0, target + half).y - 9)
+                DiagramLabel(text: "Target share", color: Econ.sky)
+                    .position(x: x0 + 44, y: point(0, target).y + 12)
+                DiagramLabel(text: "Rebalanced", color: Econ.amberLight)
+                    .position(x: point(0.5, 0.59).x + 40, y: point(0.5, 0.59).y - 10)
+            }
+        }
+    }
+}
+
+// MARK: - 11. Trend line anchors (Phase 13)
+
+private struct TrendlineAnchorsDiagram: View {
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width, h = geo.size.height
+            let x0: CGFloat = 34, x1 = w - 12
+            let yBottom = h - 30, yTop: CGFloat = 16
+            let point: (CGFloat, CGFloat) -> CGPoint = { t, level in
+                CGPoint(x: x0 + (x1 - x0) * t, y: yBottom - (yBottom - yTop) * level)
+            }
+            // Lows 1 (0.04, 0.10), 2 (0.42, 0.44) and 3 (0.86, 0.52). Line A runs
+            // through lows 1 and 2; Line B through lows 1 and 3. Every point of the
+            // path stays on or above Line A until the dip to low 3, which is below
+            // Line A and on Line B.
+            let lows: [(CGFloat, CGFloat)] = [(0.04, 0.10), (0.42, 0.44), (0.86, 0.52)]
+            let path: [CGPoint] = [(0, 0.16), (0.04, 0.10), (0.18, 0.40), (0.28, 0.36), (0.42, 0.44),
+                                   (0.56, 0.74), (0.68, 0.70), (0.78, 0.88), (0.86, 0.52), (1.0, 0.66)]
+                .map { point($0.0, $0.1) }
+            let slopeA = (lows[1].1 - lows[0].1) / (lows[1].0 - lows[0].0)
+            let slopeB = (lows[2].1 - lows[0].1) / (lows[2].0 - lows[0].0)
+            let lineA: (CGFloat) -> CGPoint = { t in point(t, lows[0].1 + slopeA * (t - lows[0].0)) }
+            let lineB: (CGFloat) -> CGPoint = { t in point(t, lows[0].1 + slopeB * (t - lows[0].0)) }
+            ZStack(alignment: .topLeading) {
+                Axes(xLabel: "Time", yLabel: "Price")
+                Path { p in p.move(to: lineA(0.0)); p.addLine(to: lineA(1.0)) }
+                    .stroke(Econ.amber.opacity(0.9), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+                Path { p in p.move(to: lineB(0.0)); p.addLine(to: lineB(1.0)) }
+                    .stroke(Econ.sky.opacity(0.9), style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+                Path { p in p.move(to: path[0]); for pt in path.dropFirst() { p.addLine(to: pt) } }
+                    .stroke(Econ.white.opacity(0.9), lineWidth: 2)
+                ForEach(Array(lows.enumerated()), id: \.offset) { i, low in
+                    let pt = point(low.0, low.1)
+                    Circle().stroke(Econ.white, lineWidth: 1.5).frame(width: 9, height: 9).position(pt)
+                    DiagramLabel(text: "\(i + 1)").position(x: pt.x + (i == 0 ? 10 : 0), y: pt.y + 13)
+                }
+                DiagramLabel(text: "Line A", color: Econ.amberLight)
+                    .position(x: x1 - 22, y: lineA(1.0).y + 12)
+                DiagramLabel(text: "Line B", color: Econ.sky)
+                    .position(x: x1 - 22, y: lineB(1.0).y + 12)
+                DiagramLabel(text: "A break of one line, not the other", color: Econ.white.opacity(0.85))
+                    .frame(width: 130)
+                    .multilineTextAlignment(.center)
+                    .position(x: point(0.62, 0).x, y: point(0, 0.14).y)
+            }
+        }
+    }
+}
+
+// MARK: - 12. Base-rate grid (Phase 13)
+
+/// The fixed, illustrative counts `BaseRateGridDiagram` draws. Pinned by test so
+/// the lesson caption ("11 of 20 … 44 of 80") always matches the picture.
+enum BaseRateGrid {
+    static let caseCount = 100
+    /// Cases where the pattern appeared: every fifth dot, 20 in all.
+    static let patternIndices: [Int] = (0..<caseCount).filter { $0 % 5 == 2 }
+    static let patternRoseCount = 11
+    static let otherRoseCount = 44
+
+    /// A deterministic scatter so filled dots are not bunched in reading order.
+    private static func scattered(_ indices: [Int]) -> [Int] {
+        indices.sorted { ($0 * 37) % 101 < ($1 * 37) % 101 }
+    }
+
+    static var patternRoseIndices: Set<Int> { Set(scattered(patternIndices).prefix(patternRoseCount)) }
+    static var otherRoseIndices: Set<Int> {
+        let pattern = Set(patternIndices)
+        return Set(scattered((0..<caseCount).filter { !pattern.contains($0) }).prefix(otherRoseCount))
+    }
+}
+
+private struct BaseRateGridDiagram: View {
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width, h = geo.size.height
+            let side = min(h - 34, w * 0.55)
+            let step = side / 10
+            let pattern = Set(BaseRateGrid.patternIndices)
+            let rose = BaseRateGrid.patternRoseIndices.union(BaseRateGrid.otherRoseIndices)
+            VStack(spacing: 8) {
+                HStack(alignment: .center, spacing: 16) {
+                    ZStack(alignment: .topLeading) {
+                        ForEach(0..<BaseRateGrid.caseCount, id: \.self) { i in
+                            let center = CGPoint(x: step * (CGFloat(i % 10) + 0.5), y: step * (CGFloat(i / 10) + 0.5))
+                            Circle()
+                                .fill(rose.contains(i) ? Econ.sky : Econ.mist.opacity(0.22))
+                                .frame(width: step * 0.5, height: step * 0.5)
+                                .position(center)
+                            if pattern.contains(i) {
+                                Circle().stroke(Econ.amber, lineWidth: 1.5)
+                                    .frame(width: step * 0.85, height: step * 0.85)
+                                    .position(center)
+                            }
+                        }
+                    }
+                    .frame(width: side, height: side)
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack(spacing: 8) {
+                            Circle().stroke(Econ.amber, lineWidth: 1.5).frame(width: 13, height: 13)
+                            DiagramLabel(text: "Pattern appeared")
+                        }
+                        HStack(spacing: 8) {
+                            Circle().fill(Econ.sky).frame(width: 9, height: 9).frame(width: 13)
+                            DiagramLabel(text: "Price higher afterward")
+                        }
+                        HStack(spacing: 8) {
+                            Circle().fill(Econ.mist.opacity(0.22)).frame(width: 9, height: 9).frame(width: 13)
+                            DiagramLabel(text: "Not higher")
+                        }
+                    }
+                }
+                DiagramLabel(text: "Illustrative: 11 of 20 with the pattern (55%) vs 44 of 80 without it (55%)",
+                             color: Econ.amberLight)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(width: w, height: h)
+        }
+    }
+}
+
+// MARK: - 13. Credit spread stack (Phase 13)
+
+private struct CreditSpreadStackDiagram: View {
+    private struct Bar { let name: String; let spread: CGFloat }
+    private let bars = [
+        Bar(name: "Treasury", spread: 0),
+        Bar(name: "Higher-rated company", spread: 0.18),
+        Bar(name: "Lower-rated company", spread: 0.42),
+    ]
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width, h = geo.size.height
+            let plotBottom = h - 40, plotTop: CGFloat = 10
+            let unit = plotBottom - plotTop
+            let base: CGFloat = 0.48
+            let slot = (w - 40) / CGFloat(bars.count)
+            ZStack(alignment: .topLeading) {
+                Path { p in
+                    p.move(to: CGPoint(x: 28, y: plotTop))
+                    p.addLine(to: CGPoint(x: 28, y: plotBottom))
+                    p.addLine(to: CGPoint(x: w - 6, y: plotBottom))
+                }
+                .stroke(Econ.mist.opacity(0.5), lineWidth: 1)
+                Text("Yield")
+                    .font(.system(size: 10, design: .rounded)).foregroundColor(Econ.subtext)
+                    .rotationEffect(.degrees(-90))
+                    .position(x: 10, y: (plotTop + plotBottom) / 2)
+                ForEach(Array(bars.enumerated()), id: \.offset) { i, bar in
+                    let cx = 34 + slot * (CGFloat(i) + 0.5)
+                    let barW = min(slot - 14, 96)
+                    let baseH = unit * base
+                    let spreadH = unit * bar.spread
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Econ.tide.opacity(0.75))
+                        .frame(width: barW, height: baseH)
+                        .position(x: cx, y: plotBottom - baseH / 2)
+                    DiagramLabel(text: "Treasury yield")
+                        .frame(width: barW - 4)
+                        .multilineTextAlignment(.center)
+                        .position(x: cx, y: plotBottom - baseH / 2)
+                    if bar.spread > 0 {
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(Econ.amber.opacity(0.85))
+                            .frame(width: barW, height: spreadH)
+                            .position(x: cx, y: plotBottom - baseH - spreadH / 2)
+                        DiagramLabel(text: "Credit spread", color: Econ.ink)
+                            .frame(width: barW - 4)
+                            .multilineTextAlignment(.center)
+                            .position(x: cx, y: plotBottom - baseH - spreadH / 2)
+                    }
+                    DiagramLabel(text: bar.name)
+                        .frame(width: slot - 4)
+                        .multilineTextAlignment(.center)
+                        .position(x: cx, y: plotBottom + 18)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - 14. Breakeven split (Phase 13)
+
+private struct BreakevenSplitDiagram: View {
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width, h = geo.size.height
+            let plotBottom = h - 34, plotTop: CGFloat = 12
+            let unit = plotBottom - plotTop
+            let nominalH = unit * 0.86, realH = unit * 0.38
+            let barW = min(w * 0.2, 84)
+            let nominalX = 34 + w * 0.16, realX = 34 + w * 0.42
+            let bracketX = realX + barW / 2 + 12
+            ZStack(alignment: .topLeading) {
+                Path { p in
+                    p.move(to: CGPoint(x: 28, y: plotTop))
+                    p.addLine(to: CGPoint(x: 28, y: plotBottom))
+                    p.addLine(to: CGPoint(x: w - 6, y: plotBottom))
+                }
+                .stroke(Econ.mist.opacity(0.5), lineWidth: 1)
+                Text("Yield, same maturity")
+                    .font(.system(size: 10, design: .rounded)).foregroundColor(Econ.subtext)
+                    .rotationEffect(.degrees(-90))
+                    .position(x: 10, y: (plotTop + plotBottom) / 2)
+                RoundedRectangle(cornerRadius: 3).fill(Econ.tide.opacity(0.8))
+                    .frame(width: barW, height: nominalH)
+                    .position(x: nominalX, y: plotBottom - nominalH / 2)
+                RoundedRectangle(cornerRadius: 3).fill(Econ.sky.opacity(0.8))
+                    .frame(width: barW, height: realH)
+                    .position(x: realX, y: plotBottom - realH / 2)
+                // Guide from the nominal bar's top across to the bracket.
+                Path { p in
+                    p.move(to: CGPoint(x: nominalX + barW / 2, y: plotBottom - nominalH))
+                    p.addLine(to: CGPoint(x: bracketX, y: plotBottom - nominalH))
+                }
+                .stroke(Econ.mist.opacity(0.6), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                Path { p in
+                    let top = plotBottom - nominalH, bottom = plotBottom - realH
+                    p.move(to: CGPoint(x: bracketX - 6, y: top)); p.addLine(to: CGPoint(x: bracketX, y: top))
+                    p.addLine(to: CGPoint(x: bracketX, y: bottom)); p.addLine(to: CGPoint(x: bracketX - 6, y: bottom))
+                }
+                .stroke(Econ.amber, lineWidth: 2)
+                DiagramLabel(text: "Breakeven inflation ≈ nominal − real", color: Econ.amberLight)
+                    .frame(width: max(w - bracketX - 16, 80), alignment: .leading)
+                    .position(x: bracketX + 8 + max(w - bracketX - 16, 80) / 2, y: plotBottom - (nominalH + realH) / 2)
+                DiagramLabel(text: "Nominal Treasury")
+                    .frame(width: barW + 30).multilineTextAlignment(.center)
+                    .position(x: nominalX, y: plotBottom + 14)
+                DiagramLabel(text: "TIPS real yield")
+                    .frame(width: barW + 30).multilineTextAlignment(.center)
+                    .position(x: realX, y: plotBottom + 14)
             }
         }
     }

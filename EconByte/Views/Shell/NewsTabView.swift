@@ -44,21 +44,30 @@ struct NewsTabView: View {
         }
     }
 
+    /// Every brief on the device, newest first: the one shown above, then the
+    /// older ones. With no published brief yet these are the bundled samples.
+    private var archiveBriefs: [DailyBrief] {
+        (briefs.latest.map { [$0] } ?? []) + briefs.history
+    }
+
     private var archiveSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             EconSectionLabel(text: "Archive")
-            if briefs.history.isEmpty {
-                Text("Earlier briefs appear here as they're published.")
-                    .font(.system(size: 13, design: .rounded))
-                    .foregroundColor(Econ.subtext)
-            } else {
-                ForEach(briefs.history) { past in
+            ForEach(archiveBriefs) { past in
                     Button { archived = past } label: {
                         HStack(spacing: 12) {
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(BriefDates.long(past.briefDate))
-                                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                                    .foregroundColor(Econ.subtext)
+                                HStack(spacing: 6) {
+                                    Text(BriefDates.long(past.briefDate))
+                                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                                        .foregroundColor(Econ.subtext)
+                                    if past.briefDate == briefs.latest?.briefDate {
+                                        Text("LATEST")
+                                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                                            .foregroundColor(Econ.sky)
+                                            .accessibilityLabel("latest")
+                                    }
+                                }
                                 Text(past.headline)
                                     .font(.system(size: 14, weight: .medium, design: .rounded))
                                     .foregroundColor(Econ.white)
@@ -76,7 +85,11 @@ struct NewsTabView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("briefArchiveRow-\(past.briefDate)")
-                }
+            }
+            if briefs.history.isEmpty {
+                Text("Earlier briefs appear here as they're published.")
+                    .font(.system(size: 13, design: .rounded))
+                    .foregroundColor(Econ.subtext)
             }
         }
     }

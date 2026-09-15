@@ -143,8 +143,11 @@ public enum CurriculumCatalog {
 
     public static let resourceName = "curriculum-v1.1"
     public static let expectedTopicCount = 15
-    public static let expectedCardCount = 120
-    public static let expectedCardsPerTopic = 8
+    /// 1.1 shipped 8 cards per topic (120); 1.1.4 Phase 13 (content growth)
+    /// grows every topic to 12 (180). New cards continue each topic's id
+    /// sequence (`inf-009`…); no shipped id is renumbered.
+    public static let expectedCardCount = 180
+    public static let expectedCardsPerTopic = 12
     public static let expectedFreeTopicIDs = ["inflation", "interest-rates"]
 
     /// Loads the bundled catalog and fails closed on any structural defect.

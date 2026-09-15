@@ -7,11 +7,14 @@
 //   node scripts/validate_content.mjs packs   <file> [--fragment] [--net]
 //   node scripts/validate_content.mjs courses <file> [--fragment] [--net]
 //   node scripts/validate_content.mjs brief   <file> [--net]
+//   node scripts/validate_content.mjs curriculum <file> [--fragment] [--net]
 //
 // `packs` mirrors PackCatalog.validate + PackCatalogTests (structure, id
 // collisions with the core catalog and other packs, approved hosts, dates,
 // stale/advice wording, declared claims). `courses` mirrors CourseCatalog.validate
-// + CourseCatalogTests. `brief` mirrors DailyBrief.validate. `--fragment`
+// + CourseCatalogTests. `brief` mirrors DailyBrief.validate. `curriculum`
+// mirrors CurriculumCatalog.validate + CurriculumCatalogTests (the core 15
+// topics, including the 1.0 legacy concept pins). `--fragment`
 // accepts a file carrying a subset of packs/courses (a writer's draft) and skips
 // the total-count checks. `--net` resolves every cited URL (GET, redirects
 // followed) and reports anything that is not a final 200; some hosts refuse
@@ -107,6 +110,8 @@ const PREDICTION_PHRASES = [
 export const ALLOWED_DIAGRAMS = new Set([
   'candle-anatomy', 'risk-return-ladder', 'diversification-basket', 'price-yield-seesaw',
   'yield-curve-shapes', 'allocation-pie', 'support-resistance', 'fee-drag', 'trend-channel',
+  // Phase 13 (content growth) additions:
+  'rebalance-bands', 'trendline-anchors', 'base-rate-grid', 'credit-spread-stack', 'breakeven-split',
 ]);
 
 export const EXPECTED_PACKS = [
@@ -123,6 +128,62 @@ export const EXPECTED_COURSES = [
   ['reading-price-charts', 'rpc'],
   ['bonds-rates-yield-curve', 'bry'],
 ];
+
+// Phase 13 (1.1.4 content growth): 12 cards in every core and pack topic,
+// 9 lessons in every course.
+export const CORE_CARDS_PER_TOPIC = 12;
+export const PACK_CARDS_PER_TOPIC = 12;
+export const LESSONS_PER_COURSE = 9;
+
+// A catalog's items may carry the date of any verification pass on or after the
+// catalog's floor and no later than its `verifiedOn` (the most recent pass), so
+// items added in a later pass record their real retrieval date without
+// restamping items that were verified earlier.
+export const VERIFICATION_FLOOR = { curriculum: '2026-08-30', packs: '2026-09-14', courses: '2026-09-14' };
+
+// CurriculumCatalogTests.approvedSourceHosts, verbatim (core cards).
+export const CORE_HOSTS = new Set([
+  'www.federalreserve.gov', 'www.federalreservehistory.org',
+  'www.newyorkfed.org', 'www.philadelphiafed.org', 'fred.stlouisfed.org',
+  'www.bls.gov', 'www.bea.gov', 'www.census.gov',
+  'fiscaldata.treasury.gov', 'home.treasury.gov', 'www.treasurydirect.gov',
+  'www.irs.gov', 'www.ssa.gov', 'www.fdic.gov',
+  'www.nber.org', 'www.conference-board.org', 'www.freddiemac.com',
+  'www.wto.org', 'ustr.gov', 'data.worldbank.org', 'www.worldbank.org',
+  'www.ecb.europa.eu', 'www.boj.or.jp', 'www.bis.org',
+  'www.oecd.org', 'www.bundesbank.de',
+  // Phase 13 additions (primary publishers already approved for packs):
+  'www.cbo.gov', 'www.imf.org', 'www.eia.gov', 'www.fhfa.gov', 'www.consumerfinance.gov',
+  'www.stlouisfed.org', 'www.clevelandfed.org', 'www.atlantafed.org', 'www.chicagofed.org',
+  'www.kansascityfed.org', 'www.bostonfed.org', 'www.richmondfed.org', 'www.dallasfed.org',
+  'www.minneapolisfed.org', 'www.frbsf.org',
+]);
+
+// ProCoursesBriefTests.approvedSourceHosts, verbatim (course lessons).
+export const COURSE_HOSTS = new Set([
+  'www.federalreserve.gov', 'www.federalreservehistory.org',
+  'www.newyorkfed.org', 'www.philadelphiafed.org', 'fred.stlouisfed.org', 'www.stlouisfed.org',
+  'www.chicagofed.org', 'www.clevelandfed.org', 'www.atlantafed.org', 'www.kansascityfed.org',
+  'www.bostonfed.org', 'www.richmondfed.org', 'www.dallasfed.org', 'www.minneapolisfed.org',
+  'www.sf.frb.org', 'www.frbsf.org',
+  'www.bls.gov', 'www.bea.gov', 'www.census.gov',
+  'fiscaldata.treasury.gov', 'home.treasury.gov', 'www.treasurydirect.gov',
+  'www.irs.gov', 'www.ssa.gov', 'www.fdic.gov', 'www.nber.org',
+  'www.cbo.gov', 'www.imf.org', 'www.sec.gov', 'www.investor.gov',
+  'www.consumerfinance.gov', 'www.finra.org', 'www.sipc.org',
+]);
+
+// CurriculumCatalogTests.legacyConcepts: the concept each 1.0 card id taught and
+// tokens (in title + definition) that concept cannot be expressed without.
+export const LEGACY_PINS = {"inf-001": ["What is Inflation?",["purchasing power","prices"]],"inf-002": ["The Consumer Price Index (CPI)",["consumer price index","basket"]],"inf-003": ["Core vs. Headline Inflation",["core","headline"]],"inf-004": ["Demand-Pull Inflation",["demand-pull"]],"inf-005": ["Cost-Push Inflation",["cost-push"]],"inf-006": ["Hyperinflation",["hyperinflation"]],"inf-007": ["Deflation: The Opposite Problem",["deflation","sustained fall"]],"inf-008": ["The Fed's 2% Inflation Target",["low but positive","buffer"]],"ir-001": ["What is an Interest Rate?",["price of borrowing","lenders receive"]],"ir-002": ["The Federal Funds Rate",["federal funds rate"]],"ir-003": ["Real vs. Nominal Interest Rates",["nominal rate","subtracts inflation"]],"ir-004": ["How Rates Cool Inflation",["borrowing costs","demand"]],"ir-005": ["The Yield Curve",["yield curve","inverted"]],"ir-006": ["Zero Interest Rate Policy (ZIRP)",["lower bound","physical cash"]],"ir-007": ["Credit Card Rates vs. The Fed",["revolving credit","reprice"]],"ir-008": ["Negative Interest Rates",["below zero","excess reserves"]],"gdp-001": ["What is GDP?",["gross domestic product","produced"]],"gdp-002": ["The Four Components of GDP",["consumption","net exports"]],"gdp-003": ["Real vs. Nominal GDP",["nominal gdp","base year"]],"gdp-004": ["GDP Per Capita",["per capita","population"]],"gdp-005": ["Recession: Two Quarters of Negative GDP",["two consecutive quarters"]],"gdp-006": ["GDP Growth Rate",["annual rate","compounded"]],"gdp-007": ["GDP vs. GNP",["gross national product","borders"]],"gdp-008": ["What GDP Misses",["market transactions"]],"sd-001": ["The Law of Demand",["demand curve","downward-sloping"]],"sd-002": ["The Law of Supply",["supply curve","upward-sloping"]],"sd-003": ["Equilibrium Price",["equilibrium"]],"sd-004": ["Price Elasticity",["elastic"]],"sd-005": ["Supply Shocks",["supply shock"]],"sd-006": ["Price Ceilings",["price ceiling","maximum"]],"sd-007": ["Price Floors",["price floor","minimum wage"]],"sd-008": ["Substitutes and Complements",["substitutes","complements"]],"lm-001": ["The Unemployment Rate",["unemployment rate","four weeks"]],"lm-002": ["The Labor Force Participation Rate",["participation rate"]],"lm-003": ["Frictional Unemployment",["frictional","churn"]],"lm-004": ["Structural Unemployment",["structural"]],"lm-005": ["The Phillips Curve",["phillips curve"]],"lm-006": ["The Gig Economy",["contractors","freelancers"]],"lm-007": ["Wage Growth and Inflation",["wage growth","productivity"]],"lm-008": ["The Jobs Report",["household","payroll"]],"tt-001": ["Why Countries Trade",["specializing","opportunity cost"]],"tt-002": ["What is a Tariff?",["tariff","tax on imported"]],"tt-003": ["Trade Deficits",["trade deficit","imported more"]],"tt-004": ["Free Trade Agreements",["free trade agreement","barriers"]],"tt-005": ["The WTO",["world trade organization","disputes"]],"tt-006": ["Protectionism",["protection","domestic industry"]],"tt-007": ["Currency and Trade",["currency","exports"]],"tt-008": ["Supply Chain Reshoring",["resilience","production"]],"hm-001": ["Why Housing is Different",["consumption good","asset"]],"hm-002": ["Mortgage Rates and Affordability",["mortgage payment","rate"]],"hm-003": ["Housing Supply Shortage",["supply","construction"]],"hm-004": ["The 2008 Housing Crash",["credit standards","defaults"]],"hm-005": ["The Lock-In Effect",["lock","fixed-rate"]],"hm-006": ["Rent vs. Own",["renting","owning"]],"hm-007": ["Institutional Investors in Housing",["landlords","institutional"]],"hm-008": ["Housing Starts",["housing starts","leading indicator"]],"cb-001": ["What Does a Central Bank Do?",["lender of last resort","supervises"]],"cb-002": ["Monetary Policy",["monetary policy","credit conditions"]],"cb-003": ["Quantitative Easing (QE)",["longer-term securities","balance sheet"]],"cb-004": ["Central Bank Independence",["independence"]],"cb-005": ["The Lender of Last Resort",["lender of last resort","panic"]],"cb-006": ["The ECB and the Eurozone",["currency union","single policy rate"]],"cb-007": ["Forward Guidance",["forward guidance"]],"cb-008": ["Digital Currencies (CBDCs)",["digital form","settle payments"]],"rec-001": ["What is a Recession?",["nber","decline"]],"rec-002": ["Leading Indicators",["leading indicators"]],"rec-003": ["The Business Cycle",["expansion","trough"]],"rec-004": ["Fiscal Stimulus During Recessions",["spending increases","tax cuts"]],"rec-005": ["Automatic Stabilizers",["automatic","unemployment insurance"]],"rec-006": ["Recessions and Jobs",["lagging indicator","unemployment"]],"rec-007": ["Soft Landing vs. Hard Landing",["soft landing","hard landing"]],"rec-008": ["K-Shaped Recoveries",["diverge","letter k"]],"dd-001": ["Deficit vs. Debt",["deficit","debt"]],"dd-002": ["Debt-to-GDP Ratio",["gross domestic product","denominator"]],"dd-003": ["Who Holds US Debt?",["by the public","trust funds"]],"dd-004": ["The Debt Ceiling",["debt limit","borrowing"]],"dd-005": ["Can Government Debt Be Bad?",["threshold","growth"]],"dd-006": ["Modern Monetary Theory (MMT)",["own currency","default"]],"dd-007": ["Entitlements and Long-Term Debt",["retirement","interest costs"]],"dd-008": ["Interest on the National Debt",["service","rates rise"]]};
+
+const CORE_TOPICS = [
+  ['inflation', 'inf'], ['interest-rates', 'ir'], ['gdp', 'gdp'], ['supply-demand', 'sd'],
+  ['labor-markets', 'lm'], ['trade-tariffs', 'tt'], ['housing-market', 'hm'], ['central-banks', 'cb'],
+  ['recessions', 'rec'], ['debt-deficits', 'dd'], ['exchange-rates', 'fx'], ['consumer-spending', 'cs'],
+  ['taxes', 'tax'], ['fiscal-policy', 'fp'], ['economic-indicators', 'ei'],
+];
+const FREE_TOPICS = ['inflation', 'interest-rates'];
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
 const YEAR = /\b(1[89]\d{2}|20\d{2})\b/g;
@@ -160,7 +221,7 @@ function checkProse(rep, where, text, verificationYear, { named = false, predict
   }
 }
 
-function checkSource(rep, where, source, verifiedOn, hosts = APPROVED_HOSTS) {
+function checkSource(rep, where, source, verifiedOn, hosts = APPROVED_HOSTS, floor = verifiedOn) {
   if (!source || typeof source !== 'object') return rep.fail(where, 'missing source block');
   for (const k of ['organization', 'documentTitle', 'url', 'publicationDate', 'datePrecision', 'verificationDate']) {
     if (!nonEmpty(source[k])) rep.fail(where, `source.${k} missing`);
@@ -175,11 +236,40 @@ function checkSource(rep, where, source, verifiedOn, hosts = APPROVED_HOSTS) {
     rep.fail(where, `unknown datePrecision ${source.datePrecision}`);
   }
   const pub = isoDate(source.publicationDate);
-  const ver = isoDate(verifiedOn);
+  const vd = isoDate(source.verificationDate);
   if (!pub) rep.fail(where, 'publicationDate is not an ISO date');
-  if (source.verificationDate !== verifiedOn) rep.fail(where, `verificationDate must equal catalog verifiedOn (${verifiedOn})`);
-  if (pub && ver && pub > ver) rep.fail(where, 'publicationDate is after verification');
+  if (!vd) rep.fail(where, 'verificationDate is not an ISO date');
+  else if (source.verificationDate > verifiedOn || source.verificationDate < floor) {
+    rep.fail(where, `verificationDate ${source.verificationDate} must fall between ${floor} and the catalog verifiedOn ${verifiedOn}`);
+  }
+  if (pub && vd && pub > vd) rep.fail(where, 'publicationDate is after verification');
   rep.url(where, source.url);
+}
+
+// Titles across the core and every pack, lowercased → card id, for duplicate warnings.
+function titleIndex(excludeCardIDs = new Set()) {
+  const index = new Map();
+  const add = (card) => { if (!excludeCardIDs.has(card.cardID)) index.set(card.title.trim().toLowerCase(), card.cardID); };
+  const core = readJSON(path.join(resources, 'curriculum-v1.1.json'));
+  core.topics.forEach(t => t.cards.forEach(add));
+  const packsFile = path.join(resources, 'packs-v1.json');
+  if (fs.existsSync(packsFile)) readJSON(packsFile).packs.forEach(p => p.topics.forEach(t => t.cards.forEach(add)));
+  return index;
+}
+
+function checkClaim(rep, cw, card) {
+  const prose = `${card.title} ${card.definition} ${card.example}`;
+  if (MAGNITUDE.test(prose) && !card.claim) rep.fail(cw, 'states a magnitude but declares no sourced claim');
+  if (!card.claim) return;
+  const cl = card.claim;
+  for (const k of ['units', 'geography', 'claimKind', 'observationPeriod', 'retrievalDate']) if (!nonEmpty(cl[k])) rep.fail(cw, `claim.${k} missing`);
+  if (cl.retrievalDate !== card.source?.verificationDate) rep.fail(cw, 'claim.retrievalDate must equal the source verificationDate');
+  if (!ANY_QUANTITY.test(card.example ?? '')) rep.fail(cw, 'declares a claim its example never makes');
+  if (cl.claimKind === 'observation') {
+    if (!/\b(1[89]\d{2}|20\d{2})\b/.test(cl.observationPeriod ?? '')) rep.fail(cw, `observation names no period year: ${cl.observationPeriod}`);
+  } else if (cl.claimKind === 'illustration') {
+    if (!(cl.units ?? '').toLowerCase().includes('illustrative')) rep.fail(cw, 'illustration units must say "illustrative"');
+  } else rep.fail(cw, `unknown claimKind ${cl.claimKind}`);
 }
 
 // MARK: - Packs
@@ -206,6 +296,7 @@ function validatePacks(file, { fragment = false } = {}) {
   const prefixes = new Set(core.topics.flatMap(t => t.cards.map(c => c.cardID.split('-').slice(0, -1).join('-'))));
   const seenProducts = new Set();
   const expectedMap = new Map(EXPECTED_PACKS);
+  const titles = titleIndex(new Set(packs.flatMap(p => (p.topics ?? []).flatMap(t => (t.cards ?? []).map(c => c.cardID)))));
 
   // A fragment must also not collide with the shipped packs it will join.
   if (fragment) {
@@ -242,7 +333,7 @@ function validatePacks(file, { fragment = false } = {}) {
       if (topic.access !== 'pack') rep.fail(tw, `access must be "pack", not ${topic.access}`);
       if (topic.order !== ti + 1) rep.fail(tw, `declares order ${topic.order} at position ${ti + 1}`);
       const cards = Array.isArray(topic.cards) ? topic.cards : [];
-      if (cards.length !== 8) rep.fail(tw, `carries ${cards.length} cards, expected 8`);
+      if (cards.length !== PACK_CARDS_PER_TOPIC) rep.fail(tw, `carries ${cards.length} cards, expected ${PACK_CARDS_PER_TOPIC}`);
       if (!cards.some(c => c.difficulty === 'intro')) rep.fail(tw, 'needs at least one intro card');
       let topicPrefix = null;
       cards.forEach((card, ci) => {
@@ -267,27 +358,19 @@ function validatePacks(file, { fragment = false } = {}) {
         if (card.definition === card.example) rep.fail(cw, 'example equals definition');
         if (card.example && card.definition && card.example.toLowerCase().includes(card.definition.toLowerCase())) rep.fail(cw, 'example merely restates the definition');
         if (!card.editorial || card.editorial.status !== 'verified' || !nonEmpty(card.editorial.reviewer)) rep.fail(cw, 'editorial must be {status: "verified", reviewer: ...}');
-        checkSource(rep, cw, card.source, verifiedOn);
+        checkSource(rep, cw, card.source, verifiedOn, APPROVED_HOSTS, VERIFICATION_FLOOR.packs);
         const prose = `${card.title} ${card.definition} ${card.example}`;
         checkProse(rep, cw, prose, verificationYear);
         if (!/\d/.test(card.example ?? '')) rep.fail(cw, 'example has no concrete particular (no digit)');
-        if (MAGNITUDE.test(prose) && !card.claim) rep.fail(cw, 'states a magnitude but declares no sourced claim');
-        if (card.claim) {
-          const cl = card.claim;
-          for (const k of ['units', 'geography', 'claimKind', 'observationPeriod', 'retrievalDate']) if (!nonEmpty(cl[k])) rep.fail(cw, `claim.${k} missing`);
-          if (cl.retrievalDate !== verifiedOn) rep.fail(cw, 'claim.retrievalDate must equal verifiedOn');
-          if (!ANY_QUANTITY.test(card.example ?? '')) rep.fail(cw, 'declares a claim its example never makes');
-          if (cl.claimKind === 'observation') {
-            if (!/\b(1[89]\d{2}|20\d{2})\b/.test(cl.observationPeriod ?? '')) rep.fail(cw, `observation names no period year: ${cl.observationPeriod}`);
-          } else if (cl.claimKind === 'illustration') {
-            if (!(cl.units ?? '').toLowerCase().includes('illustrative')) rep.fail(cw, 'illustration units must say "illustrative"');
-          } else rep.fail(cw, `unknown claimKind ${cl.claimKind}`);
-        }
+        checkClaim(rep, cw, card);
+        const dup = titles.get((card.title ?? '').trim().toLowerCase());
+        if (dup && dup !== card.cardID) rep.warn(cw, `title duplicates ${dup}; check the concept is not a duplicate`);
       });
     });
   });
   const total = packs.reduce((n, p) => n + (p.topics ?? []).reduce((m, t) => m + (t.cards ?? []).length, 0), 0);
-  if (!fragment && total !== EXPECTED_PACKS.length * 32) rep.fail('catalog', `expected ${EXPECTED_PACKS.length * 32} cards, found ${total}`);
+  const expectedTotal = EXPECTED_PACKS.length * 4 * PACK_CARDS_PER_TOPIC;
+  if (!fragment && total !== expectedTotal) rep.fail('catalog', `expected ${expectedTotal} cards, found ${total}`);
   return rep;
 }
 
@@ -336,6 +419,7 @@ function validateCourses(file, { fragment = false } = {}) {
     checkProse(rep, where, `${course.title} ${course.summary}`, verificationYear, { named: true, prediction: true });
     const lessons = Array.isArray(course.lessons) ? course.lessons : [];
     if (lessons.length < 5) rep.fail(where, `has ${lessons.length} lessons, need at least 5`);
+    if (!fragment && lessons.length !== LESSONS_PER_COURSE) rep.fail(where, `has ${lessons.length} lessons, expected ${LESSONS_PER_COURSE}`);
     lessons.forEach((lesson, li) => {
       const lw = `${where}/lesson ${lesson.lessonID ?? li}`;
       const expectedID = `${prefix}-${String(li + 1).padStart(2, '0')}`;
@@ -431,7 +515,7 @@ function validateCourses(file, { fragment = false } = {}) {
       if (prose > 6000) rep.warn(lw, `prose is ${prose} chars — long for a phone lesson`);
       const sources = Array.isArray(lesson.sources) ? lesson.sources : [];
       if (sources.length < 1) rep.fail(lw, 'needs at least one primary source');
-      sources.forEach((s, si) => checkSource(rep, `${lw}/source ${si + 1}`, s, verifiedOn));
+      sources.forEach((s, si) => checkSource(rep, `${lw}/source ${si + 1}`, s, verifiedOn, COURSE_HOSTS, VERIFICATION_FLOOR.courses));
     });
   });
   return rep;
@@ -497,6 +581,81 @@ function validateBrief(file) {
   return rep;
 }
 
+// MARK: - Core curriculum
+
+function validateCurriculum(file, { fragment = false } = {}) {
+  const rep = new Report();
+  const catalog = readJSON(file);
+  if (catalog.schemaVersion !== 1) rep.fail('catalog', `unsupported schemaVersion ${catalog.schemaVersion}`);
+  if (catalog.catalogVersion !== '1.1') rep.fail('catalog', `catalogVersion must stay "1.1", got ${catalog.catalogVersion}`);
+  if (catalog.disclaimer !== CANONICAL_DISCLAIMER) rep.fail('catalog', 'disclaimer is not the canonical text');
+  if (!nonEmpty(catalog.editorialPolicy) || catalog.editorialPolicy.length <= 80) rep.fail('catalog', 'editorialPolicy missing/too short');
+  const verifiedOn = catalog.verifiedOn;
+  const ver = isoDate(verifiedOn);
+  if (!ver) rep.fail('catalog', 'verifiedOn is not an ISO date');
+  else if (ver > new Date()) rep.fail('catalog', 'verifiedOn is in the future');
+  const verificationYear = ver ? ver.getUTCFullYear() : 0;
+
+  const topics = Array.isArray(catalog.topics) ? catalog.topics : [];
+  if (topics.length !== CORE_TOPICS.length) rep.fail('catalog', `expected ${CORE_TOPICS.length} topics, found ${topics.length}`);
+  const allowedCounts = fragment ? [8, CORE_CARDS_PER_TOPIC] : [CORE_CARDS_PER_TOPIC];
+  const seenCards = new Set();
+  const byID = new Map();
+  const titles = titleIndex(new Set(topics.flatMap(t => (t.cards ?? []).map(c => c.cardID))));
+
+  topics.forEach((topic, ti) => {
+    const [expID, prefix] = CORE_TOPICS[ti] ?? [];
+    const tw = `topic ${topic.topicID ?? ti}`;
+    if (topic.topicID !== expID) rep.fail(tw, `unexpected topic at position ${ti + 1} (expected ${expID})`);
+    if (topic.order !== ti + 1) rep.fail(tw, `declares order ${topic.order} at position ${ti + 1}`);
+    for (const k of ['topicID', 'name', 'summary', 'icon']) if (!nonEmpty(topic[k])) rep.fail(tw, `missing ${k}`);
+    const expectedAccess = FREE_TOPICS.includes(topic.topicID) ? 'free' : 'paid';
+    if (topic.access !== expectedAccess) rep.fail(tw, `access must stay "${expectedAccess}", got ${topic.access}`);
+    const cards = Array.isArray(topic.cards) ? topic.cards : [];
+    if (!allowedCounts.includes(cards.length)) rep.fail(tw, `carries ${cards.length} cards, expected ${allowedCounts.join(' or ')}`);
+    if (!cards.some(c => c.difficulty === 'intro')) rep.fail(tw, 'needs at least one intro card');
+    cards.forEach((card, ci) => {
+      const cw = `${tw}/card ${card.cardID ?? ci}`;
+      if (!nonEmpty(card.cardID)) return rep.fail(cw, 'no cardID');
+      const expectedID = `${prefix}-${String(ci + 1).padStart(3, '0')}`;
+      if (card.cardID !== expectedID) rep.fail(cw, `breaks the stable-ID sequence (expected ${expectedID})`);
+      if (seenCards.has(card.cardID)) rep.fail(cw, 'duplicate card id'); seenCards.add(card.cardID);
+      byID.set(card.cardID, card);
+      if (card.topicID !== topic.topicID) rep.fail(cw, `declares topic ${card.topicID} inside ${topic.topicID}`);
+      if (LEGACY_PINS[card.cardID]) {
+        if (card.supersedes !== `econbyte-1.0:${card.cardID}`) rep.fail(cw, 'a 1.0 card must declare supersedes econbyte-1.0:<id>');
+      } else if (card.supersedes != null || card.supersedesNote != null) rep.fail(cw, 'a card new since 1.0 supersedes nothing');
+      for (const k of ['title', 'definition', 'example', 'disclaimer']) if (!nonEmpty(card[k])) rep.fail(cw, `missing ${k}`);
+      if (card.disclaimer !== CANONICAL_DISCLAIMER) rep.fail(cw, 'disclaimer is not the canonical text');
+      if (!['intro', 'intermediate', 'advanced'].includes(card.difficulty)) rep.fail(cw, `unknown difficulty ${card.difficulty}`);
+      if ((card.definition ?? '').length < 60) rep.fail(cw, 'definition is too thin (<60 chars)');
+      if ((card.example ?? '').length < 40) rep.fail(cw, 'example is too thin (<40 chars)');
+      if (card.example && card.definition && card.example.toLowerCase().includes(card.definition.toLowerCase())) rep.fail(cw, 'example merely restates the definition');
+      if (!card.editorial || card.editorial.status !== 'verified' || !nonEmpty(card.editorial.reviewer)) rep.fail(cw, 'editorial must be {status: "verified", reviewer: ...}');
+      checkSource(rep, cw, card.source, verifiedOn, CORE_HOSTS, VERIFICATION_FLOOR.curriculum);
+      checkProse(rep, cw, `${card.title} ${card.definition} ${card.example}`, verificationYear);
+      if (!/\d/.test(card.example ?? '')) rep.fail(cw, 'example has no concrete particular (no digit)');
+      checkClaim(rep, cw, card);
+      const dup = titles.get((card.title ?? '').trim().toLowerCase());
+      if (dup && dup !== card.cardID) rep.warn(cw, `title duplicates ${dup}; check the concept is not a duplicate`);
+    });
+  });
+
+  // Legacy concept pins: every 1.0 id still teaches its concept (or declares the
+  // change), and no other card's title + definition satisfies another id's pin.
+  const prose = new Map([...byID].map(([id, c]) => [id, `${c.title} ${c.definition}`.toLowerCase()]));
+  for (const [id, [concept, tokens]] of Object.entries(LEGACY_PINS)) {
+    const card = byID.get(id);
+    if (!card) { rep.fail(`pin ${id}`, 'shipped 1.0 card id is missing'); continue; }
+    if (!tokens.every(t => prose.get(id).includes(t)) && !nonEmpty(card.supersedesNote)) rep.fail(`pin ${id}`, `no longer teaches "${concept}" and has no supersedesNote`);
+    for (const [other, text] of prose) {
+      if (other !== id && tokens.every(t => text.includes(t))) rep.fail(`card ${other}`, `title + definition satisfy ${id}'s legacy pin ${JSON.stringify(tokens)}; reword so the pin still identifies one card`);
+    }
+  }
+  if (!fragment && seenCards.size !== CORE_TOPICS.length * CORE_CARDS_PER_TOPIC) rep.fail('catalog', `expected ${CORE_TOPICS.length * CORE_CARDS_PER_TOPIC} cards, found ${seenCards.size}`);
+  return rep;
+}
+
 // MARK: - Network
 
 async function resolve(rep) {
@@ -521,7 +680,7 @@ async function resolve(rep) {
 async function main() {
   const [kind, file, ...flags] = process.argv.slice(2);
   if (!kind || !file) {
-    console.error('usage: validate_content.mjs packs|courses|brief <file> [--fragment] [--net]');
+    console.error('usage: validate_content.mjs packs|courses|brief|curriculum <file> [--fragment] [--net]');
     process.exit(2);
   }
   const fragment = flags.includes('--fragment');
@@ -530,6 +689,7 @@ async function main() {
   if (kind === 'packs') rep = validatePacks(file, { fragment });
   else if (kind === 'courses') rep = validateCourses(file, { fragment });
   else if (kind === 'brief') rep = validateBrief(file);
+  else if (kind === 'curriculum') rep = validateCurriculum(file, { fragment });
   else { console.error(`unknown kind ${kind}`); process.exit(2); }
 
   for (const w of rep.warnings) console.log(`WARN  ${w}`);

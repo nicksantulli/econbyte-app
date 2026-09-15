@@ -38,7 +38,7 @@
       "internalID": "EB000000000003",
       "localizations": [
         {
-          "description": "Four topics, 32 sourced cards: Stocks & Bonds, Funds & Diversification, Risk & Return, How Markets Work. One-time purchase, restores across devices.",
+          "description": "Four topics, 48 sourced cards: Stocks & Bonds, Funds & Diversification, Risk & Return, How Markets Work. One-time purchase, restores across devices.",
           "displayName": "Markets & Investing Basics",
           "locale": "en_US"
         }
@@ -53,7 +53,7 @@
       "internalID": "EB000000000004",
       "localizations": [
         {
-          "description": "Four topics, 32 sourced cards: Household Budgets, Credit & Borrowing, Saving & Retirement, Insurance & Safety Nets. One-time purchase, restores across devices.",
+          "description": "Four topics, 48 sourced cards: Household Budgets, Credit & Borrowing, Saving & Retirement, Insurance & Safety Nets. One-time purchase, restores across devices.",
           "displayName": "Personal Economics",
           "locale": "en_US"
         }
@@ -68,7 +68,7 @@
       "internalID": "EB000000000005",
       "localizations": [
         {
-          "description": "Four topics, 32 sourced cards: Tulip Mania & the South Sea Bubble, 1929 & the Great Depression, 1970s Stagflation, The 2008 Financial Crisis. One-time purchase, restores across devices.",
+          "description": "Four topics, 48 sourced cards: Tulip Mania & the South Sea Bubble, 1929 & the Great Depression, 1970s Stagflation, The 2008 Financial Crisis. One-time purchase, restores across devices.",
           "displayName": "Economic History",
           "locale": "en_US"
         }
@@ -83,7 +83,7 @@
       "internalID": "EB000000000006",
       "localizations": [
         {
-          "description": "Four topics, 32 sourced cards: The United States, The Eurozone, China, Emerging Markets. One-time purchase, restores across devices.",
+          "description": "Four topics, 48 sourced cards: The United States, The Eurozone, China, Emerging Markets. One-time purchase, restores across devices.",
           "displayName": "Economies Around the World",
           "locale": "en_US"
         }
@@ -98,7 +98,7 @@
       "internalID": "EB000000000007",
       "localizations": [
         {
-          "description": "Four topics, 32 sourced cards: Market Economies, Mixed Economies, Planned Economies, Welfare-State Models. One-time purchase, restores across devices.",
+          "description": "Four topics, 48 sourced cards: Market Economies, Mixed Economies, Planned Economies, Welfare-State Models. One-time purchase, restores across devices.",
           "displayName": "Economic Systems",
           "locale": "en_US"
         }
@@ -113,7 +113,7 @@
       "internalID": "EB000000000008",
       "localizations": [
         {
-          "description": "Four topics, 32 sourced cards: Paychecks & Taxes, Buying a Car or a Home, Credit Scores & Scams, Compounding & Time. One-time purchase, restores across devices.",
+          "description": "Four topics, 48 sourced cards: Paychecks & Taxes, Buying a Car or a Home, Credit Scores & Scams, Compounding & Time. One-time purchase, restores across devices.",
           "displayName": "Personal Finance",
           "locale": "en_US"
         }

@@ -104,7 +104,11 @@ public struct DailyBrief: Codable, Hashable, Identifiable {
         "www.oecd.org", "www.bis.org",
     ]
 
-    public static let resourceName = "brief-sample"
+    /// Bundled samples are every `brief-sample-YYYY-MM-DD.json` in the app
+    /// bundle (Phase 13: the five most recent U.S. business days with official
+    /// releases). They are discovered by prefix, so adding or retiring a sample
+    /// is a resource change only.
+    public static let sampleResourcePrefix = "brief-sample-"
 
     /// Decodes and validates a brief document. Fails closed.
     public static func decodeValidated(_ data: Data) throws -> DailyBrief {
@@ -118,12 +122,28 @@ public struct DailyBrief: Codable, Hashable, Identifiable {
         return brief
     }
 
-    /// The bundled sample, written for the 1.1.4 lane from official releases
-    /// (see the file's own sources). Present in every build so the screen is
-    /// never empty, and labelled as a sample.
+    /// URLs of the bundled sample briefs, newest file name (= date) first.
+    public static func bundledSampleURLs(in bundle: Bundle = .curriculumBundle) -> [URL] {
+        (bundle.urls(forResourcesWithExtension: "json", subdirectory: nil) ?? [])
+            .filter { $0.deletingPathExtension().lastPathComponent.hasPrefix(sampleResourcePrefix) }
+            .sorted { $0.lastPathComponent > $1.lastPathComponent }
+    }
+
+    /// Every bundled sample that decodes and validates, newest `briefDate`
+    /// first. Written for the 1.1.4 lane from official releases (see each
+    /// file's own sources), present in every build so the News tab and its
+    /// archive are never empty, and labelled as samples. A sample that fails
+    /// validation is skipped, never shown (the content tests fail first).
+    public static func loadBundledSamples(in bundle: Bundle = .curriculumBundle) -> [DailyBrief] {
+        bundledSampleURLs(in: bundle)
+            .compactMap { url in (try? Data(contentsOf: url)).flatMap { try? decodeValidated($0) } }
+            .sorted { $0.briefDate > $1.briefDate }
+    }
+
+    /// The newest bundled sample.
     public static func loadBundledSample(in bundle: Bundle = .curriculumBundle) throws -> DailyBrief {
-        guard let url = bundle.url(forResource: resourceName, withExtension: "json") else {
-            throw CurriculumError.resourceMissing("\(resourceName).json")
+        guard let url = bundledSampleURLs(in: bundle).first else {
+            throw CurriculumError.resourceMissing("\(sampleResourcePrefix)*.json")
         }
         return try decodeValidated(try Data(contentsOf: url))
     }

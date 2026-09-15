@@ -3,7 +3,7 @@ import Foundation
 /// Owns the Daily Brief on the device (1.1.4).
 ///
 /// Order of preference: the newest validated brief in the on-device cache, then
-/// the bundled sample. `refresh()` fetches `latest.json` from the static
+/// the bundled samples (newest first; the older samples fill the archive). `refresh()` fetches `latest.json` from the static
 /// endpoint, validates it fail-closed, stores it in the cache (which keeps the
 /// most recent 30 briefs by date), and publishes it. Every failure — offline,
 /// 404 while the server job does not exist yet, a document that fails
@@ -75,8 +75,9 @@ final class BriefStore: ObservableObject {
             history = Array(cached.dropFirst())
             source = .cache
         } else {
-            latest = try? DailyBrief.loadBundledSample(in: bundle)
-            history = []
+            let samples = DailyBrief.loadBundledSamples(in: bundle)
+            latest = samples.first
+            history = Array(samples.dropFirst())
             source = .bundled
         }
     }

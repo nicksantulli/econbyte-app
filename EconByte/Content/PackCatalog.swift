@@ -2,8 +2,8 @@ import Foundation
 
 // MARK: - Topic packs (1.1.3)
 //
-// `Resources/packs-v1.json` carries the purchasable topic packs: two packs of
-// four topics × eight cards, in EXACTLY the core card schema (`CurriculumCard`,
+// `Resources/packs-v1.json` carries the purchasable topic packs: six packs of
+// four topics × twelve cards (eight until 1.1.4 Phase 13), in EXACTLY the core card schema (`CurriculumCard`,
 // `CurriculumTopic`) with `access: "pack"`. Each pack names its own
 // non-consumable product id; a pack's topics are readable only behind a
 // verified StoreKit entitlement for that id (`PurchaseManager`), and — by
@@ -56,7 +56,8 @@ public enum PackCatalog {
     /// Two packs shipped in 1.1.3 (build 15); four more in 1.1.4 (plan §2.4).
     public static let expectedPackCount = 6
     public static let expectedTopicsPerPack = 4
-    public static let expectedCardsPerTopic = 8
+    /// Eight per topic through 1.1.4 Phase 12; twelve from Phase 13 (48 per pack).
+    public static let expectedCardsPerTopic = 12
     public static var expectedCardCount: Int {
         expectedPackCount * expectedTopicsPerPack * expectedCardsPerTopic
     }

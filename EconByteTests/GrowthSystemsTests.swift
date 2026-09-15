@@ -167,7 +167,7 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(store.packs.count, PackCatalog.expectedPackCount)
         for pack in store.packs {
             XCTAssertEqual(pack.topics.count, 4, pack.id)
-            XCTAssertEqual(pack.cards.count, 32, pack.id)
+            XCTAssertEqual(pack.cards.count, 48, pack.id)
             XCTAssertEqual(pack.preview.count, 3, pack.id)
             for topic in pack.topics {
                 XCTAssertTrue(store.isPackTopic(topic.id))
@@ -176,7 +176,7 @@ final class GrowthSystemsTests: XCTestCase {
                               "\(topic.id): Unlock All must not open a pack topic")
                 XCTAssertTrue(store.cards(for: topic.id, unlockedAll: false, ownedPackIDs: ["mystery"]).isEmpty,
                               "\(topic.id): an unknown pack id unlocks nothing")
-                XCTAssertEqual(store.cards(for: topic.id, unlockedAll: false, ownedPackIDs: [pack.id]).count, 8,
+                XCTAssertEqual(store.cards(for: topic.id, unlockedAll: false, ownedPackIDs: [pack.id]).count, 12,
                                "\(topic.id) opens with its own pack")
                 XCTAssertEqual(store.accessState(for: topic.id, unlockedAll: true), .locked)
                 XCTAssertEqual(store.accessState(for: topic.id, unlockedAll: false, ownedPackIDs: [pack.id]), .unlocked)
@@ -205,7 +205,7 @@ final class GrowthSystemsTests: XCTestCase {
         let withMarkets = store.dailySet(count: 500, unlockedAll: false, ownedPackIDs: [markets.id])
         let marketsIDs = Set(markets.cards.map(\.id))
         let personalIDs = Set(personal.cards.map(\.id))
-        XCTAssertEqual(Set(withMarkets.map(\.id)).intersection(marketsIDs).count, 32,
+        XCTAssertEqual(Set(withMarkets.map(\.id)).intersection(marketsIDs).count, 48,
                        "every Markets card is eligible once Markets is owned")
         XCTAssertTrue(Set(withMarkets.map(\.id)).isDisjoint(with: personalIDs),
                       "owning Markets does not admit Personal Economics cards")

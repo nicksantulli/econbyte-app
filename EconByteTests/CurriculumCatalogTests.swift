@@ -158,7 +158,25 @@ final class CurriculumCatalogTests: XCTestCase {
         "www.wto.org", "ustr.gov", "data.worldbank.org", "www.worldbank.org",
         "www.ecb.europa.eu", "www.boj.or.jp", "www.bis.org",
         "www.oecd.org", "www.bundesbank.de",
+        // 1.1.4 Phase 13 (content growth): primary publishers already approved
+        // for the packs — the CBO and IMF, the EIA and FHFA statistical series,
+        // the CFPB, and the remaining Reserve Banks.
+        "www.cbo.gov", "www.imf.org", "www.eia.gov", "www.fhfa.gov", "www.consumerfinance.gov",
+        "www.stlouisfed.org", "www.clevelandfed.org", "www.atlantafed.org", "www.chicagofed.org",
+        "www.kansascityfed.org", "www.bostonfed.org", "www.richmondfed.org", "www.dallasfed.org",
+        "www.minneapolisfed.org", "www.frbsf.org",
     ]
+
+    /// Every card's id prefix, by topic (1.0 topics plus the five added in 1.1).
+    private static let cardIDPrefixes: [String: String] = shippedCardIDPrefixes.merging([
+        "exchange-rates": "fx", "consumer-spending": "cs", "taxes": "tax",
+        "fiscal-policy": "fp", "economic-indicators": "ei",
+    ]) { current, _ in current }
+
+    /// The earliest verification pass still carried by a core card. A card may
+    /// record any pass from this date up to the catalog's `verifiedOn` (the most
+    /// recent pass), so cards added later keep their real retrieval date.
+    private static let verificationFloor = "2026-08-30"
 
     private static let canonicalDisclaimer =
         "Educational content only. EconByte does not provide financial, investment, or tax advice."
@@ -191,10 +209,24 @@ final class CurriculumCatalogTests: XCTestCase {
         XCTAssertEqual(catalog.schemaVersion, 1)
         XCTAssertEqual(catalog.catalogVersion, "1.1")
         XCTAssertEqual(catalog.topics.count, 15, "version 1.1 ships exactly 15 topics")
-        XCTAssertEqual(catalog.allCards.count, 120, "version 1.1 ships exactly 120 cards")
+        XCTAssertEqual(CurriculumCatalog.expectedCardsPerTopic, 12, "1.1.4 Phase 13 grows every topic to 12 cards")
+        XCTAssertEqual(catalog.allCards.count, 180, "1.1.4 ships exactly 180 core cards")
         for topic in catalog.topics {
-            XCTAssertEqual(topic.cards.count, 8,
-                           "topic \(topic.topicID) must carry exactly 8 cards")
+            XCTAssertEqual(topic.cards.count, 12,
+                           "topic \(topic.topicID) must carry exactly 12 cards")
+        }
+    }
+
+    /// New cards continue each topic's id sequence; nothing shipped is renumbered
+    /// (bookmarks and per-card state are keyed on `cardID`).
+    func testCardIdentifiersContinueEachTopicsSequence() throws {
+        let catalog = try loadCatalog()
+        for topic in catalog.topics {
+            let prefix = try XCTUnwrap(Self.cardIDPrefixes[topic.topicID], topic.topicID)
+            for (index, card) in topic.cards.enumerated() {
+                XCTAssertEqual(card.cardID, String(format: "%@-%03d", prefix, index + 1),
+                               "\(card.cardID) is out of sequence in \(topic.topicID)")
+            }
         }
     }
 
@@ -204,7 +236,7 @@ final class CurriculumCatalogTests: XCTestCase {
         let catalog = try loadCatalog()
         let ids = catalog.allCards.map(\.cardID)
         XCTAssertEqual(Set(ids).count, ids.count, "card identifiers must be unique")
-        XCTAssertEqual(ids.count, 120)
+        XCTAssertEqual(ids.count, 180)
         for id in ids {
             XCTAssertFalse(id.trimmingCharacters(in: .whitespaces).isEmpty)
         }
@@ -370,20 +402,25 @@ final class CurriculumCatalogTests: XCTestCase {
         guard let verifiedOn = formatter.date(from: catalog.verifiedOn) else {
             return XCTFail("catalog verifiedOn is not an ISO date: \(catalog.verifiedOn)")
         }
+        XCTAssertLessThanOrEqual(verifiedOn, Date(), "verification cannot be in the future")
 
         for card in catalog.allCards {
             let source = card.source
-            XCTAssertEqual(source.verificationDate, catalog.verifiedOn,
-                           "\(card.cardID) must be verified in the same pass as the catalog")
+            guard let verified = formatter.date(from: source.verificationDate) else {
+                XCTFail("\(card.cardID) verificationDate is not an ISO date: \(source.verificationDate)")
+                continue
+            }
+            XCTAssertTrue(source.verificationDate >= Self.verificationFloor && verified <= verifiedOn,
+                          "\(card.cardID) must be verified in a recorded pass (\(Self.verificationFloor)…\(catalog.verifiedOn))")
             guard let published = formatter.date(from: source.publicationDate) else {
                 XCTFail("\(card.cardID) publicationDate is not an ISO date: \(source.publicationDate)")
                 continue
             }
-            XCTAssertLessThanOrEqual(published, verifiedOn,
+            XCTAssertLessThanOrEqual(published, verified,
                                      "\(card.cardID) cannot cite a document published after verification")
 
             if let claim = card.claim {
-                XCTAssertEqual(claim.retrievalDate, catalog.verifiedOn,
+                XCTAssertEqual(claim.retrievalDate, source.verificationDate,
                                "\(card.cardID) numeric claim must record when it was retrieved")
                 XCTAssertFalse(claim.units.isEmpty, "\(card.cardID) claim needs units")
                 XCTAssertFalse(claim.geography.isEmpty, "\(card.cardID) claim needs a geography")
@@ -746,7 +783,7 @@ final class CurriculumCatalogTests: XCTestCase {
         let store = ContentStore.shared
         XCTAssertNil(store.loadError)
         XCTAssertEqual(store.topics.count, 15)
-        XCTAssertEqual(store.allCards.count, 120)
+        XCTAssertEqual(store.allCards.count, 180)
     }
 }
 
@@ -825,6 +862,8 @@ final class PackCatalogTests: XCTestCase {
         XCTAssertEqual(packs.allTopics.count, PackCatalog.expectedPackCount * 4)
         XCTAssertEqual(packs.allCards.count, PackCatalog.expectedCardCount)
         XCTAssertEqual(PackCatalog.expectedPackCount, 6, "1.1.4 ships six packs (two from 1.1.3 + four new)")
+        XCTAssertEqual(PackCatalog.expectedCardsPerTopic, 12, "1.1.4 Phase 13 grows every pack topic to 12 cards")
+        XCTAssertEqual(PackCatalog.expectedCardCount, 288)
         for pack in packs.packs {
             XCTAssertEqual(pack.topics.count, 4, pack.packID)
             XCTAssertFalse(pack.summary.isEmpty)
@@ -832,7 +871,7 @@ final class PackCatalogTests: XCTestCase {
             for (index, topic) in pack.topics.enumerated() {
                 XCTAssertEqual(topic.access, .pack, topic.topicID)
                 XCTAssertEqual(topic.order, index + 1, topic.topicID)
-                XCTAssertEqual(topic.cards.count, 8, topic.topicID)
+                XCTAssertEqual(topic.cards.count, PackCatalog.expectedCardsPerTopic, topic.topicID)
                 XCTAssertFalse(topic.icon.isEmpty, topic.topicID)
                 XCTAssertTrue(topic.cards.contains { $0.difficulty == .intro },
                               "topic \(topic.topicID) needs at least one intro card")
@@ -898,13 +937,17 @@ final class PackCatalogTests: XCTestCase {
         XCTAssertLessThanOrEqual(verifiedOn, Date(), "verification cannot be in the future")
 
         for card in packs.allCards {
-            XCTAssertEqual(card.source.verificationDate, packs.verifiedOn,
-                           "\(card.cardID) must be verified in the same pass as the packs catalog")
+            // Any recorded pass from the 1.1.4 pack audit (2026-09-14) up to the
+            // catalog's most recent pass; cards added later keep their real date.
+            let verified = try XCTUnwrap(formatter.date(from: card.source.verificationDate),
+                                         "\(card.cardID) verificationDate is not an ISO date")
+            XCTAssertTrue(card.source.verificationDate >= "2026-09-14" && verified <= verifiedOn,
+                          "\(card.cardID) must be verified in a recorded pass of the packs catalog")
             let published = try XCTUnwrap(formatter.date(from: card.source.publicationDate),
                                           "\(card.cardID) publicationDate is not an ISO date")
-            XCTAssertLessThanOrEqual(published, verifiedOn, card.cardID)
+            XCTAssertLessThanOrEqual(published, verified, card.cardID)
             if let claim = card.claim {
-                XCTAssertEqual(claim.retrievalDate, packs.verifiedOn, card.cardID)
+                XCTAssertEqual(claim.retrievalDate, card.source.verificationDate, card.cardID)
                 XCTAssertFalse(claim.units.isEmpty, card.cardID)
                 XCTAssertFalse(claim.geography.isEmpty, card.cardID)
                 XCTAssertFalse(claim.observationPeriod.isEmpty, card.cardID)

@@ -77,6 +77,9 @@ final class ProCoursesBriefTests: XCTestCase {
         XCTAssertEqual(catalog.courses.count, 3)
         for course in catalog.courses {
             XCTAssertGreaterThanOrEqual(course.lessons.count, 5, course.courseID)
+            XCTAssertEqual(course.lessons.count, CourseCatalog.expectedLessonsPerCourse, course.courseID)
+            XCTAssertEqual(course.estimatedMinutes, course.lessons.map(\.estimatedMinutes).reduce(0, +),
+                           "\(course.courseID) duration is the sum of its lessons")
             XCTAssertEqual(course.lessons.filter(\.isPreview).map(\.lessonID), [course.lessons[0].lessonID],
                            "exactly the first lesson of \(course.courseID) is the free preview")
             XCTAssertNotNil(EBCourseFamily(courseID: course.courseID), "\(course.courseID) has a telemetry family")
@@ -93,6 +96,8 @@ final class ProCoursesBriefTests: XCTestCase {
         // Volume targets from the 1.1.4 plan: 3 courses × ≥5 lessons, each with
         // ≥5 blocks, ≥1 chart/diagram and a quiz.
         XCTAssertGreaterThanOrEqual(catalog.allLessons.count, 15)
+        XCTAssertEqual(CourseCatalog.expectedLessonsPerCourse, 9, "1.1.4 Phase 13 grows every course to nine lessons")
+        XCTAssertEqual(catalog.allLessons.count, 27)
     }
 
     /// Every diagram the app can draw is used by some lesson (no dead
@@ -122,7 +127,29 @@ final class ProCoursesBriefTests: XCTestCase {
         }
         XCTAssertEqual(used, Set(DiagramID.allCases), "every drawable diagram should be referenced by a lesson")
         XCTAssertGreaterThanOrEqual(charts, 6, "at least one chart per course pair")
-        XCTAssertFalse(DiagramView.accessibilityDescription(for: .candleAnatomy).isEmpty)
+        for id in DiagramID.allCases {
+            XCTAssertFalse(DiagramView.accessibilityDescription(for: id).isEmpty, id.rawValue)
+        }
+    }
+
+    /// The base-rate diagram's dots are fixed counts the rpc lesson caption
+    /// quotes; the picture and the caption cannot drift apart.
+    func testBaseRateGridDrawsTheCountsItsCaptionStates() throws {
+        XCTAssertEqual(BaseRateGrid.caseCount, 100)
+        XCTAssertEqual(BaseRateGrid.patternIndices.count, 20)
+        XCTAssertEqual(BaseRateGrid.patternRoseIndices.count, 11)
+        XCTAssertTrue(BaseRateGrid.patternRoseIndices.isSubset(of: Set(BaseRateGrid.patternIndices)))
+        XCTAssertEqual(BaseRateGrid.otherRoseIndices.count, 44)
+        XCTAssertTrue(BaseRateGrid.otherRoseIndices.isDisjoint(with: Set(BaseRateGrid.patternIndices)))
+        let captions = try loadCourses().allLessons.flatMap(\.blocks).compactMap { block -> String? in
+            if case let .diagram(id, caption) = block, id == .baseRateGrid { return caption }
+            return nil
+        }
+        XCTAssertFalse(captions.isEmpty, "a lesson uses the base-rate grid")
+        for caption in captions {
+            XCTAssertTrue(caption.contains("11") && caption.contains("20") && caption.contains("44") && caption.contains("80"),
+                          "the caption quotes the drawn counts: \(caption)")
+        }
     }
 
     // MARK: - Courses: editorial (same bar as the cards)
@@ -174,9 +201,12 @@ final class ProCoursesBriefTests: XCTestCase {
                               "\(lesson.lessonID) cites \(url.host ?? "?"), not an approved primary source")
                 XCTAssertNil(url.query, lesson.lessonID)
                 XCTAssertNil(url.fragment, lesson.lessonID)
-                XCTAssertEqual(source.verificationDate, catalog.verifiedOn, lesson.lessonID)
+                // Any recorded pass from the 1.1.4 course audit (2026-09-14) up to
+                // the catalog's most recent pass.
+                let verified = try XCTUnwrap(Self.isoFormatter.date(from: source.verificationDate), lesson.lessonID)
+                XCTAssertTrue(source.verificationDate >= "2026-09-14" && verified <= verifiedOn, lesson.lessonID)
                 let published = try XCTUnwrap(Self.isoFormatter.date(from: source.publicationDate), lesson.lessonID)
-                XCTAssertLessThanOrEqual(published, verifiedOn, lesson.lessonID)
+                XCTAssertLessThanOrEqual(published, verified, lesson.lessonID)
             }
         }
     }
@@ -315,8 +345,42 @@ final class ProCoursesBriefTests: XCTestCase {
 
     // MARK: - Daily Brief: sample + validation
 
+    /// Phase 13: five bundled samples, one per recent U.S. business day, newest
+    /// first, every one a validated sample with its own headline and concept.
+    func testFiveBundledSampleBriefsCoverDistinctBusinessDaysNewestFirst() throws {
+        let urls = DailyBrief.bundledSampleURLs()
+        XCTAssertEqual(urls.count, 5, "five bundled sample briefs")
+        for url in urls {
+            XCTAssertNoThrow(try DailyBrief.decodeValidated(try Data(contentsOf: url)), url.lastPathComponent)
+            XCTAssertEqual(url.deletingPathExtension().lastPathComponent,
+                           DailyBrief.sampleResourcePrefix + (try DailyBrief.decodeValidated(try Data(contentsOf: url))).briefDate,
+                           "the file name is the brief date")
+        }
+        let samples = DailyBrief.loadBundledSamples()
+        XCTAssertEqual(samples.count, 5, "every bundled sample validates")
+        XCTAssertEqual(samples.map(\.briefDate), samples.map(\.briefDate).sorted(by: >), "newest first")
+        XCTAssertEqual(Set(samples.map(\.briefDate)).count, 5)
+        XCTAssertEqual(Set(samples.map(\.headline)).count, 5, "each day has its own headline")
+        XCTAssertEqual(Set(samples.compactMap { $0.section(.concept)?.conceptTitle }).count, 5, "each day teaches its own concept")
+        let calendar = Calendar(identifier: .iso8601)
+        for brief in samples {
+            XCTAssertEqual(brief.isSample, true, brief.briefDate)
+            let day = try XCTUnwrap(Self.isoFormatter.date(from: brief.briefDate))
+            var utc = calendar; utc.timeZone = TimeZone(secondsFromGMT: 0)!
+            XCTAssertFalse(utc.isDateInWeekend(day), "\(brief.briefDate) is a business day")
+            let text = ([brief.headline, brief.methodology] + (brief.section(.released)?.items ?? []).flatMap {
+                [$0.title ?? "", $0.summary ?? "", $0.meaning ?? ""]
+            }).joined(separator: " ").lowercased()
+            XCTAssertFalse(text.contains("every business day") || text.contains("every u.s. business day"),
+                           "no publishing-cadence claim until the server job exists (\(brief.briefDate))")
+            let released = try XCTUnwrap(brief.section(.released)?.items)
+            XCTAssertTrue(released.allSatisfy { ($0.releaseDate ?? "") <= brief.briefDate },
+                          "\(brief.briefDate) reports only releases already published")
+        }
+    }
+
     func testBundledSampleBriefLoadsAndCitesOnlyAllowedSources() throws {
-        let brief = try DailyBrief.loadBundledSample()
+        for brief in DailyBrief.loadBundledSamples() {
         XCTAssertEqual(brief.isSample, true, "the bundled brief must say it is a sample")
         XCTAssertNotNil(brief.section(.released))
         XCTAssertNotNil(brief.section(.scheduled))
@@ -338,6 +402,8 @@ final class ProCoursesBriefTests: XCTestCase {
         if let cardID = concept.linkedCardID {
             XCTAssertTrue(try loadCore().allCards.contains { $0.cardID == cardID }, cardID)
         }
+        }
+        XCTAssertFalse(DailyBrief.loadBundledSamples().isEmpty)
     }
 
     /// No news publisher can ever be an allowed brief source.
@@ -352,7 +418,7 @@ final class ProCoursesBriefTests: XCTestCase {
     }
 
     private func sampleBriefJSON() throws -> [String: Any] {
-        let url = try XCTUnwrap(Bundle.curriculumBundle.url(forResource: DailyBrief.resourceName, withExtension: "json"))
+        let url = try XCTUnwrap(DailyBrief.bundledSampleURLs().first)
         return try XCTUnwrap(JSONSerialization.jsonObject(with: try Data(contentsOf: url)) as? [String: Any])
     }
 
@@ -424,6 +490,9 @@ final class ProCoursesBriefTests: XCTestCase {
         let store = BriefStore(session: stubbedSession(), cacheDirectory: cache)
         XCTAssertEqual(store.source, .bundled)
         XCTAssertEqual(store.latest?.isSample, true)
+        XCTAssertEqual(store.history.count, 4, "the older bundled samples fill the archive")
+        XCTAssertEqual(store.history.map(\.briefDate), store.history.map(\.briefDate).sorted(by: >))
+        XCTAssertTrue(store.history.allSatisfy { $0.briefDate < (store.latest?.briefDate ?? "") })
         await store.refresh()
         XCTAssertEqual(store.source, .bundled, "a 404 keeps the sample on screen")
         XCTAssertEqual(store.latest?.isSample, true)

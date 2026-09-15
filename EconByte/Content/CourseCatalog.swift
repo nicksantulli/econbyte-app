@@ -44,6 +44,12 @@ public enum DiagramID: String, Codable, Hashable, CaseIterable {
     case supportResistance = "support-resistance"
     case feeDrag = "fee-drag"
     case trendChannel = "trend-channel"
+    // Phase 13 (content growth):
+    case rebalanceBands = "rebalance-bands"
+    case trendlineAnchors = "trendline-anchors"
+    case baseRateGrid = "base-rate-grid"
+    case creditSpreadStack = "credit-spread-stack"
+    case breakevenSplit = "breakeven-split"
 }
 
 public struct KeyTerm: Codable, Hashable {
@@ -250,6 +256,8 @@ public enum CourseCatalog {
     public static let resourceName = "courses-v1"
     public static let expectedCourseCount = 3
     public static let minimumLessonsPerCourse = 5
+    /// 1.1.4 shipped six lessons per course; Phase 13 (content growth) nine.
+    public static let expectedLessonsPerCourse = 9
     public static let minimumBlocksPerLesson = 5
 
     /// Ordered course contract: content id → lesson-id prefix.
@@ -320,6 +328,9 @@ public enum CourseCatalog {
             }
             guard course.lessons.count >= minimumLessonsPerCourse else {
                 try fail("course \(course.courseID) has \(course.lessons.count) lessons, needs \(minimumLessonsPerCourse)")
+            }
+            guard course.lessons.count == expectedLessonsPerCourse else {
+                try fail("course \(course.courseID) has \(course.lessons.count) lessons, expected \(expectedLessonsPerCourse)")
             }
             for (index, lesson) in course.lessons.enumerated() {
                 let expectedID = String(format: "%@-%02d", expected.lessonPrefix, index + 1)

@@ -37,7 +37,7 @@ record the retrieval date; never cite a page you have not seen.
 
 ## Packs (`packs-v1.json` — exact `curriculum-v1.1.json` card schema)
 
-A pack = 4 topics × 8 cards. Card ids are `<prefix>-001 … -008` where `<prefix>` is unique per
+A pack = 4 topics × 12 cards (8 until Phase 13). Card ids are `<prefix>-001 … -012` where `<prefix>` is unique per
 topic across the whole app (core prefixes in use: cb cs dd ei fp fx gdp hm inf ir lm rec sd tax tt;
 pack prefixes in use: cr fdv hb mk rr sb sn sr). Topic ids must not collide with core topics
 (`inflation interest-rates gdp supply-demand labor-markets trade-tariffs housing-market central-banks
@@ -117,7 +117,8 @@ validated with `--fragment`.
 ```
 
 Course ids and lesson prefixes are fixed: `investing-approaches`/`ia-NN`, `reading-price-charts`/`rpc-NN`,
-`bonds-rates-yield-curve`/`bry-NN`. Each course ≥ 5 lessons (aim 6). Each lesson: ≥ 5 blocks, ≥ 1 `chart`
+`bonds-rates-yield-curve`/`bry-NN`. Each course has exactly 9 lessons (6 until Phase 13), and its
+`estimatedMinutes` is the sum of its lessons'. Each lesson: ≥ 5 blocks, ≥ 1 `chart`
 or `diagram`, exactly 1 `quiz`, ≥ 1 `paragraph`, the LAST block is `takeaways`, and paragraph+callout
 prose totals ≥ 600 characters (aim 900–1,600).
 
@@ -146,8 +147,35 @@ down; `yield-curve-shapes` — normal, flat, inverted curves side by side; `allo
 mix labelled "illustrative" with no percentages implied as advice; `support-resistance` — a price path
 bouncing between two horizontal bands; `fee-drag` — two growth paths diverging as an annual fee compounds;
 `trend-channel` — an up-sloping channel with higher highs and higher lows.
+Added in Phase 13: `rebalance-bands` — one category's share of a mix over time, a dashed "Target share" line inside
+a shaded "Tolerance band"; the share drifts to the top of the band, is marked "Rebalanced" where it drops back to
+the target, then drifts again (no percentages); `trendline-anchors` — a rising zigzag with lows 1, 2, 3; dashed
+"Line A" through lows 1 and 2 (steeper) and "Line B" through lows 1 and 3 (shallower); at the right the price dips
+below Line A but not Line B ("A break of one line, not the other"); `base-rate-grid` — 100 dots: 20 ringed "Pattern
+appeared", 11 of them filled "Price higher afterward"; 44 of the other 80 filled; footer "Illustrative: 11 of 20
+with the pattern (55%) vs 44 of 80 without it (55%)" (counts pinned by `BaseRateGrid` + test);
+`credit-spread-stack` — bars "Treasury", "Higher-rated company", "Lower-rated company", each with the same
+"Treasury yield" base, the company bars adding a "Credit spread" segment (taller for lower-rated; no numbers);
+`breakeven-split` — "Nominal Treasury" (taller) and "TIPS real yield" (shorter) bars for the same maturity with a
+bracket "Breakeven inflation ≈ nominal − real" (no numbers).
 
-## Daily Brief (`brief-sample.json` and `latest.json`)
+## Core curriculum (`curriculum-v1.1.json`)
+
+15 topics × 12 cards (8 until Phase 13), exactly the card schema above with `access` `free` (inflation,
+interest-rates) or `paid`. New ids continue each topic's sequence (`inf-009` …); shipped ids are never renumbered,
+the 80 1.0 ids keep `supersedes: econbyte-1.0:<id>`, and no card's title + definition may satisfy another id's 1.0
+concept pin (`CurriculumCatalogTests.legacyConcepts`). Core hosts are narrower than pack hosts (`CORE_HOSTS`).
+Validate with `node scripts/validate_content.mjs curriculum <file> [--fragment] --net`.
+
+**Verification dates (all catalogs, Phase 13).** An item's `source.verificationDate` is the date of the pass that
+verified it: on or after the catalog's floor (core 2026-08-30, packs and courses 2026-09-14) and no later than the
+catalog's `verifiedOn` (the most recent pass). `claim.retrievalDate` equals the item's own `verificationDate`.
+
+## Daily Brief (`brief-sample-YYYY-MM-DD.json` and `latest.json`)
+
+The app bundles five samples, one per recent U.S. business day, named by `briefDate`; `DailyBrief` discovers them by
+the `brief-sample-` prefix, shows the newest on News and lists all of them in the archive until a published brief
+replaces them. Each carries `isSample: true` and makes no publishing-cadence claim.
 
 ```json
 {
