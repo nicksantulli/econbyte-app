@@ -187,25 +187,18 @@ struct EconHeaderBar: View {
         HStack(alignment: .center, spacing: 0) {
             EconWordmark(fontSize: Self.wordmarkSize)
                 .accessibilityIdentifier("econWordmark")
-            Spacer(minLength: 12)
-            Button(action: onSettings) {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 21, weight: .semibold))
-                    .foregroundColor(Econ.sky)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
-            }
-            .accessibilityLabel("Settings")
-            .accessibilityIdentifier("settingsGearButton")
+            Spacer(minLength: EconSpace.s)
+            EconIconButton(systemImage: "gearshape", label: "Settings", action: onSettings)
+                .accessibilityIdentifier("settingsGearButton")
         }
-        .padding(.leading, 20)
-        .padding(.trailing, 8)
-        .padding(.top, 4)
+        .padding(.leading, EconSpace.gutter)
+        .padding(.trailing, EconSpace.xs)
+        .padding(.top, EconSpace.xxs)
         .padding(.bottom, 2)
-        .background(Econ.ocean)
+        .background(EconColor.background)
         .overlay(alignment: .bottom) {
             Rectangle()
-                .fill(Econ.mist.opacity(0.22))
+                .fill(EconColor.divider)
                 .frame(height: 1 / UIScreen.main.scale)
                 .opacity(showsDivider ? 1 : 0)
                 .accessibilityHidden(true)
@@ -236,7 +229,7 @@ struct EconTabScaffold<Content: View>: View {
                 scrollView(proxy)
             }
         }
-        .background(Econ.ocean.ignoresSafeArea())
+        .background(EconColor.background.ignoresSafeArea())
     }
 
     @ViewBuilder
@@ -265,18 +258,6 @@ struct EconTabScaffold<Content: View>: View {
         } else {
             scroll
         }
-    }
-}
-
-/// Section label used across the tabs ("TODAY'S CARDS", "CORE TOPICS", …).
-struct EconSectionLabel: View {
-    let text: String
-    var body: some View {
-        Text(text.uppercased())
-            .font(.system(size: 13, weight: .bold, design: .rounded))
-            .foregroundColor(Econ.subtext)
-            .tracking(1.5)
-            .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -314,7 +295,7 @@ struct RootTabView: View {
         .environmentObject(router)
         .environmentObject(courseProgress)
         .environmentObject(briefs)
-        .tint(Econ.amber)
+        .tint(EconColor.accent)
         .sheet(isPresented: $router.showSettings) {
             SettingsView(onRequestPaywall: { router.pendingPaywallAfterSettings = true },
                          onRequestProPaywall: { router.pendingProPaywall = .settings })
@@ -373,10 +354,10 @@ struct RootTabView: View {
     private static func configureTabBarAppearance() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(Econ.ocean)
-        appearance.shadowColor = UIColor(Econ.mist).withAlphaComponent(0.18)
-        let normal = UIColor(Econ.mist).withAlphaComponent(0.62)
-        let selected = UIColor(Econ.amber)
+        appearance.backgroundColor = UIColor(EconColor.background)
+        appearance.shadowColor = UIColor(EconColor.divider)
+        let normal = UIColor(EconColor.textTertiary)
+        let selected = UIColor(EconColor.accent)
         for item in [appearance.stackedLayoutAppearance, appearance.inlineLayoutAppearance,
                      appearance.compactInlineLayoutAppearance] {
             item.normal.iconColor = normal

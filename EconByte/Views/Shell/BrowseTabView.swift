@@ -8,6 +8,9 @@ struct BrowseTabView: View {
     @EnvironmentObject private var router: AppRouter
     @EnvironmentObject private var growth: EconGrowth
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .body) private var resultIconWidth: CGFloat = EconSpace.xl
+
     @State private var query = ""
     @FocusState private var searchFocused: Bool
 
@@ -15,7 +18,7 @@ struct BrowseTabView: View {
 
     var body: some View {
         EconTabScaffold(scrollSpace: "browse") { proxy in
-            VStack(alignment: .leading, spacing: 22) {
+            VStack(alignment: .leading, spacing: EconSpace.section) {
                 searchField
                 if trimmedQuery.isEmpty {
                     bookmarksRow
@@ -25,9 +28,9 @@ struct BrowseTabView: View {
                     searchResults(proxy)
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 12)
-            .padding(.bottom, 32)
+            .padding(.horizontal, EconSpace.gutter)
+            .padding(.top, EconSpace.s)
+            .padding(.bottom, EconSpace.xxl)
         }
         // Phase 11: the anchored banner on Browse at rest, above the tab bar.
         // Searching is a sensitive surface (portfolio `search_result`,
@@ -43,33 +46,33 @@ struct BrowseTabView: View {
     // MARK: Search
 
     private var searchField: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: EconSpace.xs) {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(Econ.subtext)
+                .foregroundColor(EconColor.textTertiary)
                 .accessibilityHidden(true)
             TextField("", text: $query,
-                      prompt: Text("Search topics and cards").foregroundColor(Econ.subtext))
-                .font(.system(size: 16, design: .rounded))
-                .foregroundColor(Econ.white)
+                      prompt: Text("Search topics and cards").foregroundColor(EconColor.textTertiary))
+                .font(EconType.body)
+                .foregroundColor(EconColor.textPrimary)
                 .focused($searchFocused)
                 .submitLabel(.search)
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
                 .accessibilityIdentifier("browseSearchField")
             if !query.isEmpty {
-                Button {
+                EconIconButton(systemImage: "xmark.circle.fill", label: "Clear search",
+                               tint: EconColor.textTertiary) {
                     query = ""
-                } label: {
-                    Image(systemName: "xmark.circle.fill").foregroundColor(Econ.subtext)
                 }
-                .accessibilityLabel("Clear search")
                 .accessibilityIdentifier("browseSearchClearButton")
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(Econ.tide.opacity(0.18))
-        .cornerRadius(12)
+        .padding(.leading, EconSpace.s)
+        .padding(.trailing, query.isEmpty ? EconSpace.s : 0)
+        .padding(.vertical, query.isEmpty ? EconSpace.xs : 0)
+        .frame(minHeight: EconSize.tapTarget)
+        .background(EconColor.surfaceRaised)
+        .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
     }
 
     private struct TopicHit: Identifiable {
@@ -100,13 +103,13 @@ struct BrowseTabView: View {
         let cards = cardHits
         if topics.isEmpty && cards.isEmpty {
             Text("No topics or cards match “\(trimmedQuery)”.")
-                .font(.system(size: 15, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.7))
-                .padding(.top, 12)
+                .font(EconType.subheadline)
+                .foregroundColor(EconColor.textSecondary)
+                .padding(.top, EconSpace.s)
                 .accessibilityIdentifier("browseNoResults")
         }
         if !topics.isEmpty {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: EconSpace.xs) {
                 EconSectionLabel(text: "Topics")
                 ForEach(topics) { hit in
                     resultRow(title: hit.topic.name,
@@ -120,7 +123,7 @@ struct BrowseTabView: View {
             }
         }
         if !cards.isEmpty {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: EconSpace.xs) {
                 EconSectionLabel(text: "Cards")
                 ForEach(cards) { card in
                     let pack = content.pack(forTopic: card.topicId)
@@ -139,30 +142,29 @@ struct BrowseTabView: View {
     private func resultRow(title: String, subtitle: String, icon: String, locked: Bool,
                            action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 12) {
+            HStack(spacing: EconSpace.s) {
                 Image(systemName: icon)
-                    .font(.system(size: 17))
-                    .foregroundColor(locked ? Econ.subtext : Econ.sky)
-                    .frame(width: 26)
+                    .font(EconType.body)
+                    .foregroundColor(locked ? EconColor.textTertiary : EconColor.interactive)
+                    .frame(width: resultIconWidth)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.white)
+                        .font(EconType.subheadlineEmphasis)
+                        .foregroundColor(EconColor.textPrimary)
                         .multilineTextAlignment(.leading)
                     Text(subtitle)
-                        .font(.system(size: 12, design: .rounded))
-                        .foregroundColor(Econ.subtext)
+                        .font(EconType.caption)
+                        .foregroundColor(EconColor.textTertiary)
+                        .multilineTextAlignment(.leading)
                 }
-                Spacer(minLength: 8)
+                Spacer(minLength: EconSpace.xs)
                 Image(systemName: locked ? "lock.fill" : "chevron.right")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(locked ? Econ.amber : Econ.subtext)
+                    .font(EconType.footnote.weight(.semibold))
+                    .foregroundColor(locked ? EconColor.accent : EconColor.textTertiary)
                     .accessibilityHidden(true)
             }
-            .padding(12)
-            .background(Econ.tide.opacity(0.12))
-            .cornerRadius(12)
+            .econRow()
         }
         .buttonStyle(.plain)
         .accessibilityValue(Text(locked ? "locked" : ""))
@@ -200,35 +202,42 @@ struct BrowseTabView: View {
         Button {
             router.showBookmarks = true
         } label: {
-            HStack {
+            HStack(spacing: EconSpace.xs) {
                 Image(systemName: "bookmark.fill")
-                    .foregroundColor(Econ.amber)
+                    .foregroundColor(EconColor.accent)
                     .accessibilityHidden(true)
                 Text("Bookmarks (\(content.bookmarkedCards.count))")
-                    .font(.system(size: 16, weight: .medium, design: .rounded))
-                    .foregroundColor(Econ.white)
+                    .font(EconType.body.weight(.medium))
+                    .foregroundColor(EconColor.textPrimary)
+                    .multilineTextAlignment(.leading)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundColor(Econ.subtext)
+                    .font(EconType.footnote.weight(.semibold))
+                    .foregroundColor(EconColor.textTertiary)
                     .accessibilityHidden(true)
             }
-            .padding(16)
-            .background(Econ.tide.opacity(0.12))
-            .cornerRadius(12)
+            .econRow()
         }
         .accessibilityIdentifier("browseBookmarksRow")
     }
 
+    /// Two tile columns, one at the accessibility text sizes.
+    private var topicColumns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize
+            ? [GridItem(.flexible())]
+            : [GridItem(.flexible()), GridItem(.flexible())]
+    }
+
     private var coreTopicsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: EconSpace.s) {
             HStack {
                 EconSectionLabel(text: "Core topics")
                 Spacer()
                 Text("\(content.topics.count)")
-                    .font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundColor(Econ.subtext)
+                    .font(EconType.footnote.weight(.medium))
+                    .foregroundColor(EconColor.textTertiary)
             }
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+            LazyVGrid(columns: topicColumns, spacing: EconSpace.s) {
                 ForEach(content.topics) { topic in
                     let locked = !content.isTopicFree(topic.id) && !store.coreTopicsUnlocked
                     Button {
@@ -249,13 +258,13 @@ struct BrowseTabView: View {
     @ViewBuilder
     private var packsSection: some View {
         if !content.packs.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: EconSpace.s) {
                 HStack {
                     EconSectionLabel(text: "Packs")
                     Spacer()
                     Text("\(content.packs.count)")
-                        .font(.system(size: 13, weight: .medium, design: .rounded))
-                        .foregroundColor(Econ.subtext)
+                        .font(EconType.footnote.weight(.medium))
+                        .foregroundColor(EconColor.textTertiary)
                 }
                 if PackBundleOfferView.isOffered(bundleOwned: store.isPackBundlePurchased,
                                                  allPacksReadable: store.allPacksReadable) {
@@ -279,36 +288,41 @@ struct TopicTile: View {
     var locked: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: EconSpace.xs) {
             HStack {
                 Image(systemName: topic.icon)
                     .font(.title2)
-                    .foregroundColor(locked ? Econ.subtext : Econ.sky)
+                    .foregroundColor(locked ? EconColor.textTertiary : EconColor.interactive)
                 Spacer()
                 if locked {
                     Image(systemName: "lock.fill")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Econ.amber)
+                        .font(EconType.footnote.weight(.semibold))
+                        .foregroundColor(EconColor.accent)
                 }
             }
             Text(topic.name)
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(locked ? Econ.white.opacity(0.55) : Econ.white)
-                .lineLimit(2)
+                .font(EconType.subheadlineEmphasis)
+                .foregroundColor(locked ? EconColor.textSecondary : EconColor.textPrimary)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
             let allTopicCards = content.everyCard.filter { $0.topicId == topic.id }
             let total = allTopicCards.count
             let seen = allTopicCards.filter { content.cardStates[$0.id]?.lastSeen != nil }.count
-            Text(locked ? "Unlock to view" : "\(seen)/\(total)")
-                .font(.system(size: 12, design: .rounded))
-                .foregroundColor(Econ.subtext)
+            // A locked tile shows nothing on this line (the lock says it); the
+            // line keeps its height so tiles in a row stay aligned.
+            Text("\(seen)/\(total)")
+                .font(EconType.caption)
+                .foregroundColor(EconColor.textTertiary)
+                .opacity(locked ? 0 : 1)
+                .accessibilityHidden(locked)
         }
+        .padding(EconSpace.s)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(Econ.tide.opacity(locked ? 0.06 : 0.12))
-        .cornerRadius(12)
+        .background(EconColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Econ.amber.opacity(locked ? 0.25 : 0), lineWidth: 1)
+            RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous)
+                .stroke(locked ? EconColor.accentOutline : Color.clear, lineWidth: 1)
         )
     }
 }

@@ -20,7 +20,7 @@ struct CardModeView: View {
 
     var body: some View {
         ZStack {
-            Econ.ocean.ignoresSafeArea()
+            EconColor.background.ignoresSafeArea()
             if sessionDone {
                 SessionCompleteView(title: title, cardsCount: cards.count) {
                     dismiss()
@@ -29,44 +29,42 @@ struct CardModeView: View {
                 .environmentObject(content)
                 .environmentObject(growth)
             } else if cards.isEmpty {
-                VStack(spacing: 16) {
+                VStack(spacing: EconSpace.m) {
                     Text("No cards available.")
-                        .foregroundColor(Econ.white)
+                        .font(EconType.body)
+                        .foregroundColor(EconColor.textPrimary)
                     Button("Done") { dismiss() }
                         .buttonStyle(SecondaryButton())
-                        .padding(.horizontal, 40)
+                        .padding(.horizontal, EconSpace.xxl)
                 }
             } else {
                 VStack(spacing: 0) {
                     // Nav bar
                     HStack {
-                        Button("✕") { dismiss() }
-                            .foregroundColor(Econ.subtext)
-                            .font(.title2)
-                            // A glyph-sized tap target fails the 44×44 minimum
-                            // (design section 12); widen the hit area only.
-                            .frame(minWidth: 44, minHeight: 44, alignment: .leading)
-                            .contentShape(Rectangle())
-                            .accessibilityLabel("Close")
+                        // 44 × 44 hit area and the "Close" VoiceOver label come
+                        // from `EconIconButton` (design section 12).
+                        EconIconButton(systemImage: "xmark", label: "Close",
+                                       tint: EconColor.textSecondary) { dismiss() }
                             .accessibilityIdentifier("cardModeCloseButton")
                         Spacer()
                         Text("\(min(currentIndex + 1, cards.count)) / \(cards.count)")
-                            .font(.system(size: 15, weight: .medium, design: .rounded))
-                            .foregroundColor(Econ.subtext)
+                            .font(EconType.subheadline)
+                            .foregroundColor(EconColor.textTertiary)
                             .accessibilityLabel("Card \(min(currentIndex + 1, cards.count)) of \(cards.count)")
                         Spacer()
                         Text(title)
-                            .font(.system(size: 15, weight: .semibold, design: .rounded))
-                            .foregroundColor(Econ.white)
+                            .font(EconType.subheadlineEmphasis)
+                            .foregroundColor(EconColor.textPrimary)
+                            .multilineTextAlignment(.trailing)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
+                    .padding(.horizontal, EconSpace.gutter)
+                    .padding(.vertical, EconSpace.s)
 
                     // Progress
                     ProgressView(value: Double(currentIndex + 1), total: Double(cards.count))
-                        .tint(Econ.sky)
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 12)
+                        .tint(EconColor.interactive)
+                        .padding(.horizontal, EconSpace.gutter)
+                        .padding(.bottom, EconSpace.s)
                         .accessibilityLabel("Set progress")
 
                     // Card
@@ -75,7 +73,7 @@ struct CardModeView: View {
                              mode: mode)
                         .environmentObject(content)
                         .environmentObject(growth)
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, EconSpace.gutter)
                         .offset(x: dragOffset)
                         .gesture(
                             DragGesture()
@@ -98,10 +96,10 @@ struct CardModeView: View {
                     Spacer()
 
                     // Next button
-                    Button("Next →") { advance() }
+                    Button("Next") { advance() }
                         .buttonStyle(PrimaryButton())
-                        .padding(.horizontal, 20)
-                        .padding(.bottom, 32)
+                        .padding(.horizontal, EconSpace.gutter)
+                        .padding(.bottom, EconSpace.xxl)
                 }
                 // Anchored adaptive banner (1.1.3): under the card, never over
                 // it — reading, flipping and advancing are never interrupted.

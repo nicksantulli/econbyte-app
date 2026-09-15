@@ -15,11 +15,14 @@
 		UT00000000000000000000E1 /* ShellRedesignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000E0 /* ShellRedesignTests.swift */; };
 		UT00000000000000000013E1 /* Phase13ContentEvidenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000013E0 /* Phase13ContentEvidenceTests.swift */; };
 		UT00000000000000000019E1 /* DesignAuditScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000019E0 /* DesignAuditScreenshotTests.swift */; };
+		UT00000000000000000019F1 /* StoryLessonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000019F0 /* StoryLessonUITests.swift */; };
 		A2C3D4E5F6A7B8C9D0E1F2C5 /* AccessibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4D7 /* AccessibilityTests.swift */; };
 		A2C3D4E5F6A7B8C9D0E1F2D6 /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D5E6F7A8B9C0D1E2F3A4E8 /* ScreenshotTests.swift */; };
 		1A0000000000000000000004 /* CurriculumCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000002 /* CurriculumCatalogTests.swift */; };
 		1A0000000000000000000014 /* GrowthSystemsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0000000000000000000012 /* GrowthSystemsTests.swift */; };
 		UT00000000000000000000C1 /* ProCoursesBriefTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000C0 /* ProCoursesBriefTests.swift */; };
+		UT00000000000000000019D1 /* DesignSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000019D0 /* DesignSystemTests.swift */; };
+		UT00000000000000000019C1 /* StoryLessonsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000019C0 /* StoryLessonsTests.swift */; };
 		UT0000000000000000000011 /* InstrumentationPrivacyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */; };
 		UT00000000000000000000A1 /* TrackingAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */; };
 		UT00000000000000000000B1 /* GrowthAuditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000B0 /* GrowthAuditTests.swift */; };
@@ -47,11 +50,14 @@
 		UT00000000000000000000E0 /* ShellRedesignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellRedesignTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000013E0 /* Phase13ContentEvidenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase13ContentEvidenceTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000019E0 /* DesignAuditScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignAuditScreenshotTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000019F0 /* StoryLessonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryLessonUITests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4D7 /* AccessibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4E8 /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
 		1A0000000000000000000002 /* CurriculumCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurriculumCatalogTests.swift; sourceTree = "<group>"; };
 		1A0000000000000000000012 /* GrowthSystemsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthSystemsTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000C0 /* ProCoursesBriefTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProCoursesBriefTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000019D0 /* DesignSystemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystemTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000019C0 /* StoryLessonsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryLessonsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +142,7 @@
 				UT00000000000000000000E0 /* ShellRedesignTests.swift */,
 				UT00000000000000000013E0 /* Phase13ContentEvidenceTests.swift */,
 				UT00000000000000000019E0 /* DesignAuditScreenshotTests.swift */,
+				UT00000000000000000019F0 /* StoryLessonUITests.swift */,
 				C4D5E6F7A8B9C0D1E2F3A4D7 /* AccessibilityTests.swift */,
 				C4D5E6F7A8B9C0D1E2F3A4E8 /* ScreenshotTests.swift */,
 			);
@@ -153,6 +160,8 @@
 				1A0000000000000000000002 /* CurriculumCatalogTests.swift */,
 				1A0000000000000000000012 /* GrowthSystemsTests.swift */,
 				UT00000000000000000000C0 /* ProCoursesBriefTests.swift */,
+				UT00000000000000000019D0 /* DesignSystemTests.swift */,
+				UT00000000000000000019C0 /* StoryLessonsTests.swift */,
 				UT00000000000000000000F0 /* StoreEntitlementsTests.swift */,
 				UT00000000000000000000F2 /* StoreKitSessionTests.swift */,
 			);
@@ -321,6 +330,7 @@
 				UT00000000000000000000E1 /* ShellRedesignTests.swift in Sources */,
 				UT00000000000000000013E1 /* Phase13ContentEvidenceTests.swift in Sources */,
 				UT00000000000000000019E1 /* DesignAuditScreenshotTests.swift in Sources */,
+				UT00000000000000000019F1 /* StoryLessonUITests.swift in Sources */,
 				A2C3D4E5F6A7B8C9D0E1F2C5 /* AccessibilityTests.swift in Sources */,
 				A2C3D4E5F6A7B8C9D0E1F2D6 /* ScreenshotTests.swift in Sources */,
 			);
@@ -338,6 +348,8 @@
 				1A0000000000000000000004 /* CurriculumCatalogTests.swift in Sources */,
 				1A0000000000000000000014 /* GrowthSystemsTests.swift in Sources */,
 				UT00000000000000000000C1 /* ProCoursesBriefTests.swift in Sources */,
+				UT00000000000000000019D1 /* DesignSystemTests.swift in Sources */,
+				UT00000000000000000019C1 /* StoryLessonsTests.swift in Sources */,
 				UT00000000000000000000F1 /* StoreEntitlementsTests.swift in Sources */,
 				UT00000000000000000000F3 /* StoreKitSessionTests.swift in Sources */,
 			);
@@ -409,7 +421,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 20;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -424,7 +436,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -446,7 +458,7 @@
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 20;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -455,7 +467,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
-				MARKETING_VERSION = 1.1.4;
+				MARKETING_VERSION = 1.1.5;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";

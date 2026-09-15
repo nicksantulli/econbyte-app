@@ -237,23 +237,34 @@ struct PaywallBenefits: Equatable {
 // MARK: - The one purchase button model
 
 /// Everything a `PurchaseButton` shows, decided in one place so every pack,
-/// the bundle, Unlock All, Remove Ads and Pro read alike:
-///   * priced:       "Unlock · $1.99" (enabled)
+/// the bundle, Unlock All, Remove Ads and Pro read alike. 1.1.5: the button
+/// stacks the action over the price, so every button is the same size and the
+/// price is always its own line; `label` joins the two for VoiceOver and tests.
+///   * priced:       "Unlock" over "$1.99" — label "Unlock · $1.99" (enabled)
 ///   * loading:      "Loading price…" with a spinner (disabled)
 ///   * unavailable:  the action alone, disabled, with "Prices unavailable — Try again"
 ///   * pending:      "Waiting for approval" (disabled)
-///   * working:      the action with a spinner (disabled)
+///   * working:      the action and price with a spinner (disabled)
 ///   * owned:        "Owned" / "Current plan" (disabled, outlined)
 struct PurchaseButtonModel: Equatable {
     enum Style: Equatable { case primary, owned }
 
-    let label: String
+    /// The first line: the action or the state.
+    let title: String
+    /// The second line: the price text, when there is one.
+    let detail: String?
     let isEnabled: Bool
     let showsSpinner: Bool
     let showsPricesUnavailable: Bool
     let style: Style
 
     static let separator = " · "
+
+    /// "Unlock · $1.99": the whole button, as VoiceOver reads it.
+    var label: String {
+        guard let detail, !detail.isEmpty else { return title }
+        return "\(title)\(Self.separator)\(detail)"
+    }
 
     static func make(action: String,
                      price: PurchasePresentation.PriceState,
@@ -263,24 +274,24 @@ struct PurchaseButtonModel: Equatable {
                      working: Bool = false,
                      isLoadingProducts: Bool = false) -> PurchaseButtonModel {
         if let ownedLabel {
-            return PurchaseButtonModel(label: ownedLabel, isEnabled: false, showsSpinner: false,
+            return PurchaseButtonModel(title: ownedLabel, detail: nil, isEnabled: false, showsSpinner: false,
                                        showsPricesUnavailable: false, style: .owned)
         }
         if pending {
-            return PurchaseButtonModel(label: PurchasePresentation.waitingForApprovalText, isEnabled: false,
+            return PurchaseButtonModel(title: PurchasePresentation.waitingForApprovalText, detail: nil, isEnabled: false,
                                        showsSpinner: false, showsPricesUnavailable: false, style: .primary)
         }
         switch price {
         case .ready(let displayPrice):
             let text = (priceText?.isEmpty == false) ? priceText! : displayPrice
-            return PurchaseButtonModel(label: "\(action)\(separator)\(text)",
+            return PurchaseButtonModel(title: action, detail: text,
                                        isEnabled: !working && !isLoadingProducts,
                                        showsSpinner: working, showsPricesUnavailable: false, style: .primary)
         case .loading:
-            return PurchaseButtonModel(label: PurchasePresentation.loadingPriceText, isEnabled: false,
+            return PurchaseButtonModel(title: PurchasePresentation.loadingPriceText, detail: nil, isEnabled: false,
                                        showsSpinner: true, showsPricesUnavailable: false, style: .primary)
         case .unavailable:
-            return PurchaseButtonModel(label: action, isEnabled: false, showsSpinner: working,
+            return PurchaseButtonModel(title: action, detail: nil, isEnabled: false, showsSpinner: working,
                                        showsPricesUnavailable: !working, style: .primary)
         }
     }

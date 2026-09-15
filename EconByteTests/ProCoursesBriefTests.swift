@@ -70,7 +70,7 @@ final class ProCoursesBriefTests: XCTestCase {
 
     func testCoursesLoadWithTheExpectedShape() throws {
         let catalog = try loadCourses()
-        XCTAssertEqual(catalog.schemaVersion, 1)
+        XCTAssertEqual(catalog.schemaVersion, CourseCatalog.schemaVersion, "1.1.5 story lessons")
         XCTAssertEqual(catalog.disclaimer, Self.canonicalDisclaimer)
         XCTAssertTrue(catalog.educationalNotice.localizedCaseInsensitiveContains("not investment advice"))
         XCTAssertEqual(catalog.courses.map(\.courseID), CourseCatalog.expectedCourses.map(\.courseID))
@@ -84,17 +84,17 @@ final class ProCoursesBriefTests: XCTestCase {
                            "exactly the first lesson of \(course.courseID) is the free preview")
             XCTAssertNotNil(EBCourseFamily(courseID: course.courseID), "\(course.courseID) has a telemetry family")
             for lesson in course.lessons {
-                XCTAssertGreaterThanOrEqual(lesson.blocks.count, 5, lesson.lessonID)
-                XCTAssertTrue(lesson.hasVisual, "\(lesson.lessonID) needs a chart or diagram")
-                XCTAssertEqual(lesson.blocks.filter { if case .quiz = $0 { return true }; return false }.count, 1,
-                               "\(lesson.lessonID) has exactly one quiz")
+                // 1.1.5: blocks became story beats (StoryLessonsTests has the full story contract).
+                XCTAssertGreaterThanOrEqual(lesson.beats.count, StoryRules.beatRange.lowerBound, lesson.lessonID)
+                XCTAssertTrue(lesson.hasVisual, "\(lesson.lessonID) needs a visual")
+                XCTAssertTrue(StoryRules.checkRange.contains(lesson.checks.count), "\(lesson.lessonID) has 1–2 quick checks")
                 XCTAssertNotNil(lesson.quiz, lesson.lessonID)
-                if case .takeaways = lesson.blocks.last! {} else { XCTFail("\(lesson.lessonID) must end with takeaways") }
+                XCTAssertEqual(lesson.beats.last?.kind, .recap, "\(lesson.lessonID) must end with its recap")
                 XCTAssertFalse(lesson.sources.isEmpty, lesson.lessonID)
             }
         }
         // Volume targets from the 1.1.4 plan: 3 courses × ≥5 lessons, each with
-        // ≥5 blocks, ≥1 chart/diagram and a quiz.
+        // a visual and a quiz (1.1.5: as story beats).
         XCTAssertGreaterThanOrEqual(catalog.allLessons.count, 15)
         XCTAssertEqual(CourseCatalog.expectedLessonsPerCourse, 9, "1.1.4 Phase 13 grows every course to nine lessons")
         XCTAssertEqual(catalog.allLessons.count, 27)
@@ -107,10 +107,11 @@ final class ProCoursesBriefTests: XCTestCase {
         var used = Set<DiagramID>()
         var chartIDs = Set<String>()
         var charts = 0
-        for block in catalog.allLessons.flatMap(\.blocks) {
-            switch block {
-            case let .diagram(id, _): used.insert(id)
-            case let .chart(spec):
+        for lesson in catalog.allLessons {
+            for beat in lesson.beats { if case let .diagram(id)? = beat.visual { used.insert(id) } }
+        }
+        for spec in catalog.allLessons.flatMap(\.charts) {
+            do {
                 charts += 1
                 XCTAssertTrue(spec.dataNote.lowercased().hasPrefix("synthetic"), spec.chartID)
                 XCTAssertTrue(chartIDs.insert(spec.chartID).inserted, "duplicate chart \(spec.chartID)")
@@ -122,7 +123,6 @@ final class ProCoursesBriefTests: XCTestCase {
                 } else {
                     XCTAssertFalse((spec.series ?? []).isEmpty, spec.chartID)
                 }
-            default: break
             }
         }
         XCTAssertEqual(used, Set(DiagramID.allCases), "every drawable diagram should be referenced by a lesson")
@@ -141,14 +141,16 @@ final class ProCoursesBriefTests: XCTestCase {
         XCTAssertTrue(BaseRateGrid.patternRoseIndices.isSubset(of: Set(BaseRateGrid.patternIndices)))
         XCTAssertEqual(BaseRateGrid.otherRoseIndices.count, 44)
         XCTAssertTrue(BaseRateGrid.otherRoseIndices.isDisjoint(with: Set(BaseRateGrid.patternIndices)))
-        let captions = try loadCourses().allLessons.flatMap(\.blocks).compactMap { block -> String? in
-            if case let .diagram(id, caption) = block, id == .baseRateGrid { return caption }
-            return nil
+        // 1.1.5: the drawing's caption became the text of the beats that show it.
+        let captions = try loadCourses().allLessons.compactMap { lesson -> String? in
+            let text = lesson.beats.filter { $0.visual == .diagram(.baseRateGrid) }
+                .flatMap(\.screenText).joined(separator: " ")
+            return text.isEmpty ? nil : text
         }
         XCTAssertFalse(captions.isEmpty, "a lesson uses the base-rate grid")
         for caption in captions {
             XCTAssertTrue(caption.contains("11") && caption.contains("20") && caption.contains("44") && caption.contains("80"),
-                          "the caption quotes the drawn counts: \(caption)")
+                          "the beats showing the grid quote the drawn counts: \(caption)")
         }
     }
 
@@ -161,8 +163,7 @@ final class ProCoursesBriefTests: XCTestCase {
         for course in catalog.courses {
             var texts = [course.title, course.summary]
             for lesson in course.lessons {
-                texts += [lesson.title, lesson.summary]
-                texts += lesson.blocks.flatMap(\.allText)
+                texts += lesson.allText
             }
             for text in texts {
                 let lower = text.lowercased()
@@ -242,13 +243,14 @@ final class ProCoursesBriefTests: XCTestCase {
         object["courses"] = courses
     }
 
-    func testValidatorRejectsALessonWithTwoQuizzes() throws {
-        try assertCoursesRejected("two quizzes in one lesson") { object in
+    func testValidatorRejectsALessonWithThreeChecks() throws {
+        // 1.1.5: one or two checks are allowed; three, or a check first, are not.
+        try assertCoursesRejected("three checks in one lesson") { object in
             mutateFirstLesson(&object) { lesson in
-                guard var blocks = lesson["blocks"] as? [[String: Any]],
-                      let quiz = blocks.first(where: { $0["type"] as? String == "quiz" }) else { return }
-                blocks.insert(quiz, at: 0)
-                lesson["blocks"] = blocks
+                guard var beats = lesson["beats"] as? [[String: Any]],
+                      let check = beats.first(where: { $0["kind"] as? String == "check" }) else { return }
+                beats.insert(check, at: 1); beats.insert(check, at: 2); beats.insert(check, at: 0)
+                lesson["beats"] = beats
             }
         }
     }
@@ -269,10 +271,10 @@ final class ProCoursesBriefTests: XCTestCase {
             outer: for ci in courses.indices {
                 guard var lessons = courses[ci]["lessons"] as? [[String: Any]] else { continue }
                 for li in lessons.indices {
-                    guard var blocks = lessons[li]["blocks"] as? [[String: Any]] else { continue }
-                    for bi in blocks.indices where blocks[bi]["type"] as? String == "chart" {
-                        blocks[bi]["dataNote"] = "Daily closing prices from an exchange feed."
-                        lessons[li]["blocks"] = blocks
+                    guard var charts = lessons[li]["charts"] as? [[String: Any]] else { continue }
+                    for bi in charts.indices {
+                        charts[bi]["dataNote"] = "Daily closing prices from an exchange feed."
+                        lessons[li]["charts"] = charts
                         courses[ci]["lessons"] = lessons
                         break outer
                     }
@@ -282,19 +284,19 @@ final class ProCoursesBriefTests: XCTestCase {
         }
     }
 
-    func testValidatorRejectsAnUnknownDiagramAndAnUnknownBlockType() throws {
+    func testValidatorRejectsAnUnknownDiagramAndAnUnknownBeatKind() throws {
         try assertCoursesRejected("an undrawable diagram id") { object in
             mutateFirstLesson(&object) { lesson in
-                guard var blocks = lesson["blocks"] as? [[String: Any]] else { return }
-                blocks.insert(["type": "diagram", "diagramID": "money-printer", "caption": "x"], at: 0)
-                lesson["blocks"] = blocks
+                guard var beats = lesson["beats"] as? [[String: Any]] else { return }
+                beats.insert(["kind": "idea", "text": "x", "visual": ["type": "diagram", "diagramID": "money-printer"]], at: 0)
+                lesson["beats"] = beats
             }
         }
-        try assertCoursesRejected("an unknown block type") { object in
+        try assertCoursesRejected("an unknown beat kind") { object in
             mutateFirstLesson(&object) { lesson in
-                guard var blocks = lesson["blocks"] as? [[String: Any]] else { return }
-                blocks.insert(["type": "video", "url": "https://example.invalid"], at: 0)
-                lesson["blocks"] = blocks
+                guard var beats = lesson["beats"] as? [[String: Any]] else { return }
+                beats.insert(["kind": "video", "text": "https://example.invalid"], at: 0)
+                lesson["beats"] = beats
             }
         }
     }

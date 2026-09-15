@@ -485,19 +485,27 @@ final class GrowthFlowTests: XCTestCase {
         XCTAssertTrue((lesson2.value as? String ?? "").contains("locked"), "lesson 2 is locked without Pro")
         any["lessonRow-ia-01"].tap()
         XCTAssertTrue(any["lesson-ia-01"].waitForExistence(timeout: 15), "the free preview lesson opens")
-        XCTAssertTrue(any["educationalNotice"].exists, "every lesson carries the educational notice")
+        // 1.1.5: the lesson is a story — walk it: a chart beat, a quick check,
+        // and the recap carrying the educational notice.
         let chart = any.matching(NSPredicate(format: "identifier BEGINSWITH 'chart-' AND NOT identifier ENDSWITH '-note'")).firstMatch
-        for _ in 0..<10 where !(chart.exists && chart.isHittable) { app.swipeUp() }
-        XCTAssertTrue(chart.exists, "the lesson renders a chart")
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Synthetic'")).firstMatch.exists,
-                      "the chart says its data is synthetic")
-        capturePack("eb-lesson-chart")
-        let quiz = any["quiz"]
-        for _ in 0..<10 where !(quiz.exists && quiz.isHittable) { app.swipeUp() }
-        XCTAssertTrue(quiz.exists, "the lesson has its quiz")
-        app.buttons["quizChoice-0"].tap()
-        XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 10), "answering reveals the explanation")
-        capturePack("eb-lesson-quiz")
+        var sawChart = false, sawQuiz = false
+        walkStory(app) { _ in
+            if !sawChart, chart.exists {
+                sawChart = true
+                XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Synthetic'")).firstMatch.exists,
+                              "the chart says its data is synthetic")
+                self.capturePack("eb-lesson-chart")
+            }
+            if !sawQuiz, any["quiz"].exists {
+                sawQuiz = true
+                app.buttons["quizChoice-0"].tap()
+                XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 10), "answering reveals the explanation")
+                self.capturePack("eb-lesson-quiz")
+            }
+        }
+        XCTAssertTrue(sawChart, "the lesson renders a chart")
+        XCTAssertTrue(sawQuiz, "the lesson has its quiz")
+        XCTAssertTrue(any["educationalNotice"].exists, "every lesson ends with the educational notice")
         app.terminate()
 
         // News: free teaser + lock (fresh launch, still not subscribed).
@@ -537,5 +545,23 @@ final class GrowthFlowTests: XCTestCase {
         XCTAssertTrue(status.waitForExistence(timeout: 10), "Settings shows the subscription status")
         XCTAssertTrue(proAny["settingsManageSubscriptionLink"].exists, "Manage Subscription is reachable")
         capturePack("eb-settings-pro")
+    }
+
+    /// 1.1.5 story lessons: walks every page of the open lesson with the Next
+    /// button, calling `visit` on each page; answers the first quick check met.
+    private func walkStory(_ app: XCUIApplication, visit: (Int) -> Void = { _ in }) {
+        let any = app.descendants(matching: .any)
+        let next = app.buttons["storyNextButton"]
+        var page = 0
+        for _ in 0..<40 {
+            visit(page)
+            if any["quiz"].exists, !any["quizExplanation"].exists {
+                app.buttons["quizChoice-0"].tap()
+                XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 10), "answering reveals the explanation")
+            }
+            guard next.exists else { break }
+            next.tap()
+            page += 1
+        }
     }
 }

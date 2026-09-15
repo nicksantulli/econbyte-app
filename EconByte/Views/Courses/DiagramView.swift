@@ -30,9 +30,13 @@ struct DiagramView: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: 220)
-        .padding(12)
-        .background(Econ.ocean.opacity(0.7))
-        .cornerRadius(12)
+        // A fixed-geometry drawing: its labels scale with Dynamic Type only up
+        // to xLarge so they stay inside the artwork; the drawing's meaning is
+        // also in its VoiceOver description and the beat text beside it.
+        .dynamicTypeSize(...DynamicTypeSize.xLarge)
+        .padding(EconSpace.s)
+        .background(EconColor.surfaceInset)
+        .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(Self.accessibilityDescription(for: id)))
         .accessibilityAddTraits(.isImage)
@@ -76,10 +80,10 @@ struct DiagramView: View {
 
 private struct DiagramLabel: View {
     let text: String
-    var color: Color = Econ.white.opacity(0.85)
+    var color: Color = EconColor.textPrimary
     var body: some View {
         Text(text)
-            .font(.system(size: 11, weight: .semibold, design: .rounded))
+            .font(EconType.micro)
             .foregroundColor(color)
             .lineLimit(2)
             .minimumScaleFactor(0.7)
@@ -98,10 +102,10 @@ private struct Axes: View {
             }
             .stroke(Econ.mist.opacity(0.5), lineWidth: 1)
             Text(xLabel)
-                .font(.system(size: 10, design: .rounded)).foregroundColor(Econ.subtext)
+                .font(EconType.caption).foregroundColor(EconColor.textTertiary)
                 .position(x: geo.size.width / 2 + 10, y: geo.size.height - 8)
             Text(yLabel)
-                .font(.system(size: 10, design: .rounded)).foregroundColor(Econ.subtext)
+                .font(EconType.caption).foregroundColor(EconColor.textTertiary)
                 .rotationEffect(.degrees(-90))
                 .position(x: 10, y: geo.size.height / 2 - 6)
         }
@@ -132,7 +136,7 @@ private struct CandleAnatomyDiagram: View {
             ZStack(alignment: .topLeading) {
                 Path { p in p.move(to: CGPoint(x: cx, y: high)); p.addLine(to: CGPoint(x: cx, y: low)) }
                     .stroke(Econ.sky, lineWidth: 2)
-                RoundedRectangle(cornerRadius: 3)
+                RoundedRectangle(cornerRadius: EconRadius.mark)
                     .fill(Econ.amber)
                     .frame(width: 44, height: close - open)
                     .position(x: cx, y: (open + close) / 2)
@@ -170,7 +174,7 @@ private struct RiskReturnLadderDiagram: View {
                     let x = 34 + CGFloat(i) * stepW
                     VStack(spacing: 4) {
                         DiagramLabel(text: name)
-                        RoundedRectangle(cornerRadius: 4)
+                        RoundedRectangle(cornerRadius: EconRadius.mark)
                             .fill(Econ.tide.opacity(0.35 + 0.15 * Double(i)))
                             .frame(width: stepW - 10, height: height)
                     }
@@ -216,7 +220,7 @@ private struct DiversificationBasketDiagram: View {
                                 if i != 2 {
                                     Circle().fill(Econ.amber).frame(width: 12, height: 12).offset(y: -2)
                                 } else {
-                                    Image(systemName: "xmark").font(.system(size: 10, weight: .bold))
+                                    Image(systemName: "xmark").font(EconType.micro)
                                         .foregroundColor(Econ.amberLight).offset(y: -2)
                                 }
                             }
@@ -268,13 +272,13 @@ private struct PriceYieldSeesawDiagram: View {
                     .rotationEffect(.degrees(-14))
                     .position(pivot)
                 VStack(spacing: 2) {
-                    Image(systemName: "arrow.up").font(.system(size: 14, weight: .bold)).foregroundColor(Econ.amber)
+                    Image(systemName: "arrow.up").font(EconType.subheadline.weight(.bold)).foregroundColor(Econ.amber)
                     DiagramLabel(text: "Price", color: Econ.amberLight)
                 }
                 .position(x: pivot.x - w * 0.34, y: pivot.y - h * 0.34)
                 VStack(spacing: 2) {
                     DiagramLabel(text: "Yield", color: Econ.sky)
-                    Image(systemName: "arrow.down").font(.system(size: 14, weight: .bold)).foregroundColor(Econ.sky)
+                    Image(systemName: "arrow.down").font(EconType.subheadline.weight(.bold)).foregroundColor(Econ.sky)
                 }
                 .position(x: pivot.x + w * 0.34, y: pivot.y + h * 0.05)
                 DiagramLabel(text: "A fixed coupon paid on a higher price is a smaller percentage")
@@ -336,11 +340,11 @@ private struct AllocationPieDiagram: View {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(Array(slices.enumerated()), id: \.offset) { _, slice in
                         HStack(spacing: 8) {
-                            RoundedRectangle(cornerRadius: 3).fill(slice.color).frame(width: 14, height: 14)
+                            RoundedRectangle(cornerRadius: EconRadius.mark).fill(slice.color).frame(width: 14, height: 14)
                             DiagramLabel(text: slice.name)
                         }
                     }
-                    DiagramLabel(text: "Illustration only — a mix, not a recommendation", color: Econ.subtext)
+                    DiagramLabel(text: "Illustration only — a mix, not a recommendation", color: EconColor.textTertiary)
                         .frame(width: 130, alignment: .leading)
                         .padding(.top, 6)
                 }
@@ -626,7 +630,7 @@ private struct CreditSpreadStackDiagram: View {
                 }
                 .stroke(Econ.mist.opacity(0.5), lineWidth: 1)
                 Text("Yield")
-                    .font(.system(size: 10, design: .rounded)).foregroundColor(Econ.subtext)
+                    .font(EconType.caption).foregroundColor(EconColor.textTertiary)
                     .rotationEffect(.degrees(-90))
                     .position(x: 10, y: (plotTop + plotBottom) / 2)
                 ForEach(Array(bars.enumerated()), id: \.offset) { i, bar in
@@ -634,7 +638,7 @@ private struct CreditSpreadStackDiagram: View {
                     let barW = min(slot - 14, 96)
                     let baseH = unit * base
                     let spreadH = unit * bar.spread
-                    RoundedRectangle(cornerRadius: 3)
+                    RoundedRectangle(cornerRadius: EconRadius.mark)
                         .fill(Econ.tide.opacity(0.75))
                         .frame(width: barW, height: baseH)
                         .position(x: cx, y: plotBottom - baseH / 2)
@@ -643,7 +647,7 @@ private struct CreditSpreadStackDiagram: View {
                         .multilineTextAlignment(.center)
                         .position(x: cx, y: plotBottom - baseH / 2)
                     if bar.spread > 0 {
-                        RoundedRectangle(cornerRadius: 3)
+                        RoundedRectangle(cornerRadius: EconRadius.mark)
                             .fill(Econ.amber.opacity(0.85))
                             .frame(width: barW, height: spreadH)
                             .position(x: cx, y: plotBottom - baseH - spreadH / 2)
@@ -683,13 +687,13 @@ private struct BreakevenSplitDiagram: View {
                 }
                 .stroke(Econ.mist.opacity(0.5), lineWidth: 1)
                 Text("Yield, same maturity")
-                    .font(.system(size: 10, design: .rounded)).foregroundColor(Econ.subtext)
+                    .font(EconType.caption).foregroundColor(EconColor.textTertiary)
                     .rotationEffect(.degrees(-90))
                     .position(x: 10, y: (plotTop + plotBottom) / 2)
-                RoundedRectangle(cornerRadius: 3).fill(Econ.tide.opacity(0.8))
+                RoundedRectangle(cornerRadius: EconRadius.mark).fill(Econ.tide.opacity(0.8))
                     .frame(width: barW, height: nominalH)
                     .position(x: nominalX, y: plotBottom - nominalH / 2)
-                RoundedRectangle(cornerRadius: 3).fill(Econ.sky.opacity(0.8))
+                RoundedRectangle(cornerRadius: EconRadius.mark).fill(Econ.sky.opacity(0.8))
                     .frame(width: barW, height: realH)
                     .position(x: realX, y: plotBottom - realH / 2)
                 // Guide from the nominal bar's top across to the bracket.

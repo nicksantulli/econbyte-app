@@ -12,22 +12,25 @@ struct HomeTabView: View {
     @EnvironmentObject private var progress: CourseProgressStore
     @EnvironmentObject private var briefs: BriefStore
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .title3) private var courseRingSize: CGFloat = EconSize.tapTarget
+
     private let dailyGoal = 3
 
     private var ownedPackIDs: Set<String> { AppRouter.ownedPackIDs(content: content, store: store) }
 
     var body: some View {
         EconTabScaffold(scrollSpace: "home") { _ in
-            VStack(alignment: .leading, spacing: 22) {
+            VStack(alignment: .leading, spacing: EconSpace.section) {
                 todaysSetCard
                 streakRow
                 briefCard
                 courseCard
                 featuredPackSection
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 12)
-            .padding(.bottom, 32)
+            .padding(.horizontal, EconSpace.gutter)
+            .padding(.top, EconSpace.s)
+            .padding(.bottom, EconSpace.xxl)
         }
         // Anchored adaptive banner (1.1.3), above the tab bar. Reserves no
         // space until an ad has loaded, and is not constructed at all for a
@@ -61,18 +64,20 @@ struct HomeTabView: View {
                 guard !daily.isEmpty else { return }
                 startTodaysSet(daily, from: .homeHighlight)
             } label: {
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: EconSpace.xxs) {
                     Text(g.line)
-                        .font(.system(size: 14, weight: .medium, design: .rounded))
-                        .foregroundColor(Econ.white.opacity(0.85))
+                        .font(EconType.subheadline.weight(.medium))
+                        .foregroundColor(EconColor.textPrimary)
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(g.source)
-                        .font(.system(size: 11, weight: .regular, design: .rounded))
-                        .foregroundColor(Econ.subtext)
+                        .font(EconType.caption)
+                        .foregroundColor(EconColor.textTertiary)
+                        .multilineTextAlignment(.leading)
                         // Two lines is the attribution's budget; the full
-                        // source is on the card itself (M-5).
-                        .lineLimit(2)
+                        // source is on the card itself (M-5). At accessibility
+                        // sizes it wraps instead of truncating.
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -90,52 +95,50 @@ struct HomeTabView: View {
                                      ownedPackIDs: ownedPackIDs)
         let seen = daily.filter { content.cardStates[$0.id]?.lastSeen != nil }.count
         let completed = streak.didReachDailyGoalToday
-        return VStack(alignment: .leading, spacing: 14) {
-            HStack {
+        return VStack(alignment: .leading, spacing: EconSpace.s) {
+            HStack(spacing: EconSpace.xs) {
                 Image(systemName: completed ? "checkmark.seal.fill" : "rectangle.stack.fill")
-                    .foregroundColor(completed ? Econ.sky : Econ.amber)
+                    .foregroundColor(completed ? EconColor.interactive : EconColor.accent)
                     .font(.title3)
                     .accessibilityHidden(true)
                 EconSectionLabel(text: "Today's cards")
                 Spacer()
                 Text(completed ? "Done ✓" : "\(daily.count) cards")
-                    .font(.system(size: 13, weight: .medium, design: .rounded))
-                    .foregroundColor(completed ? Econ.sky : Econ.subtext)
+                    .font(EconType.footnote.weight(.medium))
+                    .foregroundColor(completed ? EconColor.interactive : EconColor.textTertiary)
             }
             ProgressView(value: completed ? 1 : Double(seen),
                          total: completed ? 1 : Double(max(daily.count, 1)))
-                .tint(completed ? Econ.sky : Econ.amber)
-                .background(Econ.mist.opacity(0.2))
+                .tint(completed ? EconColor.interactive : EconColor.accent)
+                .background(EconColor.outline)
             groceryLine(daily)
             Group {
                 if completed {
-                    Button("Review →") { startTodaysSet(daily, from: .home) }
+                    Button("Review") { startTodaysSet(daily, from: .home) }
                         .buttonStyle(SecondaryButton())
                 } else {
-                    Button("Start →") { startTodaysSet(daily, from: .home) }
+                    Button("Start") { startTodaysSet(daily, from: .home) }
                         .buttonStyle(PrimaryButton())
                 }
             }
         }
-        .padding(20)
-        .background(Econ.tide.opacity(0.15))
-        .cornerRadius(16)
+        .econCard()
     }
 
     private var streakRow: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: EconSpace.s) {
             Text("🔥")
                 .font(.title2)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Streak: \(streak.currentStreak) day\(streak.currentStreak == 1 ? "" : "s")")
-                    .font(.system(size: 18, weight: .heavy, design: .rounded))
-                    .foregroundColor(Econ.amber)
+                    .font(EconType.figure)
+                    .foregroundColor(EconColor.accentText)
                 Text(streak.cardsTodayCount >= dailyGoal
-                     ? "Today's goal reached ✓"
-                     : "\(dailyGoal - streak.cardsTodayCount) more card\(dailyGoal - streak.cardsTodayCount == 1 ? "" : "s") to keep your streak.")
-                    .font(.system(size: 13, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.6))
+                     ? "Goal reached ✓"
+                     : "\(dailyGoal - streak.cardsTodayCount) more today")
+                    .font(EconType.footnote)
+                    .foregroundColor(EconColor.textSecondary)
             }
             Spacer()
         }
@@ -148,45 +151,41 @@ struct HomeTabView: View {
     private var briefCard: some View {
         if let brief = briefs.latest {
             Button { router.selectedTab = .news } label: {
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: EconSpace.xs) {
+                    HStack(spacing: EconSpace.xs) {
                         Image(systemName: "newspaper.fill")
-                            .foregroundColor(Econ.amber)
+                            .foregroundColor(EconColor.accent)
                             .accessibilityHidden(true)
                         EconSectionLabel(text: "Today's brief")
                         Spacer()
                         if briefs.showsSampleBadge(brief) { BriefSampleBadge() }
+                        Image(systemName: "chevron.right")
+                            .font(EconType.footnote.weight(.semibold))
+                            .foregroundColor(EconColor.textTertiary)
+                            .accessibilityHidden(true)
                     }
                     Text(BriefDates.long(brief.briefDate))
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundColor(Econ.subtext)
+                        .font(EconType.caption)
+                        .foregroundColor(EconColor.textTertiary)
                     Text(brief.headline)
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
-                        .foregroundColor(Econ.white)
+                        .font(EconType.title3)
+                        .foregroundColor(EconColor.textPrimary)
                         .multilineTextAlignment(.leading)
                         .lineLimit(3)
                     if let item = brief.teaserItem, let figure = item.figures?.first {
-                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
                             Text(figure.value)
-                                .font(.system(size: 20, weight: .heavy, design: .rounded))
-                                .foregroundColor(Econ.amberLight)
+                                .font(EconType.figure)
+                                .foregroundColor(EconColor.accentText)
                             Text(figure.label)
-                                .font(.system(size: 12, design: .rounded))
-                                .foregroundColor(Econ.subtext)
-                                .lineLimit(2)
+                                .font(EconType.caption)
+                                .foregroundColor(EconColor.textTertiary)
+                                .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
-                    HStack(spacing: 4) {
-                        Text("Read the brief")
-                        Image(systemName: "arrow.right").accessibilityHidden(true)
-                    }
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundColor(Econ.sky)
                 }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Econ.tide.opacity(0.13))
-                .cornerRadius(16)
+                .econCard()
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("homeBriefCard")
@@ -216,50 +215,42 @@ struct HomeTabView: View {
             Button {
                 router.openCourse(pick.course, at: isPro ? pick.next : nil)
             } label: {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: EconSpace.s) {
+                    HStack(spacing: EconSpace.xs) {
                         Image(systemName: "graduationcap.fill")
-                            .foregroundColor(Econ.amber)
+                            .foregroundColor(EconColor.accent)
                             .accessibilityHidden(true)
                         EconSectionLabel(text: isPro
                                          ? (pick.done > 0 ? "Continue your course" : "Start a course")
                                          : "Courses")
                         Spacer()
                         if !isPro {
-                            Text("First lesson free")
-                                .font(.system(size: 11, weight: .bold, design: .rounded))
-                                .foregroundColor(Econ.ink)
-                                .padding(.horizontal, 7).padding(.vertical, 3)
-                                .background(Econ.amber)
-                                .cornerRadius(5)
+                            EconBadge(text: "First lesson free")
                         }
                     }
-                    HStack(spacing: 14) {
+                    HStack(spacing: EconSpace.s) {
                         CourseProgressRing(done: pick.done, total: total, icon: pick.course.icon)
-                            .frame(width: 44, height: 44)
-                        VStack(alignment: .leading, spacing: 3) {
+                            .frame(width: courseRingSize, height: courseRingSize)
+                        VStack(alignment: .leading, spacing: EconSpace.xxs) {
                             Text(pick.course.title)
-                                .font(.system(size: 17, weight: .bold, design: .rounded))
-                                .foregroundColor(Econ.white)
+                                .font(EconType.title3)
+                                .foregroundColor(EconColor.textPrimary)
                                 .multilineTextAlignment(.leading)
                             Text(isPro
                                  ? (pick.next.map { "Next: \($0.title)" } ?? "Course complete ✓")
-                                 : "\(total) lessons with charts and quizzes")
-                                .font(.system(size: 13, design: .rounded))
-                                .foregroundColor(Econ.subtext)
+                                 : "\(total) lessons")
+                                .font(EconType.footnote)
+                                .foregroundColor(EconColor.textTertiary)
                                 .multilineTextAlignment(.leading)
-                                .lineLimit(2)
                         }
                         Spacer(minLength: 0)
                         Image(systemName: "chevron.right")
-                            .foregroundColor(Econ.subtext)
+                            .font(EconType.footnote.weight(.semibold))
+                            .foregroundColor(EconColor.textTertiary)
                             .accessibilityHidden(true)
                     }
                 }
-                .padding(18)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Econ.tide.opacity(0.13))
-                .cornerRadius(16)
+                .econCard()
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("homeCourseCard")
@@ -285,13 +276,12 @@ struct HomeTabView: View {
     @ViewBuilder
     private var featuredPackSection: some View {
         if let pack = featuredPack {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: EconSpace.s) {
                 HStack {
                     EconSectionLabel(text: "Featured pack")
                     Spacer()
                     Button("All packs") { router.selectedTab = .browse }
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.sky)
+                        .buttonStyle(EconLinkButton())
                         .accessibilityIdentifier("homeAllPacksButton")
                 }
                 PackOfferView(pack: pack, entryPoint: .home) { topic in
@@ -308,16 +298,19 @@ struct CourseProgressRing: View {
     let total: Int
     let icon: String
 
+    /// Ring stroke width (a drawing measure, not a spacing token).
+    private let lineWidth: CGFloat = 3
+
     var body: some View {
         ZStack {
-            Circle().stroke(Econ.tide.opacity(0.4), lineWidth: 3)
+            Circle().stroke(EconColor.outline, lineWidth: lineWidth)
             Circle()
                 .trim(from: 0, to: total == 0 ? 0 : CGFloat(done) / CGFloat(total))
-                .stroke(Econ.sky, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .stroke(EconColor.interactive, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
             Image(systemName: icon)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(Econ.amber)
+                .font(EconType.subheadlineEmphasis)
+                .foregroundColor(EconColor.accent)
         }
         .accessibilityHidden(true)
     }

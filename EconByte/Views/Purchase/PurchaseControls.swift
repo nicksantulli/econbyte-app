@@ -1,13 +1,18 @@
 import SwiftUI
 
-// MARK: - The one purchase button and offer card (1.1.4 release scope)
+// MARK: - The one purchase button and offer card (1.1.4 release scope; 1.1.5 design system)
 //
 // Every purchase surface in EconByte — each topic pack, the All Packs Bundle,
 // Unlock All, Remove Ads and EconByte Pro — is an `OfferCard` holding one
-// `PurchaseButton`. Same size rules everywhere (full width, a Dynamic-Type
-// scaled minimum height, one font), the label always carries the StoreKit
-// price ("Unlock · $1.99"), an owned product reads "Owned", and the Phase 11
-// loading / failed states come from `PurchaseButtonModel`, so no surface can
+// `PurchaseButton`, always at the bottom of the card with Restore under it.
+//
+// 1.1.5 (Owner: "all the buttons are the same size and clearly labelled with
+// how much they cost"): the button stacks the action over its price —
+// "Unlock" / "$1.99", "Start 7-day free trial" / "then $39.99 per year" — so
+// the price is always its own line and every button has the same height
+// (`EconSize.buttonHeight`, scaled with Dynamic Type) whatever its words.
+// VoiceOver reads the joined label ("Unlock · $1.99"). The loading / failed /
+// pending / owned states come from `PurchaseButtonModel`, so no surface can
 // drift from the others.
 
 struct PurchaseButton: View {
@@ -18,39 +23,50 @@ struct PurchaseButton: View {
     var onRetry: (() -> Void)? = nil
     let action: () -> Void
 
-    @ScaledMetric(relativeTo: .headline) private var minHeight: CGFloat = 52
+    @ScaledMetric(relativeTo: .headline) private var minHeight: CGFloat = EconSize.buttonHeight
+
+    private var foreground: Color { model.style == .primary ? EconColor.onAccent : EconColor.interactive }
+    private var fill: Color { model.style == .primary ? EconColor.accent : EconColor.interactiveFill }
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: EconSpace.xs) {
             Button(action: action) {
-                HStack(spacing: 8) {
+                HStack(spacing: EconSpace.xs) {
                     if model.showsSpinner {
                         ProgressView()
-                            .tint(model.style == .primary ? Econ.ink : Econ.sky)
+                            .tint(foreground)
                             .accessibilityHidden(true)
                     }
-                    Text(model.label)
-                        .lineLimit(3)
-                        .minimumScaleFactor(0.85)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
+                    VStack(spacing: 1) {
+                        Text(model.title)
+                            .font(EconType.headline)
+                        if let detail = model.detail {
+                            Text(detail)
+                                .font(EconType.subheadlineEmphasis)
+                                .monospacedDigit()
+                                .accessibilityIdentifier("\(identifier)-price")
+                        }
+                    }
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
-                .font(.system(.headline, design: .rounded))
-                .foregroundColor(model.style == .primary ? Econ.ink : Econ.sky)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .foregroundColor(foreground)
+                .padding(.horizontal, EconSpace.m)
+                .padding(.vertical, EconSpace.xs)
                 .frame(maxWidth: .infinity, minHeight: minHeight)
-                .background(model.style == .primary ? Econ.amber : Econ.tide.opacity(0.15))
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .background(fill)
+                .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .stroke(Econ.sky.opacity(model.style == .owned ? 0.45 : 0), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous)
+                        .stroke(EconColor.interactive.opacity(model.style == .owned ? 0.45 : 0), lineWidth: 1)
                 )
-                .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .contentShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
             }
             .buttonStyle(PurchaseButtonPressStyle())
             .disabled(!model.isEnabled)
             .opacity(model.isEnabled || model.style == .owned ? 1 : 0.55)
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isButton)
             .accessibilityLabel(Text(model.label))
             .accessibilityIdentifier(identifier)
 
@@ -70,7 +86,8 @@ private struct PurchaseButtonPressStyle: ButtonStyle {
 }
 
 /// A product offer: icon, name, one short line, optional content (a pack's
-/// preview, the Pro plan tiles), the purchase button and Restore.
+/// preview, the Pro plan tiles), then — always last, in this order — the
+/// purchase button and Restore.
 struct OfferCard<Content: View>: View {
     let icon: String
     let title: String
@@ -108,48 +125,42 @@ struct OfferCard<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
+        VStack(alignment: .leading, spacing: EconSpace.s) {
+            HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
                 Image(systemName: icon)
-                    .font(.title3)
-                    .foregroundColor(Econ.amber)
+                    .font(EconType.title3)
+                    .foregroundColor(EconColor.accent)
                     .accessibilityHidden(true)
                 Text(title)
-                    .font(.system(.headline, design: .rounded).weight(.heavy))
-                    .foregroundColor(Econ.white)
+                    .font(EconType.title3)
+                    .foregroundColor(EconColor.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
-                Spacer(minLength: 4)
+                Spacer(minLength: EconSpace.xxs)
                 if let status {
                     Text(status)
-                        .font(.system(.footnote, design: .rounded).weight(.semibold))
-                        .foregroundColor(Econ.sky)
+                        .font(EconType.footnote.weight(.semibold))
+                        .foregroundColor(EconColor.interactive)
                         .accessibilityIdentifier(statusIdentifier ?? "\(identifier)-status")
                 }
             }
             if let subtitle {
                 Text(subtitle)
-                    .font(.system(.subheadline, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.72))
+                    .font(EconType.subheadline)
+                    .foregroundColor(EconColor.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             content()
             if let button { button }
             if let onRestore {
                 Button("Restore Purchases", action: onRestore)
-                    .font(.system(.subheadline, design: .rounded).weight(.medium))
-                    .foregroundColor(Econ.sky)
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .buttonStyle(.borderless)
+                    .buttonStyle(EconLinkButton())
+                    .frame(maxWidth: .infinity)
                     .disabled(restoreDisabled)
                     .accessibilityIdentifier(restoreIdentifier ?? "\(identifier)-restore")
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Econ.tide.opacity(0.12))
-        .cornerRadius(16)
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Econ.amber.opacity(highlighted ? 0.35 : 0), lineWidth: 1))
+        .econCard(elevation: highlighted ? .outlined : .flat)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(identifier)
     }

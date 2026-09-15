@@ -80,8 +80,8 @@ struct PackOfferView: View {
 
     private var topicLine: some View {
         Text(pack.topics.map(\.name).joined(separator: " · "))
-            .font(.system(.caption, design: .rounded).weight(.semibold))
-            .foregroundColor(Econ.subtext)
+            .font(EconType.caption)
+            .foregroundColor(EconColor.textTertiary)
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityLabel("Topics: \(pack.topics.map(\.name).joined(separator: ", "))")
     }
@@ -89,29 +89,28 @@ struct PackOfferView: View {
     /// Three cards, one from each of the first three topics — the card's own
     /// title and the first sentence of its own definition, never paraphrased.
     private var preview: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: EconSpace.xs) {
             ForEach(pack.preview) { card in
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: EconSpace.xxs) {
                     Text(card.concept)
-                        .font(.system(.subheadline, design: .rounded).weight(.semibold))
-                        .foregroundColor(Econ.white)
+                        .font(EconType.subheadlineEmphasis)
+                        .foregroundColor(EconColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(ContentStore.firstSentence(of: card.conceptBody))
-                        .font(.system(.footnote, design: .rounded))
-                        .foregroundColor(Econ.white.opacity(0.7))
+                        .font(EconType.footnote)
+                        .foregroundColor(EconColor.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityElement(children: .combine)
             }
         }
-        .padding(12)
-        .background(Econ.ocean.opacity(0.6))
-        .cornerRadius(12)
+        .econInset()
         .accessibilityIdentifier("pack-\(pack.id)-preview")
     }
 
     private var topicGrid: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: EconSpace.s) {
             ForEach(pack.topics) { topic in
                 Button {
                     onOpenTopic(topic)

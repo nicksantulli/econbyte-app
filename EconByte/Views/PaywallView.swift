@@ -39,7 +39,7 @@ struct PaywallView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Econ.ocean.ignoresSafeArea()
+                EconColor.background.ignoresSafeArea()
                 ScrollView {
                     // D18: Unlock All is the core curriculum. Topic packs are
                     // separate purchases and are not promised here.
@@ -56,7 +56,7 @@ struct PaywallView: View {
                               restoreIdentifier: "paywallRestoreButton",
                               onRestore: store.isUnlockAllPurchased ? nil : restore,
                               restoreDisabled: working)
-                        .padding(20)
+                        .padding(EconSpace.gutter)
                 }
             }
             // Deliberately not "EconByte Pro": the one-time products are
@@ -66,8 +66,8 @@ struct PaywallView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Close") { dismiss() }
-                        .font(.system(size: 17, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.sky)
+                        .font(EconType.headline)
+                        .foregroundColor(EconColor.interactive)
                         .accessibilityIdentifier("paywallCloseButton")
                 }
             }
@@ -76,7 +76,7 @@ struct PaywallView: View {
             }
             .purchaseAlert($alert)
         }
-        .tint(Econ.sky)
+        .tint(EconColor.interactive)
         .task {
             growth.monetization.setBlocker(.paywall, active: true)
             growth.review.noteNegativeSessionEvent(.paywall)
@@ -120,18 +120,17 @@ struct PricesUnavailableNotice: View {
     let onRetry: () -> Void
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: EconSpace.xxs) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 13))
-                .foregroundColor(Econ.amber)
+                .font(EconType.footnote)
+                .foregroundColor(EconColor.accent)
                 .accessibilityHidden(true)
             Text("\(PurchasePresentation.pricesUnavailableText) —")
-                .font(.system(size: 14, weight: .medium, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.8))
+                .font(EconType.subheadline)
+                .foregroundColor(EconColor.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
             Button(PurchasePresentation.retryText, action: onRetry)
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(Econ.sky)
-                .buttonStyle(.borderless)
+                .buttonStyle(EconLinkButton())
                 .accessibilityIdentifier("\(identifier)RetryButton")
         }
         .frame(maxWidth: .infinity)

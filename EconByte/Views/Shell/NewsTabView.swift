@@ -16,7 +16,7 @@ struct NewsTabView: View {
     var body: some View {
         EconTabScaffold(scrollSpace: "news",
                         onRefresh: { await briefs.refreshIfNeeded(force: true) }) { _ in
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: EconSpace.section) {
                 if let brief = briefs.latest {
                     BriefDocumentView(brief: brief, unlocked: unlocked, showsRefreshState: true,
                                       onProPaywall: { router.presentProPaywall(.brief) })
@@ -26,9 +26,9 @@ struct NewsTabView: View {
                     unavailable
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 12)
-            .padding(.bottom, 32)
+            .padding(.horizontal, EconSpace.gutter)
+            .padding(.top, EconSpace.s)
+            .padding(.bottom, EconSpace.xxl)
         }
         .sheet(isPresented: $showMethodology) {
             if let brief = briefs.latest { BriefMethodologyView(brief: brief) }
@@ -51,37 +51,34 @@ struct NewsTabView: View {
     }
 
     private var archiveSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: EconSpace.xs) {
             EconSectionLabel(text: "Archive")
             ForEach(archiveBriefs) { past in
                     Button { archived = past } label: {
-                        HStack(spacing: 12) {
+                        HStack(spacing: EconSpace.s) {
                             VStack(alignment: .leading, spacing: 2) {
-                                HStack(spacing: 6) {
+                                HStack(spacing: EconSpace.xxs) {
                                     Text(BriefDates.long(past.briefDate))
-                                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                                        .foregroundColor(Econ.subtext)
+                                        .font(EconType.caption.weight(.semibold))
+                                        .foregroundColor(EconColor.textTertiary)
                                     if past.briefDate == briefs.latest?.briefDate {
-                                        Text("LATEST")
-                                            .font(.system(size: 9, weight: .bold, design: .rounded))
-                                            .foregroundColor(Econ.sky)
+                                        EconBadge(text: "Latest", style: .interactive)
                                             .accessibilityLabel("latest")
                                     }
                                 }
                                 Text(past.headline)
-                                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                                    .foregroundColor(Econ.white)
+                                    .font(EconType.subheadline.weight(.medium))
+                                    .foregroundColor(EconColor.textPrimary)
                                     .multilineTextAlignment(.leading)
-                                    .lineLimit(2)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
-                            Spacer(minLength: 8)
+                            Spacer(minLength: EconSpace.xs)
                             Image(systemName: "chevron.right")
-                                .foregroundColor(Econ.subtext)
+                                .font(EconType.footnote.weight(.semibold))
+                                .foregroundColor(EconColor.textTertiary)
                                 .accessibilityHidden(true)
                         }
-                        .padding(12)
-                        .background(Econ.tide.opacity(0.10))
-                        .cornerRadius(12)
+                        .econRow()
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("briefArchiveRow-\(past.briefDate)")
@@ -91,36 +88,37 @@ struct NewsTabView: View {
 
     private var methodologyRow: some View {
         Button { showMethodology = true } label: {
-            HStack(spacing: 12) {
+            HStack(spacing: EconSpace.s) {
                 Image(systemName: "questionmark.circle.fill")
-                    .foregroundColor(Econ.sky)
+                    .foregroundColor(EconColor.interactive)
                     .accessibilityHidden(true)
                 Text("How this brief is made")
-                    .font(.system(size: 15, weight: .medium, design: .rounded))
-                    .foregroundColor(Econ.white)
+                    .font(EconType.subheadline.weight(.medium))
+                    .foregroundColor(EconColor.textPrimary)
+                    .multilineTextAlignment(.leading)
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundColor(Econ.subtext)
+                    .font(EconType.footnote.weight(.semibold))
+                    .foregroundColor(EconColor.textTertiary)
                     .accessibilityHidden(true)
             }
-            .padding(14)
-            .background(Econ.tide.opacity(0.12))
-            .cornerRadius(12)
+            .econRow()
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("briefMethodologyButton")
     }
 
     private var unavailable: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: EconSpace.s) {
             Text("The brief isn't available right now.")
-                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                .foregroundColor(Econ.white)
+                .font(EconType.headline)
+                .foregroundColor(EconColor.textPrimary)
+                .multilineTextAlignment(.center)
             Button("Try again") { Task { await briefs.refreshIfNeeded(force: true) } }
                 .buttonStyle(SecondaryButton())
-                .padding(.horizontal, 40)
+                .padding(.horizontal, EconSpace.xxl)
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 60)
+        .padding(.top, EconSpace.xxl * 2)
     }
 }

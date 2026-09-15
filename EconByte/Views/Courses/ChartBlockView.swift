@@ -9,34 +9,39 @@ import Charts
 /// `dataNote` ("Synthetic …") is always printed under the chart.
 struct ChartBlockView: View {
     let spec: ChartSpec
+    /// 1.1.5 story beats say what the chart shows in the beat text; the caption
+    /// stays the chart's VoiceOver description.
+    var showsCaption = true
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(spec.title)
-                .font(.system(size: 15, weight: .semibold, design: .rounded))
-                .foregroundColor(Econ.white)
+                .font(EconType.subheadlineEmphasis)
+                .foregroundColor(EconColor.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
             chart
                 // Marker labels sit above the plot; reserve their rows so they never
                 // cover the title (two rows when labels alternate).
                 .padding(.top, markerHeadroom)
                 .frame(height: 220 + markerHeadroom)
+                .dynamicTypeSize(...DynamicTypeSize.xLarge)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text("\(spec.title). \(spec.caption)"))
                 .accessibilityValue(Text(accessibilitySummary))
-            Text(spec.caption)
-                .font(.system(size: 13, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.75))
-                .fixedSize(horizontal: false, vertical: true)
+            if showsCaption {
+                Text(spec.caption)
+                    .font(EconType.footnote)
+                    .foregroundColor(EconColor.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             Text(spec.dataNote)
-                .font(.system(size: 11, weight: .medium, design: .rounded))
+                .font(EconType.caption)
                 .italic()
-                .foregroundColor(Econ.subtext)
+                .foregroundColor(EconColor.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("chart-\(spec.chartID)-note")
         }
-        .padding(14)
-        .background(Econ.ocean.opacity(0.7))
-        .cornerRadius(12)
+        .econInset()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("chart-\(spec.chartID)")
     }
@@ -93,7 +98,7 @@ struct ChartBlockView: View {
                 ForEach(series.points, id: \.x) { point in
                     BarMark(x: .value(spec.xLabel, point.x), y: .value(spec.yLabel, point.y))
                         .foregroundStyle(by: .value("Series", series.name))
-                        .cornerRadius(3)
+                        .cornerRadius(EconRadius.mark)
                 }
             }
             markers
@@ -127,11 +132,11 @@ struct ChartBlockView: View {
                 .annotation(position: .top, alignment: markerAlignment(for: marker.x),
                             spacing: index % 2 == 1 ? 16 : 2) {
                     Text(marker.label)
-                        .font(.system(size: 10, weight: .semibold, design: .rounded))
+                        .font(EconType.micro)
                         .foregroundColor(Econ.mist)
                         .padding(.horizontal, 4)
-                        .background(Econ.ocean.opacity(0.8))
-                        .cornerRadius(3)
+                        .background(EconColor.background.opacity(0.85))
+                        .cornerRadius(EconRadius.mark)
                 }
         }
     }
@@ -183,15 +188,15 @@ private struct ChartStyle: ViewModifier {
             .chartXAxis {
                 AxisMarks { _ in
                     AxisGridLine().foregroundStyle(Econ.mist.opacity(0.15))
-                    AxisValueLabel().foregroundStyle(Econ.subtext)
+                    AxisValueLabel().foregroundStyle(EconColor.textTertiary)
                 }
             }
             .chartYAxis {
                 AxisMarks { _ in
                     AxisGridLine().foregroundStyle(Econ.mist.opacity(0.15))
-                    AxisValueLabel().foregroundStyle(Econ.subtext)
+                    AxisValueLabel().foregroundStyle(EconColor.textTertiary)
                 }
             }
-            .foregroundStyle(Econ.subtext)
+            .foregroundStyle(EconColor.textTertiary)
     }
 }

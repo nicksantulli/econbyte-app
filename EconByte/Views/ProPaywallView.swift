@@ -28,12 +28,12 @@ struct ProPaywallView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Econ.ocean.ignoresSafeArea()
+                EconColor.background.ignoresSafeArea()
                 ScrollView {
                     ProPaywallContent(entryPoint: entryPoint)
-                        .padding(.horizontal, 20)
-                        .padding(.top, 8)
-                        .padding(.bottom, 40)
+                        .padding(.horizontal, EconSpace.gutter)
+                        .padding(.top, EconSpace.xs)
+                        .padding(.bottom, EconSpace.xxl)
                 }
             }
             .navigationTitle("EconByte Pro")
@@ -41,13 +41,13 @@ struct ProPaywallView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Close") { dismiss() }
-                        .font(.system(size: 17, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.sky)
+                        .font(EconType.headline)
+                        .foregroundColor(EconColor.interactive)
                         .accessibilityIdentifier("proPaywallCloseButton")
                 }
             }
         }
-        .tint(Econ.sky)
+        .tint(EconColor.interactive)
         .onChange(of: store.isProActive) { active in
             if active { dismiss() }
         }
@@ -85,7 +85,7 @@ struct ProPaywallContent<Interlude: View>: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: EconSpace.l) {
             offer
             interlude()
             benefits
@@ -129,14 +129,14 @@ struct ProPaywallContent<Interlude: View>: View {
                   restoreIdentifier: "proPaywallRestoreButton",
                   onRestore: restore,
                   restoreDisabled: working) {
-            VStack(spacing: 10) {
+            VStack(spacing: EconSpace.xs) {
                 ForEach(Self.plans, id: \.self) { planTile($0) }
             }
             .accessibilityElement(children: .contain)
             if let trialLine {
                 Text(trialLine)
-                    .font(.system(.footnote, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.85))
+                    .font(EconType.footnote)
+                    .foregroundColor(EconColor.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("proPaywallTrialLine")
             }
@@ -182,60 +182,55 @@ struct ProPaywallContent<Interlude: View>: View {
         return Button {
             selected = id
         } label: {
-            HStack(alignment: .center, spacing: 12) {
+            HStack(alignment: .center, spacing: EconSpace.s) {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
-                    .foregroundColor(isSelected ? Econ.amber : Econ.subtext)
+                    .font(EconType.title3)
+                    .foregroundColor(isSelected ? EconColor.accent : EconColor.textTertiary)
                     .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 8) {
+                VStack(alignment: .leading, spacing: EconSpace.xxs) {
+                    HStack(spacing: EconSpace.xs) {
                         Text(PlanCopy.planName(id))
-                            .font(.system(.subheadline, design: .rounded).weight(.bold))
-                            .foregroundColor(Econ.white.opacity(0.85))
+                            .font(EconType.subheadlineEmphasis)
+                            .foregroundColor(EconColor.textPrimary)
                         if let badge {
-                            Text(badge)
-                                .font(.system(.caption, design: .rounded).weight(.bold))
-                                .foregroundColor(isCurrent ? Econ.ocean : Econ.ink)
-                                .padding(.horizontal, 7).padding(.vertical, 2)
-                                .background(isCurrent ? Econ.sky : Econ.amber)
-                                .cornerRadius(5)
+                            EconBadge(text: badge, style: isCurrent ? .interactive : .accent)
                         }
                     }
                     switch state {
                     case .ready:
                         // The billed price in words: the largest price text on the page.
                         Text(billed ?? "")
-                            .font(.system(.title2, design: .rounded).weight(.heavy))
-                            .foregroundColor(Econ.white)
+                            .font(EconType.title)
+                            .foregroundColor(EconColor.textPrimary)
                             .minimumScaleFactor(0.75)
                             .fixedSize(horizontal: false, vertical: true)
                         if let perMonth {
                             Text(perMonth)
-                                .font(.system(.footnote, design: .rounded))
-                                .foregroundColor(Econ.white.opacity(0.65))
+                                .font(EconType.footnote)
+                                .foregroundColor(EconColor.textSecondary)
                         }
                     case .loading:
-                        HStack(spacing: 6) {
-                            ProgressView().tint(Econ.sky).scaleEffect(0.8)
+                        HStack(spacing: EconSpace.xxs) {
+                            ProgressView().tint(EconColor.interactive).scaleEffect(0.8)
                             Text(PurchasePresentation.loadingPriceText)
-                                .font(.system(.subheadline, design: .rounded).weight(.medium))
-                                .foregroundColor(Econ.white.opacity(0.75))
+                                .font(EconType.subheadline)
+                                .foregroundColor(EconColor.textSecondary)
                         }
                     case .unavailable:
                         Text("Price unavailable")
-                            .font(.system(.subheadline, design: .rounded).weight(.semibold))
-                            .foregroundColor(Econ.white.opacity(0.75))
+                            .font(EconType.subheadlineEmphasis)
+                            .foregroundColor(EconColor.textSecondary)
                     }
                 }
                 Spacer(minLength: 0)
             }
-            .padding(14)
+            .padding(EconSpace.s)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Econ.ocean.opacity(isSelected ? 0.6 : 0.3))
-            .cornerRadius(14)
-            .overlay(RoundedRectangle(cornerRadius: 14)
-                .stroke(isSelected ? Econ.amber : Econ.mist.opacity(0.2), lineWidth: isSelected ? 2 : 1))
-            .contentShape(RoundedRectangle(cornerRadius: 14))
+            .background(EconColor.surfaceInset)
+            .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous)
+                .stroke(isSelected ? EconColor.accent : EconColor.outline, lineWidth: isSelected ? 2 : 1))
+            .contentShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("proPaywallPlan-\(id == .proAnnual ? "annual" : "monthly")")
@@ -259,82 +254,76 @@ struct ProPaywallContent<Interlude: View>: View {
     @ViewBuilder
     private var subscriberDetails: some View {
         if let pro = store.proEntitlement {
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: EconSpace.xxs) {
                 ForEach(ProStatusCopy.rows(for: pro).filter { $0.title != "Status" && $0.title != "Plan" }) { row in
                     HStack {
-                        Text(row.title).foregroundColor(Econ.white.opacity(0.8))
+                        Text(row.title).foregroundColor(EconColor.textSecondary)
                         Spacer()
-                        Text(row.value).foregroundColor(Econ.subtext)
+                        Text(row.value).foregroundColor(EconColor.textPrimary)
                     }
-                    .font(.system(.subheadline, design: .rounded))
+                    .font(EconType.subheadline)
                     .accessibilityElement(children: .combine)
                 }
                 Text(ProStatusCopy.footer(for: pro))
-                    .font(.system(.caption, design: .rounded))
-                    .foregroundColor(Econ.subtext)
+                    .font(EconType.caption)
+                    .foregroundColor(EconColor.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
         Button("Manage Subscription") { showManageSubscriptions = true }
-            .font(.system(.subheadline, design: .rounded).weight(.semibold))
-            .foregroundColor(Econ.sky)
-            .frame(maxWidth: .infinity, minHeight: 44)
-            .buttonStyle(.borderless)
+            .buttonStyle(EconLinkButton())
+            .frame(maxWidth: .infinity)
             .accessibilityIdentifier("proManageSubscriptionLink")
     }
 
     // MARK: Benefits, legal
 
     private var benefits: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(subscribed ? "INCLUDED" : "WHAT YOU GET")
-                .font(.system(.caption, design: .rounded).weight(.bold))
-                .foregroundColor(Econ.subtext)
-                .tracking(1.5)
-                .accessibilityAddTraits(.isHeader)
+        VStack(alignment: .leading, spacing: EconSpace.s) {
+            EconSectionLabel(text: subscribed ? "INCLUDED" : "WHAT YOU GET")
             ForEach(PaywallBenefits.current().rows) { row in
-                HStack(alignment: .top, spacing: 12) {
+                HStack(alignment: .top, spacing: EconSpace.s) {
                     Image(systemName: row.icon)
-                        .foregroundColor(Econ.amber)
-                        .frame(width: 24)
+                        .font(EconType.subheadline)
+                        .foregroundColor(EconColor.accent)
+                        .frame(width: EconSpace.xl)
                         .accessibilityHidden(true)
                     Text(row.text)
-                        .font(.system(.subheadline, design: .rounded))
-                        .foregroundColor(Econ.white.opacity(0.9))
+                        .font(EconType.subheadline)
+                        .foregroundColor(EconColor.textPrimary)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
                 }
             }
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Econ.tide.opacity(0.10))
-        .cornerRadius(14)
+        .econCard()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("proPaywallBenefits")
     }
 
     private var legal: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: EconSpace.xs) {
             Text(PlanCopy.autoRenewDisclosure(trial: trialLine != nil))
-                .font(.system(.caption, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.62))
+                .font(EconType.caption)
+                .foregroundColor(EconColor.textSecondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("proPaywallAutoRenewDisclosure")
             Text(PlanCopy.notAdvice)
-                .font(.system(.caption, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.62))
+                .font(EconType.caption)
+                .foregroundColor(EconColor.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("proPaywallNotAdvice")
-            HStack(spacing: 18) {
+            HStack(spacing: EconSpace.m) {
                 Link("Terms of Use", destination: PurchaseManager.termsOfUseURL)
                     .accessibilityIdentifier("proPaywallTermsLink")
                 Link("Privacy Policy", destination: PurchaseManager.privacyPolicyURL)
                     .accessibilityIdentifier("proPaywallPrivacyLink")
             }
-            .font(.system(.subheadline, design: .rounded).weight(.medium))
-            .foregroundColor(Econ.sky)
-            .frame(minHeight: 44)
+            .font(EconType.subheadlineEmphasis)
+            .foregroundColor(EconColor.interactive)
+            .frame(minHeight: EconSize.tapTarget)
         }
     }
 

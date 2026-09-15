@@ -5,7 +5,7 @@
 // without an xcodebuild run (one xcodebuild at a time on the build Mac):
 //
 //   node scripts/validate_content.mjs packs   <file> [--fragment] [--net]
-//   node scripts/validate_content.mjs courses <file> [--fragment] [--net]
+//   node scripts/validate_content.mjs courses <file> [--fragment] [--net]   (schemaVersion 2 story beats)
 //   node scripts/validate_content.mjs brief   <file> [--net]
 //   node scripts/validate_content.mjs curriculum <file> [--fragment] [--net]
 //
@@ -374,25 +374,133 @@ function validatePacks(file, { fragment = false } = {}) {
   return rep;
 }
 
-// MARK: - Courses
+// MARK: - Courses (schemaVersion 2: story beats, 1.1.5)
+//
+// docs/content/STORY-SCHEMA-1.1.5.md. A lesson is a list of beats (one idea per
+// screen) plus the synthetic charts its beats show. Mirrors CourseCatalog.validate.
 
-function textOf(block) {
-  switch (block.type) {
-    case 'paragraph': return block.text ?? '';
-    case 'callout': return `${block.title ?? ''} ${block.text ?? ''}`;
-    case 'keyTerms': return (block.terms ?? []).map(t => `${t.term} ${t.definition}`).join(' ');
-    case 'diagram': return block.caption ?? '';
-    case 'chart': return `${block.title ?? ''} ${block.caption ?? ''} ${block.dataNote ?? ''}`;
-    case 'quiz': return `${block.question ?? ''} ${(block.choices ?? []).join(' ')} ${block.explanation ?? ''}`;
-    case 'takeaways': return (block.items ?? []).join(' ');
-    default: return '';
+export const MAX_BEAT_WORDS = 35;
+export const MAX_HEADING_WORDS = 8;
+export const BEAT_RANGE = [10, 30];
+export const BEAT_KINDS = new Set(['idea', 'term', 'check', 'recap']);
+// StoryVisual.allowedSymbols, verbatim (SF Symbols available on iOS 16).
+export const ALLOWED_SYMBOLS = new Set([
+  'chart.line.uptrend.xyaxis', 'chart.line.downtrend.xyaxis', 'chart.bar.fill', 'chart.pie.fill',
+  'percent', 'dollarsign.circle.fill', 'banknote.fill', 'building.columns.fill', 'clock.fill',
+  'calendar', 'scalemass.fill', 'arrow.up.arrow.down', 'arrow.triangle.2.circlepath',
+  'exclamationmark.triangle.fill', 'lightbulb.fill', 'magnifyingglass', 'person.2.fill',
+  'brain.head.profile', 'hourglass', 'shield.fill', 'doc.text.fill', 'eye.fill',
+  'questionmark.circle.fill', 'checkmark.seal.fill', 'hand.raised.fill', 'arrow.up.right',
+  'arrow.down.right', 'flag.fill', 'tray.full.fill', 'square.stack.3d.up.fill', 'cart.fill',
+  'house.fill', 'target', 'ruler.fill', 'speedometer', 'list.number',
+]);
+
+export function wordCount(s) {
+  return typeof s === 'string' ? s.trim().split(/\s+/).filter(Boolean).length : 0;
+}
+
+export function visualWords(v) {
+  if (!v || typeof v !== 'object') return 0;
+  switch (v.type) {
+    case 'stat': return wordCount(v.value) + wordCount(v.label);
+    case 'flow': return (Array.isArray(v.steps) ? v.steps : []).reduce((n, x) => n + wordCount(x), 0);
+    case 'compare': return ['left', 'right'].reduce((n, k) => n + wordCount(v[k]?.label) + wordCount(v[k]?.detail), 0);
+    default: return 0;
+  }
+}
+
+/** Words the reader reads on the beat's screen (the check's explanation is limited separately). */
+export function beatWords(beat) {
+  const terms = Array.isArray(beat.terms) ? beat.terms : [];
+  const items = Array.isArray(beat.items) ? beat.items : [];
+  const choices = Array.isArray(beat.check?.choices) ? beat.check.choices : [];
+  return wordCount(beat.heading) + wordCount(beat.text)
+    + terms.reduce((n, t) => n + wordCount(t?.term) + wordCount(t?.definition), 0)
+    + items.reduce((n, x) => n + wordCount(x), 0)
+    + (beat.kind === 'check' ? wordCount(beat.check?.question) + choices.reduce((n, c) => n + wordCount(c), 0) : 0)
+    + visualWords(beat.visual);
+}
+
+function beatText(beat) {
+  const v = beat.visual ?? {};
+  return [beat.heading, beat.text,
+    ...(beat.terms ?? []).flatMap(t => [t?.term, t?.definition]),
+    ...(beat.items ?? []),
+    beat.check?.question, ...(beat.check?.choices ?? []), beat.check?.explanation,
+    v.value, v.label, ...(v.steps ?? []), v.left?.label, v.left?.detail, v.right?.label, v.right?.detail,
+  ].filter(x => typeof x === 'string').join(' ');
+}
+
+function checkChart(rep, bw, block, seenCharts) {
+  if (!nonEmpty(block.chartID)) rep.fail(bw, 'chart needs a chartID');
+  else { if (seenCharts.has(block.chartID)) rep.fail(bw, 'duplicate chartID'); seenCharts.add(block.chartID); }
+  if (!['candlestick', 'line', 'bar'].includes(block.kind)) rep.fail(bw, `kind must be candlestick|line|bar, got ${block.kind}`);
+  for (const k of ['title', 'caption', 'dataNote', 'xLabel', 'yLabel']) if (!nonEmpty(block[k])) rep.fail(bw, `missing ${k}`);
+  if (!/^Synthetic/i.test(block.dataNote ?? '')) rep.fail(bw, 'dataNote must begin with "Synthetic" (no real market data is ever plotted)');
+  if (block.kind === 'candlestick') {
+    const candles = Array.isArray(block.candles) ? block.candles : [];
+    if (candles.length < 8 || candles.length > 60) rep.fail(bw, `candlestick needs 8–60 candles, has ${candles.length}`);
+    candles.forEach((c, i) => {
+      for (const k of ['x', 'open', 'high', 'low', 'close']) if (typeof c[k] !== 'number') rep.fail(bw, `candle ${i + 1}.${k} must be a number`);
+      if (typeof c.high === 'number' && (c.high < Math.max(c.open, c.close) || c.low > Math.min(c.open, c.close))) rep.fail(bw, `candle ${i + 1} OHLC is inconsistent`);
+      if (i > 0 && c.x <= candles[i - 1].x) rep.fail(bw, `candle ${i + 1}.x must increase`);
+    });
+    if (block.series) rep.fail(bw, 'candlestick uses candles, not series');
+  } else {
+    const series = Array.isArray(block.series) ? block.series : [];
+    if (series.length < 1 || series.length > 4) rep.fail(bw, `needs 1–4 series, has ${series.length}`);
+    series.forEach((s, si) => {
+      if (!nonEmpty(s.name)) rep.fail(bw, `series ${si + 1} needs a name`);
+      const pts = Array.isArray(s.points) ? s.points : [];
+      if (pts.length < 2 || pts.length > 60) rep.fail(bw, `series ${si + 1} needs 2–60 points, has ${pts.length}`);
+      pts.forEach((p, pi) => { if (typeof p.x !== 'number' || typeof p.y !== 'number') rep.fail(bw, `series ${si + 1} point ${pi + 1} must have numeric x and y`); });
+    });
+    if (block.candles) rep.fail(bw, 'line/bar use series, not candles');
+  }
+  if (block.markers) {
+    if (!Array.isArray(block.markers)) rep.fail(bw, 'markers must be an array');
+    else block.markers.forEach((m, i) => { if (typeof m.x !== 'number' || !nonEmpty(m.label)) rep.fail(bw, `marker ${i + 1} needs numeric x and a label`); });
+  }
+}
+
+function checkVisual(rep, bw, v, chartIDs, usedCharts, usedDiagrams) {
+  if (!v || typeof v !== 'object') return rep.fail(bw, 'visual must be an object');
+  switch (v.type) {
+    case 'diagram':
+      if (!ALLOWED_DIAGRAMS.has(v.diagramID)) rep.fail(bw, `diagramID "${v.diagramID}" is not one the app can draw`);
+      else usedDiagrams.add(v.diagramID);
+      break;
+    case 'chart':
+      if (!chartIDs.has(v.chartID)) rep.fail(bw, `chartID "${v.chartID}" is not in this lesson's charts`);
+      else usedCharts.add(v.chartID);
+      break;
+    case 'stat':
+      if (!nonEmpty(v.value) || v.value.length > 16) rep.fail(bw, 'stat value must be 1–16 characters');
+      if (!nonEmpty(v.label) || wordCount(v.label) > 6) rep.fail(bw, 'stat label must be 1–6 words');
+      break;
+    case 'flow': {
+      const steps = Array.isArray(v.steps) ? v.steps : [];
+      if (steps.length < 2 || steps.length > 4) rep.fail(bw, `flow needs 2–4 steps, has ${steps.length}`);
+      steps.forEach((x, i) => { if (!nonEmpty(x) || wordCount(x) > 4) rep.fail(bw, `flow step ${i + 1} must be 1–4 words`); });
+      break;
+    }
+    case 'compare':
+      for (const k of ['left', 'right']) {
+        if (!v[k] || !nonEmpty(v[k].label) || wordCount(v[k].label) > 4) rep.fail(bw, `compare ${k}.label must be 1–4 words`);
+        if (!v[k] || !nonEmpty(v[k].detail) || wordCount(v[k].detail) > 8) rep.fail(bw, `compare ${k}.detail must be 1–8 words`);
+      }
+      break;
+    case 'symbol':
+      if (!ALLOWED_SYMBOLS.has(v.name)) rep.fail(bw, `symbol "${v.name}" is not in the allowlist`);
+      break;
+    default: rep.fail(bw, `unknown visual type ${v.type}`);
   }
 }
 
 function validateCourses(file, { fragment = false } = {}) {
   const rep = new Report();
   const catalog = readJSON(file);
-  if (catalog.schemaVersion !== 1) rep.fail('catalog', `unsupported schemaVersion ${catalog.schemaVersion}`);
+  if (catalog.schemaVersion !== 2) rep.fail('catalog', `unsupported schemaVersion ${catalog.schemaVersion} (story lessons are schemaVersion 2)`);
   if (catalog.disclaimer !== CANONICAL_DISCLAIMER) rep.fail('catalog', 'disclaimer is not the canonical text');
   if (!nonEmpty(catalog.educationalNotice) || !/not (investment|financial) advice/i.test(catalog.educationalNotice)) rep.fail('catalog', 'educationalNotice must say it is not investment advice');
   if (!nonEmpty(catalog.editorialPolicy) || catalog.editorialPolicy.length <= 80) rep.fail('catalog', 'editorialPolicy missing/too short');
@@ -406,12 +514,14 @@ function validateCourses(file, { fragment = false } = {}) {
   if (!fragment && courses.length !== EXPECTED_COURSES.length) rep.fail('catalog', `expected ${EXPECTED_COURSES.length} courses, found ${courses.length}`);
   const expected = new Map(EXPECTED_COURSES);
   const seenLessons = new Set(); const seenCharts = new Set(); const seenCourses = new Set();
+  const usedDiagrams = new Set();
+  const stats = { lessons: 0, beats: 0, checks: 0, maxWords: 0 };
 
   courses.forEach((course, ci) => {
     const where = `course ${course.courseID ?? ci}`;
     if (!fragment && EXPECTED_COURSES[ci]?.[0] !== course.courseID) rep.fail(where, `unexpected course at position ${ci + 1} (expected ${EXPECTED_COURSES[ci]?.[0]})`);
     const prefix = expected.get(course.courseID);
-    if (!prefix) rep.fail(where, 'courseID not in the 1.1.4 contract');
+    if (!prefix) rep.fail(where, 'courseID not in the course contract');
     if (seenCourses.has(course.courseID)) rep.fail(where, 'duplicate courseID'); seenCourses.add(course.courseID);
     for (const k of ['title', 'icon', 'summary', 'level']) if (!nonEmpty(course[k])) rep.fail(where, `missing ${k}`);
     if (!['intro', 'intermediate'].includes(course.level)) rep.fail(where, `level must be intro|intermediate, got ${course.level}`);
@@ -420,104 +530,104 @@ function validateCourses(file, { fragment = false } = {}) {
     const lessons = Array.isArray(course.lessons) ? course.lessons : [];
     if (lessons.length < 5) rep.fail(where, `has ${lessons.length} lessons, need at least 5`);
     if (!fragment && lessons.length !== LESSONS_PER_COURSE) rep.fail(where, `has ${lessons.length} lessons, expected ${LESSONS_PER_COURSE}`);
+    const minutes = lessons.reduce((n, l) => n + (l.estimatedMinutes ?? 0), 0);
+    if (course.estimatedMinutes !== minutes) rep.fail(where, `estimatedMinutes ${course.estimatedMinutes} is not the sum of its lessons (${minutes})`);
     lessons.forEach((lesson, li) => {
       const lw = `${where}/lesson ${lesson.lessonID ?? li}`;
+      stats.lessons += 1;
       const expectedID = `${prefix}-${String(li + 1).padStart(2, '0')}`;
       if (lesson.lessonID !== expectedID) rep.fail(lw, `lessonID must be ${expectedID}`);
       if (seenLessons.has(lesson.lessonID)) rep.fail(lw, 'duplicate lessonID'); seenLessons.add(lesson.lessonID);
       for (const k of ['title', 'summary']) if (!nonEmpty(lesson[k])) rep.fail(lw, `missing ${k}`);
+      if (wordCount(lesson.summary) > MAX_BEAT_WORDS) rep.fail(lw, `summary is ${wordCount(lesson.summary)} words (the cover allows ${MAX_BEAT_WORDS})`);
       if (!(Number.isInteger(lesson.estimatedMinutes) && lesson.estimatedMinutes > 0)) rep.fail(lw, 'estimatedMinutes must be a positive integer');
       if (typeof lesson.isPreview !== 'boolean') rep.fail(lw, 'isPreview must be a boolean');
       else if (lesson.isPreview !== (li === 0)) rep.fail(lw, 'exactly the first lesson of each course is the free preview');
-      const blocks = Array.isArray(lesson.blocks) ? lesson.blocks : [];
-      if (blocks.length < 5) rep.fail(lw, `has ${blocks.length} blocks, need at least 5`);
-      const counts = {};
-      let prose = 0;
-      blocks.forEach((block, bi) => {
-        const bw = `${lw}/block ${bi + 1} (${block.type})`;
-        counts[block.type] = (counts[block.type] ?? 0) + 1;
-        switch (block.type) {
-          case 'paragraph':
-            if (!nonEmpty(block.text) || block.text.length < 80) rep.fail(bw, 'paragraph text < 80 chars');
-            prose += (block.text ?? '').length;
-            break;
-          case 'callout':
-            if (!['note', 'caution', 'example'].includes(block.style)) rep.fail(bw, `style must be note|caution|example, got ${block.style}`);
-            if (!nonEmpty(block.title) || !nonEmpty(block.text)) rep.fail(bw, 'callout needs title and text');
-            prose += (block.text ?? '').length;
-            break;
-          case 'keyTerms': {
-            const terms = Array.isArray(block.terms) ? block.terms : [];
-            if (terms.length < 2 || terms.length > 6) rep.fail(bw, `keyTerms needs 2–6 terms, has ${terms.length}`);
-            terms.forEach((t, i) => { if (!nonEmpty(t.term) || !nonEmpty(t.definition) || t.definition.length < 30) rep.fail(bw, `term ${i + 1} needs a term and a definition ≥ 30 chars`); });
-            break;
-          }
-          case 'diagram':
-            if (!ALLOWED_DIAGRAMS.has(block.diagramID)) rep.fail(bw, `diagramID "${block.diagramID}" is not one the app can draw (${[...ALLOWED_DIAGRAMS].join(', ')})`);
-            if (!nonEmpty(block.caption)) rep.fail(bw, 'diagram needs a caption');
-            break;
-          case 'chart': {
-            if (!nonEmpty(block.chartID)) rep.fail(bw, 'chart needs a chartID');
-            else { if (seenCharts.has(block.chartID)) rep.fail(bw, 'duplicate chartID'); seenCharts.add(block.chartID); }
-            if (!['candlestick', 'line', 'bar'].includes(block.kind)) rep.fail(bw, `kind must be candlestick|line|bar, got ${block.kind}`);
-            for (const k of ['title', 'caption', 'dataNote', 'xLabel', 'yLabel']) if (!nonEmpty(block[k])) rep.fail(bw, `missing ${k}`);
-            if (!/^Synthetic/i.test(block.dataNote ?? '')) rep.fail(bw, 'dataNote must begin with "Synthetic" (no real market data is ever plotted)');
-            if (block.kind === 'candlestick') {
-              const candles = Array.isArray(block.candles) ? block.candles : [];
-              if (candles.length < 8 || candles.length > 60) rep.fail(bw, `candlestick needs 8–60 candles, has ${candles.length}`);
-              candles.forEach((c, i) => {
-                for (const k of ['x', 'open', 'high', 'low', 'close']) if (typeof c[k] !== 'number') rep.fail(bw, `candle ${i + 1}.${k} must be a number`);
-                if (typeof c.high === 'number' && (c.high < Math.max(c.open, c.close) || c.low > Math.min(c.open, c.close))) rep.fail(bw, `candle ${i + 1} OHLC is inconsistent`);
-                if (i > 0 && c.x <= candles[i - 1].x) rep.fail(bw, `candle ${i + 1}.x must increase`);
-              });
-              if (block.series) rep.fail(bw, 'candlestick uses candles, not series');
-            } else {
-              const series = Array.isArray(block.series) ? block.series : [];
-              if (series.length < 1 || series.length > 4) rep.fail(bw, `needs 1–4 series, has ${series.length}`);
-              series.forEach((s, si) => {
-                if (!nonEmpty(s.name)) rep.fail(bw, `series ${si + 1} needs a name`);
-                const pts = Array.isArray(s.points) ? s.points : [];
-                if (pts.length < 2 || pts.length > 60) rep.fail(bw, `series ${si + 1} needs 2–60 points, has ${pts.length}`);
-                pts.forEach((p, pi) => { if (typeof p.x !== 'number' || typeof p.y !== 'number') rep.fail(bw, `series ${si + 1} point ${pi + 1} must have numeric x and y`); });
-              });
-              if (block.candles) rep.fail(bw, 'line/bar use series, not candles');
-            }
-            if (block.markers) {
-              if (!Array.isArray(block.markers)) rep.fail(bw, 'markers must be an array');
-              else block.markers.forEach((m, i) => { if (typeof m.x !== 'number' || !nonEmpty(m.label)) rep.fail(bw, `marker ${i + 1} needs numeric x and a label`); });
-            }
-            break;
-          }
-          case 'quiz': {
-            if (!nonEmpty(block.question)) rep.fail(bw, 'quiz needs a question');
-            const choices = Array.isArray(block.choices) ? block.choices : [];
-            if (choices.length < 3 || choices.length > 4) rep.fail(bw, `quiz needs 3–4 choices, has ${choices.length}`);
-            if (!(Number.isInteger(block.answerIndex) && block.answerIndex >= 0 && block.answerIndex < choices.length)) rep.fail(bw, 'answerIndex out of range');
-            if (!nonEmpty(block.explanation) || block.explanation.length < 40) rep.fail(bw, 'explanation < 40 chars');
-            if (new Set(choices).size !== choices.length) rep.fail(bw, 'duplicate choices');
-            break;
-          }
-          case 'takeaways': {
-            const items = Array.isArray(block.items) ? block.items : [];
-            if (items.length < 2 || items.length > 5) rep.fail(bw, `takeaways needs 2–5 items, has ${items.length}`);
-            break;
-          }
-          default: rep.fail(bw, `unknown block type ${block.type}`);
-        }
-        checkProse(rep, bw, textOf(block), verificationYear, { named: true, prediction: true });
+      if ('blocks' in lesson) rep.fail(lw, 'a story lesson must not carry 1.1.4 blocks');
+      checkProse(rep, lw, `${lesson.title} ${lesson.summary}`, verificationYear, { named: true, prediction: true });
+
+      const charts = Array.isArray(lesson.charts) ? lesson.charts : [];
+      const chartIDs = new Set();
+      charts.forEach((chart, i) => {
+        const cw = `${lw}/chart ${chart.chartID ?? i + 1}`;
+        checkChart(rep, cw, chart, seenCharts);
+        if (nonEmpty(chart.chartID)) chartIDs.add(chart.chartID);
+        checkProse(rep, cw, `${chart.title ?? ''} ${chart.caption ?? ''} ${chart.dataNote ?? ''}`, verificationYear, { named: true, prediction: true });
       });
-      if ((counts.chart ?? 0) + (counts.diagram ?? 0) < 1) rep.fail(lw, 'needs at least one chart or diagram');
-      if ((counts.quiz ?? 0) !== 1) rep.fail(lw, `needs exactly one quiz, has ${counts.quiz ?? 0}`);
-      if ((counts.paragraph ?? 0) < 1) rep.fail(lw, 'needs at least one paragraph');
-      if ((counts.takeaways ?? 0) < 1) rep.fail(lw, 'needs a takeaways block');
-      if (blocks.length && blocks[blocks.length - 1].type !== 'takeaways') rep.fail(lw, 'the last block must be takeaways');
-      if (prose < 600) rep.fail(lw, `prose (paragraph + callout text) is ${prose} chars, need ≥ 600`);
-      if (prose > 6000) rep.warn(lw, `prose is ${prose} chars — long for a phone lesson`);
+
+      const beats = Array.isArray(lesson.beats) ? lesson.beats : [];
+      stats.beats += beats.length;
+      if (beats.length < BEAT_RANGE[0] || beats.length > BEAT_RANGE[1]) rep.fail(lw, `has ${beats.length} beats, needs ${BEAT_RANGE[0]}–${BEAT_RANGE[1]}`);
+      const usedCharts = new Set();
+      let checks = 0, recaps = 0, visuals = 0, symbols = 0;
+      beats.forEach((beat, bi) => {
+        const bw = `${lw}/beat ${bi + 1} (${beat.kind})`;
+        if (!BEAT_KINDS.has(beat.kind)) rep.fail(bw, `unknown beat kind ${beat.kind}`);
+        const words = beatWords(beat);
+        stats.maxWords = Math.max(stats.maxWords, words);
+        if (words > MAX_BEAT_WORDS) rep.fail(bw, `${words} words on one screen (max ${MAX_BEAT_WORDS})`);
+        if (beat.heading !== undefined && (!nonEmpty(beat.heading) || wordCount(beat.heading) > MAX_HEADING_WORDS)) rep.fail(bw, `heading must be 1–${MAX_HEADING_WORDS} words`);
+        if (beat.tone !== undefined && (beat.kind !== 'idea' || !['note', 'caution', 'example'].includes(beat.tone))) rep.fail(bw, 'tone is note|caution|example, on idea beats only');
+        const has = k => beat[k] !== undefined;
+        switch (beat.kind) {
+          case 'idea':
+            if (!nonEmpty(beat.text)) rep.fail(bw, 'an idea beat needs text');
+            if (has('terms') || has('check') || has('items')) rep.fail(bw, 'an idea beat carries only heading, text, tone and visual');
+            break;
+          case 'term': {
+            const terms = Array.isArray(beat.terms) ? beat.terms : [];
+            if (terms.length < 1 || terms.length > 2) rep.fail(bw, `a term beat needs 1–2 terms, has ${terms.length}`);
+            terms.forEach((t, i) => { if (!nonEmpty(t?.term) || !nonEmpty(t?.definition)) rep.fail(bw, `term ${i + 1} needs a term and a definition`); });
+            if (has('check') || has('items')) rep.fail(bw, 'a term beat carries no check or items');
+            break;
+          }
+          case 'check': {
+            checks += 1;
+            const q = beat.check ?? {};
+            const choices = Array.isArray(q.choices) ? q.choices : [];
+            if (!nonEmpty(q.question)) rep.fail(bw, 'check needs a question');
+            if (choices.length < 3 || choices.length > 4) rep.fail(bw, `check needs 3–4 choices, has ${choices.length}`);
+            if (choices.some(c => !nonEmpty(c))) rep.fail(bw, 'empty choice');
+            if (new Set(choices).size !== choices.length) rep.fail(bw, 'duplicate choices');
+            if (!(Number.isInteger(q.answerIndex) && q.answerIndex >= 0 && q.answerIndex < choices.length)) rep.fail(bw, 'answerIndex out of range');
+            if (!nonEmpty(q.explanation)) rep.fail(bw, 'check needs an explanation');
+            else if (wordCount(q.explanation) > MAX_BEAT_WORDS) rep.fail(bw, `explanation is ${wordCount(q.explanation)} words (max ${MAX_BEAT_WORDS})`);
+            if (bi === 0 || bi === beats.length - 1) rep.fail(bw, 'a check is never the first or last beat');
+            if (has('text') || has('terms') || has('items')) rep.fail(bw, 'a check beat carries only its check and a visual');
+            break;
+          }
+          case 'recap': {
+            recaps += 1;
+            const items = Array.isArray(beat.items) ? beat.items : [];
+            if (items.length < 2 || items.length > 5) rep.fail(bw, `recap needs 2–5 items, has ${items.length}`);
+            if (items.some(x => !nonEmpty(x))) rep.fail(bw, 'empty recap item');
+            if (bi !== beats.length - 1) rep.fail(bw, 'the recap is the last beat');
+            if (has('visual') || has('text') || has('terms') || has('check')) rep.fail(bw, 'a recap beat carries only items (and an optional heading)');
+            break;
+          }
+          default: break;
+        }
+        if (beat.visual !== undefined) {
+          visuals += 1;
+          if (beat.visual?.type === 'symbol') symbols += 1;
+          checkVisual(rep, bw, beat.visual, chartIDs, usedCharts, usedDiagrams);
+        }
+        checkProse(rep, bw, beatText(beat), verificationYear, { named: true, prediction: true });
+      });
+      stats.checks += checks;
+      if (beats.length && !['idea', 'term'].includes(beats[0].kind)) rep.fail(lw, 'the first beat is an idea or a term');
+      if (recaps !== 1) rep.fail(lw, `needs exactly one recap, has ${recaps}`);
+      if (checks < 1 || checks > 2) rep.fail(lw, `needs 1–2 checks, has ${checks}`);
+      if (visuals * 2 <= beats.length) rep.fail(lw, `only ${visuals} of ${beats.length} beats carry a visual (needs more than half)`);
+      if (symbols > Math.floor(visuals / 3)) rep.fail(lw, `${symbols} symbol visuals; at most a third of the ${visuals} visual beats may be symbols`);
+      for (const id of chartIDs) if (!usedCharts.has(id)) rep.fail(lw, `chart ${id} is never shown by a beat`);
       const sources = Array.isArray(lesson.sources) ? lesson.sources : [];
       if (sources.length < 1) rep.fail(lw, 'needs at least one primary source');
       sources.forEach((s, si) => checkSource(rep, `${lw}/source ${si + 1}`, s, verifiedOn, COURSE_HOSTS, VERIFICATION_FLOOR.courses));
     });
   });
+  if (!fragment) for (const d of ALLOWED_DIAGRAMS) if (!usedDiagrams.has(d)) rep.fail('catalog', `diagram ${d} is not used by any lesson`);
+  rep.stats = stats;
   return rep;
 }
 
@@ -701,6 +811,7 @@ async function main() {
 
   for (const w of rep.warnings) console.log(`WARN  ${w}`);
   for (const e of rep.errors) console.log(`FAIL  ${e}`);
+  if (rep.stats) console.log(`stats: ${JSON.stringify(rep.stats)}`);
   console.log(`${rep.errors.length} error(s), ${rep.warnings.length} warning(s), ${rep.urls.size} distinct URL(s) cited`);
   let netFailures = 0;
   if (net) {
@@ -712,4 +823,5 @@ async function main() {
   process.exit(rep.errors.length || netFailures ? 1 : 0);
 }
 
-main();
+// Run as a CLI only when executed directly (the build script imports the helpers).
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) main();

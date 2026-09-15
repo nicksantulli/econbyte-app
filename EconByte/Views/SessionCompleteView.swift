@@ -16,41 +16,38 @@ struct SessionCompleteView: View {
     @State private var exiting = false
 
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: EconSpace.xl) {
             Spacer()
             Text("🔥")
-                .font(.system(size: 60))
+                .font(.system(.largeTitle))
                 .accessibilityHidden(true)
             Text("Streak: \(streak.currentStreak) day\(streak.currentStreak == 1 ? "" : "s")")
-                .font(.system(size: 28, weight: .heavy, design: .rounded))
-                .foregroundColor(Econ.amber)
-            Text("You finished \"\(title)\" — \(cardsCount) cards done.")
-                .font(.system(size: 17, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.8))
+                .font(EconType.title)
+                .foregroundColor(EconColor.accentText)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
+            Text("\(title) · \(cardsCount) cards")
+                .font(EconType.body)
+                .foregroundColor(EconColor.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, EconSpace.xxl)
             // The one "not advice" line for a card session, at its end.
             Text(PlanCopy.notAdvice)
-                .font(.system(.footnote, design: .rounded))
-                .foregroundColor(Econ.subtext)
+                .font(EconType.footnote)
+                .foregroundColor(EconColor.textSecondary)
                 .multilineTextAlignment(.center)
+                .padding(.horizontal, EconSpace.xl)
                 .accessibilityIdentifier("sessionNotAdvice")
 
             if showConsentPrompt { consentPrompt }
             if showPrimer { primer }
 
             Spacer()
-            VStack(spacing: 12) {
-                Button("Browse More Topics") { finish() }
-                    .buttonStyle(SecondaryButton())
-                    .disabled(exiting)
-                Button("Done") { finish() }
-                    .buttonStyle(PrimaryButton())
-                    .disabled(exiting)
-                    .accessibilityIdentifier("sessionCompleteDoneButton")
-            }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 40)
+            Button("Done") { finish() }
+                .buttonStyle(PrimaryButton())
+                .disabled(exiting)
+                .accessibilityIdentifier("sessionCompleteDoneButton")
+                .padding(.horizontal, EconSpace.xl)
+                .padding(.bottom, EconSpace.xxl)
         }
         .task { await onAppearOnce() }
     }
@@ -60,29 +57,30 @@ struct SessionCompleteView: View {
     /// Non-blocking, contextual, and it does not itself prompt: the system dialog
     /// appears only if the reader taps Turn On Reminders.
     private var primer: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: EconSpace.xs) {
             Text(NotificationPolicy.primerHeadline)
-                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                .foregroundColor(Econ.white)
-            Text(NotificationPolicy.primerBody)
-                .font(.system(size: 13, design: .rounded))
-                .foregroundColor(Econ.subtext)
+                .font(EconType.headline)
+                .foregroundColor(EconColor.textPrimary)
                 .multilineTextAlignment(.center)
-            HStack(spacing: 12) {
+            Text(NotificationPolicy.primerBody)
+                .font(EconType.footnote)
+                .foregroundColor(EconColor.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: EconSpace.l) {
                 Button("Not now") { showPrimer = false }
-                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundColor(Econ.subtext)
+                    .font(EconType.subheadline)
+                    .foregroundColor(EconColor.textSecondary)
+                    .frame(minHeight: EconSize.tapTarget)
                     .accessibilityIdentifier("notificationPrimerDismissButton")
                 Button("Turn On Reminders") { enableReminders() }
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
-                    .foregroundColor(Econ.sky)
+                    .buttonStyle(EconLinkButton())
                     .accessibilityIdentifier("notificationPrimerEnableButton")
             }
         }
-        .padding(16)
-        .background(Econ.tide.opacity(0.14))
-        .cornerRadius(14)
-        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity)
+        .econCard()
+        .padding(.horizontal, EconSpace.xl)
     }
 
     // MARK: Consent presentation (design section 10.1)
@@ -90,23 +88,25 @@ struct SessionCompleteView: View {
     /// Both choices, offered once, after the first completed set — never on
     /// first launch. Non-blocking and default off; declining changes nothing.
     private var consentPrompt: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: EconSpace.xs) {
             Text("Help improve EconByte?")
-                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                .foregroundColor(Econ.white)
-            Text("Two separate, optional choices. Both are off unless you turn them on, and neither affects your cards, streak, bookmarks, purchases, or ads. What you read or save is never shared.")
-                .font(.system(size: 12, design: .rounded))
-                .foregroundColor(Econ.subtext)
+                .font(EconType.headline)
+                .foregroundColor(EconColor.textPrimary)
                 .multilineTextAlignment(.center)
+            Text("Two separate, optional choices. Both are off unless you turn them on, and neither affects your cards, streak, bookmarks, purchases, or ads. What you read or save is never shared.")
+                .font(EconType.caption)
+                .foregroundColor(EconColor.textSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
             Toggle("Share usage analytics", isOn: Binding(
                 get: { analyticsEnabled },
                 set: { value in
                     analyticsEnabled = value
                     growth.setAnalyticsEnabled(value, entryPoint: .sessionComplete)
                 }))
-                .font(.system(size: 14, design: .rounded))
-                .foregroundColor(Econ.white)
-                .tint(Econ.amber)
+                .font(EconType.subheadline)
+                .foregroundColor(EconColor.textPrimary)
+                .tint(EconColor.accent)
                 .accessibilityIdentifier("consentPromptAnalyticsToggle")
             Toggle("Share crash diagnostics", isOn: Binding(
                 get: { diagnosticsEnabled },
@@ -114,19 +114,17 @@ struct SessionCompleteView: View {
                     diagnosticsEnabled = value
                     growth.setDiagnosticsEnabled(value, entryPoint: .sessionComplete)
                 }))
-                .font(.system(size: 14, design: .rounded))
-                .foregroundColor(Econ.white)
-                .tint(Econ.amber)
+                .font(EconType.subheadline)
+                .foregroundColor(EconColor.textPrimary)
+                .tint(EconColor.accent)
                 .accessibilityIdentifier("consentPromptDiagnosticsToggle")
             Button("Done") { showConsentPrompt = false }
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(Econ.sky)
+                .buttonStyle(EconLinkButton())
                 .accessibilityIdentifier("consentPromptDoneButton")
         }
-        .padding(16)
-        .background(Econ.tide.opacity(0.14))
-        .cornerRadius(14)
-        .padding(.horizontal, 24)
+        .frame(maxWidth: .infinity)
+        .econCard()
+        .padding(.horizontal, EconSpace.xl)
     }
 
     // MARK: Behaviour

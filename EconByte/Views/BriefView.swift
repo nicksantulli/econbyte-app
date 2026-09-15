@@ -19,7 +19,7 @@ struct BriefDocumentView: View {
     @EnvironmentObject private var briefs: BriefStore
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: EconSpace.m) {
             header
             if unlocked {
                 fullBrief
@@ -27,115 +27,96 @@ struct BriefDocumentView: View {
                 teaser
             }
             Text(brief.disclaimer)
-                .font(.system(size: 11, design: .rounded))
-                .foregroundColor(Econ.subtext)
+                .font(EconType.caption)
+                .foregroundColor(EconColor.textTertiary)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: EconSpace.xs) {
             HStack {
                 Text(BriefDates.long(brief.briefDate).uppercased())
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
-                    .foregroundColor(Econ.subtext)
-                    .tracking(1.5)
+                    .font(EconType.overline)
+                    .foregroundColor(EconColor.textTertiary)
+                    .tracking(EconType.overlineTracking)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer()
                 if briefs.showsSampleBadge(brief) { BriefSampleBadge() }
                 if showsRefreshState, briefs.isRefreshing {
-                    ProgressView().tint(Econ.sky).scaleEffect(0.8)
+                    ProgressView().tint(EconColor.interactive).controlSize(.small)
                 }
             }
             Text(brief.headline)
-                .font(.system(size: 22, weight: .heavy, design: .rounded))
-                .foregroundColor(Econ.white)
+                .font(EconType.title)
+                .foregroundColor(EconColor.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("briefHeadline")
                 .accessibilityAddTraits(.isHeader)
             if showsRefreshState, let note = briefs.refreshNote {
                 Text(note)
-                    .font(.system(size: 11, design: .rounded))
-                    .foregroundColor(Econ.subtext)
+                    .font(EconType.caption)
+                    .foregroundColor(EconColor.textTertiary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
 
     private var fullBrief: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: EconSpace.m) {
             if let released = brief.section(.released) {
-                BriefSectionTitle(title: released.title)
+                EconSectionLabel(text: released.title)
                 ForEach(released.items ?? []) { item in
                     ReleasedItemCard(item: item)
                 }
             }
             if let scheduled = brief.section(.scheduled) {
-                BriefSectionTitle(title: scheduled.title)
-                VStack(alignment: .leading, spacing: 8) {
+                EconSectionLabel(text: scheduled.title)
+                VStack(alignment: .leading, spacing: EconSpace.xs) {
                     ForEach(scheduled.items ?? []) { item in
                         ScheduledRow(item: item)
                     }
                 }
-                .padding(14)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Econ.tide.opacity(0.12))
-                .cornerRadius(12)
+                .econCard()
                 .accessibilityIdentifier("briefScheduledSection")
             }
             if let concept = brief.section(.concept) {
-                BriefSectionTitle(title: concept.title)
+                EconSectionLabel(text: concept.title)
                 ConceptCard(section: concept)
             }
         }
     }
 
     private var teaser: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: EconSpace.m) {
             if let released = brief.section(.released), let first = brief.teaserItem {
-                BriefSectionTitle(title: released.title)
+                EconSectionLabel(text: released.title)
                 ReleasedItemCard(item: first)
                     .accessibilityIdentifier("briefTeaserItem")
             }
-            VStack(spacing: 12) {
+            VStack(spacing: EconSpace.s) {
                 Image(systemName: "lock.fill")
-                    .font(.system(size: 28))
-                    .foregroundColor(Econ.amber)
+                    .font(.title)
+                    .foregroundColor(EconColor.accent)
                     .accessibilityHidden(true)
-                Text("The rest of the brief is part of EconByte Pro")
-                    .font(.system(size: 17, weight: .bold, design: .rounded))
-                    .foregroundColor(Econ.white)
+                Text("The full brief is part of Pro")
+                    .font(EconType.title3)
+                    .foregroundColor(EconColor.textPrimary)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                 Button("See EconByte Pro") { onProPaywall?() }
                     .buttonStyle(PrimaryButton())
                     .accessibilityIdentifier("briefLockedProButton")
             }
-            .padding(20)
             .frame(maxWidth: .infinity)
-            .background(Econ.tide.opacity(0.15))
-            .cornerRadius(16)
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Econ.amber.opacity(0.35), lineWidth: 1))
+            .econCard(elevation: .outlined)
         }
-    }
-}
-
-struct BriefSectionTitle: View {
-    let title: String
-    var body: some View {
-        Text(title.uppercased())
-            .font(.system(size: 12, weight: .bold, design: .rounded))
-            .foregroundColor(Econ.subtext)
-            .tracking(1.5)
-            .accessibilityAddTraits(.isHeader)
     }
 }
 
 struct BriefSampleBadge: View {
     var body: some View {
-        Text("SAMPLE")
-            .font(.system(size: 10, weight: .bold, design: .rounded))
-            .foregroundColor(Econ.ink)
-            .padding(.horizontal, 6).padding(.vertical, 2)
-            .background(Econ.amber)
-            .cornerRadius(4)
+        EconBadge(text: "SAMPLE")
             .accessibilityLabel("Sample brief")
     }
 }
@@ -170,30 +151,29 @@ struct BriefArchiveView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Econ.ocean.ignoresSafeArea()
+                EconColor.background.ignoresSafeArea()
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: EconSpace.m) {
                         BriefDocumentView(brief: brief, unlocked: true)
                         Button("How this brief is made") { showMethodology = true }
-                            .font(.system(size: 13, weight: .medium, design: .rounded))
-                            .foregroundColor(Econ.sky)
+                            .buttonStyle(EconLinkButton())
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .padding(.bottom, 40)
+                    .padding(.horizontal, EconSpace.gutter)
+                    .padding(.top, EconSpace.xs)
+                    .padding(.bottom, EconSpace.xxl)
                 }
             }
             .navigationTitle(BriefDates.long(brief.briefDate))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Close") { dismiss() }.foregroundColor(Econ.sky)
+                    Button("Close") { dismiss() }.foregroundColor(EconColor.interactive)
                         .accessibilityIdentifier("briefCloseButton")
                 }
             }
             .sheet(isPresented: $showMethodology) { BriefMethodologyView(brief: brief) }
         }
-        .tint(Econ.sky)
+        .tint(EconColor.interactive)
     }
 }
 
@@ -202,50 +182,63 @@ struct BriefArchiveView: View {
 struct ReleasedItemCard: View {
     let item: BriefItem
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var isAccessibilitySize: Bool { dynamicTypeSize.isAccessibilitySize }
+
+    /// Two figure columns, one at the accessibility text sizes.
+    private var figureColumns: [GridItem] {
+        isAccessibilitySize ? [GridItem(.flexible())] : [GridItem(.flexible()), GridItem(.flexible())]
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline) {
+        VStack(alignment: .leading, spacing: EconSpace.xs) {
+            let titleLayout = isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: EconSpace.xxs))
+                : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: EconSpace.xs))
+            titleLayout {
                 Text(item.title ?? "")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .foregroundColor(Econ.white)
+                    .font(EconType.headline)
+                    .foregroundColor(EconColor.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
-                Spacer()
+                if !isAccessibilitySize { Spacer() }
                 if let date = item.releaseDate {
                     Text(date)
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundColor(Econ.subtext)
+                        .font(EconType.caption)
+                        .foregroundColor(EconColor.textTertiary)
                 }
             }
             if let figures = item.figures, !figures.isEmpty {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], alignment: .leading, spacing: 8) {
+                LazyVGrid(columns: figureColumns, alignment: .leading, spacing: EconSpace.xs) {
                     ForEach(Array(figures.enumerated()), id: \.offset) { _, figure in
                         VStack(alignment: .leading, spacing: 1) {
                             Text(figure.value)
-                                .font(.system(size: 18, weight: .heavy, design: .rounded))
-                                .foregroundColor(Econ.amberLight)
+                                .font(EconType.figure)
+                                .foregroundColor(EconColor.accentText)
                                 .minimumScaleFactor(0.7)
-                                .lineLimit(1)
+                                .lineLimit(isAccessibilitySize ? nil : 1)
                             Text(figure.label)
-                                .font(.system(size: 11, design: .rounded))
-                                .foregroundColor(Econ.subtext)
+                                .font(EconType.caption)
+                                .foregroundColor(EconColor.textTertiary)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .accessibilityElement(children: .combine)
                     }
                 }
             }
             if let summary = item.summary {
                 Text(summary)
-                    .font(.system(size: 14, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.9))
+                    .font(EconType.subheadline)
+                    .foregroundColor(EconColor.textPrimary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if let meaning = item.meaning {
-                HStack(alignment: .top, spacing: 8) {
-                    Image(systemName: "lightbulb").foregroundColor(Econ.sky).accessibilityHidden(true)
+                HStack(alignment: .top, spacing: EconSpace.xs) {
+                    Image(systemName: "lightbulb").foregroundColor(EconColor.interactive).accessibilityHidden(true)
                     Text(meaning)
-                        .font(.system(size: 13, design: .rounded))
-                        .foregroundColor(Econ.white.opacity(0.75))
+                        .font(EconType.footnote)
+                        .foregroundColor(EconColor.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -253,20 +246,19 @@ struct ReleasedItemCard: View {
                 Link(destination: url) {
                     VStack(alignment: .leading, spacing: 1) {
                         Text("\(source.organization) — \(source.documentTitle)")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(Econ.sky)
+                            .font(EconType.caption.weight(.semibold))
+                            .foregroundColor(EconColor.interactive)
                             .multilineTextAlignment(.leading)
                         Text("Read \(Self.shortTimestamp(source.retrievedAt))")
-                            .font(.system(size: 10, design: .rounded))
-                            .foregroundColor(Econ.subtext)
+                            .font(EconType.caption)
+                            .foregroundColor(EconColor.textTertiary)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, minHeight: EconSize.tapTarget, alignment: .leading)
+                    .contentShape(Rectangle())
                 }
             }
         }
-        .padding(16)
-        .background(Econ.tide.opacity(0.12))
-        .cornerRadius(14)
+        .econCard()
     }
 
     static func shortTimestamp(_ iso: String) -> String {
@@ -277,25 +269,35 @@ struct ReleasedItemCard: View {
 
 struct ScheduledRow: View {
     let item: BriefItem
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// The date column beside the release (stacked above it at accessibility sizes).
+    @ScaledMetric(relativeTo: .caption) private var dateColumnWidth: CGFloat = 84
+
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
+        let stacked = dynamicTypeSize.isAccessibilitySize
+        let layout = stacked
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: EconSpace.xs))
+        layout {
             Text(item.date ?? "")
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(Econ.amberLight)
-                .frame(width: 84, alignment: .leading)
+                .font(EconType.caption.weight(.bold))
+                .foregroundColor(EconColor.accentText)
+                .frame(width: stacked ? nil : dateColumnWidth, alignment: .leading)
             VStack(alignment: .leading, spacing: 1) {
                 if let url = item.url.flatMap(URL.init(string:)) {
                     Link(item.title ?? "", destination: url)
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.white)
+                        .font(EconType.footnote.weight(.semibold))
+                        .foregroundColor(EconColor.textPrimary)
+                        .multilineTextAlignment(.leading)
                 } else {
                     Text(item.title ?? "")
-                        .font(.system(size: 13, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.white)
+                        .font(EconType.footnote.weight(.semibold))
+                        .foregroundColor(EconColor.textPrimary)
                 }
                 Text(item.organization ?? "")
-                    .font(.system(size: 11, design: .rounded))
-                    .foregroundColor(Econ.subtext)
+                    .font(EconType.caption)
+                    .foregroundColor(EconColor.textTertiary)
             }
         }
         .accessibilityElement(children: .combine)
@@ -305,30 +307,29 @@ struct ScheduledRow: View {
 struct ConceptCard: View {
     let section: BriefSection
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: EconSpace.xs) {
             Text(section.conceptTitle ?? "")
-                .font(.system(size: 16, weight: .bold, design: .rounded))
-                .foregroundColor(Econ.white)
+                .font(EconType.headline)
+                .foregroundColor(EconColor.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
             Text(section.text ?? "")
-                .font(.system(size: 14, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.9))
+                .font(EconType.subheadline)
+                .foregroundColor(EconColor.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
             if let cardID = section.linkedCardID,
                let card = ContentStore.shared.everyCard.first(where: { $0.id == cardID }) {
                 Label("In your cards: \(card.concept) (\(ContentStore.shared.topicName(for: card.topicId)))",
                       systemImage: "rectangle.on.rectangle")
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundColor(Econ.sky)
+                    .font(EconType.caption)
+                    .foregroundColor(EconColor.interactive)
             } else if let lessonID = section.linkedLessonID,
                       let lesson = ContentStore.shared.courses?.lesson(withID: lessonID) {
                 Label("In the courses: \(lesson.title)", systemImage: "book")
-                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                    .foregroundColor(Econ.sky)
+                    .font(EconType.caption)
+                    .foregroundColor(EconColor.interactive)
             }
         }
-        .padding(16)
-        .background(Econ.sky.opacity(0.08))
-        .cornerRadius(14)
+        .econCard(fill: EconColor.interactiveFill)
     }
 }
 
@@ -338,59 +339,48 @@ struct BriefMethodologyView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Econ.ocean.ignoresSafeArea()
+                EconColor.background.ignoresSafeArea()
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 14) {
-                        Text("HOW IT'S PUBLISHED")
-                            .font(.system(size: 12, weight: .bold, design: .rounded))
-                            .foregroundColor(Econ.subtext)
-                            .tracking(1.5)
-                            .accessibilityAddTraits(.isHeader)
+                    VStack(alignment: .leading, spacing: EconSpace.s) {
+                        EconSectionLabel(text: "How it's published")
                         ForEach(DailyBrief.publishingProcess, id: \.self) { step in
-                            HStack(alignment: .top, spacing: 10) {
+                            HStack(alignment: .top, spacing: EconSpace.xs) {
                                 Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(Econ.amber)
+                                    .foregroundColor(EconColor.accent)
                                     .accessibilityHidden(true)
                                 Text(step)
-                                    .font(.system(size: 14, design: .rounded))
-                                    .foregroundColor(Econ.white.opacity(0.9))
+                                    .font(EconType.subheadline)
+                                    .foregroundColor(EconColor.textPrimary)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                         }
                         .accessibilityIdentifier("briefPublishingProcess")
-                        Text("THIS EDITION")
-                            .font(.system(size: 12, weight: .bold, design: .rounded))
-                            .foregroundColor(Econ.subtext)
-                            .tracking(1.5)
-                            .padding(.top, 6)
-                            .accessibilityAddTraits(.isHeader)
+                        EconSectionLabel(text: "This edition")
+                            .padding(.top, EconSpace.xxs)
                         Text(brief.methodology)
-                            .font(.system(size: 15, design: .rounded))
-                            .foregroundColor(Econ.white.opacity(0.9))
+                            .font(EconType.subheadline)
+                            .foregroundColor(EconColor.textPrimary)
                             .fixedSize(horizontal: false, vertical: true)
-                        Text("SOURCES THE BRIEF MAY USE")
-                            .font(.system(size: 12, weight: .bold, design: .rounded))
-                            .foregroundColor(Econ.subtext)
-                            .tracking(1.5)
+                        EconSectionLabel(text: "Sources the brief may use")
                         Text(DailyBrief.allowedHosts.sorted().joined(separator: "\n"))
-                            .font(.system(size: 12, design: .monospaced))
-                            .foregroundColor(Econ.white.opacity(0.75))
+                            .font(.system(.caption, design: .monospaced))
+                            .foregroundColor(EconColor.textSecondary)
                         Text(brief.disclaimer)
-                            .font(.system(size: 12, design: .rounded))
-                            .foregroundColor(Econ.subtext)
+                            .font(EconType.caption)
+                            .foregroundColor(EconColor.textTertiary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding(20)
+                    .padding(EconSpace.gutter)
                 }
             }
             .navigationTitle("How this brief is made")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }.foregroundColor(Econ.sky)
+                    Button("Done") { dismiss() }.foregroundColor(EconColor.interactive)
                 }
             }
         }
-        .tint(Econ.sky)
+        .tint(EconColor.interactive)
     }
 }

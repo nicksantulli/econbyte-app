@@ -1,327 +1,410 @@
 import SwiftUI
 
-/// One course lesson, rendered block by block (1.1.4).
+/// One course lesson as a story (1.1.5, Owner: "almost like a 'story' you
+/// click through rather than an article you read").
 ///
-/// The sources and the one "educational, not advice" notice sit at the end of
-/// every lesson. Completing a lesson means reaching the takeaways and
-/// tapping "Mark as complete" (or "Next lesson"), which records progress locally
-/// and emits the bucketed completion event once. A lesson that is not the free
-/// preview is readable only while Pro is active — the check is here as well as
-/// in `CourseView`, so a deep link can never bypass it.
+/// Page 0 is the cover (course, title, summary, minutes); every later page is
+/// one beat. A segmented bar at the top shows where the reader is. Tap the right
+/// of the page or swipe left to go on; tap the left or swipe right to go back;
+/// the Back / Next buttons at the bottom do the same for VoiceOver and Switch
+/// Control. On an unanswered check the page itself does not advance on a tap
+/// (a near-miss beside a choice must not skip the question) — Next still does.
+///
+/// The position is saved on every page, so a lesson reopens where it was left;
+/// reaching the last beat (the recap) completes it. The sources and the one
+/// "educational, not advice" notice sit on the recap. Reduce Motion replaces the
+/// slide with a cross-fade. A lesson that is not the free preview is readable
+/// only while Pro is active — checked here as well as in `CourseView`, so a deep
+/// link can never bypass it.
 struct LessonView: View {
     let course: Course
     let lesson: Lesson
     var onProPaywall: (() -> Void)? = nil
     var onNextLesson: ((Lesson) -> Void)? = nil
+    var onClose: (() -> Void)? = nil
 
     @EnvironmentObject private var store: PurchaseManager
     @EnvironmentObject private var progress: CourseProgressStore
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    @State private var page = 0
+    @State private var forward = true
+    @State private var didRestore = false
+    @State private var showSources = false
+
     private var accessible: Bool { lesson.isPreview || store.isProActive }
+    private var lastPage: Int { lesson.pageCount - 1 }
     private var nextLesson: Lesson? {
         guard let index = course.lessons.firstIndex(where: { $0.lessonID == lesson.lessonID }),
               index + 1 < course.lessons.count else { return nil }
         return course.lessons[index + 1]
     }
+    private var beat: LessonBeat? { page > 0 ? lesson.beats[page - 1] : nil }
+    private var awaitingAnswer: Bool {
+        guard let beat, beat.kind == .check, let ordinal = lesson.checkOrdinal(forBeat: page - 1) else { return false }
+        return progress.checkResult(lessonID: lesson.lessonID, ordinal: ordinal) == nil
+    }
 
     var body: some View {
         ZStack {
-            Econ.ocean.ignoresSafeArea()
+            EconColor.background.ignoresSafeArea()
             if accessible {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 18) {
-                        header
-                        ForEach(Array(lesson.blocks.enumerated()), id: \.offset) { index, block in
-                            LessonBlockView(block: block, lessonID: lesson.lessonID, ordinal: index)
-                                .environmentObject(progress)
-                        }
-                        completion
-                        sources
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .padding(.bottom, 40)
-                }
+                story
             } else {
-                LockedLessonView(lesson: lesson) { onProPaywall?() }
+                VStack(spacing: 0) {
+                    HStack {
+                        Spacer()
+                        closeButton
+                    }
+                    .padding(.horizontal, EconSpace.xs)
+                    Spacer()
+                    LockedLessonView(lesson: lesson) { onProPaywall?() }
+                    Spacer()
+                }
             }
         }
-        .navigationTitle(lesson.title)
-        .navigationBarTitleDisplayMode(.inline)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("lesson-\(lesson.lessonID)")
+        .sheet(isPresented: $showSources) { LessonSourcesView(lesson: lesson) }
+        .onAppear {
+            guard !didRestore else { return }
+            didRestore = true
+            page = progress.resumePage(for: lesson)
+        }
     }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(course.title.uppercased())
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(Econ.subtext)
-                .tracking(1.5)
+    // MARK: Story
+
+    private var story: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: EconSpace.xs) {
+                StoryProgressBar(pages: lesson.pageCount, current: page)
+                HStack(spacing: EconSpace.xs) {
+                    Text(course.title.uppercased())
+                        .font(EconType.overline)
+                        .tracking(EconType.overlineTracking)
+                        .foregroundColor(EconColor.textTertiary)
+                        .lineLimit(2)
+                    Spacer(minLength: EconSpace.xs)
+                    closeButton
+                }
+            }
+            .padding(.leading, EconSpace.gutter)
+            .padding(.trailing, EconSpace.xxs)
+            .padding(.top, EconSpace.xs)
+
+            GeometryReader { geo in
+                ScrollView {
+                    pageContent
+                        .padding(.horizontal, EconSpace.gutter)
+                        .padding(.vertical, EconSpace.m)
+                        .frame(maxWidth: .infinity, minHeight: geo.size.height, alignment: .top)
+                        .contentShape(Rectangle())
+                        .gesture(SpatialTapGesture().onEnded { value in
+                            if value.location.x < geo.size.width / 3 {
+                                go(to: page - 1)
+                            } else if !awaitingAnswer && page < lastPage {
+                                go(to: page + 1)
+                            }
+                        })
+                }
+                .id(page)
+                .transition(pageTransition)
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 30).onEnded { value in
+                        let dx = value.translation.width, dy = value.translation.height
+                        guard abs(dx) > abs(dy) * 1.5, abs(dx) > 50 else { return }
+                        go(to: dx < 0 ? min(page + 1, lastPage) : page - 1)
+                    }
+                )
+            }
+            .clipped()
+
+            controls
+        }
+        .accessibilityAction(named: Text("Next page")) { go(to: min(page + 1, lastPage)) }
+        .accessibilityAction(named: Text("Previous page")) { go(to: page - 1) }
+    }
+
+    private var closeButton: some View {
+        EconIconButton(systemImage: "xmark", label: "Close lesson", tint: EconColor.textSecondary) {
+            onClose?()
+        }
+        .accessibilityIdentifier("storyCloseButton")
+    }
+
+    private var pageTransition: AnyTransition {
+        if reduceMotion { return .opacity }
+        return .asymmetric(insertion: .move(edge: forward ? .trailing : .leading).combined(with: .opacity),
+                           removal: .opacity)
+    }
+
+    private func go(to target: Int) {
+        guard (0...lastPage).contains(target), target != page else { return }
+        forward = target > page
+        withAnimation(reduceMotion ? nil : .easeOut(duration: 0.22)) { page = target }
+        if target == lastPage {
+            progress.markCompleted(lessonID: lesson.lessonID, courseID: course.courseID)
+        } else {
+            progress.recordPage(target, lessonID: lesson.lessonID)
+        }
+        UIAccessibility.post(notification: .screenChanged, argument: nil)
+    }
+
+    // MARK: Pages
+
+    @ViewBuilder
+    private var pageContent: some View {
+        if let beat {
+            StoryBeatView(beat: beat, lesson: lesson, beatIndex: page - 1,
+                          onSources: { showSources = true })
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("storyPage-\(page)")
+        } else {
+            cover
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("storyPage-0")
+        }
+    }
+
+    private var cover: some View {
+        VStack(alignment: .leading, spacing: EconSpace.m) {
+            Spacer(minLength: EconSpace.xl)
+            Image(systemName: course.icon)
+                .font(.system(.largeTitle))
+                .foregroundColor(EconColor.accent)
+                .frame(width: 72, height: 72)
+                .background(EconColor.surfaceRaised)
+                .clipShape(Circle())
+                .accessibilityHidden(true)
             Text(lesson.title)
-                .font(.system(size: 24, weight: .heavy, design: .rounded))
-                .foregroundColor(Econ.white)
+                .font(EconType.display)
+                .foregroundColor(EconColor.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
             Text(lesson.summary)
-                .font(.system(size: 15, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.75))
+                .font(EconType.story)
+                .foregroundColor(EconColor.textSecondary)
                 .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: 10) {
+            HStack(spacing: EconSpace.xs) {
                 Label("\(lesson.estimatedMinutes) min", systemImage: "clock")
                 if progress.isCompleted(lesson.lessonID) {
-                    Label("Completed", systemImage: "checkmark.circle.fill").foregroundColor(Econ.sky)
+                    Label("Completed", systemImage: "checkmark.circle.fill")
+                        .foregroundColor(EconColor.interactive)
                 }
             }
-            .font(.system(size: 12, weight: .medium, design: .rounded))
-            .foregroundColor(Econ.subtext)
+            .font(EconType.caption)
+            .foregroundColor(EconColor.textTertiary)
+            Spacer(minLength: EconSpace.xl)
         }
-    }
-
-    private var completion: some View {
-        VStack(spacing: 10) {
-            if let next = nextLesson {
-                Button(progress.isCompleted(lesson.lessonID) ? "Next lesson →" : "Mark complete, next lesson →") {
-                    progress.markCompleted(lessonID: lesson.lessonID, courseID: course.courseID)
-                    onNextLesson?(next)
-                }
-                .buttonStyle(PrimaryButton())
-                .accessibilityIdentifier("lessonCompleteButton")
-            } else {
-                Button(progress.isCompleted(lesson.lessonID) ? "Completed ✓" : "Mark course complete") {
-                    withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
-                        progress.markCompleted(lessonID: lesson.lessonID, courseID: course.courseID)
-                    }
-                }
-                .buttonStyle(PrimaryButton())
-                .disabled(progress.isCompleted(lesson.lessonID))
-                .accessibilityIdentifier("lessonCompleteButton")
-            }
-        }
-        .padding(.top, 6)
-    }
-
-    private var sources: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("SOURCES")
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(Econ.subtext)
-                .tracking(1.5)
-            ForEach(Array(lesson.sources.enumerated()), id: \.offset) { _, source in
-                if let url = URL(string: source.url) {
-                    Link(destination: url) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(source.documentTitle)
-                                .font(.system(size: 13, weight: .semibold, design: .rounded))
-                                .foregroundColor(Econ.sky)
-                            Text("\(source.organization) · verified \(source.verificationDate)")
-                                .font(.system(size: 11, design: .rounded))
-                                .foregroundColor(Econ.subtext)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                }
-            }
-            // The one "not advice" line in a lesson, at its end.
-            EducationalNoticeBanner(text: PlanCopy.notAdvice)
-                .padding(.top, 4)
-        }
-        .padding(14)
-        .background(Econ.tide.opacity(0.10))
-        .cornerRadius(12)
-    }
-}
-
-/// The line every lesson and brief opens with.
-struct EducationalNoticeBanner: View {
-    let text: String
-    var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Image(systemName: "info.circle")
-                .foregroundColor(Econ.amber)
-                .accessibilityHidden(true)
-            Text(text)
-                .font(.system(size: 12, weight: .medium, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.8))
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Econ.amber.opacity(0.10))
-        .cornerRadius(10)
-        .accessibilityIdentifier("educationalNotice")
     }
-}
 
-/// Shown in place of a Pro lesson's body when Pro is not active.
-struct LockedLessonView: View {
-    let lesson: Lesson
-    let onProPaywall: () -> Void
+    // MARK: Controls
 
-    var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "lock.fill")
-                .font(.system(size: 40))
-                .foregroundColor(Econ.amber)
-                .accessibilityHidden(true)
-            Text(lesson.title)
-                .font(.system(size: 22, weight: .heavy, design: .rounded))
-                .foregroundColor(Econ.white)
-                .multilineTextAlignment(.center)
-            Text(lesson.summary)
-                .font(.system(size: 15, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.75))
-                .multilineTextAlignment(.center)
-            Button("See EconByte Pro") { onProPaywall() }
+    private var controls: some View {
+        HStack(spacing: EconSpace.s) {
+            Button { go(to: page - 1) } label: {
+                Image(systemName: "chevron.left")
+                    .font(EconType.headline)
+                    .foregroundColor(page > 0 ? EconColor.interactive : EconColor.textTertiary)
+                    .frame(width: 60, height: 60)
+                    .background(EconColor.interactiveFill)
+                    .clipShape(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous))
+            }
+            .disabled(page == 0)
+            .accessibilityLabel("Previous page")
+            .accessibilityIdentifier("storyBackButton")
+
+            if page == lastPage {
+                if let next = nextLesson {
+                    Button("Next lesson") { onNextLesson?(next) }
+                        .buttonStyle(PrimaryButton())
+                        .accessibilityIdentifier("lessonCompleteButton")
+                } else {
+                    Button("Done") { onClose?() }
+                        .buttonStyle(PrimaryButton())
+                        .accessibilityIdentifier("lessonCompleteButton")
+                }
+            } else {
+                Button(page == 0 ? (progress.resumePage(for: lesson) > 0 ? "Continue" : "Start") : "Next") {
+                    go(to: page == 0 ? max(progress.resumePage(for: lesson), 1) : page + 1)
+                }
                 .buttonStyle(PrimaryButton())
-                .accessibilityIdentifier("lessonLockedProButton")
+                .accessibilityIdentifier("storyNextButton")
+            }
         }
-        .padding(28)
+        .padding(.horizontal, EconSpace.gutter)
+        .padding(.top, EconSpace.xs)
+        .padding(.bottom, EconSpace.s)
+        .accessibilityValue(Text("Page \(page + 1) of \(lesson.pageCount)"))
     }
 }
 
-// MARK: - Blocks
-
-struct LessonBlockView: View {
-    let block: LessonBlock
-    let lessonID: String
-    let ordinal: Int
-    @EnvironmentObject private var progress: CourseProgressStore
+/// Instagram-style segmented progress: one segment per page, filled up to and
+/// including the current one.
+struct StoryProgressBar: View {
+    let pages: Int
+    let current: Int
 
     var body: some View {
-        switch block {
-        case let .paragraph(text):
-            Text(text)
-                .font(.system(size: 16, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.92))
+        HStack(spacing: pages > 20 ? 2 : EconSpace.xxs) {
+            ForEach(0..<pages, id: \.self) { index in
+                Capsule()
+                    .fill(index <= current ? EconColor.interactive : EconColor.outline)
+                    .frame(height: 4)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Lesson progress")
+        .accessibilityValue("Page \(current + 1) of \(pages)")
+        .accessibilityIdentifier("storyProgressBar")
+    }
+}
+
+// MARK: - One beat
+
+struct StoryBeatView: View {
+    let beat: LessonBeat
+    let lesson: Lesson
+    let beatIndex: Int
+    var onSources: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: EconSpace.l) {
+            if let visual = beat.visual {
+                StoryVisualView(visual: visual, lesson: lesson)
+            }
+            switch beat.kind {
+            case .idea: idea
+            case .term: terms
+            case .check:
+                if let check = beat.check, let ordinal = lesson.checkOrdinal(forBeat: beatIndex) {
+                    StoryCheckView(quiz: check, lessonID: lesson.lessonID, ordinal: ordinal)
+                }
+            case .recap: recap
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var toneIcon: (name: String, color: Color, label: String)? {
+        switch beat.tone {
+        case .caution?: return ("exclamationmark.triangle.fill", EconColor.accent, "Caution")
+        case .example?: return ("function", EconColor.interactive, "Example")
+        case .note?: return ("lightbulb.fill", EconColor.interactive, "Note")
+        case nil: return nil
+        }
+    }
+
+    private var idea: some View {
+        VStack(alignment: .leading, spacing: EconSpace.s) {
+            if let heading = beat.heading {
+                HStack(alignment: .firstTextBaseline, spacing: EconSpace.xs) {
+                    if let tone = toneIcon {
+                        Image(systemName: tone.name)
+                            .foregroundColor(tone.color)
+                            .accessibilityLabel(tone.label)
+                    }
+                    Text(heading)
+                        .font(EconType.title3)
+                        .foregroundColor(EconColor.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .accessibilityAddTraits(.isHeader)
+                }
+            } else if let tone = toneIcon {
+                Image(systemName: tone.name)
+                    .font(EconType.title3)
+                    .foregroundColor(tone.color)
+                    .accessibilityLabel(tone.label)
+            }
+            Text(beat.text ?? "")
+                .font(EconType.story)
+                .foregroundColor(EconColor.textPrimary)
                 .lineSpacing(3)
                 .fixedSize(horizontal: false, vertical: true)
-        case let .callout(style, title, text):
-            CalloutView(style: style, title: title, text: text)
-        case let .keyTerms(terms):
-            KeyTermsView(terms: terms)
-        case let .diagram(id, caption):
-            VStack(alignment: .leading, spacing: 8) {
-                DiagramView(id: id)
-                Text(caption)
-                    .font(.system(size: 13, design: .rounded))
-                    .foregroundColor(Econ.white.opacity(0.75))
-                    .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.leading, beat.tone == nil ? 0 : EconSpace.s)
+        .overlay(alignment: .leading) {
+            if let tone = toneIcon {
+                Capsule().fill(tone.color).frame(width: 3).accessibilityHidden(true)
             }
-            .accessibilityIdentifier("diagram-\(id.rawValue)")
-        case let .chart(spec):
-            ChartBlockView(spec: spec)
-        case let .quiz(quiz):
-            QuizBlockView(quiz: quiz, lessonID: lessonID)
-                .environmentObject(progress)
-        case let .takeaways(items):
-            TakeawaysView(items: items)
-        }
-    }
-}
-
-struct CalloutView: View {
-    let style: CalloutStyle
-    let title: String
-    let text: String
-
-    private var icon: String {
-        switch style {
-        case .note:    return "lightbulb.fill"
-        case .caution: return "exclamationmark.triangle.fill"
-        case .example: return "function"
-        }
-    }
-    private var tint: Color {
-        switch style {
-        case .note:    return Econ.sky
-        case .caution: return Econ.amber
-        case .example: return Econ.mist
         }
     }
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 8) {
-                Image(systemName: icon).foregroundColor(tint).accessibilityHidden(true)
-                Text(title)
-                    .font(.system(size: 14, weight: .bold, design: .rounded))
-                    .foregroundColor(tint)
+    private var terms: some View {
+        VStack(alignment: .leading, spacing: EconSpace.m) {
+            if let heading = beat.heading {
+                Text(heading)
+                    .font(EconType.title3)
+                    .foregroundColor(EconColor.textPrimary)
+                    .accessibilityAddTraits(.isHeader)
             }
-            Text(text)
-                .font(.system(size: 14, design: .rounded))
-                .foregroundColor(Econ.white.opacity(0.9))
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(tint.opacity(0.10))
-        .cornerRadius(12)
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(tint.opacity(0.35), lineWidth: 1))
-        .accessibilityElement(children: .combine)
-    }
-}
-
-struct KeyTermsView: View {
-    let terms: [KeyTerm]
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("KEY TERMS")
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(Econ.subtext)
-                .tracking(1.5)
-            ForEach(Array(terms.enumerated()), id: \.offset) { _, term in
-                VStack(alignment: .leading, spacing: 2) {
+            ForEach(Array((beat.terms ?? []).enumerated()), id: \.offset) { _, term in
+                VStack(alignment: .leading, spacing: EconSpace.xxs) {
                     Text(term.term)
-                        .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.amberLight)
+                        .font(EconType.title3)
+                        .foregroundColor(EconColor.accentText)
                     Text(term.definition)
-                        .font(.system(size: 14, design: .rounded))
-                        .foregroundColor(Econ.white.opacity(0.85))
+                        .font(EconType.story)
+                        .foregroundColor(EconColor.textPrimary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .accessibilityElement(children: .combine)
             }
-        }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Econ.tide.opacity(0.12))
-        .cornerRadius(12)
-    }
-}
-
-struct TakeawaysView: View {
-    let items: [String]
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("TAKEAWAYS")
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(Econ.subtext)
-                .tracking(1.5)
-            ForEach(Array(items.enumerated()), id: \.offset) { _, item in
-                HStack(alignment: .top, spacing: 10) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(Econ.sky)
-                        .accessibilityHidden(true)
-                    Text(item)
-                        .font(.system(size: 14, design: .rounded))
-                        .foregroundColor(Econ.white.opacity(0.9))
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+            if let text = beat.text {
+                Text(text)
+                    .font(EconType.body)
+                    .foregroundColor(EconColor.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Econ.sky.opacity(0.08))
-        .cornerRadius(12)
-        .accessibilityIdentifier("takeaways")
+    }
+
+    private var recap: some View {
+        VStack(alignment: .leading, spacing: EconSpace.m) {
+            Text(beat.heading ?? "Recap")
+                .font(EconType.title)
+                .foregroundColor(EconColor.textPrimary)
+                .accessibilityAddTraits(.isHeader)
+            VStack(alignment: .leading, spacing: EconSpace.s) {
+                ForEach(Array((beat.items ?? []).enumerated()), id: \.offset) { _, item in
+                    HStack(alignment: .firstTextBaseline, spacing: EconSpace.s) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundColor(EconColor.interactive)
+                            .accessibilityHidden(true)
+                        Text(item)
+                            .font(EconType.body)
+                            .foregroundColor(EconColor.textPrimary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            .econCard()
+            .accessibilityIdentifier("takeaways")
+            Button {
+                onSources()
+            } label: {
+                Label("Sources (\(lesson.sources.count))", systemImage: "doc.text")
+            }
+            .buttonStyle(EconLinkButton())
+            .accessibilityIdentifier("lessonSourcesButton")
+            // The one "not advice" line in a lesson, at its end.
+            EducationalNoticeBanner(text: PlanCopy.notAdvice)
+        }
     }
 }
 
-/// Single-answer multiple choice. The first answer is recorded; the reader can
-/// tap other choices afterwards to see why they are wrong, without changing it.
-struct QuizBlockView: View {
+// MARK: - Quick check
+
+/// Single-answer multiple choice with immediate feedback. The first answer is
+/// recorded; the reader can tap other choices afterwards to see why they are
+/// wrong, without changing it.
+struct StoryCheckView: View {
     let quiz: Quiz
     let lessonID: String
+    let ordinal: Int
     @EnvironmentObject private var progress: CourseProgressStore
     @State private var chosen: Int?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -329,67 +412,64 @@ struct QuizBlockView: View {
     private var revealed: Bool { chosen != nil }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("QUICK CHECK")
-                .font(.system(size: 12, weight: .bold, design: .rounded))
-                .foregroundColor(Econ.subtext)
-                .tracking(1.5)
+        VStack(alignment: .leading, spacing: EconSpace.s) {
+            EconSectionLabel(text: "Quick check")
             Text(quiz.question)
-                .font(.system(size: 16, weight: .semibold, design: .rounded))
-                .foregroundColor(Econ.white)
+                .font(EconType.title3)
+                .foregroundColor(EconColor.textPrimary)
                 .fixedSize(horizontal: false, vertical: true)
             ForEach(Array(quiz.choices.enumerated()), id: \.offset) { index, choice in
                 Button {
-                    guard chosen == nil else { chosen = index; return }
+                    let first = chosen == nil
                     withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { chosen = index }
-                    progress.recordQuiz(lessonID: lessonID, correct: index == quiz.answerIndex)
+                    if first {
+                        progress.recordCheck(lessonID: lessonID, ordinal: ordinal, correct: index == quiz.answerIndex)
+                        UINotificationFeedbackGenerator().notificationOccurred(index == quiz.answerIndex ? .success : .warning)
+                    }
                 } label: {
-                    HStack(spacing: 10) {
+                    HStack(spacing: EconSpace.s) {
                         Image(systemName: symbol(for: index))
+                            .font(EconType.headline)
                             .foregroundColor(color(for: index))
                             .accessibilityHidden(true)
                         Text(choice)
-                            .font(.system(size: 14, design: .rounded))
-                            .foregroundColor(Econ.white.opacity(0.9))
+                            .font(EconType.body)
+                            .foregroundColor(EconColor.textPrimary)
                             .multilineTextAlignment(.leading)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 0)
                     }
-                    .padding(12)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Econ.ocean.opacity(0.7))
-                    .cornerRadius(10)
-                    .overlay(RoundedRectangle(cornerRadius: 10)
-                        .stroke(color(for: index).opacity(revealed && (index == quiz.answerIndex || index == chosen) ? 0.8 : 0.2), lineWidth: 1))
+                    .econRow(fill: EconColor.surfaceRaised)
+                    .overlay(RoundedRectangle(cornerRadius: EconRadius.control, style: .continuous)
+                        .stroke(color(for: index).opacity(revealed && (index == quiz.answerIndex || index == chosen) ? 0.9 : 0),
+                                lineWidth: 2))
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("quizChoice-\(index)")
                 .accessibilityValue(Text(accessibilityValue(for: index)))
             }
             if revealed {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: EconSpace.xxs) {
                     Text(chosen == quiz.answerIndex ? "Correct" : "Not quite")
-                        .font(.system(size: 14, weight: .bold, design: .rounded))
-                        .foregroundColor(chosen == quiz.answerIndex ? Econ.sky : Econ.amber)
+                        .font(EconType.headline)
+                        .foregroundColor(chosen == quiz.answerIndex ? EconColor.interactive : EconColor.accentText)
                     Text(quiz.explanation)
-                        .font(.system(size: 14, design: .rounded))
-                        .foregroundColor(Econ.white.opacity(0.85))
+                        .font(EconType.body)
+                        .foregroundColor(EconColor.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
+                .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("quizExplanation")
+                .transition(.opacity)
             }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Econ.tide.opacity(0.14))
-        .cornerRadius(12)
         // `.contain`: a plain container's identifier would override the
         // choices' own ids (SwiftUI propagation); contained children keep theirs.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("quiz")
         .onAppear {
             // A re-opened lesson shows the recorded first answer's verdict.
-            if chosen == nil, let recorded = progress.quizResult(lessonID) {
+            if chosen == nil, let recorded = progress.checkResult(lessonID: lessonID, ordinal: ordinal) {
                 chosen = recorded ? quiz.answerIndex : quiz.choices.indices.first { $0 != quiz.answerIndex }
             }
         }
@@ -403,10 +483,10 @@ struct QuizBlockView: View {
     }
 
     private func color(for index: Int) -> Color {
-        guard revealed else { return Econ.subtext }
-        if index == quiz.answerIndex { return Econ.sky }
-        if index == chosen { return Econ.amber }
-        return Econ.subtext
+        guard revealed else { return EconColor.textTertiary }
+        if index == quiz.answerIndex { return EconColor.interactive }
+        if index == chosen { return EconColor.accentText }
+        return EconColor.textTertiary
     }
 
     private func accessibilityValue(for index: Int) -> String {
@@ -414,5 +494,97 @@ struct QuizBlockView: View {
         if index == quiz.answerIndex { return "correct answer" }
         if index == chosen { return "your answer, incorrect" }
         return ""
+    }
+}
+
+// MARK: - Supporting views
+
+/// The "educational, not advice" line at the end of every lesson.
+struct EducationalNoticeBanner: View {
+    let text: String
+    var body: some View {
+        HStack(alignment: .top, spacing: EconSpace.xs) {
+            Image(systemName: "info.circle")
+                .foregroundColor(EconColor.accent)
+                .accessibilityHidden(true)
+            Text(text)
+                .font(EconType.footnote)
+                .foregroundColor(EconColor.textSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .econInset()
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("educationalNotice")
+    }
+}
+
+/// A lesson's primary sources, from the recap.
+struct LessonSourcesView: View {
+    let lesson: Lesson
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                EconColor.background.ignoresSafeArea()
+                ScrollView {
+                    VStack(alignment: .leading, spacing: EconSpace.s) {
+                        ForEach(Array(lesson.sources.enumerated()), id: \.offset) { _, source in
+                            if let url = URL(string: source.url) {
+                                Link(destination: url) {
+                                    VStack(alignment: .leading, spacing: EconSpace.xxs) {
+                                        Text(source.documentTitle)
+                                            .font(EconType.subheadlineEmphasis)
+                                            .foregroundColor(EconColor.interactive)
+                                            .multilineTextAlignment(.leading)
+                                        Text("\(source.organization) · verified \(source.verificationDate)")
+                                            .font(EconType.caption)
+                                            .foregroundColor(EconColor.textTertiary)
+                                    }
+                                    .econRow()
+                                }
+                            }
+                        }
+                    }
+                    .padding(EconSpace.gutter)
+                }
+            }
+            .navigationTitle("Sources")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") { dismiss() }.foregroundColor(EconColor.interactive)
+                }
+            }
+        }
+        .tint(EconColor.interactive)
+        .accessibilityIdentifier("lessonSourcesView")
+    }
+}
+
+/// Shown in place of a Pro lesson when Pro is not active.
+struct LockedLessonView: View {
+    let lesson: Lesson
+    let onProPaywall: () -> Void
+
+    var body: some View {
+        VStack(spacing: EconSpace.m) {
+            Image(systemName: "lock.fill")
+                .font(.system(.largeTitle))
+                .foregroundColor(EconColor.accent)
+                .accessibilityHidden(true)
+            Text(lesson.title)
+                .font(EconType.title)
+                .foregroundColor(EconColor.textPrimary)
+                .multilineTextAlignment(.center)
+            Text(lesson.summary)
+                .font(EconType.body)
+                .foregroundColor(EconColor.textSecondary)
+                .multilineTextAlignment(.center)
+            Button("See EconByte Pro") { onProPaywall() }
+                .buttonStyle(PrimaryButton())
+                .accessibilityIdentifier("lessonLockedProButton")
+        }
+        .padding(EconSpace.xl)
     }
 }

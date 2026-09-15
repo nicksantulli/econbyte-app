@@ -2,6 +2,7 @@ import SwiftUI
 
 struct BookmarksView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var streak: StreakManager
     @EnvironmentObject private var growth: EconGrowth
@@ -10,22 +11,23 @@ struct BookmarksView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Econ.ocean.ignoresSafeArea()
+                EconColor.background.ignoresSafeArea()
                 Group {
                     if content.bookmarkedCards.isEmpty {
-                        VStack(spacing: 16) {
+                        VStack(spacing: EconSpace.m) {
                             Image(systemName: "bookmark.slash")
-                                .font(.system(size: 48))
-                                .foregroundColor(Econ.subtext)
+                                .font(.system(.largeTitle))
+                                .foregroundColor(EconColor.textTertiary)
                                 .accessibilityHidden(true)
                             Text("No bookmarks yet.")
-                                .font(.system(size: 18, weight: .semibold, design: .rounded))
-                                .foregroundColor(Econ.white)
-                            Text("Tap the bookmark icon on any card to save it.")
-                                .font(.system(size: 14, design: .rounded))
-                                .foregroundColor(Econ.subtext)
+                                .font(EconType.title3)
+                                .foregroundColor(EconColor.textPrimary)
                                 .multilineTextAlignment(.center)
-                                .padding(.horizontal, 32)
+                            Text("Tap the bookmark icon on any card to save it.")
+                                .font(EconType.subheadline)
+                                .foregroundColor(EconColor.textTertiary)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, EconSpace.xxl)
                         }
                     } else {
                         VStack(spacing: 0) {
@@ -33,22 +35,22 @@ struct BookmarksView: View {
                                 showReview = true
                             }
                             .buttonStyle(PrimaryButton())
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 12)
+                            .padding(.horizontal, EconSpace.gutter)
+                            .padding(.vertical, EconSpace.s)
 
                             List(content.bookmarkedCards) { card in
-                                VStack(alignment: .leading, spacing: 6) {
+                                VStack(alignment: .leading, spacing: EconSpace.xxs) {
                                     Text(content.topicName(for: card.topicId))
                                         .modifier(TopicChip())
                                     Text(card.concept)
-                                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                                        .foregroundColor(Econ.white)
+                                        .font(EconType.subheadlineEmphasis)
+                                        .foregroundColor(EconColor.textPrimary)
                                     Text(card.conceptBody)
-                                        .font(.system(size: 13, design: .rounded))
-                                        .foregroundColor(Econ.subtext)
-                                        .lineLimit(2)
+                                        .font(EconType.footnote)
+                                        .foregroundColor(EconColor.textTertiary)
+                                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 3)
                                 }
-                                .listRowBackground(Econ.tide.opacity(0.12))
+                                .listRowBackground(EconColor.surface)
                             }
                             .listStyle(.plain)
                             .scrollContentBackground(.hidden)
@@ -61,7 +63,7 @@ struct BookmarksView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }
-                        .foregroundColor(Econ.sky)
+                        .foregroundColor(EconColor.interactive)
                 }
             }
             .fullScreenCover(isPresented: $showReview) {
@@ -72,6 +74,6 @@ struct BookmarksView: View {
                     .environmentObject(growth)
             }
         }
-        .tint(Econ.sky)
+        .tint(EconColor.interactive)
     }
 }

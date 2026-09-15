@@ -517,7 +517,7 @@ final class ShellRedesignTests: XCTestCase {
             let window = app.windows.firstMatch.frame
             capture("p11-13-banner-card")
             XCTAssertLessThanOrEqual(visibleMaxY(card), window.maxY - 20, "card banner clears the home indicator")
-            let next = app.buttons["Next →"]
+            let next = app.buttons["Next"]
             if next.exists {
                 XCTAssertLessThanOrEqual(next.frame.maxY, card.frame.minY + 1, "the banner never covers Next")
             }

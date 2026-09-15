@@ -16,25 +16,18 @@ struct ProTabView: View {
             ProPaywallContent(entryPoint: .proTab) {
                 coursesSection
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 12)
-            .padding(.bottom, 32)
+            .padding(.horizontal, EconSpace.gutter)
+            .padding(.top, EconSpace.s)
+            .padding(.bottom, EconSpace.xxl)
         }
     }
 
     @ViewBuilder
     private var coursesSection: some View {
         if let courses = content.courses?.courses, !courses.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    EconSectionLabel(text: store.isProActive ? "Your courses" : "Courses")
-                    Spacer()
-                    if !store.isProActive {
-                        Text("First lesson free")
-                            .font(.system(size: 12, weight: .semibold, design: .rounded))
-                            .foregroundColor(Econ.amber)
-                    }
-                }
+            VStack(alignment: .leading, spacing: EconSpace.s) {
+                // Each row says "first lesson free", so the header does not.
+                EconSectionLabel(text: store.isProActive ? "Your courses" : "Courses")
                 ForEach(courses) { course in
                     ProCourseRow(course: course) { router.openCourse(course) }
                 }
@@ -52,34 +45,34 @@ struct ProCourseRow: View {
     @EnvironmentObject private var store: PurchaseManager
     @EnvironmentObject private var progress: CourseProgressStore
 
+    @ScaledMetric(relativeTo: .subheadline) private var ringSize: CGFloat = EconSize.tapTarget
+
     var body: some View {
         let done = progress.completedCount(of: course)
         let total = course.lessons.count
         return Button(action: action) {
-            HStack(spacing: 12) {
+            HStack(spacing: EconSpace.s) {
                 CourseProgressRing(done: done, total: total, icon: course.icon)
-                    .frame(width: 34, height: 34)
+                    .frame(width: ringSize, height: ringSize)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(course.title)
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.white)
+                        .font(EconType.subheadlineEmphasis)
+                        .foregroundColor(EconColor.textPrimary)
                         .multilineTextAlignment(.leading)
                     Text(store.isProActive || done > 0
                          ? "\(done)/\(total) lessons · \(course.estimatedMinutes) min"
                          : "\(total) lessons · first lesson free")
-                        .font(.system(size: 12, design: .rounded))
-                        .foregroundColor(Econ.subtext)
+                        .font(EconType.caption)
+                        .foregroundColor(EconColor.textTertiary)
+                        .multilineTextAlignment(.leading)
                 }
                 Spacer()
                 Image(systemName: store.isProActive ? "chevron.right" : "lock.open")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(store.isProActive ? Econ.subtext : Econ.amber)
+                    .font(EconType.footnote.weight(.semibold))
+                    .foregroundColor(store.isProActive ? EconColor.textTertiary : EconColor.accent)
                     .accessibilityHidden(true)
             }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Econ.tide.opacity(0.12))
-            .cornerRadius(12)
+            .econRow()
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("proCourseRow-\(course.courseID)")

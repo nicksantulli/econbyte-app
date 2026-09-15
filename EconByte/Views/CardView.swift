@@ -82,83 +82,94 @@ struct CardView: View {
         EBEvents.cardFlipped(mode: mode, difficulty: card.difficulty)
     }
 
+    // MARK: Faces (1.1.5 design system)
+    //
+    // Both faces share `face(header:body:footer:)`: header row, a centred body
+    // that scrolls instead of clipping at accessibility text sizes, and an
+    // optional footer. The body stack is where a card's graphic goes.
+
     private var frontFace: some View {
-        VStack(spacing: 0) {
-            // Topic chip
-            HStack {
-                Text(content.topicName(for: card.topicId))
-                    .modifier(TopicChip())
-                Spacer()
-                bookmarkButton
+        face {
+            Text(content.topicName(for: card.topicId))
+                .modifier(CardFaceChip())
+        } body: {
+            // PHASE 20 GRAPHIC SLOT (front): the card-graphics lane's hook —
+            // `if let graphic = card.graphic { CardGraphicView(graphic: graphic) }` —
+            // goes here, first in this stack, above the concept title.
+            Text(card.concept)
+                .font(EconType.title)
+                .foregroundColor(EconColor.onCardPrimary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            Text(card.conceptBody)
+                .font(EconType.body)
+                .foregroundColor(EconColor.onCardPrimary.opacity(0.85))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        } footer: {
+            if !isFlipped {
+                Text("Tap to flip")
+                    .font(EconType.footnote)
+                    .foregroundColor(EconColor.onCardSecondary)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 24)
-
-            Spacer()
-            VStack(spacing: 16) {
-                Text(card.concept)
-                    .font(.system(size: 22, weight: .heavy, design: .rounded))
-                    .foregroundColor(Econ.ink)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 24)
-
-                Text(card.conceptBody)
-                    .font(.system(size: 17, design: .rounded))
-                    .foregroundColor(Econ.ink.opacity(0.8))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 28)
-            }
-            Spacer()
-
-            VStack(spacing: 8) {
-                if !isFlipped {
-                    Text("Tap to see example →")
-                        .font(.system(size: 13, design: .rounded))
-                        .foregroundColor(Econ.subtext)
-                }
-            }
-            .padding(.bottom, 24)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Econ.page)
-        .cornerRadius(20)
-        .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
     }
 
     private var backFace: some View {
-        VStack(spacing: 0) {
+        face {
+            Label("Real World", systemImage: "globe.americas.fill")
+                .font(EconType.caption.weight(.semibold))
+                .foregroundColor(Econ.ocean)
+        } body: {
+            Text(card.exampleBody)
+                .font(EconType.body.weight(.medium))
+                .foregroundColor(EconColor.onCardPrimary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(alignment: .firstTextBaseline, spacing: EconSpace.xxs) {
+                Image(systemName: "link")
+                    .font(EconType.caption)
+                    .accessibilityHidden(true)
+                Text(card.source)
+                    .font(EconType.caption)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .foregroundColor(EconColor.onCardSecondary)
+        } footer: {
+            EmptyView()
+        }
+    }
+
+    private func face<Header: View, Body: View, Footer: View>(
+        @ViewBuilder header: () -> Header,
+        @ViewBuilder body: () -> Body,
+        @ViewBuilder footer: () -> Footer) -> some View {
+        let stack = VStack(spacing: EconSpace.m) { body() }
+            .padding(.horizontal, EconSpace.xl)
+            .frame(maxWidth: .infinity)
+        return VStack(spacing: 0) {
             HStack {
-                Label("Real World", systemImage: "globe.americas.fill")
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .foregroundColor(Econ.tide)
+                header()
                 Spacer()
                 bookmarkButton
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 24)
+            .padding(.leading, EconSpace.xl)
+            .padding(.trailing, EconSpace.s)
+            .padding(.top, EconSpace.s)
 
-            Spacer()
-            VStack(spacing: 16) {
-                Text(card.exampleBody)
-                    .font(.system(size: 17, weight: .medium, design: .rounded))
-                    .foregroundColor(Econ.ink)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 28)
-                HStack {
-                    Image(systemName: "link")
-                        .font(.caption)
-                    Text(card.source)
-                        .font(.system(size: 12, design: .rounded))
-                }
-                .foregroundColor(Econ.subtext)
+            ViewThatFits(in: .vertical) {
+                VStack { Spacer(minLength: 0); stack; Spacer(minLength: 0) }
+                ScrollView { stack.padding(.vertical, EconSpace.m) }
             }
-            Spacer()
-                .frame(minHeight: 24)
+
+            footer()
+                .padding(.bottom, EconSpace.l)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Econ.page)
-        .cornerRadius(20)
-        .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 6)
+        .background(EconColor.cardFace)
+        .clipShape(RoundedRectangle(cornerRadius: EconRadius.card, style: .continuous))
+        .shadow(color: .black.opacity(0.25), radius: 16, x: 0, y: 8)
     }
 
     private var bookmarkButton: some View {
@@ -171,9 +182,9 @@ struct CardView: View {
         } label: {
             Image(systemName: content.isBookmarked(card.id) ? "bookmark.fill" : "bookmark")
                 .foregroundColor(Econ.amber)
-                .font(.title3)
+                .font(EconType.title3)
                 // 44×44 minimum tap target (design section 12).
-                .frame(minWidth: 44, minHeight: 44, alignment: .trailing)
+                .frame(minWidth: EconSize.tapTarget, minHeight: EconSize.tapTarget)
                 .contentShape(Rectangle())
         }
         .accessibilityLabel(content.isBookmarked(card.id) ? "Remove bookmark" : "Bookmark card")

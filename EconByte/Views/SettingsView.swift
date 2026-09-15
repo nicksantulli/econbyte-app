@@ -12,8 +12,8 @@ import UIKit
 /// + time), Privacy (analytics, crash reports, the analytics ID with copy and
 /// reset — the deletion handle `AppStore/1.1.2/app-privacy-answers.md` §1
 /// promises — Privacy Policy, Terms of Use), and About (not-advice line,
-/// sources & editorial policy, support, rating, version). Every footer is one
-/// short sentence. The Debug section exists only in DEBUG builds.
+/// sources & editorial policy, support, rating, version). A footer appears only
+/// where it says something necessary. The Debug section exists only in DEBUG builds.
 struct SettingsView: View {
     /// Called when the user taps Unlock All; Settings dismisses first so the
     /// paywall is not a nested sheet (nested sheets break StoreKit on iPad).
@@ -62,8 +62,8 @@ struct SettingsView: View {
             }
             .listStyle(.insetGrouped)
             .scrollContentBackground(.hidden)
-            .background(Econ.ocean.ignoresSafeArea())
-            .environment(\.defaultMinListRowHeight, 46)
+            .background(EconColor.background.ignoresSafeArea())
+            .environment(\.defaultMinListRowHeight, EconSize.tapTarget)
             .task {
                 analyticsEnabled = growth.telemetry.analyticsChoice
                 diagnosticsEnabled = growth.diagnostics.diagnosticsChoice
@@ -73,14 +73,14 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Econ.ocean, for: .navigationBar)
+            .toolbarBackground(EconColor.background, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }
-                        .font(.system(size: 17, weight: .semibold, design: .rounded))
-                        .foregroundColor(Econ.sky)
+                        .font(EconType.headline)
+                        .foregroundColor(EconColor.interactive)
                 }
             }
             .purchaseAlert($alert)
@@ -88,7 +88,7 @@ struct SettingsView: View {
             .sheet(isPresented: $showSources) { SourcesPolicyView() }
             .sheet(isPresented: $showStudio) { DudleyAboutSheet() }
         }
-        .tint(Econ.sky)
+        .tint(EconColor.interactive)
     }
 
     // MARK: - EconByte Pro
@@ -97,12 +97,13 @@ struct SettingsView: View {
         Section {
             if store.isProActive, let pro = store.proEntitlement {
                 HStack {
-                    SettingsRowLabel(title: "EconByte Pro", icon: "graduationcap.fill", tint: Econ.amber)
+                    SettingsRowLabel(title: "EconByte Pro", icon: "graduationcap.fill", tint: EconColor.accent)
                     Spacer()
                     // Identifier on the leaf value, not the row: a List row's
                     // container identifier is not reliably exposed to XCUITest.
                     Text(pro.state.hasBillingIssue ? "Payment issue" : "Active ✓")
-                        .foregroundColor(pro.state.hasBillingIssue ? Econ.amber : Econ.sky)
+                        .font(EconType.body)
+                        .foregroundColor(pro.state.hasBillingIssue ? EconColor.accentText : EconColor.interactive)
                         .accessibilityIdentifier("settingsProStatusRow")
                 }
                 .settingsRow()
@@ -125,12 +126,14 @@ struct SettingsView: View {
                     dismiss()
                 } label: {
                     HStack {
-                        SettingsRowLabel(title: "EconByte Pro", icon: "graduationcap.fill", tint: Econ.amber)
+                        SettingsRowLabel(title: "EconByte Pro", icon: "graduationcap.fill", tint: EconColor.accent)
                         Spacer()
-                        Text("See plans").foregroundColor(Econ.amber)
+                        Text("See plans")
+                            .font(EconType.body)
+                            .foregroundColor(EconColor.accentText)
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(Econ.subtext)
+                            .font(EconType.footnote.weight(.semibold))
+                            .foregroundColor(EconColor.textTertiary)
                             .accessibilityHidden(true)
                     }
                 }
@@ -173,7 +176,7 @@ struct SettingsView: View {
         } header: {
             SettingsHeader(text: "Purchases")
         } footer: {
-            SettingsFooter(text: "One-time purchases. Single packs are in Browse.")
+            SettingsFooter(text: "Single packs are in Browse.")
         }
     }
 
@@ -192,7 +195,7 @@ struct SettingsView: View {
                                                 onRetry: { Task { await store.loadProducts() } },
                                                 action: { purchase(id) }))
             .listRowBackground(Color.clear)
-            .listRowInsets(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 0))
+            .listRowInsets(EdgeInsets(top: EconSpace.xxs, leading: 0, bottom: EconSpace.xxs, trailing: 0))
     }
 
     // MARK: - Privacy
@@ -210,7 +213,7 @@ struct SettingsView: View {
                 })) {
                 SettingsRowLabel(title: "Usage analytics", icon: "chart.bar.fill", tint: Econ.tide)
             }
-            .tint(Econ.amber)
+            .tint(EconColor.accent)
             .settingsRow()
             .accessibilityIdentifier("settingsAnalyticsToggle")
 
@@ -228,7 +231,7 @@ struct SettingsView: View {
                 })) {
                 SettingsRowLabel(title: "Crash reports", icon: "ant.fill", tint: Econ.tide)
             }
-            .tint(Econ.amber)
+            .tint(EconColor.accent)
             .settingsRow()
             .accessibilityIdentifier("settingsDiagnosticsToggle")
 
@@ -251,17 +254,15 @@ struct SettingsView: View {
     }
 
     private var analyticsIdentityRow: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: EconSpace.xxs) {
+            HStack(spacing: EconSpace.s) {
                 SettingsIconSpacer()
                 Text("Analytics ID")
-                    .font(.system(size: 16, design: .rounded))
-                    .foregroundColor(Econ.white)
-                Spacer(minLength: 8)
-                Button {
+                    .font(EconType.body)
+                    .foregroundColor(EconColor.textPrimary)
+                Spacer(minLength: EconSpace.xs)
+                EconIconButton(systemImage: "doc.on.doc", label: "Copy analytics ID") {
                     UIPasteboard.general.string = analyticsIdentity ?? ""
-                } label: {
-                    Image(systemName: "doc.on.doc").foregroundColor(Econ.sky)
                 }
                 .buttonStyle(.borderless)
                 .disabled(analyticsIdentity == nil)
@@ -271,24 +272,25 @@ struct SettingsView: View {
                     growth.resetAnalyticsIdentity()
                     analyticsIdentity = growth.telemetry.analyticsIdentity
                 }
-                .font(.system(size: 15, weight: .medium, design: .rounded))
+                .font(EconType.subheadlineEmphasis)
+                .frame(minHeight: EconSize.tapTarget)
                 .buttonStyle(.borderless)
                 .disabled(analyticsIdentity == nil)
                 .accessibilityLabel(Text("Reset analytics ID"))
                 .accessibilityIdentifier("analyticsIdentityResetButton")
             }
-            HStack(spacing: 14) {
+            HStack(spacing: EconSpace.s) {
                 SettingsIconSpacer()
                 // The identifier sits on the VALUE, not the row, so a test can
                 // assert what is displayed (a container's id would win).
                 Text(analyticsIdentity ?? "not available")
                     .font(.system(.footnote, design: .monospaced))
-                    .foregroundColor(Econ.subtext)
+                    .foregroundColor(EconColor.textTertiary)
                     .textSelection(.enabled)
                     .accessibilityIdentifier("analyticsIdentityRow")
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, EconSpace.xxs)
         .settingsRow()
     }
 
@@ -301,8 +303,8 @@ struct SettingsView: View {
                     SettingsRowLabel(title: "Sources & editorial policy", icon: "checkmark.shield.fill", tint: Econ.tide)
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Econ.subtext)
+                        .font(EconType.footnote.weight(.semibold))
+                        .foregroundColor(EconColor.textTertiary)
                         .accessibilityHidden(true)
                 }
             }
@@ -316,7 +318,7 @@ struct SettingsView: View {
             .accessibilityIdentifier("settingsSupportLink")
 
             Link(destination: ReviewRequestPolicy.reviewURL) {
-                SettingsRowLabel(title: "Rate EconByte", icon: "star.fill", tint: Econ.amber)
+                SettingsRowLabel(title: "Rate EconByte", icon: "star.fill", tint: EconColor.accent)
             }
             .settingsRow()
             .accessibilityIdentifier("settingsRateButton")
@@ -326,15 +328,14 @@ struct SettingsView: View {
                     SettingsRowLabel(title: "Version", icon: "hammer.fill", tint: Econ.tide)
                     Spacer()
                     Text("\(Bundle.main.shortVersion) (\(Bundle.main.buildNumber))")
-                        .foregroundColor(Econ.subtext)
+                        .font(EconType.body)
+                        .foregroundColor(EconColor.textTertiary)
                 }
             }
             .settingsRow()
             .accessibilityIdentifier("settingsVersionRow")
         } header: {
             SettingsHeader(text: "About")
-        } footer: {
-            SettingsFooter(text: "Made by Dudley Development.")
         }
     }
 
@@ -344,17 +345,17 @@ struct SettingsView: View {
             Toggle("🧪 Unlock All Topics", isOn: Binding(
                 get: { store.isUnlockAllPurchased },
                 set: { store.debugSetUnlockAll($0) }))
-                .tint(Econ.amber)
+                .tint(EconColor.accent)
                 .settingsRow()
             Toggle("🧪 Remove Ads", isOn: Binding(
                 get: { store.isRemoveAdsPurchased },
                 set: { store.debugSetRemoveAds($0) }))
-                .tint(Econ.amber)
+                .tint(EconColor.accent)
                 .settingsRow()
             Toggle("🧪 EconByte Pro", isOn: Binding(
                 get: { store.isProActive },
                 set: { store.debugSetPro($0) }))
-                .tint(Econ.amber)
+                .tint(EconColor.accent)
                 .settingsRow()
                 .accessibilityIdentifier("debugProToggle")
         } header: {
@@ -423,18 +424,18 @@ struct SettingsRemindersSection: View {
             Toggle(isOn: Binding(
                 get: { notifications.remindersEnabled },
                 set: { setEnabled($0) })) {
-                SettingsRowLabel(title: "Daily reminder", icon: "bell.fill", tint: Color(hex: "D9534F"))
+                SettingsRowLabel(title: "Daily reminder", icon: "bell.fill", tint: EconColor.accent)
             }
-            .tint(Econ.amber)
+            .tint(EconColor.accent)
             .disabled(denied && !notifications.remindersEnabled)
             .settingsRow()
             .accessibilityIdentifier("settingsRemindersToggle")
 
             if notifications.remindersEnabled {
                 DatePicker(selection: timeBinding, displayedComponents: .hourAndMinute) {
-                    HStack(spacing: 14) {
+                    HStack(spacing: EconSpace.s) {
                         SettingsIconSpacer()
-                        Text("Time").font(.system(size: 16, design: .rounded)).foregroundColor(Econ.white)
+                        Text("Time").font(EconType.body).foregroundColor(EconColor.textPrimary)
                     }
                 }
                 .settingsRow()
@@ -453,9 +454,9 @@ struct SettingsRemindersSection: View {
         } header: {
             SettingsHeader(text: "Notifications")
         } footer: {
-            SettingsFooter(text: denied && !notifications.remindersEnabled
-                           ? "Notifications are off for EconByte in iOS Settings."
-                           : "One quiet nudge a day; nothing else.")
+            if denied && !notifications.remindersEnabled {
+                SettingsFooter(text: "Notifications are off for EconByte in iOS Settings.")
+            }
         }
     }
 
@@ -506,63 +507,73 @@ struct SourcesPolicyView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Econ.ocean.ignoresSafeArea()
+                EconColor.background.ignoresSafeArea()
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: EconSpace.m) {
                         ForEach(sections, id: \.0) { title, body in
-                            VStack(alignment: .leading, spacing: 6) {
+                            VStack(alignment: .leading, spacing: EconSpace.xxs) {
                                 EconSectionLabel(text: title)
                                 Text(body)
-                                    .font(.system(size: 15, design: .rounded))
-                                    .foregroundColor(Econ.white.opacity(0.9))
+                                    .font(EconType.subheadline)
+                                    .foregroundColor(EconColor.textPrimary)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                         }
                     }
-                    .padding(20)
+                    .padding(EconSpace.gutter)
                 }
             }
             .navigationTitle("Sources & editorial policy")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Econ.ocean, for: .navigationBar)
+            .toolbarBackground(EconColor.background, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }.foregroundColor(Econ.sky)
+                    Button("Done") { dismiss() }
+                        .font(EconType.headline)
+                        .foregroundColor(EconColor.interactive)
                 }
             }
         }
-        .tint(Econ.sky)
+        .tint(EconColor.interactive)
         .accessibilityIdentifier("sourcesPolicyView")
     }
 }
 
 // MARK: - Row styling
 
+/// Base size of the rounded icon tile (28 pt); scaled with Dynamic Type at use.
+private let settingsIconTile: CGFloat = EconSize.tapTarget - EconSpace.m
+
 struct SettingsRowLabel: View {
     let title: String
     let icon: String
     let tint: Color
 
+    /// The icon tile grows with Dynamic Type so the glyph never outgrows it.
+    @ScaledMetric(relativeTo: .body) private var tileSize: CGFloat = settingsIconTile
+
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: EconSpace.s) {
             Image(systemName: icon)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(tint == Econ.amber ? Econ.ink : Econ.white)
-                .frame(width: 28, height: 28)
+                .font(EconType.footnote.weight(.semibold))
+                .foregroundColor(tint == EconColor.accent ? EconColor.onAccent : EconColor.textPrimary)
+                .frame(width: tileSize, height: tileSize)
                 .background(tint)
-                .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: EconRadius.badge, style: .continuous))
                 .accessibilityHidden(true)
             Text(title)
-                .font(.system(size: 16, design: .rounded))
-                .foregroundColor(Econ.white)
+                .font(EconType.body)
+                .foregroundColor(EconColor.textPrimary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
 
 /// Keeps text rows without an icon aligned with the ones that have one.
 struct SettingsIconSpacer: View {
-    var body: some View { Color.clear.frame(width: 28, height: 1).accessibilityHidden(true) }
+    @ScaledMetric(relativeTo: .body) private var tileSize: CGFloat = settingsIconTile
+    var body: some View { Color.clear.frame(width: tileSize, height: 1).accessibilityHidden(true) }
 }
 
 struct SettingsValueRow: View {
@@ -570,11 +581,14 @@ struct SettingsValueRow: View {
     let value: String
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: EconSpace.s) {
             SettingsIconSpacer()
-            Text(title).font(.system(size: 16, design: .rounded)).foregroundColor(Econ.white)
+            Text(title).font(EconType.body).foregroundColor(EconColor.textPrimary)
             Spacer()
-            Text(value).font(.system(size: 16, design: .rounded)).foregroundColor(Econ.subtext)
+            Text(value)
+                .font(EconType.body)
+                .foregroundColor(EconColor.textTertiary)
+                .multilineTextAlignment(.trailing)
         }
         .accessibilityElement(children: .combine)
         .settingsRow()
@@ -585,9 +599,9 @@ struct SettingsHeader: View {
     let text: String
     var body: some View {
         Text(text.uppercased())
-            .font(.system(size: 12, weight: .bold, design: .rounded))
-            .foregroundColor(Econ.subtext)
-            .tracking(1.2)
+            .font(EconType.overline)
+            .foregroundColor(EconColor.textTertiary)
+            .tracking(EconType.overlineTracking)
     }
 }
 
@@ -595,13 +609,13 @@ struct SettingsFooter: View {
     let text: String
     var body: some View {
         Text(text)
-            .font(.system(size: 12, design: .rounded))
-            .foregroundColor(Econ.subtext)
+            .font(EconType.footnote)
+            .foregroundColor(EconColor.textTertiary)
     }
 }
 
 extension View {
     func settingsRow() -> some View {
-        listRowBackground(Econ.tide.opacity(0.18))
+        listRowBackground(EconColor.surfaceRaised)
     }
 }

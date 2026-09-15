@@ -107,29 +107,30 @@ final class Phase13ContentEvidenceTests: XCTestCase {
             let any = app.descendants(matching: .any)
             openLesson(entry.lesson, course: entry.course, in: app)
             // DiagramView is one image element whose label describes the drawing
-            // (`DiagramView.accessibilityDescription`); the wrapper identifier is not exposed.
+            // (`DiagramView.accessibilityDescription`). 1.1.5: the lesson is a
+            // story, so walk its pages and capture the diagram, chart and check.
             let diagram = app.images.matching(NSPredicate(format: "label BEGINSWITH %@", entry.labelPrefix)).firstMatch
-            XCTAssertTrue(scrollTo(diagram, in: app), "\(entry.lesson) renders \(entry.diagram)")
-            // Bring the whole drawing (and its caption) on screen before capturing.
-            let window = app.windows.firstMatch.frame
-            for _ in 0..<4 where diagram.frame.maxY > window.maxY * 0.72 {
-                app.swipeUp(velocity: .slow)
+            let chart = any.matching(NSPredicate(format: "identifier BEGINSWITH 'chart-\(entry.lesson)' AND NOT identifier ENDSWITH '-note'")).firstMatch
+            var sawDiagram = false, sawChart = false, sawQuiz = false
+            walkStory(app) { _ in
+                if !sawDiagram, diagram.exists {
+                    sawDiagram = true
+                    self.capture("p13-diagram-\(entry.diagram)-\(entry.lesson)")
+                }
+                if !sawChart, chart.exists {
+                    sawChart = true
+                    self.capture("p13-lesson-chart-\(entry.lesson)")
+                }
+                if !sawQuiz, any["quiz"].exists {
+                    sawQuiz = true
+                    app.buttons["quizChoice-0"].tap()
+                    XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 10), "answering reveals the explanation")
+                    self.capture("p13-lesson-quiz-\(entry.lesson)")
+                }
             }
-            XCTAssertTrue(diagram.isHittable, "\(entry.diagram) stays on screen")
-            capture("p13-diagram-\(entry.diagram)-\(entry.lesson)")
-            if entry.hasChart {
-                let chart = any.matching(NSPredicate(format: "identifier BEGINSWITH 'chart-\(entry.lesson)' AND NOT identifier ENDSWITH '-note'")).firstMatch
-                XCTAssertTrue(scrollTo(chart, in: app, attempts: 20), "\(entry.lesson) renders its chart")
-                capture("p13-lesson-chart-\(entry.lesson)")
-            }
-            do {
-                let quiz = any["quiz"]
-                XCTAssertTrue(scrollTo(quiz, in: app, attempts: 20), "\(entry.lesson) has its quiz")
-                app.buttons["quizChoice-0"].tap()
-                XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 10), "answering reveals the explanation")
-                _ = scrollTo(any["quizExplanation"], in: app, attempts: 3)
-                capture("p13-lesson-quiz-\(entry.lesson)")
-            }
+            XCTAssertTrue(sawDiagram, "\(entry.lesson) renders \(entry.diagram)")
+            if entry.hasChart { XCTAssertTrue(sawChart, "\(entry.lesson) renders its chart") }
+            XCTAssertTrue(sawQuiz, "\(entry.lesson) has its quiz")
             app.terminate()
         }
     }
@@ -153,5 +154,23 @@ final class Phase13ContentEvidenceTests: XCTestCase {
         last.tap()
         XCTAssertTrue(app.buttons["briefCloseButton"].waitForExistence(timeout: 10), "an archived brief opens")
         capture("p13-news-archive-oldest-brief")
+    }
+
+    /// 1.1.5 story lessons: walks every page of the open lesson with the Next
+    /// button, calling `visit` on each page; answers the first quick check met.
+    private func walkStory(_ app: XCUIApplication, visit: (Int) -> Void = { _ in }) {
+        let any = app.descendants(matching: .any)
+        let next = app.buttons["storyNextButton"]
+        var page = 0
+        for _ in 0..<40 {
+            visit(page)
+            if any["quiz"].exists, !any["quizExplanation"].exists {
+                app.buttons["quizChoice-0"].tap()
+                XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 10), "answering reveals the explanation")
+            }
+            guard next.exists else { break }
+            next.tap()
+            page += 1
+        }
     }
 }

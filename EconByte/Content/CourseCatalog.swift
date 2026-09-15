@@ -1,12 +1,15 @@
 import Foundation
 
-// MARK: - Courses (1.1.4, EconByte Pro)
+// MARK: - Courses (1.1.4, EconByte Pro; 1.1.5 story lessons)
 //
 // `Resources/courses-v1.json` carries the subscription's course library: three
-// courses of ordered lessons, each lesson an ordered list of BLOCKS (paragraph,
-// callout, key terms, diagram, chart, quiz, takeaways). The first lesson of every
-// course is a free preview; the rest are readable only while EconByte Pro is
-// active (`PurchaseManager.isProActive`).
+// courses of ordered lessons. 1.1.5 (schemaVersion 2, Owner: "almost like a
+// 'story' you click through rather than an article") turned each lesson into
+// ordered BEATS — one idea per screen, at most `StoryRules.maxWordsPerBeat`
+// words, most with a visual, one or two quick checks and a recap last — plus
+// the synthetic charts its beats show. `docs/content/STORY-SCHEMA-1.1.5.md`.
+// The first lesson of every course is a free preview; the rest are readable
+// only while EconByte Pro is active (`PurchaseManager.isProActive`).
 //
 // Same contract as the card catalogs: decoding and validation fail closed, and
 // the structural validator here is the runtime backstop for the editorial checks
@@ -102,75 +105,89 @@ public struct Quiz: Codable, Hashable {
     public let explanation: String
 }
 
-/// One block of a lesson. Decoded from `{"type": …, …}`; an unknown type fails
+// MARK: Story beats (schemaVersion 2)
+
+public enum BeatKind: String, Codable, Hashable {
+    /// One idea: heading, text, an optional tone and visual.
+    case idea
+    /// One or two key terms.
+    case term
+    /// A quick-check question with immediate feedback.
+    case check
+    /// The closing recap (always the last beat).
+    case recap
+}
+
+public struct StoryCompareSide: Codable, Hashable {
+    public let label: String
+    public let detail: String
+}
+
+/// The picture on a beat. Decoded from `{"type": …}`; an unknown type fails
 /// decoding, which fails the catalog closed.
-public enum LessonBlock: Hashable {
-    case paragraph(text: String)
-    case callout(style: CalloutStyle, title: String, text: String)
-    case keyTerms([KeyTerm])
-    case diagram(id: DiagramID, caption: String)
-    case chart(ChartSpec)
-    case quiz(Quiz)
-    case takeaways([String])
+public enum StoryVisual: Hashable {
+    case diagram(DiagramID)
+    case chart(chartID: String)
+    case stat(value: String, label: String)
+    case flow(steps: [String])
+    case compare(left: StoryCompareSide, right: StoryCompareSide)
+    case symbol(name: String)
+
+    /// Decorative SF Symbols a beat may use (all present on iOS 16). Mirrors
+    /// `ALLOWED_SYMBOLS` in `scripts/validate_content.mjs`.
+    public static let allowedSymbols: Set<String> = [
+        "chart.line.uptrend.xyaxis", "chart.line.downtrend.xyaxis", "chart.bar.fill", "chart.pie.fill",
+        "percent", "dollarsign.circle.fill", "banknote.fill", "building.columns.fill", "clock.fill",
+        "calendar", "scalemass.fill", "arrow.up.arrow.down", "arrow.triangle.2.circlepath",
+        "exclamationmark.triangle.fill", "lightbulb.fill", "magnifyingglass", "person.2.fill",
+        "brain.head.profile", "hourglass", "shield.fill", "doc.text.fill", "eye.fill",
+        "questionmark.circle.fill", "checkmark.seal.fill", "hand.raised.fill", "arrow.up.right",
+        "arrow.down.right", "flag.fill", "tray.full.fill", "square.stack.3d.up.fill", "cart.fill",
+        "house.fill", "target", "ruler.fill", "speedometer", "list.number",
+    ]
 
     public var typeName: String {
         switch self {
-        case .paragraph: return "paragraph"
-        case .callout:   return "callout"
-        case .keyTerms:  return "keyTerms"
-        case .diagram:   return "diagram"
-        case .chart:     return "chart"
-        case .quiz:      return "quiz"
-        case .takeaways: return "takeaways"
+        case .diagram: return "diagram"
+        case .chart: return "chart"
+        case .stat: return "stat"
+        case .flow: return "flow"
+        case .compare: return "compare"
+        case .symbol: return "symbol"
         }
     }
 
-    /// Every piece of reader-facing text in the block, for the editorial tests.
-    public var allText: [String] {
+    /// Words the visual adds to its screen (drawings and charts add none).
+    public var readingText: [String] {
         switch self {
-        case let .paragraph(text): return [text]
-        case let .callout(_, title, text): return [title, text]
-        case let .keyTerms(terms): return terms.flatMap { [$0.term, $0.definition] }
-        case let .diagram(_, caption): return [caption]
-        case let .chart(spec): return [spec.title, spec.caption, spec.dataNote, spec.xLabel, spec.yLabel]
-                + (spec.series?.map(\.name) ?? []) + (spec.markers?.map(\.label) ?? [])
-        case let .quiz(quiz): return [quiz.question, quiz.explanation] + quiz.choices
-        case let .takeaways(items): return items
+        case .diagram, .chart, .symbol: return []
+        case let .stat(value, label): return [value, label]
+        case let .flow(steps): return steps
+        case let .compare(left, right): return [left.label, left.detail, right.label, right.detail]
         }
     }
 }
 
-extension LessonBlock: Codable {
+extension StoryVisual: Codable {
     private enum CodingKeys: String, CodingKey {
-        case type, text, style, title, terms, diagramID, caption, items
-        case chartID, kind, dataNote, xLabel, yLabel, series, candles, markers
-        case question, choices, answerIndex, explanation
+        case type, diagramID, chartID, value, label, steps, left, right, name
     }
 
     public init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         let type = try c.decode(String.self, forKey: .type)
         switch type {
-        case "paragraph":
-            self = .paragraph(text: try c.decode(String.self, forKey: .text))
-        case "callout":
-            self = .callout(style: try c.decode(CalloutStyle.self, forKey: .style),
-                            title: try c.decode(String.self, forKey: .title),
-                            text: try c.decode(String.self, forKey: .text))
-        case "keyTerms":
-            self = .keyTerms(try c.decode([KeyTerm].self, forKey: .terms))
-        case "diagram":
-            self = .diagram(id: try c.decode(DiagramID.self, forKey: .diagramID),
-                            caption: try c.decode(String.self, forKey: .caption))
-        case "chart":
-            self = .chart(try ChartSpec(from: decoder))
-        case "quiz":
-            self = .quiz(try Quiz(from: decoder))
-        case "takeaways":
-            self = .takeaways(try c.decode([String].self, forKey: .items))
+        case "diagram": self = .diagram(try c.decode(DiagramID.self, forKey: .diagramID))
+        case "chart": self = .chart(chartID: try c.decode(String.self, forKey: .chartID))
+        case "stat": self = .stat(value: try c.decode(String.self, forKey: .value),
+                                  label: try c.decode(String.self, forKey: .label))
+        case "flow": self = .flow(steps: try c.decode([String].self, forKey: .steps))
+        case "compare": self = .compare(left: try c.decode(StoryCompareSide.self, forKey: .left),
+                                        right: try c.decode(StoryCompareSide.self, forKey: .right))
+        case "symbol": self = .symbol(name: try c.decode(String.self, forKey: .name))
         default:
             throw DecodingError.dataCorruptedError(forKey: .type, in: c,
-                                                   debugDescription: "unknown lesson block type \(type)")
+                                                   debugDescription: "unknown story visual type \(type)")
         }
     }
 
@@ -178,21 +195,68 @@ extension LessonBlock: Codable {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(typeName, forKey: .type)
         switch self {
-        case let .paragraph(text):
-            try c.encode(text, forKey: .text)
-        case let .callout(style, title, text):
-            try c.encode(style, forKey: .style); try c.encode(title, forKey: .title); try c.encode(text, forKey: .text)
-        case let .keyTerms(terms):
-            try c.encode(terms, forKey: .terms)
-        case let .diagram(id, caption):
-            try c.encode(id, forKey: .diagramID); try c.encode(caption, forKey: .caption)
-        case let .chart(spec):
-            try spec.encode(to: encoder)
-        case let .quiz(quiz):
-            try quiz.encode(to: encoder)
-        case let .takeaways(items):
-            try c.encode(items, forKey: .items)
+        case let .diagram(id): try c.encode(id, forKey: .diagramID)
+        case let .chart(chartID): try c.encode(chartID, forKey: .chartID)
+        case let .stat(value, label): try c.encode(value, forKey: .value); try c.encode(label, forKey: .label)
+        case let .flow(steps): try c.encode(steps, forKey: .steps)
+        case let .compare(left, right): try c.encode(left, forKey: .left); try c.encode(right, forKey: .right)
+        case let .symbol(name): try c.encode(name, forKey: .name)
         }
+    }
+}
+
+/// One screen of a story lesson.
+public struct LessonBeat: Codable, Hashable {
+    public let kind: BeatKind
+    public let heading: String?
+    public let text: String?
+    public let tone: CalloutStyle?
+    public let terms: [KeyTerm]?
+    public let check: Quiz?
+    public let items: [String]?
+    public let visual: StoryVisual?
+
+    public init(kind: BeatKind, heading: String? = nil, text: String? = nil, tone: CalloutStyle? = nil,
+                terms: [KeyTerm]? = nil, check: Quiz? = nil, items: [String]? = nil, visual: StoryVisual? = nil) {
+        self.kind = kind
+        self.heading = heading
+        self.text = text
+        self.tone = tone
+        self.terms = terms
+        self.check = check
+        self.items = items
+        self.visual = visual
+    }
+
+    /// Everything the reader reads on this beat's screen (a check's explanation
+    /// is revealed after answering and counted on its own).
+    public var screenText: [String] {
+        var parts: [String] = []
+        if let heading { parts.append(heading) }
+        if let text { parts.append(text) }
+        for term in terms ?? [] { parts += [term.term, term.definition] }
+        parts += items ?? []
+        if kind == .check, let check { parts.append(check.question); parts += check.choices }
+        parts += visual?.readingText ?? []
+        return parts
+    }
+
+    public var wordCount: Int { screenText.reduce(0) { $0 + StoryRules.words(in: $1) } }
+
+    /// Every reader-facing string, for the editorial tests.
+    public var allText: [String] {
+        screenText + (check.map { [$0.explanation] } ?? [])
+    }
+}
+
+public enum StoryRules {
+    public static let maxWordsPerBeat = 35
+    public static let maxHeadingWords = 8
+    public static let beatRange = 10...30
+    public static let checkRange = 1...2
+
+    public static func words(in text: String) -> Int {
+        text.split(whereSeparator: { $0.isWhitespace }).count
     }
 }
 
@@ -203,18 +267,35 @@ public struct Lesson: Codable, Hashable, Identifiable {
     public let estimatedMinutes: Int
     /// Exactly the first lesson of each course; readable without Pro.
     public let isPreview: Bool
-    public let blocks: [LessonBlock]
+    /// The synthetic charts this lesson's beats show.
+    public let charts: [ChartSpec]
+    public let beats: [LessonBeat]
     public let sources: [CurriculumSource]
 
     public var id: String { lessonID }
-    public var quiz: Quiz? {
-        for block in blocks { if case let .quiz(quiz) = block { return quiz } }
-        return nil
+
+    public func chart(withID id: String) -> ChartSpec? { charts.first { $0.chartID == id } }
+
+    /// The lesson's check beats, in order.
+    public var checks: [Quiz] { beats.compactMap { $0.kind == .check ? $0.check : nil } }
+    /// The first quick check (1.1.4's single quiz).
+    public var quiz: Quiz? { checks.first }
+    public var hasVisual: Bool { beats.contains { $0.visual != nil } }
+
+    /// Story pages: the cover (page 0) and one page per beat.
+    public var pageCount: Int { beats.count + 1 }
+
+    /// The ordinal of the check on `beatIndex` among the lesson's checks.
+    public func checkOrdinal(forBeat beatIndex: Int) -> Int? {
+        guard beats.indices.contains(beatIndex), beats[beatIndex].kind == .check else { return nil }
+        return beats[..<beatIndex].filter { $0.kind == .check }.count
     }
-    public var hasVisual: Bool {
-        blocks.contains { block in
-            switch block { case .chart, .diagram: return true; default: return false }
-        }
+
+    /// Every reader-facing string, for the editorial tests.
+    public var allText: [String] {
+        [title, summary] + beats.flatMap(\.allText)
+            + charts.flatMap { [$0.title, $0.caption, $0.dataNote, $0.xLabel, $0.yLabel]
+                + ($0.series?.map(\.name) ?? []) + ($0.markers?.map(\.label) ?? []) }
     }
 }
 
@@ -258,7 +339,8 @@ public enum CourseCatalog {
     public static let minimumLessonsPerCourse = 5
     /// 1.1.4 shipped six lessons per course; Phase 13 (content growth) nine.
     public static let expectedLessonsPerCourse = 9
-    public static let minimumBlocksPerLesson = 5
+    /// 1.1.5: story lessons.
+    public static let schemaVersion = 2
 
     /// Ordered course contract: content id → lesson-id prefix.
     public static let expectedCourses: [(courseID: String, lessonPrefix: String)] = [
@@ -291,12 +373,49 @@ public enum CourseCatalog {
         return catalog
     }
 
+    static func validateChart(_ spec: ChartSpec, seen: inout Set<String>,
+                              fail: (String) throws -> Never) throws {
+        guard seen.insert(spec.chartID).inserted else {
+            try fail("duplicate chart identifier \(spec.chartID)")
+        }
+        guard spec.dataNote.lowercased().hasPrefix("synthetic") else {
+            try fail("chart \(spec.chartID) must declare synthetic data")
+        }
+        guard !spec.title.isEmpty, !spec.caption.isEmpty, !spec.xLabel.isEmpty, !spec.yLabel.isEmpty else {
+            try fail("chart \(spec.chartID) is missing a title, caption, or axis label")
+        }
+        switch spec.kind {
+        case .candlestick:
+            guard let candles = spec.candles, (8...60).contains(candles.count) else {
+                try fail("chart \(spec.chartID) needs 8–60 candles")
+            }
+            var lastX = -Double.infinity
+            for candle in candles {
+                guard candle.high >= max(candle.open, candle.close),
+                      candle.low <= min(candle.open, candle.close) else {
+                    try fail("chart \(spec.chartID) has an inconsistent candle at x=\(candle.x)")
+                }
+                guard candle.x > lastX else { try fail("chart \(spec.chartID) candles must have increasing x") }
+                lastX = candle.x
+            }
+        case .line, .bar:
+            guard let series = spec.series, (1...4).contains(series.count) else {
+                try fail("chart \(spec.chartID) needs 1–4 series")
+            }
+            for s in series {
+                guard !s.name.isEmpty, (2...60).contains(s.points.count) else {
+                    try fail("chart \(spec.chartID) series \(s.name) needs 2–60 points")
+                }
+            }
+        }
+    }
+
     static func validate(_ catalog: CourseCurriculum, core: Curriculum) throws {
         func fail(_ reason: String) throws -> Never {
             throw CurriculumError.validationFailed(reason)
         }
 
-        guard catalog.schemaVersion == 1 else {
+        guard catalog.schemaVersion == schemaVersion else {
             try fail("unsupported courses schemaVersion \(catalog.schemaVersion)")
         }
         guard catalog.disclaimer == core.disclaimer else {
@@ -346,8 +465,11 @@ public enum CourseCatalog {
                 guard lesson.isPreview == (index == 0) else {
                     try fail("lesson \(lesson.lessonID): exactly the first lesson of a course is the free preview")
                 }
-                guard lesson.blocks.count >= minimumBlocksPerLesson else {
-                    try fail("lesson \(lesson.lessonID) has \(lesson.blocks.count) blocks, needs \(minimumBlocksPerLesson)")
+                guard StoryRules.beatRange.contains(lesson.beats.count) else {
+                    try fail("lesson \(lesson.lessonID) has \(lesson.beats.count) beats, needs \(StoryRules.beatRange)")
+                }
+                guard StoryRules.words(in: lesson.summary) <= StoryRules.maxWordsPerBeat else {
+                    try fail("lesson \(lesson.lessonID) summary is longer than the cover allows")
                 }
                 guard !lesson.sources.isEmpty else {
                     try fail("lesson \(lesson.lessonID) cites no primary source")
@@ -358,76 +480,106 @@ public enum CourseCatalog {
                     }
                 }
 
-                var quizzes = 0, visuals = 0, paragraphs = 0, takeaways = 0
-                for block in lesson.blocks {
-                    switch block {
-                    case let .paragraph(text):
-                        paragraphs += 1
-                        guard !text.isEmpty else { try fail("lesson \(lesson.lessonID) has an empty paragraph") }
-                    case let .callout(_, title, text):
-                        guard !title.isEmpty, !text.isEmpty else { try fail("lesson \(lesson.lessonID) has an empty callout") }
-                    case let .keyTerms(terms):
-                        guard (2...6).contains(terms.count) else {
-                            try fail("lesson \(lesson.lessonID) key terms must number 2–6")
+                var lessonChartIDs = Set<String>()
+                for spec in lesson.charts {
+                    try validateChart(spec, seen: &seenChartIDs, fail: fail)
+                    lessonChartIDs.insert(spec.chartID)
+                }
+
+                var checks = 0, recaps = 0, visuals = 0, symbols = 0
+                var shownCharts = Set<String>()
+                for (index, beat) in lesson.beats.enumerated() {
+                    let place = "lesson \(lesson.lessonID) beat \(index + 1)"
+                    guard beat.wordCount <= StoryRules.maxWordsPerBeat else {
+                        try fail("\(place) has \(beat.wordCount) words (max \(StoryRules.maxWordsPerBeat))")
+                    }
+                    if let heading = beat.heading {
+                        guard !heading.isEmpty, StoryRules.words(in: heading) <= StoryRules.maxHeadingWords else {
+                            try fail("\(place) heading must be 1–\(StoryRules.maxHeadingWords) words")
                         }
-                    case let .diagram(_, caption):
-                        visuals += 1
-                        guard !caption.isEmpty else { try fail("lesson \(lesson.lessonID) diagram has no caption") }
-                    case let .chart(spec):
-                        visuals += 1
-                        guard seenChartIDs.insert(spec.chartID).inserted else {
-                            try fail("duplicate chart identifier \(spec.chartID)")
+                    }
+                    if beat.tone != nil, beat.kind != .idea { try fail("\(place) tone belongs on idea beats") }
+                    switch beat.kind {
+                    case .idea:
+                        guard let text = beat.text, !text.isEmpty, beat.terms == nil, beat.check == nil, beat.items == nil else {
+                            try fail("\(place) idea beat needs text and nothing but heading, tone and visual")
                         }
-                        guard spec.dataNote.lowercased().hasPrefix("synthetic") else {
-                            try fail("chart \(spec.chartID) must declare synthetic data")
+                    case .term:
+                        guard let terms = beat.terms, (1...2).contains(terms.count),
+                              terms.allSatisfy({ !$0.term.isEmpty && !$0.definition.isEmpty }),
+                              beat.check == nil, beat.items == nil else {
+                            try fail("\(place) term beat needs 1–2 complete terms")
                         }
-                        guard !spec.title.isEmpty, !spec.caption.isEmpty, !spec.xLabel.isEmpty, !spec.yLabel.isEmpty else {
-                            try fail("chart \(spec.chartID) is missing a title, caption, or axis label")
-                        }
-                        switch spec.kind {
-                        case .candlestick:
-                            guard let candles = spec.candles, (8...60).contains(candles.count) else {
-                                try fail("chart \(spec.chartID) needs 8–60 candles")
-                            }
-                            var lastX = -Double.infinity
-                            for candle in candles {
-                                guard candle.high >= max(candle.open, candle.close),
-                                      candle.low <= min(candle.open, candle.close) else {
-                                    try fail("chart \(spec.chartID) has an inconsistent candle at x=\(candle.x)")
-                                }
-                                guard candle.x > lastX else { try fail("chart \(spec.chartID) candles must have increasing x") }
-                                lastX = candle.x
-                            }
-                        case .line, .bar:
-                            guard let series = spec.series, (1...4).contains(series.count) else {
-                                try fail("chart \(spec.chartID) needs 1–4 series")
-                            }
-                            for s in series {
-                                guard !s.name.isEmpty, (2...60).contains(s.points.count) else {
-                                    try fail("chart \(spec.chartID) series \(s.name) needs 2–60 points")
-                                }
-                            }
-                        }
-                    case let .quiz(quiz):
-                        quizzes += 1
-                        guard (3...4).contains(quiz.choices.count),
+                    case .check:
+                        checks += 1
+                        guard let quiz = beat.check, (3...4).contains(quiz.choices.count),
+                              Set(quiz.choices).count == quiz.choices.count,
                               quiz.choices.indices.contains(quiz.answerIndex),
-                              !quiz.question.isEmpty, !quiz.explanation.isEmpty else {
-                            try fail("lesson \(lesson.lessonID) quiz is malformed")
+                              !quiz.question.isEmpty, !quiz.explanation.isEmpty,
+                              beat.text == nil, beat.terms == nil, beat.items == nil else {
+                            try fail("\(place) check is malformed")
                         }
-                    case let .takeaways(items):
-                        takeaways += 1
-                        guard (2...5).contains(items.count) else {
-                            try fail("lesson \(lesson.lessonID) takeaways must number 2–5")
+                        guard StoryRules.words(in: quiz.explanation) <= StoryRules.maxWordsPerBeat else {
+                            try fail("\(place) explanation is longer than \(StoryRules.maxWordsPerBeat) words")
+                        }
+                        guard index != 0, index != lesson.beats.count - 1 else {
+                            try fail("\(place) a check is never the first or last beat")
+                        }
+                    case .recap:
+                        recaps += 1
+                        guard let items = beat.items, (2...5).contains(items.count), items.allSatisfy({ !$0.isEmpty }),
+                              beat.visual == nil, beat.text == nil, beat.terms == nil, beat.check == nil else {
+                            try fail("\(place) recap needs 2–5 items and nothing else")
+                        }
+                        guard index == lesson.beats.count - 1 else { try fail("\(place) the recap is the last beat") }
+                    }
+                    if let visual = beat.visual {
+                        visuals += 1
+                        switch visual {
+                        case .diagram:
+                            break
+                        case let .chart(chartID):
+                            guard lessonChartIDs.contains(chartID) else {
+                                try fail("\(place) shows chart \(chartID), which is not in the lesson")
+                            }
+                            shownCharts.insert(chartID)
+                        case let .stat(value, label):
+                            guard !value.isEmpty, value.count <= 16, !label.isEmpty, StoryRules.words(in: label) <= 6 else {
+                                try fail("\(place) stat needs a value (≤16 characters) and a label (≤6 words)")
+                            }
+                        case let .flow(steps):
+                            guard (2...4).contains(steps.count),
+                                  steps.allSatisfy({ !$0.isEmpty && StoryRules.words(in: $0) <= 4 }) else {
+                                try fail("\(place) flow needs 2–4 steps of ≤4 words")
+                            }
+                        case let .compare(left, right):
+                            guard [left, right].allSatisfy({ !$0.label.isEmpty && StoryRules.words(in: $0.label) <= 4
+                                && !$0.detail.isEmpty && StoryRules.words(in: $0.detail) <= 8 }) else {
+                                try fail("\(place) compare sides need a label (≤4 words) and a detail (≤8 words)")
+                            }
+                        case let .symbol(name):
+                            symbols += 1
+                            guard StoryVisual.allowedSymbols.contains(name) else {
+                                try fail("\(place) symbol \(name) is not in the allowlist")
+                            }
                         }
                     }
                 }
-                guard quizzes == 1 else { try fail("lesson \(lesson.lessonID) needs exactly one quiz, has \(quizzes)") }
-                guard visuals >= 1 else { try fail("lesson \(lesson.lessonID) needs a chart or a diagram") }
-                guard paragraphs >= 1 else { try fail("lesson \(lesson.lessonID) needs a paragraph") }
-                guard takeaways >= 1 else { try fail("lesson \(lesson.lessonID) needs a takeaways block") }
-                if case .takeaways = lesson.blocks.last! {} else {
-                    try fail("lesson \(lesson.lessonID) must end with takeaways")
+                guard let first = lesson.beats.first, first.kind == .idea || first.kind == .term else {
+                    try fail("lesson \(lesson.lessonID) must open with an idea or a term")
+                }
+                guard recaps == 1 else { try fail("lesson \(lesson.lessonID) needs exactly one recap, has \(recaps)") }
+                guard StoryRules.checkRange.contains(checks) else {
+                    try fail("lesson \(lesson.lessonID) needs 1–2 checks, has \(checks)")
+                }
+                guard visuals * 2 > lesson.beats.count else {
+                    try fail("lesson \(lesson.lessonID): only \(visuals) of \(lesson.beats.count) beats carry a visual")
+                }
+                guard symbols <= visuals / 3 else {
+                    try fail("lesson \(lesson.lessonID): too many decorative symbol visuals")
+                }
+                guard shownCharts == lessonChartIDs else {
+                    try fail("lesson \(lesson.lessonID) carries a chart no beat shows")
                 }
             }
         }
