@@ -54,7 +54,7 @@ struct CardView: View {
             let source = card.source.isEmpty ? "No source listed." : "Source: \(card.source)."
             return Text("\(topic), \(place). Real-world example. \(card.exampleBody) \(source)")
         }
-        return Text("\(topic), \(place). Concept. \(card.concept). \(card.conceptBody)")
+        return Text("\(topic), \(place). Concept. \(card.concept). \(card.graphic.map { "\($0.accessibilitySummary) " } ?? "")\(card.conceptBody)")
     }
 
     private func flip() {
@@ -99,9 +99,12 @@ struct CardView: View {
                 .modifier(CardFaceChip())
         } body: {
             // PHASE 20 GRAPHIC SLOT (front face, first in this scrolling stack,
-            // above the concept title). The card-graphics lane's hook goes here:
-            //   if let graphic = card.graphic { CardGraphicView(spec: graphic) }
-            // (plus its one VoiceOver line in `accessibilityLabelText`).
+            // above the concept title). The face scrolls, so the graphic always
+            // renders at its full natural size; its summary is spoken through
+            // `accessibilityLabelText`.
+            if let graphic = card.graphic {
+                CardGraphicView(spec: graphic)
+            }
             Text(card.concept)
                 .font(EconType.title)
                 .foregroundColor(EconColor.onCardPrimary)

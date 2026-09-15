@@ -15,6 +15,8 @@ struct EconCard: Codable, Identifiable, Hashable {
     let exampleBody: String
     let source: String
     let difficulty: String  // "intro" | "intermediate" | "advanced"
+    /// 1.1.5: the card's native graphic, drawn on the concept face when present.
+    var graphic: CardGraphicSpec? = nil
 }
 
 /// A purchasable topic pack (1.1.3). Plays exactly like four core topics once

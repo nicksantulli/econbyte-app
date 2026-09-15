@@ -80,6 +80,8 @@ public struct CurriculumCard: Codable, Hashable, Identifiable {
     /// `cardID`, so a silent concept swap would send a saved bookmark to a
     /// different lesson; this field forces any such change to be declared.
     public let supersedesNote: String?
+    /// 1.1.5: optional native graphic (`docs/content/CARD-GRAPHICS-1.1.5.md`).
+    public let graphic: CardGraphicSpec?
 
     public var id: String { cardID }
 }
