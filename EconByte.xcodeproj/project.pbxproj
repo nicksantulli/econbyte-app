@@ -26,6 +26,7 @@
 		UT0000000000000000000021 /* EconTelemetryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000020 /* EconTelemetryTests.swift */; };
 		UT00000000000000000000F1 /* StoreEntitlementsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000F0 /* StoreEntitlementsTests.swift */; };
 		UT00000000000000000000F3 /* StoreKitSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000F2 /* StoreKitSessionTests.swift */; };
+		CG00000000000000000000A2 /* CardGraphicsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CG00000000000000000000A1 /* CardGraphicsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		UT0000000000000000000020 /* EconTelemetryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EconTelemetryTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000F0 /* StoreEntitlementsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreEntitlementsTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000F2 /* StoreKitSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitSessionTests.swift; sourceTree = "<group>"; };
+		CG00000000000000000000A1 /* CardGraphicsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGraphicsTests.swift; sourceTree = "<group>"; };
 		C4D5E6F7A8B9C0D1E2F3A4C6 /* GrowthFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthFlowTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000E0 /* ShellRedesignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellRedesignTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000013E0 /* Phase13ContentEvidenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase13ContentEvidenceTests.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				UT00000000000000000000C0 /* ProCoursesBriefTests.swift */,
 				UT00000000000000000000F0 /* StoreEntitlementsTests.swift */,
 				UT00000000000000000000F2 /* StoreKitSessionTests.swift */,
+				CG00000000000000000000A1 /* CardGraphicsTests.swift */,
 			);
 			path = EconByteTests;
 			sourceTree = "<group>";
@@ -336,6 +339,7 @@
 				UT00000000000000000000C1 /* ProCoursesBriefTests.swift in Sources */,
 				UT00000000000000000000F1 /* StoreEntitlementsTests.swift in Sources */,
 				UT00000000000000000000F3 /* StoreKitSessionTests.swift in Sources */,
+				CG00000000000000000000A2 /* CardGraphicsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
