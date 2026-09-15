@@ -201,7 +201,15 @@ struct TimelineGraphicView: View {
     let timeline: TimelineGraphic
     let size: GraphicSize
     let palette: GraphicPalette
-    private let whenWidth: CGFloat = 88
+    /// Estimated width of one bold caption2 character; scales with Dynamic Type.
+    @ScaledMetric(relativeTo: .caption2) private var charWidth: CGFloat = 6.6
+
+    /// The date column fits this timeline's longest date so a year is never
+    /// cut off; the label column takes the rest.
+    private var whenWidth: CGFloat {
+        let longest = CGFloat(timeline.events.map(\.when.count).max() ?? 4)
+        return min(max(longest * charWidth + 4, 40), 150)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -212,7 +220,9 @@ struct TimelineGraphicView: View {
                         .monospacedDigit()
                         .foregroundColor(palette.primary)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                        // Column is sized for the longest date; this only absorbs estimate error.
+                        .minimumScaleFactor(0.7)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(width: whenWidth, alignment: .trailing)
                     VStack(spacing: 0) {
                         Rectangle().fill(index == 0 ? Color.clear : palette.grid).frame(width: 1.5)
