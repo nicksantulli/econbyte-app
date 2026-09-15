@@ -43,12 +43,14 @@ struct InstrumentationContext: Equatable {
     /// key and write test traffic into the live projects, which is the exact
     /// defect this file exists to prevent.
     ///
-    /// 1.1.3: `-EBSkipConsentPrompt` suppresses the first-open analytics consent
-    /// card for UI tests and screenshot runs (`FirstOpenConsentPolicy`). It is
-    /// an automation marker for the same reason the others are.
+    /// 1.1.3: `-EBSkipConsentPrompt` suppressed the first-open consent card;
+    /// from build 16 it and `-EBSkipPermissionPrompts` stand down the
+    /// first-launch ATT and notification prompts (`FirstLaunchPermissionPolicy`).
+    /// Automation markers for the same reason the others are.
     static let automationArguments: Set<String> = [
         "-UITesting", "-skipStudioIntro", "-exposeGroceryBinding", "-uitestResult",
         "-econResetGrowthState", "-econDisableAds", "-EBSkipConsentPrompt",
+        "-EBSkipPermissionPrompts",
     ]
 
     let arguments: [String]

@@ -321,9 +321,17 @@ public final class EconMonetization: ObservableObject {
     /// hosting view having to be recomposed by something else.
     @Published public private(set) var didStartSDK = false
 
-    /// Whether this install has already been shown (or been offered) the ATT
-    /// prompt. Persisted, because "once per install" outlives the process.
+    /// Whether this install has ever asked iOS for the ATT prompt. Persisted.
+    /// Evidence only since 1.1.3 build 16: it no longer gates the prompt or the
+    /// ad request (an ask iOS never presented must not count as an answer).
     public private(set) var didRequestTrackingPrompt: Bool
+
+    /// Held from app launch until the first-launch permission flow has run (or
+    /// been skipped), so no ad SDK start — and therefore no banner or
+    /// interstitial request — can land under Apple's ATT or notifications
+    /// prompt, including for an upgrader whose ATT is already decided but whose
+    /// notifications prompt is still owed (ported from the 1.1.4 line).
+    public private(set) var isHeldForLaunchPermissions = false
 
     /// Raised once per exit when every local eligibility rule passes, before any
     /// provider call. Carries the set counter as it stood *before* the reset.
@@ -399,13 +407,15 @@ public final class EconMonetization: ObservableObject {
     /// the first interstitial, which is exactly the ordering the guideline is
     /// about.
     ///
-    /// `didRequestTrackingPrompt` is part of the condition on purpose: if iOS
-    /// declines to present the prompt (the app was not active), the status stays
-    /// `.notDetermined` forever and a status-only gate would silence ads for
-    /// that install permanently. The reader still gets `npa=1` in that state,
-    /// which is what an unanswered prompt means.
+    /// 1.1.3 build 16 (App Review 2.1, 2026-09-15): status-only. Builds 13–15
+    /// also accepted "the prompt was asked", so an ask iOS never presented let
+    /// the SDK start with no answer on file. iOS leaves `.notDetermined` after
+    /// an ask only transiently (the app was not active, or a presentation was
+    /// in flight — a device with tracking requests switched off reports
+    /// `.denied`), and `FirstLaunchPermissionsCoordinator` asks again on the next
+    /// activation, so ads wait for a real answer instead.
     public var adRequestsPermitted: Bool {
-        tracking.status.isDecided || didRequestTrackingPrompt
+        tracking.status.isDecided
     }
 
     /// The request-side gate for the anchored banner (1.1.3): may this install
@@ -416,44 +426,56 @@ public final class EconMonetization: ObservableObject {
     /// is still outstanding never has a banner requested on their behalf.
     public var canRequestAds: Bool {
         !entitlements.adsSuppressed && region().permitsAdRequests && adRequestsPermitted
+            && !isHeldForLaunchPermissions
     }
+
+    /// See `isHeldForLaunchPermissions`. Released by
+    /// `FirstLaunchPermissionsCoordinator` when the flow ends or is skipped.
+    public func setLaunchPermissionsHold(_ held: Bool) {
+        isHeldForLaunchPermissions = held
+    }
+
+    /// The live ATT status (through the injected seam).
+    public var trackingStatus: EconTrackingStatus { tracking.status }
 
     /// The request configuration a banner must use: the same non-personalized
     /// extras, carrying the live tracking status.
     public var currentRequestPolicy: EconAdRequestPolicy { requestPolicy }
 
-    /// Whether the ATT prompt is still owed to this reader.
+    /// Whether the ATT prompt is still owed: exactly while iOS has no answer.
     ///
-    /// No prompt when ads are off for this install: a Remove Ads owner and a
-    /// reader in the EEA/UK (DUD-224) will never see an ad, so asking them for
-    /// tracking permission would be asking for something the app does not use.
+    /// 1.1.3 build 16 (App Review 2.1): builds 13–15 also skipped Remove Ads
+    /// owners, EEA/UK or unknown device regions, and any install that had asked
+    /// once — even when iOS showed nothing. Each of those states is invisible to
+    /// a reviewer, who then cannot find the prompt. The binary links an ad SDK
+    /// whose privacy manifest declares tracking, so the prompt is owed to every
+    /// install until answered. Ads are still never served in the EEA/UK or to
+    /// Remove Ads owners (`canRequestAds`, `startAdsIfPermitted`).
     public var shouldRequestTrackingAuthorization: Bool {
-        guard !didRequestTrackingPrompt else { return false }
-        guard !entitlements.adsSuppressed else { return false }
-        guard region().permitsAdRequests else { return false }
-        return tracking.status == .notDetermined
+        tracking.status == .notDetermined
     }
 
-    /// Presents the ATT prompt if it is still owed, then lets the ad SDK start.
+    /// Presents the ATT prompt if it is still owed, then (by default) lets the
+    /// ad SDK start.
     ///
-    /// Called from the session-complete screen's exit path — i.e. after a card
-    /// session has actually been completed, and before the ad decision for that
-    /// exit. It marks `.systemPrompt` for the caller to clear, so no
-    /// interstitial follows a system dialog at the same exit; that is the same
-    /// house rule the notification prompt already follows.
+    /// Builds 13–15 called this from the session-complete exit. Build 16 calls
+    /// it only from `FirstLaunchPermissionsCoordinator`, after the studio intro,
+    /// with `startingAds: false`, because the notifications prompt follows and
+    /// no ad may load under a system dialog. It marks `.systemPrompt` for the
+    /// caller to clear.
     @discardableResult
-    public func resolveTrackingAuthorizationIfNeeded() async -> EconTrackingStatus {
+    public func resolveTrackingAuthorizationIfNeeded(startingAds: Bool = true) async -> EconTrackingStatus {
         guard shouldRequestTrackingAuthorization else {
-            startAdsIfPermitted()
+            if startingAds { startAdsIfPermitted() }
             return tracking.status
         }
         setBlocker(.systemPrompt, active: true)
-        // Recorded before awaiting: a prompt interrupted by a crash or a
-        // backgrounding has still been spent, and iOS will not offer a second.
+        // A record of the ask, not a gate: an ask iOS did not present leaves
+        // `.notDetermined`, and the coordinator asks again.
         didRequestTrackingPrompt = true
         defaults.set(true, forKey: Key.trackingPromptRequested)
         let resolved = await tracking.requestAuthorization()
-        startAdsIfPermitted()
+        if startingAds { startAdsIfPermitted() }
         return resolved
     }
 
@@ -461,6 +483,7 @@ public final class EconMonetization: ObservableObject {
     /// region gate, and the tracking decision all permit an ad request.
     public func startAdsIfPermitted() {
         guard !didStartSDK else { return }
+        guard !isHeldForLaunchPermissions else { return }
         guard !entitlements.adsSuppressed else { return }
         guard region().permitsAdRequests else { return }
         guard adRequestsPermitted else { return }
@@ -602,6 +625,16 @@ final class EconGrowth: ObservableObject {
     private var didStartFirstSession = false
     private let defaults: UserDefaults
 
+    /// First-launch ATT + notifications prompts and their mapping (1.1.3 build 16).
+    private(set) lazy var permissions = FirstLaunchPermissionsCoordinator(
+        monetization: monetization,
+        notifications: notifications,
+        defaults: defaults,
+        environment: LivePromptPresentationEnvironment.shared,
+        applyAnalyticsConsent: { [weak self] granted in self?.applyFirstLaunchAnalyticsConsent(granted) },
+        noteNegativeSessionEvent: { [weak self] event in self?.review.noteNegativeSessionEvent(event) },
+        recordNotificationResult: { granted in EBEvents.notificationPermissionResult(granted: granted) })
+
     private init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
 
@@ -623,6 +656,11 @@ final class EconGrowth: ObservableObject {
                                                currentVersion: environment.appVersion,
                                                requestReview: { EconGrowth.requestSystemReview() })
         self.notifications = NotificationCoordinator(defaults: defaults)
+
+        // No ad SDK start before the first-launch prompts have run.
+        if !FirstLaunchPermissionPolicy.isSkipped(arguments: ProcessInfo.processInfo.arguments) {
+            monetization.setLaunchPermissionsHold(true)
+        }
 
         AdManager.shared.onFailure = { [weak self] code, error in
             self?.diagnosticLog.capture(code, detail: error.map(EconDiagnosticDetail.init))
@@ -692,6 +730,15 @@ final class EconGrowth: ObservableObject {
         }
     }
 
+    /// ATT "Allow" ⇒ analytics + crash reports on; any other answer ⇒ off.
+    /// Through the same facade paths the Settings switches use, so they read
+    /// back the same answer.
+    func applyFirstLaunchAnalyticsConsent(_ granted: Bool) {
+        setAnalyticsEnabled(granted, entryPoint: .home)
+        setDiagnosticsEnabled(granted, entryPoint: .home)
+        if granted { EBEvents.flush() }
+    }
+
     func setDiagnosticsEnabled(_ enabled: Bool, entryPoint: EconEntryPoint) {
         diagnostics.setDiagnosticsConsent(enabled)
         diagnosticLog.setEnabled(enabled)
@@ -758,7 +805,7 @@ final class EconGrowth: ObservableObject {
         defaults.removeObject(forKey: EconTelemetry.Key.consent)
         defaults.removeObject(forKey: EconDiagnostics.consentDefaultsKey)
         defaults.removeObject(forKey: ConsentPromptPolicy.shownDefaultsKey)
-        FirstOpenConsentPolicy.reset(defaults: defaults)
+        FirstLaunchPermissionsCoordinator.resetPersistedState(in: defaults)
         EconDiagnosticLog.resetPersistedState(in: defaults)
         ReviewRequestCoordinator.resetPersistedState(in: defaults)
         NotificationCoordinator.resetPersistedState(in: defaults)

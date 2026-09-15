@@ -971,6 +971,10 @@ final class InstrumentationPrivacyTests: XCTestCase {
                       "the string must say what authorization is actually used for")
         XCTAssertTrue(purpose.lowercased().contains("does not personalize"),
                       "every request is npa=1, so the string must not imply personalization")
+        // 1.1.3 build 16 maps an ATT Allow onto the analytics switch, so the
+        // prompt itself must say that Allow turns on anonymous usage stats.
+        XCTAssertTrue(purpose.lowercased().contains("anonymous usage"),
+                      "the purpose string must disclose that Allow turns on anonymous usage stats")
     }
 
     /// The strongest form of the claim: the app target's own compiled image

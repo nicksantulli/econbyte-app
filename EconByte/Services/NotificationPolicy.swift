@@ -3,9 +3,11 @@ import UserNotifications
 
 // MARK: - Notifications (design section 11.1)
 //
-// Default off. The system dialog appears only after an explicit opt-in from the
-// Session Complete primer or Settings — version 1.0 prompted automatically one
-// second after first Home appearance. The reminder carries no financial claim,
+// Default off. 1.1–1.1.3 build 15 showed the system dialog only after an
+// explicit opt-in from the Session Complete primer or Settings (1.0 prompted one
+// second after Home first appeared). 1.1.3 build 16 asks Apple's standard dialog
+// at first launch, right after the ATT prompt (`FirstLaunchPermissionsCoordinator`);
+// a grant turns the reminder on at 7:00 p.m., a denial leaves it off. The reminder carries no financial claim,
 // urgency, or streak-loss pressure; 1.0's copy did. See `CONTENT-DECISIONS.md` D8.
 
 public enum EconNotificationAuthorization: Equatable {
@@ -206,6 +208,37 @@ public final class NotificationCoordinator: ObservableObject {
                 }
             }
         }
+    }
+
+    /// A fresh read of the system status (the published cache fills
+    /// asynchronously and may still say `.notDetermined`).
+    public func currentAuthorization() async -> EconNotificationAuthorization {
+        let status = await withCheckedContinuation { continuation in
+            center.econAuthorizationStatus { continuation.resume(returning: $0) }
+        }
+        authorization = status
+        return status
+    }
+
+    /// The first-launch ask (1.1.3 build 16). Unlike `enableReminders`, it always
+    /// completes and reports whether iOS actually presented a dialog: if the
+    /// status is still `.notDetermined` afterwards, nothing was shown, nothing is
+    /// persisted, and the coordinator asks again on the next activation.
+    /// Granted ⇒ reminder on at 7:00 p.m.; denied ⇒ reminder off.
+    public func requestAuthorizationForFirstLaunch() async -> (presented: Bool, granted: Bool) {
+        let status = await currentAuthorization()
+        guard status == .notDetermined else {
+            return (false, status == .authorized)
+        }
+        didRequestAuthorization = true
+        let granted = await withCheckedContinuation { continuation in
+            center.econRequestAuthorization { granted, _ in continuation.resume(returning: granted) }
+        }
+        let after = await currentAuthorization()
+        guard after != .notDetermined else { return (false, false) }
+        persist(granted)
+        if granted { schedule() }
+        return (true, granted)
     }
 
     public func disableReminders() {

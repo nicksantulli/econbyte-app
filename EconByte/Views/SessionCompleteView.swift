@@ -137,18 +137,16 @@ struct SessionCompleteView: View {
         // duration), which fires for abandoned sessions too and therefore has a
         // denominator this event never had.
 
-        // Decide the contextual offers BEFORE the rating ask, so a screen that is
-        // about to carry the consent primer — or an exit that is about to carry
-        // the ATT dialog (build 13) — is never also the moment we ask for a
-        // rating. Both defer the ask to a later healthy session; neither spends it.
+        // Decide the contextual offer BEFORE the rating ask, so a screen that is
+        // about to carry the consent primer is never also the moment we ask for
+        // a rating; it defers the ask to a later healthy session without
+        // spending it. (Builds 13–15 also deferred for a set-exit ATT dialog;
+        // build 16 asks ATT at first launch, never here.)
         let offersConsent = ConsentPromptPolicy.eligible(
             completedSetCount: growth.review.state.completedSetCount,
             alreadyShown: growth.consentPromptShown)
         if offersConsent {
             growth.review.noteNegativeSessionEvent(.consentForm)
-        }
-        if growth.monetization.shouldRequestTrackingAuthorization {
-            growth.review.noteNegativeSessionEvent(.trackingPrompt)
         }
 
         // The rating request comes after the completion acknowledgement. If it
@@ -199,32 +197,19 @@ struct SessionCompleteView: View {
     /// The one 1.1 interstitial placement: after the session-complete state and
     /// before returning to Home.
     ///
-    /// This is also where the ATT prompt lives (1.1.2 build 13, App Review
-    /// 5.1.2(i)). The ordering below is the requirement, not an implementation
-    /// detail:
-    ///
-    ///  1. The card session has completed — this screen only exists after one.
-    ///  2. The app's own privacy/consent card and the reminder primer are
-    ///     dismissed first, so the system dialog never lands on top of them.
-    ///     Both are non-blocking, so a reader can tap Done with either still on
-    ///     screen; leaving them up would put the ATT prompt over a consent
-    ///     screen, which it must never be.
-    ///  3. The ATT prompt is presented — once per install, and only if ads are
-    ///     actually reachable for this reader.
-    ///  4. Only then may an ad be requested. `resolveTrackingAuthorizationIfNeeded`
-    ///     raises the `.systemPrompt` blocker when it asks, so the exit that
-    ///     carries the dialog never also carries an interstitial.
-    ///
-    /// Nothing here animates, and the dialog is the system's own, so Reduce
-    /// Motion and VoiceOver are unaffected: the cards are removed before the
-    /// prompt takes focus rather than sliding out from under it.
+    /// Builds 13–15 also asked ATT here, from a button inside the card-mode
+    /// full-screen cover; App Review could not find it (Guideline 2.1,
+    /// 2026-09-15 — `docs/audit/2026-09-15-att-rejection.md`). Build 16 asks at
+    /// first launch (`FirstLaunchPermissionsCoordinator`). No ad may be requested
+    /// for an install whose tracking decision is outstanding: both
+    /// `startAdsIfPermitted` and the decision below are gated on it.
     private func finish() {
         guard !exiting else { return }
         exiting = true
         showConsentPrompt = false
         showPrimer = false
         Task {
-            await growth.monetization.resolveTrackingAuthorizationIfNeeded()
+            growth.monetization.startAdsIfPermitted()
             let outcome = await growth.monetization.presentIfEligibleAtSetExit()
             switch outcome {
             case .presented:
