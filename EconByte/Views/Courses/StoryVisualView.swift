@@ -15,9 +15,18 @@ struct StoryVisualView: View {
         /// The lesson's key-concept picture.
         case centerpiece
 
-        var plotHeight: CGFloat {
+        /// A fixed drawing's labels are placed for ~220 pt; below ~200 they collide.
+        var diagramHeight: CGFloat {
             switch self {
-            case .compact: return 150
+            case .compact: return 200
+            case .regular: return 220
+            case .centerpiece: return 260
+            }
+        }
+
+        var chartHeight: CGFloat {
+            switch self {
+            case .compact: return 170
             case .regular: return 220
             case .centerpiece: return 270
             }
@@ -35,11 +44,11 @@ struct StoryVisualView: View {
                 GraphicPlate(spec: spec, host: .lesson, prominent: size == .centerpiece)
             }
         case let .diagram(id):
-            DiagramView(id: id, height: size.plotHeight)
+            DiagramView(id: id, height: size.diagramHeight)
                 .accessibilityIdentifier("diagram-\(id.rawValue)")
         case let .chart(chartID):
             if let spec = lesson.chart(withID: chartID) {
-                ChartBlockView(spec: spec, showsCaption: false, plotHeight: size.plotHeight)
+                ChartBlockView(spec: spec, showsCaption: false, plotHeight: size.chartHeight)
             }
         case let .stat(value, label):
             VStack(spacing: EconSpace.xxs) {

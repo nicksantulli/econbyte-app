@@ -493,6 +493,9 @@ struct StoryCheckView<Picture: View>: View {
     @ViewBuilder var picture: () -> Picture
     @EnvironmentObject private var progress: CourseProgressStore
     @State private var chosen: Int?
+    /// Set by a tap on this screen; a check re-opened with a recorded answer
+    /// shows its verdict without jumping the page down.
+    @State private var answeredHere = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var revealed: Bool { chosen != nil }
@@ -508,12 +511,12 @@ struct StoryCheckView<Picture: View>: View {
             ForEach(Array(quiz.choices.enumerated()), id: \.offset) { index, choice in
                 Button {
                     let first = chosen == nil
+                    if first { answeredHere = true }
                     withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.15)) { chosen = index }
                     if first {
                         progress.recordCheck(lessonID: lessonID, ordinal: ordinal, correct: index == quiz.answerIndex)
                         UINotificationFeedbackGenerator().notificationOccurred(index == quiz.answerIndex ? .success : .warning)
                     }
-                    DispatchQueue.main.async { onReveal() }
                 } label: {
                     HStack(spacing: EconSpace.s) {
                         Image(systemName: symbol(for: index))
@@ -566,6 +569,12 @@ struct StoryCheckView<Picture: View>: View {
                     .frame(height: EconSpace.xl)
                     .id(StoryCheckAnchor.feedback)
                     .accessibilityHidden(true)
+                    // Scroll once the anchor exists: asking before it is laid out
+                    // left the feedback under the controls on a long check.
+                    .onAppear {
+                        guard answeredHere else { return }
+                        DispatchQueue.main.async { onReveal() }
+                    }
             }
         }
         // `.contain`: a plain container's identifier would override the
