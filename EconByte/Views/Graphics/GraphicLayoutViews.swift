@@ -162,8 +162,10 @@ struct CompareGraphicView: View {
                     Text(column)
                         .font(.system(.caption, design: .rounded).weight(.bold))
                         .foregroundColor(palette.primary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                        // Headings can carry a year ("Car loan, 2021"): wrap, never truncate it.
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.85)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
