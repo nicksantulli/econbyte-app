@@ -385,4 +385,129 @@ final class GrowthFlowTests: XCTestCase {
             capturePack("eb-iap-\(id)")
         }
     }
+
+    // MARK: - EconByte Pro (1.1.4) — surfaces render, gates hold, evidence capture
+
+    /// Drives every 1.1.4 surface from a cold, non-subscribed launch, then from a
+    /// launch that reports Pro as active (`-econDebugPro`, DEBUG only). The
+    /// assertions are the contract; the attachments are the Phase 8 evidence:
+    /// Home with the Pro hub and the new pack rows, the subscription paywall,
+    /// a lesson with a chart, a quiz, the brief teaser, the unlocked brief,
+    /// Home with Pro active, Settings with the subscription status.
+    func testProSurfacesRenderGateAndCaptureEvidence() {
+        let app = launchApp(adsDisabled: true)
+        let any = app.descendants(matching: .any)
+
+        // Home: the Pro hub with a call to action (not subscribed).
+        let hub = any["proHub"]
+        for _ in 0..<8 where !(hub.exists && hub.isHittable) { app.swipeUp() }
+        XCTAssertTrue(hub.waitForExistence(timeout: 15), "the EconByte Pro section is on Home")
+        XCTAssertTrue(any["proBriefRow"].exists, "the Daily Brief row is on Home")
+        XCTAssertTrue(any["proCourseRow-investing-approaches"].exists, "the courses are on Home")
+        XCTAssertTrue(any["proCtaRow"].exists, "a non-subscriber sees the Pro call to action")
+        XCTAssertFalse(any["proActiveBadge"].exists)
+        capturePack("eb-home-pro-hub")
+
+        // Home: the four new packs are discoverable with StoreKit prices.
+        let priced = NSPredicate(format: "label CONTAINS '$'")
+        for id in ["history", "world", "systems", "personalfinance"] {
+            let buy = app.buttons["pack-\(id)-buy"]
+            for _ in 0..<12 where !(buy.exists && buy.isHittable) { app.swipeUp() }
+            XCTAssertTrue(buy.waitForExistence(timeout: 15), "\(id) pack offer is on Home")
+            XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: priced, evaluatedWith: buy)], timeout: 20),
+                           .completed, "\(id) buy button shows its StoreKit price")
+            XCTAssertTrue(any["pack-\(id)-preview"].exists, "\(id) previews three cards")
+            if id == "world" { capturePack("eb-home-packs-new-1") }
+            if id == "personalfinance" { capturePack("eb-home-packs-new-2") }
+        }
+
+        // The Pro paywall: price primary, trial line present (local config =
+        // eligible), terms + privacy + restore reachable.
+        let cta = any["proCtaRow"]
+        for _ in 0..<12 where !(cta.exists && cta.isHittable) { app.swipeDown() }
+        XCTAssertTrue(cta.waitForExistence(timeout: 10))
+        cta.tap()
+        XCTAssertTrue(app.navigationBars["EconByte Pro"].waitForExistence(timeout: 15), "the Pro paywall opens")
+        let subscribe = app.buttons["proPaywallSubscribeButton"]
+        XCTAssertTrue(subscribe.waitForExistence(timeout: 15))
+        XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: priced, evaluatedWith: subscribe)], timeout: 20),
+                       .completed, "the subscribe button carries the StoreKit price")
+        XCTAssertTrue(any["proPaywallPlan-annual"].exists && any["proPaywallPlan-monthly"].exists)
+        XCTAssertTrue(any["proPaywallTrialLine"].waitForExistence(timeout: 15),
+                      "a trial-eligible reader sees the subordinate trial line")
+        XCTAssertTrue(app.buttons["proPaywallRestoreButton"].exists, "Restore is on the paywall")
+        capturePack("eb-pro-paywall")
+        let terms = any["proPaywallTermsLink"]
+        for _ in 0..<6 where !(terms.exists && terms.isHittable) { app.swipeUp() }
+        XCTAssertTrue(terms.exists, "Terms of Use link is on the paywall")
+        XCTAssertTrue(any["proPaywallPrivacyLink"].exists, "Privacy Policy link is on the paywall")
+        app.buttons["proPaywallCloseButton"].tap()
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+
+        // A course: lesson 1 is the free preview; lesson 2 is locked.
+        let courseRow = any["proCourseRow-investing-approaches"]
+        for _ in 0..<8 where !(courseRow.exists && courseRow.isHittable) { app.swipeUp() }
+        courseRow.tap()
+        XCTAssertTrue(any["course-investing-approaches"].waitForExistence(timeout: 15), "the course opens")
+        let lesson2 = any["lessonRow-ia-02"]
+        XCTAssertTrue(lesson2.waitForExistence(timeout: 10))
+        XCTAssertTrue((lesson2.value as? String ?? "").contains("locked"), "lesson 2 is locked without Pro")
+        any["lessonRow-ia-01"].tap()
+        XCTAssertTrue(any["lesson-ia-01"].waitForExistence(timeout: 15), "the free preview lesson opens")
+        XCTAssertTrue(any["educationalNotice"].exists, "every lesson carries the educational notice")
+        let chart = any.matching(NSPredicate(format: "identifier BEGINSWITH 'chart-' AND NOT identifier ENDSWITH '-note'")).firstMatch
+        for _ in 0..<10 where !(chart.exists && chart.isHittable) { app.swipeUp() }
+        XCTAssertTrue(chart.exists, "the lesson renders a chart")
+        XCTAssertTrue(any.matching(NSPredicate(format: "identifier BEGINSWITH 'chart-' AND identifier ENDSWITH '-note'")).firstMatch.exists,
+                      "the chart says its data is synthetic")
+        capturePack("eb-lesson-chart")
+        let quiz = any["quiz"]
+        for _ in 0..<10 where !(quiz.exists && quiz.isHittable) { app.swipeUp() }
+        XCTAssertTrue(quiz.exists, "the lesson has its quiz")
+        app.buttons["quizChoice-0"].tap()
+        XCTAssertTrue(any["quizExplanation"].waitForExistence(timeout: 10), "answering reveals the explanation")
+        capturePack("eb-lesson-quiz")
+        app.navigationBars.buttons.element(boundBy: 0).tap()   // back to the course
+        XCTAssertTrue(app.buttons["courseCloseButton"].waitForExistence(timeout: 10))
+        app.buttons["courseCloseButton"].tap()
+        XCTAssertTrue(app.navigationBars["EconByte"].waitForExistence(timeout: 10))
+
+        // The brief: free teaser + lock.
+        let briefRow = any["proBriefRow"]
+        for _ in 0..<8 where !(briefRow.exists && briefRow.isHittable) { app.swipeUp() }
+        briefRow.tap()
+        XCTAssertTrue(any["briefView"].waitForExistence(timeout: 15), "the Daily Brief opens")
+        XCTAssertTrue(any["briefHeadline"].exists)
+        XCTAssertTrue(any["briefTeaserItem"].waitForExistence(timeout: 10), "the free teaser shows one released item")
+        let lock = app.buttons["briefLockedProButton"]
+        for _ in 0..<6 where !(lock.exists && lock.isHittable) { app.swipeUp() }
+        XCTAssertTrue(lock.exists, "the rest of the brief is locked without Pro")
+        app.swipeDown()
+        capturePack("eb-brief-teaser")
+        app.buttons["briefCloseButton"].tap()
+
+        // Second launch: Pro active (DEBUG override, no StoreKit).
+        let pro = XCUIApplication()
+        pro.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-econDisableAds", "-econDebugPro"]
+        pro.launch()
+        XCTAssertTrue(pro.navigationBars["EconByte"].waitForExistence(timeout: 15))
+        let proAny = pro.descendants(matching: .any)
+        let proHub = proAny["proHub"]
+        for _ in 0..<8 where !(proHub.exists && proHub.isHittable) { pro.swipeUp() }
+        XCTAssertTrue(proAny["proActiveBadge"].waitForExistence(timeout: 10), "Pro shows as active")
+        XCTAssertFalse(proAny["proCtaRow"].exists, "no call to action for a subscriber")
+        XCTAssertFalse(pro.buttons["topic-gdp"].label.isEmpty)
+        capturePack("eb-home-pro-active")
+        proAny["proBriefRow"].tap()
+        XCTAssertTrue(proAny["briefView"].waitForExistence(timeout: 15))
+        XCTAssertFalse(pro.buttons["briefLockedProButton"].exists, "a subscriber sees the whole brief")
+        capturePack("eb-brief-pro")
+        pro.buttons["briefCloseButton"].tap()
+        openSettings(pro)
+        let status = proAny["settingsProStatusRow"]
+        for _ in 0..<6 where !(status.exists && status.isHittable) { pro.swipeUp() }
+        XCTAssertTrue(status.waitForExistence(timeout: 10), "Settings shows the subscription status")
+        XCTAssertTrue(proAny["settingsManageSubscriptionLink"].exists, "Manage Subscription is reachable")
+        capturePack("eb-settings-pro")
+    }
 }

@@ -3574,6 +3574,1735 @@
           ]
         }
       ]
+    },
+    {
+      "packID": "systems",
+      "name": "Economic Systems",
+      "productID": "com.nsantulli.econbyte.pack.systems",
+      "icon": "building.columns.fill",
+      "summary": "How societies decide what gets made, how, and for whom: market economies, mixed systems, central planning, and welfare states, described through the institutions and records that shaped them.",
+      "topics": [
+        {
+          "topicID": "market-economies",
+          "name": "Market Economies",
+          "icon": "cart.fill",
+          "order": 1,
+          "access": "pack",
+          "summary": "How prices, private property, competition, and business entry and exit coordinate a market economy, and what the record shows when competition or prices are suspended.",
+          "cards": [
+            {
+              "cardID": "mkt-001",
+              "topicID": "market-economies",
+              "title": "What a Market Economy Is",
+              "definition": "A market economy is a system in which individuals and private businesses own most resources - land, labor, and capital - and decide how to use them through voluntary exchanges in markets. Government plays a comparatively small role. Two forces do most of the coordinating: self-interest, which motivates people to produce and trade, and competition, which restrains what any one seller can charge or get away with. No central office decides what, how, or for whom to produce.",
+              "example": "A loaf of bread reaches a shelf through at least 5 separate businesses - a farm, a mill, a bakery, a trucking firm, and a grocer - none of them instructed by a bread ministry. Each acts for its own gain, yet the chain delivers the loaf. Adam Smith called this coordination the 'invisible hand' more than 200 years ago.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve Education (Federal Reserve System)",
+                "documentTitle": "The Role of Self-Interest and Competition in a Market Economy",
+                "url": "https://www.federalreserveeducation.org/teaching-resources/economics/markets/the-role-of-self-interest-and-competition-in-a-market-economy-podcast",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mkt-002",
+              "topicID": "market-economies",
+              "title": "Prices as Signals",
+              "definition": "In a market economy a price does two jobs at once. It is a signal: a rising price tells buyers and sellers that a good has become scarcer relative to the demand for it. It is also an incentive: the same rise nudges buyers to use less and sellers to supply more. When the quantity supplied equals the quantity demanded, the price is at its market-clearing level; a price above that produces a surplus, and a price below it produces a shortage.",
+              "example": "The St. Louis Fed's 2013 essay uses airline baggage. When carriers began charging $20 to $25 for a first checked bag, passengers checked fewer bags and carried more aboard. Overhead bins then filled up - a shortage of a good that was still free - and some airlines responded by charging for carry-on bags too. The fee was information, not just revenue.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve Bank of St. Louis",
+                "documentTitle": "Prices: The Marketplace's Communication System (Page One Economics)",
+                "url": "https://www.stlouisfed.org/publications/page-one-economics/2013/04/01/prices-the-marketplaces-communication-system",
+                "publicationDate": "2013-04-01",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (checked-bag fees cited in the essay)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2013, as published by the Federal Reserve Bank of St. Louis on 2013-04-01",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mkt-003",
+              "topicID": "market-economies",
+              "title": "Property Rights and Titles",
+              "definition": "Markets need clear ownership. A property right is an enforceable claim to use an asset, to exclude others from it, and to sell it. A title is the legal record of that claim. When ownership is secure, people build, plant, and lend against what they hold, because they expect to keep the return. Where title is uncertain or easily overridden, that investment shrinks. Much of what governments do in market economies is record and enforce who owns what.",
+              "example": "The Homestead Act of 1862 turned public land into private titles. A settler could claim 160 acres, live on and farm it for 5 years, and then own it outright for a small fee, or buy it sooner at $1.25 an acre. Of some 500 million acres the government dispersed between 1862 and 1904, about 80 million went to homesteaders; most went to speculators, railroads, and other large holders.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "Homestead Act (1862)",
+                "url": "https://www.archives.gov/milestone-documents/homestead-act",
+                "publicationDate": "2022-06-07",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "acres and U.S. dollars per acre (Homestead Act terms and land dispersal totals)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1862-1904, as published by the National Archives",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mkt-004",
+              "topicID": "market-economies",
+              "title": "Competition and Antitrust",
+              "definition": "Competition is the regulator of a market economy: a seller who overcharges or cuts quality loses customers to rivals. Antitrust law exists for the cases where that check fails. It bans agreements among competitors to fix prices, divide markets, or rig bids, and it lets courts block mergers and practices that would leave one firm able to raise prices without losing business. The aim is to protect the process of competition itself, not any particular competitor.",
+              "example": "Congress passed the Sherman Act in 1890 and added the Clayton Act and the Federal Trade Commission Act in 1914; those 3 laws remain the core of U.S. antitrust. The Sherman Act is also a criminal statute: as published by the FTC, a corporation can be fined up to $100 million and an individual up to $1 million and 10 years in prison for fixing prices or rigging bids.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Trade Commission",
+                "documentTitle": "The Antitrust Laws",
+                "url": "https://www.ftc.gov/advice-guidance/competition-guidance/guide-antitrust-laws/antitrust-laws",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and years (maximum Sherman Act criminal penalties)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "penalties as published by the FTC on 2026-09-14; statutes of 1890 and 1914",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mkt-005",
+              "topicID": "market-economies",
+              "title": "Regulating a Natural Monopoly",
+              "definition": "Some services are cheapest when one network provides them - a rail line, a water system - so competition cannot discipline the price. Economists call this a natural monopoly. Market economies usually respond with regulation instead of competition: a public commission sets or reviews rates, requires equal treatment of customers, and demands reports. The trade-off is documented on both sides. Regulation limits the abuse of a captive market, but a commission can also be slow, captured, or simply wrong about costs.",
+              "example": "The Interstate Commerce Act of 1887 made railroads the first industry under federal regulation. Farmers on branch lines had faced 1 carrier, rebates for large shippers, and higher rates for short hauls than long ones. The act required 'just and reasonable' rates, banned rebates and short-haul discrimination, and created a 5-member Interstate Commerce Commission. Its own contradictory terms made it only partly effective.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "Interstate Commerce Act (1887)",
+                "url": "https://www.archives.gov/milestone-documents/interstate-commerce-act",
+                "publicationDate": "2022-02-08",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mkt-006",
+              "topicID": "market-economies",
+              "title": "Business Births and Deaths",
+              "definition": "A market economy is constantly reshuffled. New establishments open, old ones close, and jobs are created at some firms while they disappear at others. This churn is how resources move from uses people value less to uses they value more; a closing is often the other side of an opening elsewhere. Statistical agencies track it because the pace of entry and exit says a great deal about competition and about how quickly an economy adapts.",
+              "example": "The Census Bureau's Business Dynamics Statistics measure exactly this churn: establishment births and deaths, firm startups and shutdowns, and job creation and destruction, published every year for the United States from 1978 through 2023 and broken out by industry, firm size, and firm age. The net change in employment at a location is what a headline jobs number shows; the gross flows underneath it are far larger.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Census Bureau",
+                "documentTitle": "Business Dynamics Statistics (BDS)",
+                "url": "https://www.census.gov/programs-surveys/bds.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mkt-007",
+              "topicID": "market-economies",
+              "title": "When Competition Is Suspended",
+              "definition": "Because competition is what holds prices down in a market economy, suspending it has predictable effects. If firms in an industry are allowed - or required - to agree on prices, wages, and output, the result looks like a cartel: higher prices, less production, and barriers against newcomers. The United States ran this experiment during the Great Depression, and historians and economists generally document that the codes raised prices and did little to speed recovery.",
+              "example": "The National Industrial Recovery Act of 1933 suspended the antitrust laws and asked industries to write 'codes of fair competition.' More than 500 codes fixed prices and wages, set production quotas, and restricted entry. Firms displayed a Blue Eagle emblem to show they participated. In May 1935 the Supreme Court struck down the compulsory codes, and the National Archives notes that by raising prices they had made conditions worse.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "National Industrial Recovery Act (1933)",
+                "url": "https://www.archives.gov/milestone-documents/national-industrial-recovery-act",
+                "publicationDate": "2022-02-08",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mkt-008",
+              "topicID": "market-economies",
+              "title": "Price Controls",
+              "definition": "A price control is a legal limit on what a price may be: a ceiling holds it below the market-clearing level, a floor holds it above. Because prices carry information and incentives, a binding control does not remove the pressure that was moving the price; it changes how the pressure shows up. A ceiling produces shortages, queues, and quality cuts. A floor produces surpluses that someone must store, destroy, or subsidize. Controls can pause measured inflation without touching its cause.",
+              "example": "The Nixon administration imposed wage and price controls in 3 phases between 1971 and 1974, during a period when consumer inflation climbed from a little over 1 percent a year in 1964 to more than 14 percent in 1980. Federal Reserve History records that the controls only temporarily slowed price increases while worsening shortages, particularly of food and energy.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of Richmond)",
+                "documentTitle": "The Great Inflation",
+                "url": "https://www.federalreservehistory.org/essays/great-inflation",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (annual consumer price inflation)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1964-1980, as published by Federal Reserve History",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "mixed-economies",
+          "name": "Mixed Economies",
+          "icon": "slider.horizontal.3",
+          "order": 2,
+          "access": "pack",
+          "summary": "The roles governments take on inside market systems: measuring output, running enterprises, building infrastructure, managing money, and setting rules for finance and labor.",
+          "cards": [
+            {
+              "cardID": "mix-001",
+              "topicID": "mixed-economies",
+              "title": "What a Mixed Economy Is",
+              "definition": "Nearly every real economy is mixed: private markets allocate most goods, while government taxes, spends, regulates, and sometimes produces. Economists describe the mix along a spectrum rather than as two boxes. One way to see the government's weight is in the national accounts, which add up spending by households, businesses, government, and foreign buyers of exports, then subtract imports. Government purchases are one of those components, and they rise or fall with policy choices as well as with the economy.",
+              "example": "The Bureau of Economic Analysis reported that real U.S. GDP grew at a 1.5 percent annual rate in the second quarter of 2026, after 2.1 percent in the first. Consumer spending, exports, and investment rose; government spending fell and partly offset them. The release treats the public sector as one line item among several, which is exactly what a mixed economy looks like in the data.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Bureau of Economic Analysis",
+                "documentTitle": "Gross Domestic Product",
+                "url": "https://www.bea.gov/data/gdp/gross-domestic-product",
+                "publicationDate": "2026-09-02",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (annualized real GDP growth, second estimate)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "second quarter of 2026, as published by BEA on 2026-09-02",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mix-002",
+              "topicID": "mixed-economies",
+              "title": "Public Enterprise",
+              "definition": "A public enterprise is a business owned by government that sells goods or services, often in electricity, water, transport, or postal delivery. Mixed economies use them where private investors will not build at the needed scale, where a network serves a whole region, or where a legislature wants prices or coverage that a private owner would not choose. The documented trade-offs run both ways: broad access and long horizons on one side, weaker cost discipline and political control on the other.",
+              "example": "The Tennessee Valley Authority was created as a federal corporation on May 18, 1933 to control floods, improve navigation, and generate electricity across a 7-state region. The National Archives describes it as the largest public power company in the United States, with 29 hydroelectric dams, 3 nuclear plants, more than 27,000 megawatts of capacity, and over 16,000 miles of transmission lines serving about 80,000 square miles.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "Tennessee Valley Authority Act (1933)",
+                "url": "https://www.archives.gov/milestone-documents/tennessee-valley-authority-act",
+                "publicationDate": "2022-02-08",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "count of facilities, megawatts, miles, and square miles (TVA system as described by the National Archives)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "as published by the National Archives, page last reviewed 2022-02-08; agency created 1933",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mix-003",
+              "topicID": "mixed-economies",
+              "title": "Public Infrastructure",
+              "definition": "Roads, bridges, ports, and water systems are infrastructure: long-lived assets that many users share and that private firms rarely build on their own at national scale, because tolling every user is hard and the benefits spill over to people who never pay. Mixed economies fund much of it publicly, often through earmarked taxes on the users. The choice of where to build then shapes private decisions for decades - where firms locate, where housing is built, which towns grow.",
+              "example": "The Federal-Aid Highway Act of June 29, 1956 authorized a 41,000-mile Interstate System and $25 billion for fiscal years 1957 through 1969, funded by higher federal taxes on motor fuel, tires, trucks, and buses. The National Archives notes that the network reshaped American settlement around the automobile, cutting through some urban neighborhoods and bypassing small towns along older routes.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "National Interstate and Defense Highways Act (1956)",
+                "url": "https://www.archives.gov/milestone-documents/national-interstate-and-defense-highways-act",
+                "publicationDate": "2022-02-08",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "miles and U.S. dollars (1956 statutory authorization)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "fiscal years 1957-1969, as enacted in 1956 and published by the National Archives",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mix-004",
+              "topicID": "mixed-economies",
+              "title": "A Central Bank",
+              "definition": "A central bank is a public institution that issues the currency, acts as banker to commercial banks, and steadies the financial system in a panic by lending when private lenders will not. Money itself is a shared standard, so even market-oriented economies treat it as a public good rather than leaving it to individual banks. Creating a central bank is a deliberate choice about the mix: it puts one part of the economy under a public authority while leaving lending and deposit-taking largely private.",
+              "example": "The United States was the only major financial power without a central bank when the Panic of 1907 forced the government to rely on private financiers. Congress created an 18-member National Monetary Commission in 1908, debated a banker-led plan, and in December 1913 passed the Federal Reserve Act instead: a system of regional Reserve Banks overseen by a board in Washington.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of Kansas City)",
+                "documentTitle": "Federal Reserve Act Signed into Law",
+                "url": "https://www.federalreservehistory.org/essays/federal-reserve-act-signed",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mix-005",
+              "topicID": "mixed-economies",
+              "title": "Bank Rules and Deposit Insurance",
+              "definition": "Banks sit at the center of a mixed economy's payment system, so their failures spread further than an ordinary firm's. Governments respond with rules on what banks may do and with deposit insurance, a public guarantee that small depositors are repaid if a bank fails. Insurance stops runs but weakens depositors' reason to watch their bank, which is why it is paired with supervision and limits on risk-taking. How tight those limits should be has been argued over for nearly a century.",
+              "example": "The Banking Act of 1933, signed June 16, 1933, separated commercial banking from securities dealing - a bank could earn no more than 10 percent of its income from securities - and created the Federal Deposit Insurance Corporation, funded by a pool collected from banks. The separation was uncontroversial in 1933; the restrictions on bank-securities affiliations were repealed in 1999.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve History (Federal Reserve Bank of Richmond)",
+                "documentTitle": "Banking Act of 1933 (Glass-Steagall)",
+                "url": "https://www.federalreservehistory.org/essays/glass-steagall-act",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of bank income (1933 statutory limit)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1933-1999, as published by Federal Reserve History",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mix-006",
+              "topicID": "mixed-economies",
+              "title": "Rules for the Labor Market",
+              "definition": "Labor is bought and sold in markets, but mixed economies set the rules of that market: who may organize, how disputes are settled, minimum standards for pay and hours. The economic argument for such rules is that individual workers and large employers do not bargain from equal positions and that some outcomes - unsafe conditions, child labor - impose costs others bear. The documented trade-off is that rules also raise employers’ costs and can shift jobs elsewhere.",
+              "example": "The National Labor Relations Act of July 5, 1935 guaranteed private-sector workers the right to form unions and bargain collectively, and created a 5-member National Labor Relations Board, assisted by 33 regional directors, to run union elections and rule on unfair labor practices. The Supreme Court upheld the law in 1937, and union membership surged in the years that followed.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "National Labor Relations Act (1935)",
+                "url": "https://www.archives.gov/milestone-documents/national-labor-relations-act",
+                "publicationDate": "2021-11-22",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "mix-007",
+              "topicID": "mixed-economies",
+              "title": "Protective Regulation",
+              "definition": "Protective regulation restricts what may be sold or how it may be produced - product safety, working conditions, pollution limits. In a mixed economy it exists because some costs of production fall on people outside the transaction, and because buyers cannot easily see every risk. Its reach is contested in law as well as economics: a rule must be authorized by some power the government actually has, and early U.S. attempts were struck down on exactly that ground.",
+              "example": "The 1900 census counted roughly 2 million children working in mills, mines, fields, and factories. The Keating-Owen Act of 1916 barred interstate sale of goods from factories employing children under 14, from mines employing children under 16, and from any workplace where children under 16 worked nights or more than 8 hours. The Supreme Court voided it in 1918 as beyond the commerce power.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "Keating-Owen Child Labor Act (1916)",
+                "url": "https://www.archives.gov/milestone-documents/keating-owen-child-labor-act",
+                "publicationDate": "2022-02-08",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "number of child workers (1900 census, as summarized by the National Archives) and statutory age and hour limits",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1900-1918, as published by the National Archives",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "mix-008",
+              "topicID": "mixed-economies",
+              "title": "Public Investment in People",
+              "definition": "Governments in mixed economies also spend on human capital - schooling, training, health - on the argument that an educated worker raises the productivity of others and pays taxes for decades, so the return is not captured by the student alone. Economists call this a positive spillover. Measuring the payoff is hard because the people who receive such benefits differ from those who do not, and because the gains arrive slowly and show up partly in other people’s incomes.",
+              "example": "The Servicemen's Readjustment Act of 1944, the G.I. Bill, paid tuition and living costs for veterans. Within 7 years about 8 million had used its education benefits; by 1956 the education portion had cost $14.5 billion, and 4.3 million home loans worth $33 billion had been guaranteed by 1955. The share of Americans holding a bachelor's degree rose from 4.6 percent in 1945 to 25 percent 50 years later.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "Servicemen's Readjustment Act (1944)",
+                "url": "https://www.archives.gov/milestone-documents/servicemens-readjustment-act",
+                "publicationDate": "2022-05-03",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "number of veterans, U.S. dollars, and percent of adults with degrees",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1944-1995, as published by the National Archives",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "planned-economies",
+          "name": "Planned Economies",
+          "icon": "list.clipboard.fill",
+          "order": 3,
+          "access": "pack",
+          "summary": "How central planning allocated resources through quotas and plans, what administered prices and rationing did to supply, and how planned economies moved toward markets.",
+          "cards": [
+            {
+              "cardID": "pln-001",
+              "topicID": "planned-economies",
+              "title": "What Central Planning Is",
+              "definition": "Every economy must answer three questions: what to produce, how to produce it, and who receives it. A command or planned economy answers them through a central authority rather than through prices. The state owns most productive assets, planners set output targets for factories and farms, and prices are administered rather than discovered in exchange. Economists contrast this with a market economy along a spectrum; real systems have mixed the two, and the balance has moved over time.",
+              "example": "The Federal Reserve's education service uses an infographic to contrast command and market systems on exactly those 3 questions. In a pure command system a planning ministry decides how many tractors and how many shoes to make and assigns the inputs; in a pure market system thousands of separate producers decide, each watching prices. Most countries in the 20th century sat somewhere between the 2 poles.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Reserve Education (Federal Reserve System)",
+                "documentTitle": "Economic Systems Infographic",
+                "url": "https://www.federalreserveeducation.org/teaching-resources/economics/market-structure/economic-systems-infographic",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "pln-002",
+              "topicID": "planned-economies",
+              "title": "Quotas and the Five-Year Plan",
+              "definition": "The working tool of a planned economy is the plan: a multi-year document that sets output targets for each sector and passes them down as quotas to individual enterprises. Managers are judged on meeting the quota, not on cost or on whether anyone wants the product. Because the targets are set from above with little information from below, they can be unrealistic, and because everything is scheduled at once, a shortfall in one input ripples through every plant that depends on it.",
+              "example": "The Soviet Union's First Five-Year Plan, adopted in 1928, called for a 250 percent increase in overall industrial output and a 330 percent expansion of heavy industry. All industry and services were nationalized, managers received predetermined quotas from central planners, and trade unions became instruments for raising output. The Library of Congress exhibit notes that the targets were unrealistic and that serious problems soon followed.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Library of Congress",
+                "documentTitle": "Revelations from the Russian Archives: Internal Workings of the Soviet Union",
+                "url": "https://www.loc.gov/exhibits/archives/intn.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (planned increases in output under the First Five-Year Plan)",
+                "geography": "Soviet Union",
+                "claimKind": "observation",
+                "observationPeriod": "1928 plan targets, as published by the Library of Congress",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "pln-003",
+              "topicID": "planned-economies",
+              "title": "Collectivization",
+              "definition": "Collectivization replaces individual farms with large state-directed collectives. The economic logic planners gave was scale and control: pooled land and machinery would raise yields, and the state could take the grain surplus to feed cities and pay for industry. The record shows the reverse in the Soviet case. Removing ownership removed the incentive to produce, resistance was met with force, and output collapsed. It is the clearest historical illustration of what happens when property rights in food are abolished.",
+              "example": "The First Five-Year Plan called for collectivizing 20 percent of peasant households; by 1940 roughly 97 percent had been collectivized and private property nearly eliminated. About 1 million wealthier peasant households - some 5 million people - were deported and never heard from again, and forced collectivization produced a catastrophic famine in 1932 and 1933.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Library of Congress",
+                "documentTitle": "Revelations from the Russian Archives: Internal Workings of the Soviet Union",
+                "url": "https://www.loc.gov/exhibits/archives/intn.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of peasant households and number of people (Soviet collectivization, as summarized by the Library of Congress)",
+                "geography": "Soviet Union",
+                "claimKind": "observation",
+                "observationPeriod": "1928-1940",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "pln-004",
+              "topicID": "planned-economies",
+              "title": "Shortages and Queues",
+              "definition": "When a price is held below the level at which supply equals demand, more is wanted than is offered, and the gap is a shortage. In a market that shortage pushes the price up until some buyers drop out and sellers add supply. A planned economy fixes prices by decree, so the adjustment cannot happen through price. It happens instead through waiting: queues, waiting lists, connections, and informal markets at higher prices. Time, not money, becomes the rationing device.",
+              "example": "The St. Louis Fed's primer on prices describes the mechanism with a rent-control example: at a ceiling below the market rent, the number of apartments renters want exceeds the number landlords supply, and a shortage results. Administered prices in a planned economy are ceilings on nearly everything at once, so the queue for 1 good was matched by queues for dozens of others.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Reserve Bank of St. Louis",
+                "documentTitle": "Prices: The Marketplace's Communication System (Page One Economics)",
+                "url": "https://www.stlouisfed.org/publications/page-one-economics/2013/04/01/prices-the-marketplaces-communication-system",
+                "publicationDate": "2013-04-01",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "pln-005",
+              "topicID": "planned-economies",
+              "title": "Wartime Rationing",
+              "definition": "Rationing is planned allocation inside an otherwise market economy. Instead of letting prices rise to clear a scarce good, the government issues coupons that cap how much each household may buy, so that supply is divided by rule rather than by ability to pay. It is usually paired with price controls and public appeals to conserve. Wartime governments accepted the costs - black markets, administration, mismatched allocations - to steer materials to the military and to spread the burden.",
+              "example": "During the Second World War the United States rationed gasoline, rubber, sugar, butter, and meat. National Archives posters from 1943 urged civilians to share rides and to save waste fats for explosives, explaining that shortages existed because the goods were going to the troops. The War Production Board's chairman put the priority bluntly: the military would get 'astronomical quantities of everything.'",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "Powers of Persuasion: Use It Up, Wear It Out",
+                "url": "https://www.archives.gov/exhibits/powers_of_persuasion/use_it_up/use_it_up.html",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "pln-006",
+              "topicID": "planned-economies",
+              "title": "From Plan to Market",
+              "definition": "Transition is the shift from a planned economy to a market one: freeing prices, allowing private ownership, opening trade, and building the institutions - courts, banks, tax systems - that markets take for granted. The sequence matters and was argued over fiercely. Freeing prices first exposes how far administered prices had been held below cost, so measured inflation jumps. Output usually falls before it recovers, because old supply chains break faster than new ones form.",
+              "example": "The IMF's 2000 review of the former communist economies found that output fell on average 40 percent from the start of transition before bottoming out. Early on, inflation averaged 450 percent a year in Central and Eastern Europe, nearly 900 percent in the Baltics, and over 1,000 percent in the Commonwealth of Independent States; by 1998 it was in single digits in the first two groups and around 30 percent in the third.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "International Monetary Fund",
+                "documentTitle": "Transition Economies: An IMF Perspective on Progress and Prospects (Issues Brief 00/08)",
+                "url": "https://www.imf.org/external/np/exr/ib/2000/110300.htm",
+                "publicationDate": "2000-11-03",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (output decline from the start of transition; annual inflation rates)",
+                "geography": "Central and Eastern Europe, the Baltic states, and the Commonwealth of Independent States",
+                "claimKind": "observation",
+                "observationPeriod": "1990-1998, as published by the IMF on 2000-11-03",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "pln-007",
+              "topicID": "planned-economies",
+              "title": "China's Reform Path",
+              "definition": "Not every move away from planning happened at once. A gradual path keeps state ownership in parts of the economy while allowing markets to grow alongside: farmers keep what they produce above a quota, private and foreign firms enter, prices are freed sector by sector. Economists document very large gains in output and living standards from this route, together with imbalances - heavy reliance on investment and exports, environmental damage, and a state role that remains larger than in most market economies.",
+              "example": "The World Bank reports that since 1978, when China's reform and opening period began, GDP growth has averaged over 9 percent a year, lifting almost 800 million people out of extreme poverty; by 2020 extreme poverty had been eliminated. In 2024, however, 15.2 percent of the population still lived on less than $8.30 a day at 2021 purchasing-power parity, a higher benchmark the Bank uses to compare countries.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "World Bank Group",
+                "documentTitle": "China Overview",
+                "url": "https://www.worldbank.org/ext/en/country/china",
+                "publicationDate": "2026-08-24",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (average annual GDP growth; share of population below $8.30 a day), number of people, and U.S. dollars per day at 2021 PPP",
+                "geography": "China",
+                "claimKind": "observation",
+                "observationPeriod": "1978-2024, as published by the World Bank",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "pln-008",
+              "topicID": "planned-economies",
+              "title": "Privatization Paths",
+              "definition": "Privatization moves state assets into private hands, and how it is done shapes what follows. Rapid methods - vouchers handed to every citizen, or quick sales to insiders - transfer ownership fast but often leave firms without owners able or willing to restructure them. Gradual sales to strategic buyers take longer and can be more transparent. Economists studying the 1990s found that speed alone did not deliver better firms; the quality of ownership and of the surrounding institutions mattered more.",
+              "example": "The IMF's 2000 assessment contrasted the paths. Voucher assets handed to millions of citizens were often sold on and consolidated in investment funds that did little restructuring; Russia's loans-for-shares scheme was non-transparent and systematically excluded foreign investors. Hungary's gradual approach, by contrast, appeared more conducive to genuine restructuring of enterprises. By 2000 several Central European and Baltic economies were candidates to join the European Union.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "International Monetary Fund",
+                "documentTitle": "Transition Economies: An IMF Perspective on Progress and Prospects (Issues Brief 00/08)",
+                "url": "https://www.imf.org/external/np/exr/ib/2000/110300.htm",
+                "publicationDate": "2000-11-03",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "welfare-states",
+          "name": "Welfare-State Models",
+          "icon": "heart.text.square.fill",
+          "order": 4,
+          "access": "pack",
+          "summary": "How welfare states pool risk and redistribute income through social insurance and assistance, how poverty and coverage are measured, and how the programs are financed.",
+          "cards": [
+            {
+              "cardID": "wlf-001",
+              "topicID": "welfare-states",
+              "title": "What a Welfare State Is",
+              "definition": "A welfare state is a market economy in which government takes responsibility for protecting people against major risks to income: old age, illness, disability, unemployment, and poverty. The World Bank groups the tools into three pillars - social assistance, paid from general taxes to people in need; social insurance, financed by contributions and paid out when an insured event occurs; and labor-market programs that help people find or keep work. Countries differ mainly in how large each pillar is and who qualifies.",
+              "example": "Coverage is far from universal worldwide. The World Bank's 2025 State of Social Protection report counts 2 billion people without adequate protection, and 3 out of 4 people in low-income countries without basic protection. The Bank reports $29.5 billion in social protection financing as of April 2025 and estimates that each dollar transferred to poor families generates about $2.50 of activity in the local economy.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "World Bank Group",
+                "documentTitle": "Social Protection and Labor Overview",
+                "url": "https://www.worldbank.org/ext/en/topic/social-protection",
+                "publicationDate": "2026-08-24",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "number of people, U.S. dollars, and ratio (World Bank social protection figures)",
+                "geography": "worldwide",
+                "claimKind": "observation",
+                "observationPeriod": "2025, as published by the World Bank",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "wlf-002",
+              "topicID": "welfare-states",
+              "title": "Universal and Means-Tested Programs",
+              "definition": "Welfare programs differ in who qualifies. A universal or categorical program pays everyone in a group - all people over a certain age, all children - regardless of income. A means-tested program pays only those whose income or assets fall below a line. Universal programs are simple to run and widely supported but expensive; means-tested programs cost less and target need, but require applications and checks, and can discourage earning more because benefits fall as income rises. Most welfare states use both.",
+              "example": "The Social Security Amendments of 1965, signed July 30, 1965, created both kinds at once: Medicare, hospital insurance for everyone aged 65 and older, financed by a tax on earnings matched by employers, and Medicaid, health coverage for people with limited income, funded jointly by states and the federal government. Nearly 20 million people enrolled in the program's first 3 years. In 1950 only 1 in 8 older Americans had health insurance.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "Medicare and Medicaid Act (1965)",
+                "url": "https://www.archives.gov/milestone-documents/medicare-and-medicaid-act",
+                "publicationDate": "2022-02-08",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "number of enrollees and share of older Americans with health insurance (as summarized by the National Archives)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1950-1968",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "wlf-003",
+              "topicID": "welfare-states",
+              "title": "Measuring Poverty",
+              "definition": "A poverty line is an income threshold below which a household is counted as poor. The line and the income definition both matter. The official U.S. measure, in use since the 1960s, compares pre-tax money income with a threshold that varies by family size. The Supplemental Poverty Measure, published since 2011, adds the value of food and housing assistance and refundable tax credits, subtracts taxes, work costs, and medical spending, and adjusts thresholds for local housing costs. The two measures can move differently.",
+              "example": "For 2024 the Census Bureau reported an official poverty rate of 10.6 percent, down 0.4 percentage points, with 35.9 million people below the line. The Supplemental Poverty Measure rate was 12.9 percent, statistically unchanged from 2023. Under that measure Social Security was the largest single antipoverty program, moving 28.7 million people above the threshold in 2024.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Census Bureau",
+                "documentTitle": "Poverty in the United States: 2024 (Report P60-287)",
+                "url": "https://www.census.gov/library/publications/2025/demo/p60-287.html",
+                "publicationDate": "2025-09-09",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of population and number of people (official and Supplemental Poverty Measure)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2024, as published by the U.S. Census Bureau in report P60-287",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "wlf-004",
+              "topicID": "welfare-states",
+              "title": "Health Coverage Systems",
+              "definition": "Countries organize health coverage in different ways: a single public insurer paid from taxes; compulsory insurance through many funds; or a mix in which most working-age people are covered through employers, older and low-income people through public programs, and some buy coverage directly. Each model trades off different things - universality, choice, cost control, and how the bill is split between taxes, premiums, and payments at the point of care. The United States runs the mixed model.",
+              "example": "In 2024, 92.0 percent of U.S. residents - about 310 million people - had health insurance for some or all of the year. Employment-based coverage reached 53.8 percent of the population, Medicare 19.1 percent, Medicaid 17.6 percent, and directly purchased plans 10.7 percent; the shares add to more than 100 because a person can hold more than one type of coverage in a year.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Census Bureau",
+                "documentTitle": "Health Insurance Coverage in the United States: 2024 (Report P60-288)",
+                "url": "https://www.census.gov/library/publications/2025/demo/p60-288.html",
+                "publicationDate": "2025-09-09",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of population and number of people (health insurance coverage by type)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2024, as published by the U.S. Census Bureau in report P60-288",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "wlf-005",
+              "topicID": "welfare-states",
+              "title": "Unemployment Insurance as a Stabilizer",
+              "definition": "Unemployment insurance pays cash benefits to workers who lose a job through no fault of their own, funded by payroll taxes on employers. Beyond protecting the individual, it is an automatic stabilizer: payments rise in a recession without any new vote, putting spending into the economy exactly when private demand is falling, and shrink again as people return to work. The documented trade-off is that generous or long benefits can lengthen job searches, which is why eligibility and duration are limited.",
+              "example": "There is no single federal program. Each state runs its own unemployment insurance system and pays its own claims, setting eligibility rules and benefit levels; many require that a worker earned at least a set amount within the previous 12 to 24 months. Claims are generally filed in the state where the person worked, not the state where they live, which matters for remote and cross-border workers.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "USAGov, U.S. General Services Administration",
+                "documentTitle": "Unemployment benefits",
+                "url": "https://www.usa.gov/unemployment-benefits",
+                "publicationDate": "2026-09-10",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "wlf-006",
+              "topicID": "welfare-states",
+              "title": "Extreme Poverty Worldwide",
+              "definition": "Welfare-state debates in rich countries sit against a different global picture. The World Bank counts a person as extremely poor if they live on less than a fixed daily amount, measured in purchasing-power terms so that the line buys the same basket everywhere. Growth has done most of the work of reducing that count, and formal safety nets remain thin in the poorest countries. Economists document that growth alone is not enough: infrastructure, schooling, and institutions determine who climbs out.",
+              "example": "Between 1990 and 2025 the number of people in extreme poverty fell from around 2.3 billion to 831 million, each living on less than $3 a day, driven largely by broad-based growth in East Asia and South Asia. Progress slowed substantially in the decade to 2025. In 2024 an estimated 412 million children aged 17 or younger lived below that line, and extreme poverty is increasingly concentrated in Sub-Saharan Africa and conflict-affected places.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "World Bank Group",
+                "documentTitle": "Poverty Overview",
+                "url": "https://www.worldbank.org/ext/en/topic/poverty",
+                "publicationDate": "2026-08-24",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "number of people and U.S. dollars per day at 2021 PPP (extreme poverty line)",
+                "geography": "worldwide",
+                "claimKind": "observation",
+                "observationPeriod": "1990-2025, as published by the World Bank",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "wlf-007",
+              "topicID": "welfare-states",
+              "title": "Financing Social Insurance",
+              "definition": "Social insurance is paid for mainly by earmarked payroll taxes, split between employee and employer, rather than from general revenue. The design ties benefits to contributions, which is what makes the program insurance rather than assistance and gives it durable political support. It also means the tax falls on wages: economists generally find that the employer share is largely borne by workers through lower pay over time. Rates that start low tend to rise as the covered population ages and benefits mature.",
+              "example": "The Social Security Act, signed August 14, 1935, created old-age insurance funded by a tax on employees’ wages matched by an equal excise tax on employers. The employee rate began at 1 percent for 1937 through 1939 and was scheduled to reach 3 percent by 1949. The same act appropriated $49,750,000 for old-age assistance and $24,750,000 for aid to dependent children for fiscal year 1936.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. National Archives and Records Administration",
+                "documentTitle": "Social Security Act (1935)",
+                "url": "https://www.archives.gov/milestone-documents/social-security-act",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of wages (payroll tax schedule) and U.S. dollars (fiscal year 1936 appropriations)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "1935-1949, as enacted in 1935 and published by the National Archives",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "wlf-008",
+              "topicID": "welfare-states",
+              "title": "Income Before and After Taxes and Transfers",
+              "definition": "How much a welfare state redistributes depends on which income is measured. Market income is what households earn before government acts. Adding cash benefits and refundable credits, then subtracting taxes, gives post-tax, post-transfer income. Inequality measured on the second is lower than on the first, and the gap between the two is one way to size a country's redistribution. In-kind benefits such as health coverage are usually left out of both, which understates what low-income households receive.",
+              "example": "The Census Bureau's headline income figures use pre-tax money income and exclude in-kind transfers: median household income was $83,730 in 2024, not statistically different from 2023, and the Gini index of inequality was unchanged. The same report publishes post-tax income and inequality estimates separately in an appendix, so readers can compare the two definitions for the same households and year.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "U.S. Census Bureau",
+                "documentTitle": "Income in the United States: 2024 (Report P60-286)",
+                "url": "https://www.census.gov/library/publications/2025/demo/p60-286.html",
+                "publicationDate": "2025-09-09",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (median household money income) and Gini index",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2024, as published by the U.S. Census Bureau in report P60-286",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "packID": "personalfinance",
+      "name": "Personal Finance",
+      "productID": "com.nsantulli.econbyte.pack.personalfinance",
+      "icon": "wallet.pass.fill",
+      "summary": "The mechanics behind a paycheck, a car or home purchase, a credit score, and a savings balance: what the forms and numbers mean and how time changes them.",
+      "topics": [
+        {
+          "topicID": "paychecks-taxes",
+          "name": "Paychecks & Taxes",
+          "icon": "doc.text.fill",
+          "order": 1,
+          "access": "pack",
+          "summary": "What comes out of a paycheck and why: withholding, the W-4 and W-2, payroll taxes, filing status, marginal brackets, refunds, and the extra rules for self-employment.",
+          "cards": [
+            {
+              "cardID": "pay-001",
+              "topicID": "paychecks-taxes",
+              "title": "Withholding",
+              "definition": "Withholding is income tax taken out of each paycheck by the employer and sent to the government on the worker's behalf. It is a prepayment, not the final bill. How much is withheld depends on two things: how much the worker earns and the information the worker gives the employer on Form W-4. Employers are required by law to withhold, and the same rule applies to Social Security and Medicare taxes. Tax can also be withheld from pensions, bonuses, and commissions.",
+              "example": "A worker paid every 2 weeks receives 26 paychecks a year, and each one carries a slice of the year's expected income tax. If the total withheld over the year is more than the tax actually owed on the return, the difference comes back as a refund; if it is less, the worker owes the balance at filing time. The IRS offers an online estimator to check the setting during the year.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "Tax withholding",
+                "url": "https://www.irs.gov/payments/tax-withholding",
+                "publicationDate": "2026-05-26",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "pay-002",
+              "topicID": "paychecks-taxes",
+              "title": "Form W-4",
+              "definition": "Form W-4, the Employee's Withholding Certificate, is the form a worker gives an employer so that the right amount of federal income tax is withheld. It tells the employer about filing status, other jobs in the household, dependents, and any extra amount to withhold per paycheck. It is not filed with a tax return; the employer keeps it. The IRS suggests reviewing it each year and whenever circumstances change, because the form only reflects what the worker last reported.",
+              "example": "Two common triggers are a marriage and a second job. A couple who both work and both leave their W-4 set for a single earner with 1 job can end up under-withheld, because each employer assumes its paycheck is the only one. Filing a new W-4 within a few weeks of the change corrects the estimate for the remaining paychecks of the year.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "About Form W-4, Employee's Withholding Certificate",
+                "url": "https://www.irs.gov/forms-pubs/about-form-w-4",
+                "publicationDate": "2026-09-10",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "pay-003",
+              "topicID": "paychecks-taxes",
+              "title": "Form W-2",
+              "definition": "Form W-2, the Wage and Tax Statement, is the employer's annual report of what it paid an employee and what it withheld. Every employer that pays wages must file one for each employee from whom income, Social Security, or Medicare tax was withheld, or who would have had tax withheld absent an exemption. Copies go to the worker and to the government, so the numbers on a return can be matched against the employer's report.",
+              "example": "Someone who held 3 jobs during a year receives 3 W-2 forms, 1 from each employer, and adds the wage and withholding boxes together on the return. If an employer discovers an error after issuing the form, it files a corrected statement, Form W-2c, so that the worker’s record and the return can be matched. A missing form is requested from the employer, not the IRS.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "About Form W-2, Wage and Tax Statement",
+                "url": "https://www.irs.gov/forms-pubs/about-form-w-2",
+                "publicationDate": "2026-09-11",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "pay-004",
+              "topicID": "paychecks-taxes",
+              "title": "Payroll Taxes: Social Security and Medicare",
+              "definition": "Alongside income tax, paychecks carry payroll taxes under the Federal Insurance Contributions Act. Two separate taxes apply: one funds Social Security's old-age, survivors, and disability insurance and one funds Medicare's hospital insurance. Each is paid half by the employee and half by the employer, at flat rates. Only the Social Security portion has a wage base limit, an annual ceiling on earnings subject to the tax; Medicare tax applies to all covered wages, with an additional rate above a high threshold.",
+              "example": "The rates published by the IRS are 6.2 percent each for employee and employer for Social Security, 12.4 percent combined, and 1.45 percent each for Medicare, 2.9 percent combined. For earnings in 2026 the Social Security wage base limit is $184,500. An Additional Medicare Tax of 0.9 percent is withheld on wages above $200,000 in a calendar year, with no employer match.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "Topic no. 751, Social Security and Medicare withholding rates",
+                "url": "https://www.irs.gov/taxtopics/tc751",
+                "publicationDate": "2026-01-20",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of wages and U.S. dollars (FICA rates, wage base limit, and Additional Medicare Tax threshold)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2026, as published by the IRS in Topic no. 751 (updated 2026-01-20)",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "pay-005",
+              "topicID": "paychecks-taxes",
+              "title": "Filing Status",
+              "definition": "Filing status is the category a taxpayer files under, and it sets the standard deduction, the bracket thresholds, and eligibility for some credits. The IRS lists five: single; married filing jointly; married filing separately; head of household; and qualifying surviving spouse. Status is generally determined by marital situation on the last day of the year, so a December wedding counts for the whole year. When more than one status fits, the taxpayer may choose the one that produces the lower tax.",
+              "example": "Head of household is for an unmarried person who paid more than half the cost of keeping up a home for themselves and a qualifying dependent; it carries a larger standard deduction than single. Qualifying surviving spouse applies for up to 2 years after a spouse's death when there is a dependent child. The IRS notes that most married couples pay less by filing jointly than separately.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "Filing status",
+                "url": "https://www.irs.gov/filing/filing-status",
+                "publicationDate": "2026-06-29",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "pay-006",
+              "topicID": "paychecks-taxes",
+              "title": "Tax Brackets Are Marginal",
+              "definition": "Federal income tax is charged in layers called brackets. Each bracket's rate applies only to the slice of taxable income that falls inside it, not to the whole amount. Moving into a higher bracket therefore raises the tax on the next dollar earned, not on the dollars already taxed at lower rates. The rate on the last dollar is the marginal rate; total tax divided by total income is the average rate, and it is always lower than the marginal rate.",
+              "example": "For tax year 2025 a single filer's first $11,925 of taxable income is taxed at 10 percent, the next slice up to $48,475 at 12 percent, and the slice up to $103,350 at 22 percent. An illustrative single filer with $60,000 of taxable income owes $1,192.50 plus $4,386 plus $2,535.50, about $8,114 in total: a 22 percent marginal rate but an average rate near 13.5 percent.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "Federal income tax rates and brackets",
+                "url": "https://www.irs.gov/filing/federal-income-tax-rates-and-brackets",
+                "publicationDate": "2026-07-27",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (2025 bracket thresholds and rates for single filers; illustrative taxable income and tax)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "tax year 2025, as published by the IRS (page updated 2026-07-27)",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "pay-007",
+              "topicID": "paychecks-taxes",
+              "title": "Refunds and Balances Due",
+              "definition": "A refund is not a bonus; it is the return of tax that was prepaid through withholding or estimated payments beyond what the year's return shows is owed. A balance due is the reverse. Both are settled when the return is filed. Refunds can be reduced to pay past-due federal taxes, child support, or certain other debts before the remainder is sent, and returns that claim some credits are held by law until mid-February so the claims can be checked.",
+              "example": "The IRS describes typical timing: about 3 weeks after an electronically filed return and 6 or more weeks after a mailed one, with delays when a return needs correction or review. Refund status can be checked 24 hours after e-filing a current-year return, or 4 weeks after mailing a paper return. A large refund every year means more was withheld than needed all year long.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "Refunds",
+                "url": "https://www.irs.gov/refunds",
+                "publicationDate": "2026-06-28",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "pay-008",
+              "topicID": "paychecks-taxes",
+              "title": "Self-Employment Tax",
+              "definition": "Someone who works for themselves has no employer to withhold tax or to pay the employer half of Social Security and Medicare. Self-employment tax fills that gap: it is both halves combined, calculated on net earnings using Schedule SE and paid with the return, usually through quarterly estimated payments. Because an employee never sees the employer share, the combined rate looks large by comparison. The law offsets part of it by letting the self-employed deduct the employer-equivalent half when computing adjusted gross income.",
+              "example": "The self-employment tax rate is 15.3 percent: 12.4 percent for Social Security plus 2.9 percent for Medicare. It applies once net self-employment earnings reach $400 or more in a year. For 2024, the IRS page states, only the first $168,600 of combined wages and net earnings was subject to the Social Security part, while the Medicare part applied to all of it, with an extra 0.9 percent above a filing-status threshold.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Internal Revenue Service",
+                "documentTitle": "Self-employment tax (Social Security and Medicare taxes)",
+                "url": "https://www.irs.gov/businesses/small-businesses-self-employed/self-employment-tax-social-security-and-medicare-taxes",
+                "publicationDate": "2026-06-27",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of net earnings and U.S. dollars (self-employment tax rates, filing threshold, and 2024 wage base)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2024 wage base as stated by the IRS (page updated 2026-06-27)",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "cars-and-homes",
+          "name": "Buying a Car or a Home",
+          "icon": "car.fill",
+          "order": 2,
+          "access": "pack",
+          "summary": "How auto loans, leases, and mortgages are priced and disclosed, and the mechanics of negative equity, down payments, PMI, the Loan Estimate, escrow, and renting versus owning.",
+          "cards": [
+            {
+              "cardID": "byg-001",
+              "topicID": "cars-and-homes",
+              "title": "Reading the Loan Disclosure",
+              "definition": "Before an auto loan is signed, the federal Truth in Lending Act requires the lender or dealer to hand over a disclosure that states the loan's cost in a standard way. Four numbers matter most: the annual percentage rate, which folds interest and mandatory fees into one yearly percentage; the finance charge, the total interest and fees over the life of the loan; the amount financed; and the total of payments. The monthly payment alone hides the last three.",
+              "example": "An illustrative $25,000 loan at a 7 percent rate costs about $599 a month over 48 months, a finance charge near $3,735 and a total of payments around $28,735. The same loan stretched to 72 months costs about $426 a month - but the finance charge rises to roughly $5,688 and the total to about $30,688. The disclosure puts those totals side by side; the sales pitch usually does not.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is a Truth-in-Lending disclosure for an auto loan?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-truth-in-lending-disclosure-for-an-auto-loan-en-787/",
+                "publicationDate": "2024-03-08",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative auto loan at two terms)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "Truth in Lending disclosures as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "byg-002",
+              "topicID": "cars-and-homes",
+              "title": "Leasing Versus Buying",
+              "definition": "A lease buys the right to use a car for a set time and a set number of miles; a loan buys the car. Lease payments are usually lower than loan payments on the same vehicle because the lessee pays only for the depreciation expected during the term, plus a rent charge, taxes, and fees, and hands the car back at the end unless the contract allows a purchase. The lessee also carries obligations a buyer does not: mileage caps, wear standards, and early-termination charges.",
+              "example": "The FTC notes that most standard leases cap mileage at 15,000 a year or less; a higher cap raises the payment because the car loses more value, and exceeding it brings an added fee at return. Someone who drives 20,000 miles a year and keeps cars for 8 years faces very different costs under the two contracts, even when the first year’s payments look similar.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Trade Commission, Consumer Advice",
+                "documentTitle": "Financing or Leasing a Car",
+                "url": "https://consumer.ftc.gov/articles/financing-or-leasing-car",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "byg-003",
+              "topicID": "cars-and-homes",
+              "title": "Negative Equity",
+              "definition": "Negative equity means owing more on a car loan than the car is worth. It arises because a new car loses value quickly while a long loan pays down principal slowly, and it grows with small down payments and rolled-in fees. It surfaces at trade-in time: a dealer may offer to fold the shortfall into the next loan, which raises the new balance, lengthens the term, or increases the payment, and starts the next loan already underwater.",
+              "example": "An illustrative driver owes $18,000 on a car worth $15,000 as a trade-in: $3,000 of negative equity. Rolling it into a $25,000 purchase means financing $28,000 for a car worth $25,000 on day 1. The CFPB's guidance is to learn the loan's payoff amount, which can differ from the statement balance, and to confirm about a week after the new deal that the old loan was actually paid off.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Should I trade in my car if it's not paid off?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/should-i-trade-in-my-car-if-its-not-paid-off-en-2045/",
+                "publicationDate": "2023-09-12",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative trade-in and payoff amounts)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "negative equity as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "byg-004",
+              "topicID": "cars-and-homes",
+              "title": "Fixed and Adjustable Mortgages",
+              "definition": "A fixed-rate mortgage keeps the same interest rate, and therefore the same principal-and-interest payment, for the life of the loan. An adjustable-rate mortgage starts with a rate that holds for an introductory period and then resets at regular intervals. The new rate is an index - a broad measure of market interest rates - plus a margin the lender sets, subject to caps that limit how far the rate can move at each reset and over the loan's life.",
+              "example": "Suppose an illustrative adjustable loan starts at 5 percent for 5 years with a margin of 2.5 percentage points. If the index stands at 4 percent at the first reset, the new rate is 6.5 percent - unless a cap limits the jump. The CFPB cautions against assuming a sale or refinance will come before the reset, since home values and personal finances can change.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is the difference between a fixed-rate and adjustable-rate mortgage (ARM) loan?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-the-difference-between-a-fixed-rate-and-adjustable-rate-mortgage-arm-loan-en-100/",
+                "publicationDate": "2025-01-14",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent and percentage points (illustrative adjustable-rate reset)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "adjustable-rate mortgages as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "byg-005",
+              "topicID": "cars-and-homes",
+              "title": "Down Payments and PMI",
+              "definition": "The down payment is the part of the price paid in cash; the mortgage covers the rest. The ratio between them changes the loan's terms. On a conventional loan with less than 20 percent down, lenders generally require private mortgage insurance, a policy the borrower pays for but that protects the lender if payments stop. PMI is charged as a monthly premium, an up-front premium at closing, or both, and it appears on the Loan Estimate and the Closing Disclosure.",
+              "example": "On an illustrative $300,000 home, 10 percent down is $30,000 and leaves a $270,000 loan that would ordinarily carry PMI; 20 percent down is $60,000 and a $240,000 loan without it. The CFPB notes that some lenders offer low-down-payment loans without PMI in exchange for a higher interest rate, which can cost more or less than PMI depending on how long the borrower keeps the loan.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is private mortgage insurance?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-private-mortgage-insurance-en-122/",
+                "publicationDate": "2023-08-28",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of purchase price (PMI threshold as published by the CFPB; illustrative home price and down payments in U.S. dollars)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "rule as published by the CFPB, page last reviewed 2023-08-28",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "byg-006",
+              "topicID": "cars-and-homes",
+              "title": "The Loan Estimate",
+              "definition": "The Loan Estimate is a standardized 3-page form a mortgage lender must deliver within 3 business days of receiving an application. Every lender uses the same layout, which is the point: it lets a borrower line up offers from different lenders and compare the interest rate, monthly payment, estimated taxes and insurance, and total closing costs. It also flags features worth knowing about, such as a prepayment penalty or negative amortization. Receiving one does not mean the loan is approved.",
+              "example": "A borrower who applies to 3 lenders on the same day can expect 3 Loan Estimates by the end of the third business day and can compare them page by page. Closing costs include lender fees, third-party charges, and prepaid items such as property taxes and homeowners insurance. The form shows what the lender expects to offer; the final figures arrive on the Closing Disclosure.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is a Loan Estimate?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-a-loan-estimate-en-1995/",
+                "publicationDate": "2024-08-09",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "byg-007",
+              "topicID": "cars-and-homes",
+              "title": "Escrow Accounts",
+              "definition": "An escrow account, called an impound account in some states, is a holding account the mortgage servicer runs to pay property taxes and insurance premiums on the borrower's behalf. A share of each monthly payment goes into it, and the servicer pays the bills when they fall due, once or twice a year. Many lenders require escrow so that the taxes and insurance protecting their collateral are certain to be paid. Because those bills change, the escrow portion of the payment is recalculated each year.",
+              "example": "If an illustrative home carries $3,600 a year in property taxes and $1,200 in homeowners insurance, the escrow share of the payment is $400 a month on top of principal and interest. A borrower without escrow must set that $4,800 aside alone. The CFPB warns that if taxes or insurance go unpaid, the lender may buy force-placed insurance, typically more expensive, and bill the borrower.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "What is an escrow or impound account?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/what-is-an-escrow-or-impound-account-en-140/",
+                "publicationDate": "2024-09-11",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (illustrative annual taxes and insurance and monthly escrow share)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "escrow accounts as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "byg-008",
+              "topicID": "cars-and-homes",
+              "title": "Renting Versus Owning",
+              "definition": "The rent-or-own question is a comparison of two cost streams under uncertainty. Owning builds equity - the home's value minus the mortgage balance - but slowly at first, because early payments are mostly interest, and equity also moves with market prices. It carries transaction costs at purchase and sale, plus maintenance and repairs. Renting avoids those costs and preserves the option to move, at the price of building no equity. Calculators that compare the two depend heavily on assumed price growth.",
+              "example": "The CFPB's guide notes that someone who sells within the first few years may end up with no more equity than they started with after paying the transaction costs, and that when prices fell between 2007 and 2012 many owners lost some or all of their equity. Owners also bear repairs a landlord would otherwise cover, so the comparison must include more than a rent check against a mortgage payment.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Making the decision to rent or buy (archived)",
+                "url": "https://www.consumerfinance.gov/archive/blog/making-decision-rent-or-buy/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "credit-scores-scams",
+          "name": "Credit Scores & Scams",
+          "icon": "shield.lefthalf.filled",
+          "order": 3,
+          "access": "pack",
+          "summary": "What builds a credit score, how to read and correct a credit report, how identity theft and imposter scams work, and what regulators report about fraud losses.",
+          "cards": [
+            {
+              "cardID": "csc-001",
+              "topicID": "credit-scores-scams",
+              "title": "What Moves a Score",
+              "definition": "A credit score is a prediction of repayment built from a credit report, and each scoring model weighs a handful of behaviors. Payment history counts most: paying every account on time as agreed. Next is utilization, how much of available credit is in use; models read balances near the limit as strain. Length of history helps because it gives the model more evidence. Recent applications for new credit count against a score because they can signal financial trouble.",
+              "example": "The CFPB relays a common guideline: keep balances at no more than 30 percent of total credit limits. Closing 2 unused cards can therefore lower a score if the same balances now sit on 1 card near its limit. Carrying a balance is not required; paying in full each month produces the strongest scores and the lowest interest cost.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "How do I get and keep a good credit score?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/how-do-i-get-and-keep-a-good-credit-score-en-318/",
+                "publicationDate": "2024-12-12",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent of total credit limit (utilization guideline as published by the CFPB)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "guideline as published by the CFPB, page last reviewed 2024-12-12",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "csc-002",
+              "topicID": "credit-scores-scams",
+              "title": "Free Credit Reports",
+              "definition": "A credit report is the file a credit reporting company keeps on a person's accounts and payment history, and scores are computed from it. Federal law gives everyone the right to a free copy of their report from each of the 3 nationwide credit reporting companies once every 12 months, obtained through the single official website or phone line set up for that purpose. Additional free reports are available after a denial of credit, insurance, or employment based on a report.",
+              "example": "Because the 3 reports can be ordered separately, one approach the CFPB describes is to request 1 every 4 months to watch the file across the year. Beyond the free copies, a company may charge no more than $14.50 for a report. A denial notice gives 60 days to request a free report from the company named in it.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "How do I get a free copy of my credit reports?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/how-do-i-get-a-free-copy-of-my-credit-reports-en-5/",
+                "publicationDate": "2023-08-28",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars (statutory cap on the price of an additional credit report) and days",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "as published by the CFPB, page last reviewed 2023-08-28",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "csc-003",
+              "topicID": "credit-scores-scams",
+              "title": "Disputing an Error",
+              "definition": "Errors in a credit report can lower a score and raise borrowing costs, and federal law gives the consumer a right to dispute them. A dispute goes to the credit reporting company, in writing with copies of supporting documents, and often also to the company that supplied the information, called the furnisher. The reporting company must investigate, forward the dispute and evidence to the furnisher, and report the result back; it may decline only disputes it reasonably finds frivolous.",
+              "example": "The CFPB's checklist for a mailed dispute: full contact information, each item in question with its account number, a clear explanation of why it is wrong, a request to remove or correct it, a copy of the report page with the items circled, and copies - never originals - of documents. The same letter can go to all 3 companies if all 3 show the error, and certified mail with a return receipt creates a dated record.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "How do I dispute an error on my credit report?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/how-do-i-dispute-an-error-on-my-credit-report-en-314/",
+                "publicationDate": "2026-09-02",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "csc-004",
+              "topicID": "credit-scores-scams",
+              "title": "How Long Information Stays",
+              "definition": "Credit reporting companies may report most negative information for a limited time, after which it must drop off the report even though the company may keep it on file. Positive information can stay longer, and an on-time history can remain after an account is closed, which helps scores that reward long histories. No one can lawfully remove accurate negative information early; companies that charge fees to 'repair' credit cannot do what a consumer can do alone for free, which is dispute actual errors.",
+              "example": "The general limit is 7 years for late payments and most other negative items, and up to 10 years for bankruptcies; a judgment can stay 7 years or until the statute of limitations runs out, whichever is longer. The limits do not apply when a report is used for a job paying more than $75,000 a year or for credit or life insurance above $150,000.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "How long does information stay on my credit report?",
+                "url": "https://www.consumerfinance.gov/ask-cfpb/how-long-does-information-stay-on-my-credit-report-en-323/",
+                "publicationDate": "2026-09-02",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "years (reporting time limits) and U.S. dollars (statutory exceptions)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "as published by the CFPB, page last reviewed 2026-09-02",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "csc-005",
+              "topicID": "credit-scores-scams",
+              "title": "Identity Theft",
+              "definition": "Identity theft is the use of someone's personal or financial information - a Social Security number, a card or account number, a date of birth - without permission, usually to open accounts, file claims, or make purchases in their name. The information is taken in mundane ways: a stolen wallet, discarded statements, card skimmers on pumps and machines, phishing messages, public Wi-Fi, and details posted on social media. The victim often learns of it only from the aftermath.",
+              "example": "Warning signs USAGov lists include debt-collection calls for accounts never opened, unfamiliar accounts on a credit report, and mail that stops arriving. Recovery runs through the FTC's identity theft site and the 3 credit reporting companies, where fraud alerts and a freeze can be placed. Someone whose information was used to file a false tax return completes IRS Form 14039, an affidavit that invalidates the fraudulent return.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "USAGov, U.S. General Services Administration",
+                "documentTitle": "Identity theft",
+                "url": "https://www.usa.gov/identity-theft",
+                "publicationDate": "2026-09-10",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "csc-006",
+              "topicID": "credit-scores-scams",
+              "title": "Credit Freezes and Fraud Alerts",
+              "definition": "A credit freeze locks a credit file so that no new credit account can be opened in the person's name - including by the person - until the freeze is temporarily lifted. It is free, does not affect scores, and can be placed by anyone at any time. A fraud alert is lighter: it leaves the file visible but tells lenders to verify identity before granting new credit. Freezes must be placed with each reporting company; an alert placed with one is passed to the others.",
+              "example": "The FTC describes 3 kinds of alert. An initial fraud alert lasts 1 year and can be renewed by anyone who suspects identity theft. An extended alert lasts 7 years, requires an identity theft or police report, and removes the person from prescreened credit and insurance offers for 5 years. An active-duty alert for servicemembers removes them from those lists for 2 years.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Trade Commission, Consumer Advice",
+                "documentTitle": "Credit Freezes and Fraud Alerts",
+                "url": "https://consumer.ftc.gov/articles/credit-freezes-and-fraud-alerts",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            },
+            {
+              "cardID": "csc-007",
+              "topicID": "credit-scores-scams",
+              "title": "Imposter Scams and Fraud Losses",
+              "definition": "An imposter scam is fraud by impersonation: the caller, texter, or emailer claims to be a government agency, a bank, a utility, a familiar company, or a relative in trouble, and uses that borrowed authority to extract money or personal information. The FTC collects fraud reports from consumers nationwide and publishes the totals each year. Reported losses understate the real figure, since many victims never report, but the pattern across categories and payment methods is informative.",
+              "example": "For 2024 the FTC reported more than $12.5 billion in losses to fraud, up 25 percent from the prior year, from about 2.6 million fraud reports. Imposter scams were the most commonly reported category, with $2.95 billion lost, and losses to government imposters alone reached $789 million. Investment scams cost the most, $5.7 billion. The share of reporters who lost money rose from 27 percent in 2023 to 38 percent in 2024.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Trade Commission",
+                "documentTitle": "New FTC Data Show a Big Jump in Reported Losses to Fraud to $12.5 Billion in 2024",
+                "url": "https://www.ftc.gov/news-events/news/press-releases/2025/03/new-ftc-data-show-big-jump-reported-losses-fraud-125-billion-2024",
+                "publicationDate": "2025-03-10",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars, percent, and number of reports (Consumer Sentinel Network fraud data)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "2024, as published by the FTC in March 2025",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "csc-008",
+              "topicID": "credit-scores-scams",
+              "title": "Ponzi Schemes",
+              "definition": "A Ponzi scheme is an investment fraud that pays earlier participants with money collected from later ones, while claiming the payments are returns on a real strategy. Little or nothing is actually invested, so the scheme depends on a constant inflow of new money; it collapses when recruiting slows or many participants try to withdraw at once. The warning signs the SEC lists match the mechanism: unusually steady returns in all market conditions, unregistered investments, unlicensed sellers, and strategies too secret or complex to explain.",
+              "example": "The name comes from Charles Ponzi, who took in investors in the 1920s with a postage-stamp arbitrage story. The SEC's Office of Investor Education notes that promoters often push participants to roll over rather than cash out by offering still higher returns for staying in, and that trouble receiving payments or errors on account statements are signs that funds are not being invested as promised.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "Ponzi Scheme",
+                "url": "https://www.investor.gov/protect-your-investments/fraud/types-fraud/ponzi-scheme",
+                "publicationDate": "2026-09-11",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              }
+            }
+          ]
+        },
+        {
+          "topicID": "compounding-time",
+          "name": "Compounding & Time",
+          "icon": "hourglass",
+          "order": 4,
+          "access": "pack",
+          "summary": "How interest is earned and compared, why compounding rewards time, what inflation does to purchasing power, and how to size savings in months rather than dollars.",
+          "cards": [
+            {
+              "cardID": "cmp-001",
+              "topicID": "compounding-time",
+              "title": "Principal and Interest",
+              "definition": "Principal is the money deposited or borrowed; interest is the price paid for its use, expressed as a percentage of principal per year. On a deposit, the bank pays the saver; on a loan, the borrower pays the lender. Simple interest is computed on the original principal only, so each period earns the same amount. Compound interest is computed on principal plus interest already credited, so each period's earnings are slightly larger than the last. Over long spans the difference becomes large.",
+              "example": "Under simple interest an illustrative $1,000 at 4 percent earns $40 every year - $400 after 10 years. Under annual compounding the same deposit earns $40 the first year, then $41.60 on $1,040, and so on, reaching about $480 of interest after 10 years. The FDIC's primer puts it plainly: the interest is added to the principal, and the next interest is earned on the new, larger principal.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Federal Deposit Insurance Corporation",
+                "documentTitle": "Money Smart, Chapter 5: Compound Interest",
+                "url": "https://www.fdic.gov/consumer-resource-center/chapter-5-compound-interest",
+                "publicationDate": "2023-10-25",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative simple versus compound interest)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "principal and compound interest as described by the FDIC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cmp-002",
+              "topicID": "compounding-time",
+              "title": "Compound Interest",
+              "definition": "Compounding is interest earning interest. After the first period, the credited interest joins the principal, and the next period's interest is calculated on the larger sum. Early on the effect is barely visible - a few cents of interest on interest. But the extra amount itself compounds, so growth accelerates over time, and the final balance depends far more on how long the money was left than on the size of any single year's gain. The same mathematics works against a borrower who carries a balance.",
+              "example": "The SEC's classroom example: $100 earning 5 percent a year becomes $105 after 1 year and $110.25 after 2, the extra 25 cents being interest on the first year's $5. Left alone, the $100 grows to more than $162 after 10 years and to almost $340 after 25 years, without another cent deposited. Nearly all of the later gain is interest on earlier interest.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "What is compound interest? (Teachers and Classroom Resources)",
+                "url": "https://www.investor.gov/additional-resources/information/youth/teachers-classroom-resources/what-compound-interest",
+                "publicationDate": "2026-09-11",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative compound growth of $100 at 5 percent, as published by the SEC)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "compound interest as described by the SEC's Office of Investor Education",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cmp-003",
+              "topicID": "compounding-time",
+              "title": "Inflation and Purchasing Power",
+              "definition": "Inflation is a general rise in prices, which is the same thing as a fall in what a unit of money buys. A savings balance that stays fixed in dollars shrinks in purchasing power every year prices rise. Because it compounds like interest, even a low rate matters over decades. Central banks aim for a low, stable rate so that households and businesses can plan; the U.S. Federal Reserve states its objective as a specific number measured by a specific price index.",
+              "example": "The Federal Open Market Committee judges that inflation of 2 percent over the longer run, measured by the annual change in the price index for personal consumption expenditures, is most consistent with its mandate for price stability and maximum employment. At exactly that pace, prices double in roughly 35 years, so $100 set aside at the start buys about what $50 did.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intro",
+              "source": {
+                "organization": "Board of Governors of the Federal Reserve System",
+                "documentTitle": "Why does the Federal Reserve aim for inflation of 2 percent over the longer run?",
+                "url": "https://www.federalreserve.gov/faqs/economy_14400.htm",
+                "publicationDate": "2026-07-08",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (FOMC longer-run inflation objective; illustrative doubling period)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "objective as published by the Federal Reserve, page updated 2026-07-08",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cmp-004",
+              "topicID": "compounding-time",
+              "title": "APY: Comparing Rates Fairly",
+              "definition": "Two accounts can quote the same interest rate and pay different amounts, because one compounds more often. The annual percentage yield, or APY, removes that ambiguity: it is the total interest an account pays over a 365-day year, including the effect of compounding frequency, expressed as a single percentage of the deposit. Federal disclosure rules require banks to state it, so APY - not the nominal rate - is the number that makes savings accounts and certificates of deposit comparable.",
+              "example": "The rule's own worked example: an account that pays $53.90 of interest in a year on a $1,000 deposit, compounded daily, has an APY of 5.39 percent. By the same arithmetic, an illustrative 4 percent rate compounded monthly yields about 4.07 percent, and compounded daily about 4.08 percent - small gaps on one deposit, but the fair way to rank offers.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "Appendix A to Part 1030 (Regulation DD) - Annual Percentage Yield Calculation",
+                "url": "https://www.consumerfinance.gov/rules-policy/regulations/1030/a/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative APY calculations, including the regulation's worked example)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "APY calculation as set out in Appendix A to Regulation DD (12 CFR part 1030)",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cmp-005",
+              "topicID": "compounding-time",
+              "title": "The Rule of 72",
+              "definition": "The Rule of 72 is a mental shortcut for compounding: dividing 72 by an annual growth rate gives the approximate number of years for an amount to double. It is an approximation, most accurate for rates in the single digits and steadily less so at higher rates, where it overstates the doubling time. It works in reverse too: dividing 72 by an inflation rate gives roughly how long until money buys half as much. It assumes a constant rate, which real returns rarely deliver.",
+              "example": "The SEC's classroom material uses 9 percent: 72 divided by 9 is 8, so a sum growing at 9 percent doubles in about 8 years, and the exact answer is also 8.0. At 2 percent the rule gives 36 years against an exact 35. At an illustrative 24 percent - a common credit card rate - the rule says 3 years while the true doubling time is about 3.2, close enough to show how fast a carried balance grows.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "U.S. Securities and Exchange Commission, Investor.gov",
+                "documentTitle": "What is compound interest? (Teachers and Classroom Resources)",
+                "url": "https://www.investor.gov/additional-resources/information/youth/teachers-classroom-resources/what-compound-interest",
+                "publicationDate": "2026-09-11",
+                "datePrecision": "observed-last-modified",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent and years (illustrative Rule of 72 estimates against exact doubling times)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "Rule of 72 as described by the SEC's Office of Investor Education",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cmp-006",
+              "topicID": "compounding-time",
+              "title": "Savings Measured in Months",
+              "definition": "A useful way to size a cash reserve is in time rather than dollars: how many months of essential spending it would cover if income stopped. Measured that way, the target scales automatically with a household's costs, and it can be built in steps. The CFPB's guidance ties the amount to the person's own history of unexpected expenses and income swings rather than to a universal figure, and notes that a reserve of any size shortens recovery from a shock and reduces reliance on borrowing.",
+              "example": "For an illustrative household spending $2,400 a month on essentials, 3 months of runway is $7,200 and 6 months is $14,400. Saving $200 a month reaches the 3-month mark in 36 months; adding part of a tax refund, one of the strategies the CFPB describes, shortens that. The unit is months of time bought, which is why the same dollar total means different things to different households.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Consumer Financial Protection Bureau",
+                "documentTitle": "An essential guide to building an emergency fund",
+                "url": "https://www.consumerfinance.gov/an-essential-guide-to-building-an-emergency-fund/",
+                "publicationDate": "2026-09-14",
+                "datePrecision": "observed-on-verification-date",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and months (illustrative monthly spending, reserve targets, and saving pace)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "emergency savings as described by the CFPB",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cmp-007",
+              "topicID": "compounding-time",
+              "title": "Time in the Account",
+              "definition": "Because compounding accelerates, the length of time money stays on deposit matters more than most people expect, and it matters more than modest differences in rate. Two deposits of the same size at the same rate end up far apart if one is left three times as long. The FDIC's primer names the two variables together - the interest rate and time - as the pair that determines how much a balance grows, and it is the second that a saver controls most directly.",
+              "example": "An illustrative $1,000 at 5 percent a year grows to about $1,629 after 10 years and to about $4,322 after 30. The second 20 years add roughly $2,693 - more than 4 times what the first 10 added - even though the rate never changed. A saver who starts 10 years later and stops at the same date forgoes that later, largest stretch of growth.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "intermediate",
+              "source": {
+                "organization": "Federal Deposit Insurance Corporation",
+                "documentTitle": "Money Smart, Chapter 5: Compound Interest",
+                "url": "https://www.fdic.gov/consumer-resource-center/chapter-5-compound-interest",
+                "publicationDate": "2023-10-25",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "U.S. dollars and percent (illustrative growth of $1,000 at 5 percent over 10 and 30 years)",
+                "geography": "United States",
+                "claimKind": "illustration",
+                "observationPeriod": "compound interest and time as described by the FDIC",
+                "retrievalDate": "2026-09-14"
+              }
+            },
+            {
+              "cardID": "cmp-008",
+              "topicID": "compounding-time",
+              "title": "Real Return",
+              "definition": "The real return on savings is the interest rate minus the inflation rate: what the balance gains in purchasing power rather than in dollars. A deposit earning less than inflation loses ground even as its balance rises. The FDIC publishes a national deposit rate, the average of what insured banks and credit unions pay on common account types, weighted by each institution's share of deposits, which shows how far typical savings rates sit from the rates on other instruments.",
+              "example": "As of August 17, 2026 the FDIC's national deposit rate was 0.38 percent for savings accounts, 0.63 percent for money market accounts, and 1.71 percent for 12-month certificates of deposit. Against an illustrative 3 percent inflation rate, a savings balance earning 0.38 percent loses about 2.6 percent of its purchasing power in a year, while the 12-month certificate loses about 1.3 percent.",
+              "disclaimer": "Educational content only. EconByte does not provide financial, investment, or tax advice.",
+              "difficulty": "advanced",
+              "source": {
+                "organization": "Federal Deposit Insurance Corporation",
+                "documentTitle": "National Rates and Rate Caps - August 2026",
+                "url": "https://www.fdic.gov/national-rates-and-rate-caps",
+                "publicationDate": "2026-08-17",
+                "datePrecision": "stated-on-page",
+                "verificationDate": "2026-09-14"
+              },
+              "editorial": {
+                "status": "verified",
+                "reviewer": "EconByte editorial review (Dudley Development)"
+              },
+              "claim": {
+                "units": "percent (FDIC national deposit rates by product; illustrative inflation rate and real return)",
+                "geography": "United States",
+                "claimKind": "observation",
+                "observationPeriod": "August 2026, as published by the FDIC on 2026-08-17",
+                "retrievalDate": "2026-09-14"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

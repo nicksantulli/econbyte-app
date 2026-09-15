@@ -193,7 +193,7 @@ final class GrowthSystemsTests: XCTestCase {
     func testDailySetIncludesPackCardsOnlyWhenTheirPackIsOwned() throws {
         let store = ContentStore.shared
         let packIDs = Set(store.packCards.map(\.id))
-        XCTAssertEqual(packIDs.count, 64)
+        XCTAssertEqual(packIDs.count, PackCatalog.expectedCardCount)
         for unlockedAll in [false, true] {
             let pool = store.dailySet(count: 500, unlockedAll: unlockedAll, ownedPackIDs: [])
             XCTAssertTrue(pool.allSatisfy { !packIDs.contains($0.id) },
