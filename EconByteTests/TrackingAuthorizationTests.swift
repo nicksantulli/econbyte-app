@@ -21,7 +21,7 @@ import XCTest
 ///     status is never prompted.
 ///  3. Every answer moves the app forward (authorized, denied, restricted); a
 ///     prompt iOS declined to present keeps ads off until it is answered.
-///  4. Every request stays non-personalized on every outcome.
+///  4. A request is personalized only after "Allow" in a known allowed region.
 ///
 /// ATT itself cannot be exercised here — there is no dialog in a unit test and
 /// the status is process-global — so the framework sits behind
@@ -311,45 +311,65 @@ final class TrackingAuthorizationTests: XCTestCase {
         }
     }
 
-    /// Phase 14: EEA/UK and unknown device regions are asked too (a review
-    /// device's Region setting is invisible in a rejection), and DUD-224 still
-    /// serves them no ads at all.
+    /// Phase 14: EEA/UK/CH and unknown device regions are asked too (a review
+    /// device's Region setting is invisible in a rejection). DUD-224 still
+    /// serves the EEA/UK/CH no ads at all.
     func testAdRestrictedRegionsAreAskedButNeverRequestAnAd() async {
-        for region in [EconAdRegionState.restricted, .unknown] {
-            let log = CallLog()
-            let adapter = LoggingAdapter(log: log)
-            let tracking = StubTracking(status: .notDetermined, resolvesTo: .authorized, log: log)
-            let monetization = makeMonetization(log, tracking: tracking, adapter: adapter, region: region)
+        let log = CallLog()
+        let adapter = LoggingAdapter(log: log)
+        let tracking = StubTracking(status: .notDetermined, resolvesTo: .authorized, log: log)
+        let monetization = makeMonetization(log, tracking: tracking, adapter: adapter, region: .restricted)
 
-            XCTAssertTrue(monetization.shouldRequestTrackingAuthorization, "\(region)")
-            await monetization.resolveTrackingAuthorizationIfNeeded()
-            XCTAssertEqual(tracking.requestCount, 1, "\(region)")
-            XCTAssertTrue(log.adRequests.isEmpty, "\(region) must never request an ad")
-            XCTAssertFalse(monetization.canRequestAds)
-        }
+        XCTAssertTrue(monetization.shouldRequestTrackingAuthorization)
+        await monetization.resolveTrackingAuthorizationIfNeeded()
+        XCTAssertEqual(tracking.requestCount, 1)
+        XCTAssertTrue(log.adRequests.isEmpty, "EEA/UK/CH must never request an ad")
+        XCTAssertFalse(monetization.canRequestAds)
     }
 
-    // MARK: - 5. The request is non-personalized on every outcome
+    /// Phase 25 (Owner 2026-09-15): an unknown region is asked, then served —
+    /// but never personalized, even after "Allow" — and only after the answer.
+    func testAnUnknownRegionIsAskedThenServedNonPersonalizedAfterTheAnswer() async {
+        let log = CallLog()
+        let adapter = LoggingAdapter(log: log)
+        let tracking = StubTracking(status: .notDetermined, resolvesTo: .authorized, log: log)
+        let monetization = makeMonetization(log, tracking: tracking, adapter: adapter, region: .unknown)
 
-    /// `npa=1` and `rdp=1` on all four statuses — authorized included.
-    ///
-    /// This is the portfolio invariant `adsPolicy.personalizedAdsMode:
-    /// "disabled"`, enforced outside this repo by
-    /// `scripts/release_evidence_gate.mjs` (POLICY_PERSONALIZATION) and by
-    /// DudleyCore's `MonetizationPolicyRegistry`. Personalizing for authorized
-    /// readers is the change that collects the eCPM this prompt makes
-    /// available, and it is a policy revision across the portfolio — not
-    /// something EconByte may do on its own. Until then, this test is what
-    /// stops an "obvious improvement" from shipping unilaterally.
-    func testEveryRequestIsNonPersonalizedForEveryTrackingOutcome() {
+        XCTAssertTrue(monetization.shouldRequestTrackingAuthorization)
+        await monetization.resolveTrackingAuthorizationIfNeeded()
+        XCTAssertEqual(tracking.requestCount, 1)
+        let prompt = try? XCTUnwrap(log.firstIndex(of: "att.request"))
+        let start = try? XCTUnwrap(log.firstIndex(of: "ad.startSDK"))
+        XCTAssertNotNil(prompt)
+        XCTAssertNotNil(start, "an unknown region is served once answered")
+        if let prompt, let start { XCTAssertLessThan(prompt, start, "the answer precedes the first request") }
+        XCTAssertTrue(monetization.canRequestAds)
+        XCTAssertEqual(adapter.lastPolicy?.extras, ["npa": "1", "rdp": "1"], "never personalized")
+    }
+
+    // MARK: - 5. Personalized only after "Allow" (Owner decision 2026-09-15)
+
+    /// Apple's ATT prompt is the only opt-in. In a region known to be outside
+    /// the EEA/UK/CH block list, "Allow" drops `npa` and `rdp`; every other
+    /// answer keeps both, and so does every answer in an unknown region.
+    func testOnlyAnAllowInAKnownAllowedRegionPersonalizesTheRequest() {
         for status in EconTrackingStatus.allCases {
-            let policy = EconAdRequestPolicy(trackingStatus: status)
-            XCTAssertEqual(policy.extras["npa"], "1", "\(status) must request non-personalized ads")
-            XCTAssertEqual(policy.extras["rdp"], "1", "\(status) must restrict data processing")
-            XCTAssertFalse(policy.usesPersonalizedAds, "\(status)")
+            let allowed = EconAdRequestPolicy(trackingStatus: status, region: .allowed)
+            if status == .authorized {
+                XCTAssertTrue(allowed.usesPersonalizedAds)
+                XCTAssertNil(allowed.extras["npa"])
+                XCTAssertNil(allowed.extras["rdp"])
+            } else {
+                XCTAssertEqual(allowed.extras["npa"], "1", "\(status) must request non-personalized ads")
+                XCTAssertEqual(allowed.extras["rdp"], "1", "\(status) must restrict data processing")
+                XCTAssertFalse(allowed.usesPersonalizedAds, "\(status)")
+            }
+            XCTAssertEqual(EconAdRequestPolicy(trackingStatus: status, region: .unknown).extras,
+                           ["npa": "1", "rdp": "1"], "\(status) in an unknown region")
+            XCTAssertEqual(EconAdRequestPolicy(trackingStatus: status).extras, ["npa": "1", "rdp": "1"],
+                           "a policy built without a region is never personalized")
         }
-        XCTAssertTrue(EconTrackingStatus.authorized.providerWouldPermitPersonalizedAds,
-                      "the seam the portfolio revision will use must exist and be honest")
+        XCTAssertTrue(EconTrackingStatus.authorized.providerWouldPermitPersonalizedAds)
         XCTAssertFalse(EconTrackingStatus.denied.providerWouldPermitPersonalizedAds)
         XCTAssertFalse(EconTrackingStatus.notDetermined.providerWouldPermitPersonalizedAds)
         XCTAssertFalse(EconTrackingStatus.restricted.providerWouldPermitPersonalizedAds)

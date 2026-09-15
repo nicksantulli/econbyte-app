@@ -260,14 +260,19 @@ final class GrowthAuditTests: XCTestCase {
         XCTAssertFalse(monetization.didStartSDK)
     }
 
-    /// DUD-224: no banner in the EEA/UK, and none when the region is unknown.
+    /// DUD-224: no banner in the EEA/UK/CH. Phase 25 (Owner 2026-09-15): an
+    /// unknown region is served, non-personalized.
     func testAdRestrictedRegionsCannotRequestABanner() {
-        for region in [EconAdRegionState.restricted, .unknown] {
-            let monetization = makeMonetization(region: region)
-            XCTAssertFalse(monetization.canRequestAds, "\(region) must not request a banner")
-            monetization.startAdsIfPermitted()
-            XCTAssertFalse(monetization.didStartSDK)
-        }
+        let restricted = makeMonetization(region: .restricted)
+        XCTAssertFalse(restricted.canRequestAds, "EEA/UK/CH must not request a banner")
+        restricted.startAdsIfPermitted()
+        XCTAssertFalse(restricted.didStartSDK)
+
+        let unknown = makeMonetization(region: .unknown)
+        XCTAssertTrue(unknown.canRequestAds, "an unknown region is served")
+        unknown.startAdsIfPermitted()
+        XCTAssertTrue(unknown.didStartSDK)
+        XCTAssertEqual(unknown.currentRequestPolicy.extras, ["npa": "1", "rdp": "1"])
     }
 
     /// 5.1.2(i): before the tracking decision no ad may be requested — the
@@ -292,17 +297,25 @@ final class GrowthAuditTests: XCTestCase {
     }
 
     /// A decided reader in an allowed region with no entitlement: the banner is
-    /// constructible, and its request policy is the same non-personalized one
-    /// the interstitial uses.
-    func testAnEligibleReaderGetsANonPersonalizedBannerRequestPolicy() {
-        let monetization = makeMonetization(tracking: .authorized)
-        monetization.startAdsIfPermitted()
-        XCTAssertTrue(monetization.didStartSDK)
-        XCTAssertTrue(monetization.canRequestAds)
-        XCTAssertEqual(monetization.currentRequestPolicy.extras["npa"], "1",
-                       "the banner is non-personalized even for an ATT-authorized reader")
-        XCTAssertEqual(monetization.currentRequestPolicy.extras["rdp"], "1")
-        XCTAssertEqual(monetization.currentRequestPolicy.trackingStatus, .authorized)
+    /// constructible, and its request policy is the same one the interstitial
+    /// uses — personalized after "Allow" (Owner 2026-09-15), otherwise not.
+    func testAnEligibleReaderGetsTheSameBannerRequestPolicyAsTheInterstitial() {
+        let authorized = makeMonetization(tracking: .authorized)
+        authorized.startAdsIfPermitted()
+        XCTAssertTrue(authorized.didStartSDK)
+        XCTAssertTrue(authorized.canRequestAds)
+        XCTAssertTrue(authorized.currentRequestPolicy.usesPersonalizedAds)
+        XCTAssertEqual(authorized.currentRequestPolicy.extras, [:])
+        XCTAssertEqual(authorized.currentRequestPolicy.trackingStatus, .authorized)
+
+        let denied = makeMonetization(tracking: .denied)
+        XCTAssertEqual(denied.currentRequestPolicy.extras, ["npa": "1", "rdp": "1"])
+
+        let unknownRegion = makeMonetization(region: .unknown, tracking: .authorized)
+        unknownRegion.startAdsIfPermitted()
+        XCTAssertTrue(unknownRegion.canRequestAds, "an unknown region is served")
+        XCTAssertEqual(unknownRegion.currentRequestPolicy.extras, ["npa": "1", "rdp": "1"],
+                       "…but never personalized")
     }
 
     /// The banner adapter registers the same extras as the interstitial adapter;
@@ -314,7 +327,9 @@ final class GrowthAuditTests: XCTestCase {
         XCTAssertTrue(source.contains("struct GoogleBannerView"))
         XCTAssertTrue(source.contains("currentOrientationAnchoredAdaptiveBanner"),
                       "the banner must be Google's anchored adaptive size, not a fixed 320x50")
-        XCTAssertEqual(source.components(separatedBy: "request.register(extras)").count - 1, 2,
-                       "both the interstitial and the banner request must register the extras")
+        XCTAssertEqual(source.components(separatedBy: "EconAdRequestBuilder.makeRequest(policy: policy)").count - 1, 3,
+                       "the interstitial load and both banner loads must build their request from the policy")
+        XCTAssertEqual(source.components(separatedBy: "request.register(networkExtras)").count - 1, 1,
+                       "one builder registers the extras for every format")
     }
 }

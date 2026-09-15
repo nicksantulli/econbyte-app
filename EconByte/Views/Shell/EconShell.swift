@@ -266,6 +266,24 @@ struct EconTabScaffold<Content: View>: View {
 
 // MARK: Root
 
+#if DEBUG
+/// DEBUG-only probe for the set-exit interstitial UI test: the hand-off state
+/// and the SDK's recorded impression count. Never compiled into Release.
+private struct SetExitAdProbe: View {
+    @ObservedObject var monetization: EconMonetization
+
+    var body: some View {
+        Color.clear
+            .frame(width: 1, height: 1)
+            .allowsHitTesting(false)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Set exit ad state")
+            .accessibilityValue("\(monetization.debugSetExitAdState);impressions=\(AdManager.shared.impressionCount)")
+            .accessibilityIdentifier("debug.setExitAdState")
+    }
+}
+#endif
+
 struct RootTabView: View {
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var streak: StreakManager
@@ -352,6 +370,18 @@ struct RootTabView: View {
                 .environmentObject(store)
                 .environmentObject(growth)
         }
+        // Phase 25: a set exit armed on the completion screen is presented from
+        // the window's root once the card cover has finished dismissing — never
+        // from the cover itself, which would take the ad down with it.
+        .onChange(of: router.cardModeSession?.id) { id in
+            guard id == nil else { return }
+            Task { await growth.resolvePendingSetExitBreak() }
+        }
+        #if DEBUG
+        .overlay(alignment: .topLeading) {
+            SetExitAdProbe(monetization: growth.monetization)
+        }
+        #endif
     }
 
     private static func configureTabBarAppearance() {

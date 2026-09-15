@@ -8,8 +8,9 @@ import SwiftUI
 // answered ATT prompt — before it can fire even once. The banner is the steady
 // surface: anchored to the bottom of a list surface (above the tab bar) or of
 // a card session (above the home indicator), sized by Google's adaptive rule
-// for the width it gets, non-personalized (`npa=1`, `rdp=1`) like every other
-// request in the app.
+// for the width it gets, with the same request policy as every other request
+// in the app (personalized only after an ATT "Allow" in a known allowed
+// region — `EconAdPersonalization`).
 //
 // It is policy-gated exactly like the interstitial. The view is not even
 // constructed on a surface the placement matrix (`EconAdSurface`) excludes,

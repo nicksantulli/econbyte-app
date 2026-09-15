@@ -22,7 +22,10 @@ struct CardModeView: View {
         ZStack {
             EconColor.background.ignoresSafeArea()
             if sessionDone {
-                SessionCompleteView(title: title, cardsCount: cards.count) {
+                // Phase 25: the set-exit interstitial is armed by the completion
+                // screen and presented by the shell after this cover is gone.
+                SessionCompleteView(title: title, cardsCount: cards.count,
+                                    offersSetExitAd: mode != .bookmarks) {
                     dismiss()
                 }
                 .environmentObject(streak)

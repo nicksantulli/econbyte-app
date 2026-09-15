@@ -804,8 +804,9 @@ final class InstrumentationPrivacyTests: XCTestCase {
                            "a \(looseKind) package requirement lets an unreviewed SDK build into "
                             + "the archive — pin every dependency exactly")
         }
-        XCTAssertEqual(project.components(separatedBy: "kind = exactVersion;").count - 1, 3,
-                       "all three vendor packages must be pinned exactly")
+        XCTAssertEqual(project.components(separatedBy: "kind = exactVersion;").count - 1, 4,
+                       "all four vendor packages (PostHog, Sentry, Google Mobile Ads, the Meta "
+                        + "mediation adapter) must be pinned exactly")
     }
 
     /// The resolved graph is committed, so a fresh clone and the machine that
@@ -826,6 +827,9 @@ final class InstrumentationPrivacyTests: XCTestCase {
         XCTAssertEqual(versions["posthog-ios"], "3.71.4")
         XCTAssertEqual(versions["sentry-cocoa"], "8.58.4")
         XCTAssertEqual(versions["swift-package-manager-google-mobile-ads"], "12.14.0")
+        // Phase 25: the only Google mediation adapter compatible with GMA 12.x.
+        XCTAssertEqual(versions["googleads-mobile-ios-mediation-meta"], "6.21.0")
+        XCTAssertEqual(versions["fbaudiencenetwork"], "6.21.0")
     }
 
     // MARK: - The app tracks, and every artefact says so
@@ -906,15 +910,20 @@ final class InstrumentationPrivacyTests: XCTestCase {
         XCTAssertEqual(app["NSPrivacyTrackingDomains"] as? [String],
                        ["googleads.g.doubleclick.net"])
 
-        // Every vendor manifest, examined rather than trusted: none of them
-        // declares a tracking domain, which is exactly why the app must declare
-        // one. If a future SDK version starts declaring its own, this fails and
-        // the app's list is re-derived from it instead of being carried over.
+        // Every vendor manifest, examined rather than trusted. Google's SDK
+        // declares no tracking domain, which is exactly why the app must declare
+        // its ad-serving one. Phase 25 adds Meta Audience Network (AdMob
+        // mediation), whose own manifest names its two endpoints — those are
+        // Meta's declaration, covered by Meta's manifest, and are pinned here so
+        // any NEW vendor domain still fails and is re-derived deliberately.
+        let knownVendorDomains: [String: Set<String>] = [
+            "FBAudienceNetwork.framework": ["ep1.facebook.com", "ep6.facebook.com"],
+        ]
         for (owner, manifest) in manifests where owner != "EconByte.app" {
-            let domains = manifest["NSPrivacyTrackingDomains"] as? [String] ?? []
-            XCTAssertTrue(domains.isEmpty,
-                          "\(owner) now declares tracking domains \(domains) — the app's "
-                           + "NSPrivacyTrackingDomains must be re-derived from the aggregate")
+            let domains = Set(manifest["NSPrivacyTrackingDomains"] as? [String] ?? [])
+            XCTAssertEqual(domains, knownVendorDomains[owner] ?? [],
+                           "\(owner) declares tracking domains \(domains) — the app's "
+                            + "NSPrivacyTrackingDomains must be re-derived from the aggregate")
         }
 
         // The reason the app-level answer must be `true` at all: the ad SDK
@@ -954,11 +963,10 @@ final class InstrumentationPrivacyTests: XCTestCase {
     /// copies are asserted: the source plist is what the next edit starts from,
     /// the built plist is what ships.
     ///
-    /// The string is asserted for its CLAIM, not just its presence. Every ad
-    /// request carries `npa=1` (`testEveryAdRequestIsNonPersonalized`), so a
-    /// string promising personalized ads would be a promise the binary does not
-    /// keep — which is the same class of defect as the label mismatch that
-    /// caused the rejection in the first place.
+    /// The string is asserted for its CLAIM, not just its presence. Phase 25
+    /// (Owner 2026-09-15): an "Allow" now makes ad requests personalized and
+    /// turns on usage stats, so the string must say both — and must no longer
+    /// carry 1.1.4's "does not personalize ads", which would now be false.
     func testBothInfoPlistsCarryAnHonestTrackingUsageDescription() throws {
         let source = try sourceInfoPlist()["NSUserTrackingUsageDescription"] as? String
         let built = Bundle.main.infoDictionary?["NSUserTrackingUsageDescription"] as? String
@@ -967,14 +975,12 @@ final class InstrumentationPrivacyTests: XCTestCase {
         XCTAssertEqual(built, purpose,
                        "the built Info.plist must carry the same string the source declares")
         XCTAssertFalse(purpose.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-        XCTAssertTrue(purpose.contains("measured"),
-                      "the string must say what authorization is actually used for")
-        XCTAssertTrue(purpose.lowercased().contains("does not personalize"),
-                      "every request is npa=1, so the string must not imply personalization")
-        // 1.1.4 maps an ATT Allow onto the analytics switch, so the prompt
-        // itself must say that Allow turns on anonymous usage stats.
-        XCTAssertTrue(purpose.lowercased().contains("anonymous usage"),
-                      "the purpose string must disclose that Allow turns on anonymous usage stats")
+        XCTAssertTrue(purpose.lowercased().contains("relevant"),
+                      "Allow personalizes ads, so the string must say ads become more relevant")
+        XCTAssertTrue(purpose.lowercased().contains("measure"),
+                      "Allow also turns on usage stats, so the string must say so")
+        XCTAssertFalse(purpose.lowercased().contains("does not personalize"),
+                       "an Allow now personalizes ads; the old promise would be false")
     }
 
     /// The strongest form of the claim: the app target's own compiled image
@@ -1006,36 +1012,30 @@ final class InstrumentationPrivacyTests: XCTestCase {
                        + "the prompt is unreachable and 5.1.2(i) is unfixed")
     }
 
-    /// Restoring ATT does NOT relax this, and that is the point of the test in
-    /// build 13. `config/app-factory/monetization-policy.json` sets
-    /// `adsPolicy.personalizedAdsMode = "disabled"` portfolio-wide; this asserts
-    /// that policy is expressed in the app both ways Google offers it — the
-    /// SDK-level switch and the per-request extra — so dropping one cannot
-    /// silently re-enable personalization. Scanned with comments stripped, for
-    /// the same reason `adapterSource` is: a commented-out line must not count.
-    func testEveryAdRequestIsNonPersonalized() throws {
+    /// Phase 25 (Owner 2026-09-15): personalization is decided in ONE place
+    /// (`EconAdPersonalization`) and both of Google's switches follow it — the
+    /// SDK-level personalization state and the per-request `npa`/`rdp` extras —
+    /// so they can never disagree. Scanned with comments stripped.
+    func testBothPersonalizationSwitchesFollowTheOneDecision() throws {
         let source = Self.strippingComments(
             try String(contentsOf: repoRoot().appendingPathComponent("EconByte/Services/AdManager.swift"),
                        encoding: .utf8))
-        XCTAssertTrue(source.contains("publisherPrivacyPersonalizationState = .disabled"),
-                      "the SDK-level personalization switch must be set before the SDK starts")
-        XCTAssertTrue(source.contains("request.register(extras)"),
-                      "the non-personalized extras must actually be registered on the request")
+        XCTAssertTrue(source.contains("publisherPrivacyPersonalizationState = policy.usesPersonalizedAds ? .default : .disabled"),
+                      "the SDK-level switch must follow the policy's decision")
+        XCTAssertTrue(source.contains("request.register(networkExtras)"),
+                      "the policy's extras must actually be registered on the request")
+        XCTAssertFalse(source.contains("publisherPrivacyPersonalizationState = .enabled"),
+                       "nothing may force personalization on outside the decision")
 
-        // RECONCILED (1.1.2): the extras themselves live in lineage A's policy
-        // layer, not in the adapter — `AdManager` is a provider adapter and
-        // every eligibility and request rule sits in `EconMonetization`, which
-        // is what makes the ad policy testable without the SDK. So the literal
-        // is asserted where it is written, and the adapter is asserted to
-        // register whatever the policy hands it. Both halves are required: a
-        // policy nobody registers is as useless as a registration with no policy.
         let policy = Self.strippingComments(
             try String(contentsOf: repoRoot().appendingPathComponent("EconByte/Services/EconMonetization.swift"),
                        encoding: .utf8))
-        XCTAssertTrue(policy.contains("\"npa\": \"1\""),
-                      "every ad request must carry the npa=1 extra")
-        XCTAssertTrue(policy.contains("\"rdp\": \"1\""),
-                      "and the restricted-data-processing extra 1.1 shipped with")
+        XCTAssertTrue(policy.contains("personalized ? [:] : [\"npa\": \"1\", \"rdp\": \"1\"]"),
+                      "non-personalized requests carry both npa=1 and rdp=1")
+        XCTAssertTrue(policy.contains("region.permitsPersonalizedAds"),
+                      "the decision must consult the region")
+        XCTAssertTrue(policy.contains("tracking.providerWouldPermitPersonalizedAds"),
+                      "the decision must consult the ATT answer")
     }
 
     // MARK: - Source helpers

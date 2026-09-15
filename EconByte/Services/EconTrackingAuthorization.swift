@@ -50,18 +50,10 @@ public enum EconTrackingStatus: String, Equatable, CaseIterable, Sendable {
     /// except `.notDetermined` unblocks the ad request.
     public var isDecided: Bool { self != .notDetermined }
 
-    /// Whether the *provider* would be allowed to personalize on this status.
-    ///
-    /// EconByte still answers `npa=1` on every request whatever this says: the
-    /// portfolio invariant `adsPolicy.personalizedAdsMode: "disabled"` in
-    /// `config/app-factory/monetization-policy.json` is enforced for every app
-    /// by `scripts/release_evidence_gate.mjs` (POLICY_PERSONALIZATION) and by
-    /// DudleyCore's `MonetizationPolicyRegistry`, which throws on
-    /// `personalizedAdsEnabled` for any app. Turning personalization on for
-    /// authorized readers is the follow-up that actually collects the eCPM this
-    /// prompt makes available, and it is a portfolio policy revision, not an
-    /// EconByte edit. This property is the seam that revision will use; nothing
-    /// reads it today, and `EconAdRequestPolicy.extras` pins that.
+    /// Whether this answer allows a personalized ad request. Phase 25 (Owner
+    /// decision 2026-09-15): only an "Allow". `EconAdPersonalization` combines
+    /// it with the region — an EEA/UK/CH reader gets no ads at all, and an
+    /// unknown region is always non-personalized.
     public var providerWouldPermitPersonalizedAds: Bool { self == .authorized }
 }
 

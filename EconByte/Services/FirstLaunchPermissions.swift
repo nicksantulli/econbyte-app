@@ -62,8 +62,9 @@ import UIKit
 //
 // Ads: no provider call precedes the ATT answer (5.1.2(i); `adRequestsPermitted`
 // is status-only); the `.systemPrompt` blocker is held for the whole flow and
-// the SDK is started only after it has run. Requests stay `npa=1`/`rdp=1` for
-// every answer — personalization is a portfolio policy revision.
+// the SDK is started only after it has run. Phase 25: an "Allow" (outside the
+// EEA/UK/CH, in a known region) makes ad requests personalized; every other
+// answer keeps them `npa=1`/`rdp=1` (`EconAdPersonalization`).
 //
 // GDPR note (flagged for the Owner, not decided here): an ATT "Allow" is
 // Apple's tracking permission, not necessarily GDPR/ePrivacy consent for

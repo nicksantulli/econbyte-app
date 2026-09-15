@@ -40,7 +40,7 @@
 	     because 1.1.4 maps an Allow onto the analytics switch. See
 	     EconByte/Services/FirstLaunchPermissions.swift. -->
 	<key>NSUserTrackingUsageDescription</key>
-	<string>Lets the ads that keep EconByte free be measured and turns on anonymous usage stats. EconByte does not personalize ads.</string>
+	<string>Allow tracking to see ads that are more relevant to you and to help us measure how the app is used.</string>
 	<!-- Instrumentation credentials, injected at build time from the gitignored
 	     Config/Secrets.xcconfig via Config/Instrumentation.xcconfig. EMPTY here
 	     and in any checkout without that file, which keeps the SDKs inert (see

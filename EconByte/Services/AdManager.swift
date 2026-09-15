@@ -21,12 +21,52 @@ import UIKit
 // asks, never decides, and never requests unless `EconMonetization` calls it —
 // which that type will not do before the tracking decision.
 //
-// See `CONTENT-DECISIONS.md` D2 for what 1.0 did. Requests remain
-// non-personalized (`npa=1`, `rdp=1`) for every ATT outcome, authorized
-// included, and capped at a `G` content rating.
+// See `CONTENT-DECISIONS.md` D2 for what 1.0 did.
+//
+// Personalization (Owner decision 2026-09-15): a request is personalized only
+// when `EconAdPersonalization` says so — a region known to be outside the
+// EEA/UK/CH block list AND an ATT "Allow". Every other request is
+// non-personalized (`npa=1`, `rdp=1`, SDK switch `.disabled`). The policy is
+// rebuilt for every request, so a Tracking change in iOS Settings applies to
+// the next one. Content rating stays `G` (EconByte is rated 4+).
 
 #if canImport(GoogleMobileAds)
 import GoogleMobileAds
+#if canImport(FBAudienceNetwork)
+import FBAudienceNetwork
+#endif
+
+/// Builds every ad request — interstitial and banner — from the policy, so the
+/// SDK-level personalization switch, the per-request extras and the mediation
+/// partners' tracking flags can never disagree.
+@MainActor
+enum EconAdRequestBuilder {
+    static func makeRequest(policy: EconAdRequestPolicy) -> Request {
+        applyPrivacy(policy)
+        let request = Request()
+        let extras = policy.extras
+        if !extras.isEmpty {
+            let networkExtras = Extras()
+            networkExtras.additionalParameters = extras
+            request.register(networkExtras)
+        }
+        return request
+    }
+
+    /// The process-wide half of the decision. Google's SDK default when the
+    /// request may be personalized; `.disabled` otherwise.
+    static func applyPrivacy(_ policy: EconAdRequestPolicy) {
+        let configuration = MobileAds.shared.requestConfiguration
+        configuration.maxAdContentRating = .general
+        configuration.publisherPrivacyPersonalizationState = policy.usesPersonalizedAds ? .default : .disabled
+        #if canImport(FBAudienceNetwork)
+        // Meta Audience Network (AdMob mediation) reads its own flag rather
+        // than Google's request: true only for a personalized request, which
+        // already requires an ATT "Allow".
+        FBAdSettings.setAdvertiserTrackingEnabled(policy.usesPersonalizedAds)
+        #endif
+    }
+}
 
 @MainActor
 final class AdManager: NSObject, EconInterstitialAdapting {
@@ -61,11 +101,8 @@ final class AdManager: NSObject, EconInterstitialAdapting {
         didStart = true
         pendingPolicy = policy
 
-        let configuration = MobileAds.shared.requestConfiguration
-        configuration.maxAdContentRating = .general
-        // Belt and braces alongside the per-request `npa` extra: this forces
-        // non-personalized treatment for every request in the process.
-        configuration.publisherPrivacyPersonalizationState = .disabled
+        // Set before the SDK starts and again before every request.
+        EconAdRequestBuilder.applyPrivacy(policy)
 
         MobileAds.shared.start { _ in
             Task { @MainActor in AdManager.shared.preload(policy: policy) }
@@ -83,7 +120,7 @@ final class AdManager: NSObject, EconInterstitialAdapting {
         Task { @MainActor in
             do {
                 let ad = try await InterstitialAd.load(with: EconAdUnit.current,
-                                                       request: Self.makeRequest(policy: policy))
+                                                       request: EconAdRequestBuilder.makeRequest(policy: policy))
                 self.interstitial = ad
                 self.loadedAt = Date()
                 self.isLoading = false
@@ -105,7 +142,10 @@ final class AdManager: NSObject, EconInterstitialAdapting {
     }
 
     func present() async -> Bool {
-        guard let ad = interstitial, let presenter = Self.topViewController() else {
+        // Phase 25: only ever from a stable root. Presenting on a view
+        // controller that is itself about to be dismissed (the card cover, in
+        // 1.1.2–1.1.5) tears the ad down as it appears.
+        guard let ad = interstitial, let presenter = LiveAdPresentationEnvironment.stableRoot() else {
             return false
         }
         do {
@@ -126,26 +166,6 @@ final class AdManager: NSObject, EconInterstitialAdapting {
         return true
     }
 
-    private static func makeRequest(policy: EconAdRequestPolicy) -> Request {
-        let request = Request()
-        let extras = Extras()
-        extras.additionalParameters = policy.extras
-        request.register(extras)
-        return request
-    }
-
-    /// Walks the key window's root VC chain so interstitials present correctly on
-    /// iPhone and in iPad compatibility mode. `present(from: nil)` is unreliable.
-    private static func topViewController() -> UIViewController? {
-        let root = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)?
-            .rootViewController
-        var top = root
-        while let presented = top?.presentedViewController { top = presented }
-        return top
-    }
 }
 
 extension AdManager: FullScreenContentDelegate {
@@ -220,29 +240,29 @@ struct GoogleBannerView: UIViewRepresentable {
         let view = BannerView(adSize: size)
         view.adUnitID = adUnitID
         view.delegate = context.coordinator
-        view.load(Self.makeRequest(policy: policy))
+        context.coordinator.requestedPersonalized = policy.usesPersonalizedAds
+        view.load(EconAdRequestBuilder.makeRequest(policy: policy))
         return view
     }
 
     func updateUIView(_ view: BannerView, context: Context) {
         let size = currentOrientationAnchoredAdaptiveBanner(width: max(width, 320))
-        guard abs(view.adSize.size.width - size.size.width) > 1 else { return }
-        view.adSize = size
-        view.load(Self.makeRequest(policy: policy))
-    }
-
-    private static func makeRequest(policy: EconAdRequestPolicy) -> Request {
-        let request = Request()
-        let extras = Extras()
-        extras.additionalParameters = policy.extras
-        request.register(extras)
-        return request
+        let resized = abs(view.adSize.size.width - size.size.width) > 1
+        // Phase 25: a Tracking change in iOS Settings flips the decision; the
+        // strip reloads with the new request instead of refreshing the old one.
+        let policyChanged = context.coordinator.requestedPersonalized != policy.usesPersonalizedAds
+        guard resized || policyChanged else { return }
+        if resized { view.adSize = size }
+        context.coordinator.requestedPersonalized = policy.usesPersonalizedAds
+        view.load(EconAdRequestBuilder.makeRequest(policy: policy))
     }
 
     @MainActor
     final class Coordinator: NSObject, BannerViewDelegate {
         let placement: EBAdPlacement
         let onLoadedHeight: (CGFloat) -> Void
+        /// Whether the strip's current request was personalized.
+        var requestedPersonalized: Bool?
         /// The slot's last reported fill outcome; `banner_load_finished_v1` is
         /// emitted when it changes, not on every 60-second refresh.
         private var lastOutcome: EBOutcome?
@@ -291,6 +311,33 @@ struct GoogleBannerView: View {
     var body: some View { Color.clear.frame(height: 0) }
 }
 #endif
+
+// MARK: - Presenter (Phase 25)
+
+/// The live `EconAdPresentationEnvironment`: the foreground-active key window's
+/// root view controller, with nothing presented over it and no transition
+/// running. Outside the SDK conditional so it compiles either way.
+@MainActor
+final class LiveAdPresentationEnvironment: EconAdPresentationEnvironment {
+    static let shared = LiveAdPresentationEnvironment()
+
+    var isReadyToPresentInterstitial: Bool { Self.stableRoot() != nil }
+
+    static func stableRoot() -> UIViewController? {
+        guard UIApplication.shared.applicationState == .active,
+              let root = UIApplication.shared.connectedScenes
+                .compactMap({ $0 as? UIWindowScene })
+                .filter({ $0.activationState == .foregroundActive })
+                .flatMap(\.windows)
+                .first(where: \.isKeyWindow)?
+                .rootViewController,
+              root.presentedViewController == nil,
+              root.transitionCoordinator == nil,
+              !root.isBeingDismissed
+        else { return nil }
+        return root
+    }
+}
 
 // MARK: - Provider error classification (Phase 11)
 
