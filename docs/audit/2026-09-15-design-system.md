@@ -6,7 +6,7 @@ and clearly labelled with how much they cost … I only want app copy that is ne
 Base: `main` @ b0c4f9e (1.1.4 build 16, in App Review). Branch `claude/econbyte-115-design-story`.
 Evidence: `~/dudley-evidence-retention/econbyte/1.1.5/phase19/` — `shots/before-*` (1.1.4 code) and `shots/after-*`
 (1.1.5 code), captured by the same walk (`EconByteUITests/DesignAuditScreenshotTests.swift`) on iPhone 17 (iOS 26.5)
-in system dark, system light and at the largest accessibility text size (AX5).
+in system dark, system light and at the largest accessibility text size (AX5, set on the simulator with `simctl ui content_size`).
 
 ## 1. Inventory
 
@@ -32,7 +32,7 @@ in system dark, system light and at the largest accessibility text size (AX5).
 
 | # | Layer | Finding | Evidence |
 |---|---|---|---|
-| F1 | Type | **No Dynamic Type.** 160 `.font(.system(size:))` calls across 20 view files (BriefView 32, LessonView 25, HomeTabView 15, SettingsView 13, BrowseTabView 12, SessionCompleteView 12, CourseView 10, …). Fixed point sizes never scale, so readers who set a larger text size got none of it. | `before-dark-ax5-*` are pixel-identical in text size to `before-dark-*` (e.g. `-19-card-front`, `-01-home-top`) |
+| F1 | Type | **No Dynamic Type.** 160 `.font(.system(size:))` calls across 20 view files (BriefView 32, LessonView 25, HomeTabView 15, SettingsView 13, BrowseTabView 12, SessionCompleteView 12, CourseView 10, …). A font given as a fixed point size never scales with the reader's text-size setting, by construction. | code inventory. (The first AX5 walks passed `-UIPreferredContentSizeCategoryName` as a launch argument, which iOS 26 ignored in both the before and after runs, so those frames are at default size and are not evidence; the after-AX5 set was re-shot with the simulator's own text-size setting.) |
 | F2 | Type | ~22 distinct sizes in use (9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 24, 28, 40, 48, 60 …) with no scale. | grep inventory |
 | F3 | Colour | **Secondary text fails WCAG AA.** `Econ.subtext` #5A7A8A is **2.53:1** on the navy ground and **2.13:1** on the raised surface (AA needs 4.5:1); used 81 times for captions, metadata, section labels, legal fine print, chart axes. On the light card face it was 4.34:1 (also below AA for small text). | contrast calc in `DesignSystemTests.testEveryTextTokenMeetsWCAGAAOnEveryGround` |
 | F4 | Colour | 12 different white opacities for text (0.55 … 0.92, 47 uses); locked tiles at 0.55 were 3.94:1 on a surface. | grep |
