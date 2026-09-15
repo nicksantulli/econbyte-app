@@ -497,7 +497,7 @@ struct SourcesPolicyView: View {
         ("The Daily Brief",
          "Built only from official releases on a fixed list of statistics agencies, central banks and international organizations, never from news articles. An AI model drafts it from the releases' own text; it is published only after automated checks of every link and number and a second fact-check. Every figure links to its release. Published each U.S. federal business day."),
         ("Courses",
-         "Charts that illustrate a concept use synthetic data and say so. Quizzes check the lesson, not the market."),
+         "Every lesson picture says what its numbers rest on: the lesson's own figures, a calculation from them, a named official data series, or an illustration labeled as one. Quizzes check the lesson, not the market."),
         ("Not advice",
          "EconByte is educational. Nothing in it is investment, tax or financial advice, and nothing in it predicts prices."),
         ("Corrections",
