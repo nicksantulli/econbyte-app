@@ -39,6 +39,8 @@ struct LessonView: View {
     @State private var showSources = false
     /// The choice on screen for each check, by beat index.
     @State private var checkChoices: [Int: Int] = [:]
+    /// 1.1.6: a finished lesson counts once as a rating moment.
+    @State private var didNoteCompletion = false
 
     private var accessible: Bool { lesson.isPreview || store.isProActive }
     private var lastPage: Int { lesson.pageCount - 1 }
@@ -188,6 +190,12 @@ struct LessonView: View {
         withAnimation(reduceMotion ? nil : .easeOut(duration: 0.22)) { page = target }
         if target == lastPage {
             progress.markCompleted(lessonID: lesson.lessonID, courseID: course.courseID)
+            if !didNoteCompletion {
+                didNoteCompletion = true
+                // The rating request itself waits until the course closes
+                // (`RootTabView`), so it never covers the recap.
+                EconGrowth.shared.review.noteLessonCompleted()
+            }
         } else {
             progress.recordPage(target, lessonID: lesson.lessonID)
         }

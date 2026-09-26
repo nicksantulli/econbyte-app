@@ -344,7 +344,15 @@ struct RootTabView: View {
                 .environmentObject(courseProgress)
         }
         .onChange(of: router.courseSession?.id) { id in
-            if id == nil { router.presentPendingProPaywall() }
+            guard id == nil else { return }
+            if router.pendingProPaywall != nil {
+                router.presentPendingProPaywall()
+            } else {
+                // 1.1.6: a lesson finished in the course just closed is a
+                // moment to ask for an App Store rating (the same rules as a
+                // finished card set; Apple decides whether the sheet shows).
+                growth.review.requestReviewIfEligible()
+            }
         }
         .sheet(isPresented: $router.showBookmarks) {
             BookmarksView()

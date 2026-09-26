@@ -42,7 +42,7 @@ struct PackOfferView: View {
                                     familyShared: store.familySharedProductIDs.contains(pack.productID)
                                         || (store.isPackBundlePurchased
                                             && store.familySharedProductIDs.contains(PurchaseManager.ProductID.packBundle.rawValue)),
-                                    readable: readable)
+                                    readable: store.hasPaidAccess(packProductID: pack.productID))
         return PurchaseButtonModel.make(action: "Unlock",
                                         price: productID.map { store.priceState(for: $0) } ?? .unavailable,
                                         ownedLabel: owned,
@@ -63,13 +63,18 @@ struct PackOfferView: View {
                                          onRetry: { Task { await store.loadProducts() } },
                                          action: buy),
                   restoreIdentifier: "pack-\(pack.id)-restore",
-                  onRestore: readable ? nil : restore,
+                  onRestore: store.hasPaidAccess(packProductID: pack.productID) ? nil : restore,
                   restoreDisabled: working) {
             if readable {
+                if let end = store.rewardedUnlockEnd(packProductID: pack.productID),
+                   !store.hasPaidAccess(packProductID: pack.productID) {
+                    RewardedUnlockNote(end: end)
+                }
                 topicGrid
             } else {
                 topicLine
                 preview
+                RewardedPackOfferButton(pack: pack)
             }
         }
         .onAppear { recordShownOnce() }

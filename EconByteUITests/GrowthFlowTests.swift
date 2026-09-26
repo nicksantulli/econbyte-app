@@ -284,8 +284,10 @@ final class GrowthFlowTests: XCTestCase {
     /// public test unit. Needs network for the test fill.
     func testAnEligibleSetExitPresentsTheTestInterstitialFromHomeAndClosesCleanly() throws {
         let app = XCUIApplication()
+        // 1.1.6: `-econNoMidpointBreak` keeps the halfway break (tested on its
+        // own below) from spending the 10-minute spacing before this exit.
         app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-econResetGrowthState",
-                                "-econSeedAdEligibleInstall", "-econTrackingAnswered"]
+                                "-econSeedAdEligibleInstall", "-econTrackingAnswered", "-econNoMidpointBreak"]
         app.launch()
         let wordmark = app.descendants(matching: .any)["econWordmark"]
         XCTAssertTrue(wordmark.waitForExistence(timeout: 15), "Home should render on cold launch")
@@ -394,6 +396,113 @@ final class GrowthFlowTests: XCTestCase {
         home.name = "p25-set-exit-back-home"
         home.lifetime = .keepAlways
         add(home)
+    }
+
+    /// 1.1.6: the halfway break. An ad-eligible install opens today's set and
+    /// taps Next past the middle card; Google's test interstitial appears over
+    /// the card session, and closing it returns the reader to the next card —
+    /// the session is not closed or restarted.
+    func testTheHalfwayBreakPresentsBetweenCardsAndReturnsToTheSet() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-econResetGrowthState",
+                                "-econSeedAdEligibleInstall", "-econTrackingAnswered"]
+        app.launch()
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 15))
+        _ = app.descendants(matching: .any)["ad.banner.banner_home"].waitForExistence(timeout: 10)
+
+        let cta = app.buttons.containing(
+            NSPredicate(format: "label CONTAINS 'Start' OR label CONTAINS 'Review'")).firstMatch
+        XCTAssertTrue(cta.waitForExistence(timeout: 15))
+        cta.tap()
+        let counter = app.staticTexts.containing(
+            NSPredicate(format: "label BEGINSWITH 'Card ' AND label CONTAINS ' of '")).firstMatch
+        XCTAssertTrue(counter.waitForExistence(timeout: 15), "card mode should open")
+        let total = Int((counter.label.components(separatedBy: " of ").last ?? "").trimmingCharacters(in: .whitespaces)) ?? 0
+        XCTAssertGreaterThanOrEqual(total, 6, "today's set is long enough for a halfway break")
+
+        let next = app.buttons.containing(NSPredicate(format: "label CONTAINS 'Next'")).firstMatch
+        for _ in 0..<(total / 2) {
+            XCTAssertTrue(next.waitForExistence(timeout: 10))
+            next.tap()
+        }
+
+        var sawAd = false
+        let deadline = Date().addingTimeInterval(20)
+        while Date() < deadline {
+            if app.webViews.count > 0 && !next.isHittable { sawAd = true; break }
+            _ = app.webViews.firstMatch.waitForExistence(timeout: 0.5)
+        }
+        XCTAssertTrue(sawAd, "Google's test interstitial should appear after Next past the middle card")
+        let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        shot.name = "116-midpoint-interstitial"
+        shot.lifetime = .keepAlways
+        add(shot)
+
+        let close = app.buttons.matching(NSPredicate(
+            format: "label CONTAINS[c] 'close' OR identifier CONTAINS[c] 'close'")).firstMatch
+        let closeDeadline = Date().addingTimeInterval(60)
+        while Date() < closeDeadline {
+            if close.exists, close.isEnabled, close.isHittable { close.tap(); break }
+            _ = close.waitForExistence(timeout: 1)
+        }
+        if close.exists, !close.isEnabled {
+            throw XCTSkip("Google's test unit served a video creative whose close control stayed disabled; "
+                          + "the halfway presentation itself was asserted above.")
+        }
+        if close.exists, close.isEnabled, close.isHittable { close.tap() }
+
+        XCTAssertTrue(next.waitForExistence(timeout: 15))
+        let cardDeadline = Date().addingTimeInterval(15)
+        while Date() < cardDeadline, !next.isHittable { _ = next.waitForExistence(timeout: 0.5) }
+        XCTAssertTrue(next.isHittable, "the reader is back in the set")
+        XCTAssertEqual(counter.label, "Card \(total / 2 + 1) of \(total)",
+                       "the set continues from the card after the break")
+        let back = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        back.name = "116-midpoint-back-in-set"
+        back.lifetime = .keepAlways
+        add(back)
+    }
+
+    /// 1.1.6: the rewarded pack trial. An ad-eligible install sees "Watch an ad"
+    /// on a locked pack; watching Google's test rewarded ad to the end opens the
+    /// pack's topics with a "Free until …" note, while the paid Unlock stays.
+    func testWatchingARewardedAdOpensALockedPackForTheDay() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-skipStudioIntro", "-EBSkipConsentPrompt", "-econResetGrowthState",
+                                "-econSeedAdEligibleInstall", "-econTrackingAnswered"]
+        app.launch()
+        XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 15))
+        app.tabBars.buttons["Browse"].tap()
+
+        let watch = app.buttons["pack-markets-watchAd"]
+        for _ in 0..<8 where !watch.exists { app.swipeUp() }
+        XCTAssertTrue(watch.waitForExistence(timeout: 30), "a locked pack offers the rewarded trial once an ad loads")
+        for _ in 0..<3 where !watch.isHittable { app.swipeUp() }
+        let offer = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        offer.name = "116-rewarded-offer"
+        offer.lifetime = .keepAlways
+        add(offer)
+        watch.tap()
+
+        XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: 20), "the rewarded ad plays")
+        let close = app.buttons.matching(NSPredicate(
+            format: "label CONTAINS[c] 'close' OR identifier CONTAINS[c] 'close'")).firstMatch
+        let note = app.descendants(matching: .any)["pack-rewardedUnlockNote"]
+        let deadline = Date().addingTimeInterval(75)
+        while Date() < deadline, !note.exists {
+            if close.exists, close.isEnabled, close.isHittable { close.tap() }
+            _ = note.waitForExistence(timeout: 1)
+        }
+        if !note.exists, close.exists, !close.isEnabled {
+            throw XCTSkip("Google's test rewarded creative never enabled its close control on this Mac")
+        }
+        XCTAssertTrue(note.waitForExistence(timeout: 10), "the pack opens for the day")
+        XCTAssertTrue(app.buttons["pack-markets-buy"].exists, "the paid Unlock stays on offer")
+        XCTAssertFalse(watch.exists, "no second offer on an open pack")
+        let opened = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        opened.name = "116-rewarded-pack-open"
+        opened.lifetime = .keepAlways
+        add(opened)
     }
 
     /// Design section 10.1: each consent choice is presented after the first

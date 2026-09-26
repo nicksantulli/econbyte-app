@@ -540,26 +540,26 @@ final class GrowthSystemsTests: XCTestCase {
 
     // MARK: - 4. Placement and caps (spec section 9.3)
 
-    func testTheOnlyPlacementIsDailySetExit() {
-        XCTAssertEqual(EconAdPlacement.allCases, [.dailySetExit])
+    func testThePlacementsAreTheSetExitAndTheHalfwayBreak() {
+        XCTAssertEqual(EconAdPlacement.allCases, [.dailySetExit, .setMidpoint])
         XCTAssertEqual(EconAdPlacement.dailySetExit.rawValue, "daily_set_exit")
+        XCTAssertEqual(EconAdPlacement.setMidpoint.rawValue, "set_midpoint")
     }
 
-    /// Phase 11 pacing audit (see `EconAdThresholds`), bounded by the portfolio
-    /// cap policy EconByte declares no override for: no interstitial in the
-    /// install's first session, two completed sets first, one per foreground
-    /// session, 15 minutes apart, two per calendar day AND per rolling 24 h.
-    func testShippedThresholdsMatchThePhase11PacingAudit() {
+    /// 1.1.6 pacing (see `EconAdThresholds`), EconByte's declared override of
+    /// the portfolio cap policy: no interstitial in the install's first
+    /// session, one completed set first, two per foreground session, 10 minutes
+    /// apart, four per calendar day AND per rolling 24 h.
+    func testShippedThresholdsMatchThe116Override() {
         let thresholds = EconAdThresholds()
-        XCTAssertEqual(thresholds.minimumCompletedSets, 2,
-                       "a fresh install's first set exit stays ad-free")
+        XCTAssertEqual(thresholds.minimumCompletedSets, 1)
         XCTAssertEqual(thresholds.initialSessionInterstitials, 0, "portfolio initialSessionInterstitials")
         XCTAssertEqual(thresholds.setsSinceLastAd, 1)
-        XCTAssertEqual(thresholds.minimumInterval, 15 * 60,
-                       "the retention guardrail: never two interstitials within 15 minutes")
-        XCTAssertEqual(thresholds.perSession, 1, "portfolio maximumInterstitialsPerForegroundSession")
-        XCTAssertEqual(thresholds.perDay, 2,
-                       "the other guardrail: never more than two in a day")
+        XCTAssertEqual(thresholds.minimumInterval, 10 * 60,
+                       "portfolio: at most one interstitial in any 10 minutes")
+        XCTAssertEqual(thresholds.perSession, 2, "override maximumInterstitialsPerForegroundSession")
+        XCTAssertEqual(thresholds.perDay, 4, "override maximumInterstitialsPer24Hours")
+        XCTAssertEqual(thresholds.minimumMidpointDeckSize, 6)
         XCTAssertEqual(thresholds.rollingWindow, 24 * 60 * 60, "portfolio maximumInterstitialsPer24Hours")
     }
 
@@ -587,9 +587,10 @@ final class GrowthSystemsTests: XCTestCase {
         var state = eligibleState(now: now, dayKey: "2026-09-02")
         state.lastShownAt = date("2026-09-01T23:50:00Z").addingTimeInterval(-3600)
         state.shownToday = 0
-        state.recentShownAt = [date("2026-09-01T22:30:00Z"), date("2026-09-01T23:00:00Z")]
+        state.recentShownAt = [date("2026-09-01T21:30:00Z"), date("2026-09-01T22:00:00Z"),
+                               date("2026-09-01T22:30:00Z"), date("2026-09-01T23:00:00Z")]
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-02"), .dailyCapReached,
-                       "two in the last 24 hours caps the exit even on a new calendar day")
+                       "four in the last 24 hours caps the exit even on a new calendar day")
         let later = date("2026-09-02T22:31:00Z")
         XCTAssertEqual(decide(state: state, now: later, dayKey: "2026-09-02"), .eligible,
                        "the window rolls off")
@@ -644,7 +645,7 @@ final class GrowthSystemsTests: XCTestCase {
                       .bookmarks, .bookmarksReview, .setComplete, .paywall, .settings, .firstLaunch] {
             XCTAssertNil(never.bannerPlacement, "\(never) must never carry a banner")
         }
-        XCTAssertEqual(EconAdSurface.allCases.filter(\.allowsInterstitial), [.setComplete])
+        XCTAssertEqual(EconAdSurface.allCases.filter(\.allowsInterstitial), [.cardMode, .setComplete])
     }
 
     func testDeclaredCategoryBlocksCoverThePortfolioPolicy() {
@@ -662,12 +663,15 @@ final class GrowthSystemsTests: XCTestCase {
                        .eligible)
     }
 
-    func testFirstCompletedSetsAreBelowTheLifetimeThreshold() {
+    func testNoCompletedSetIsBelowTheLifetimeThreshold() {
         let now = date("2026-09-01T12:00:00Z")
         var state = eligibleState(now: now, dayKey: "2026-09-01")
-        state.completedSetsLifetime = 1
+        state.completedSetsLifetime = 0
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
-                       .belowLifetimeSetThreshold(2))
+                       .belowLifetimeSetThreshold(1))
+        state.completedSetsLifetime = 1
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"), .eligible,
+                       "1.1.6: from the second session, the first finished set may carry an ad")
     }
 
     func testAbandonedSetIsNotEligible() {
@@ -689,37 +693,41 @@ final class GrowthSystemsTests: XCTestCase {
                        .eligible, "every completed set after the second is an eligible exit")
     }
 
-    func testFifteenMinutesMustElapseBetweenInterstitials() {
+    func testTenMinutesMustElapseBetweenInterstitials() {
         let now = date("2026-09-01T12:00:00Z")
         var state = eligibleState(now: now, dayKey: "2026-09-01")
-        state.lastShownAt = now.addingTimeInterval(-600)
+        state.lastShownAt = now.addingTimeInterval(-9 * 60)
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
-                       .belowTimeThreshold(15 * 60))
-    }
-
-    func testOneInterstitialPerForegroundSession() {
-        let now = date("2026-09-01T12:00:00Z")
-        var state = eligibleState(now: now, dayKey: "2026-09-01")
-        state.shownThisSession = 0
+                       .belowTimeThreshold(10 * 60))
+        state.lastShownAt = now.addingTimeInterval(-10 * 60)
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"), .eligible)
-        state.shownThisSession = 1
-        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
-                       .sessionCapReached, "portfolio cap: one per foreground session")
     }
 
-    func testTwoInterstitialsPerCalendarDay() {
+    func testTwoInterstitialsPerForegroundSession() {
         let now = date("2026-09-01T12:00:00Z")
         var state = eligibleState(now: now, dayKey: "2026-09-01")
-        state.shownToday = 2
+        state.shownThisSession = 1
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"), .eligible)
+        state.shownThisSession = 2
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
+                       .sessionCapReached, "override cap: two per foreground session")
+    }
+
+    func testFourInterstitialsPerCalendarDay() {
+        let now = date("2026-09-01T12:00:00Z")
+        var state = eligibleState(now: now, dayKey: "2026-09-01")
+        state.shownToday = 3
+        XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"), .eligible)
+        state.shownToday = 4
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-01"),
                        .dailyCapReached)
     }
 
-    /// Yesterday's two impressions must not spill into today.
+    /// Yesterday's impressions must not spill into today.
     func testDailyCapRollsOverAtTheLocalCalendarDay() {
         let now = date("2026-09-02T12:00:00Z")
         var state = eligibleState(now: now, dayKey: "2026-09-01")
-        state.shownToday = 2
+        state.shownToday = 4
         XCTAssertEqual(decide(state: state, now: now, dayKey: "2026-09-02"),
                        .eligible)
     }
@@ -765,7 +773,7 @@ final class GrowthSystemsTests: XCTestCase {
         monetization.noteForegroundSessionBegan()
         monetization.noteSetCompleted(normally: true)
         let outcome = await monetization.presentIfEligibleAtSetExit()
-        XCTAssertEqual(outcome, .notEligible(.belowLifetimeSetThreshold(2)))
+        XCTAssertEqual(outcome, .notEligible(.initialSession))
         XCTAssertEqual(adapter.presentCount, 0)
     }
 
@@ -813,10 +821,10 @@ final class GrowthSystemsTests: XCTestCase {
 
         // The very next completed set is an eligible exit under the 1.1.3
         // pacing, so what now holds the second interstitial back is the
-        // 15-minute floor — the retention guardrail that did not move.
+        // 10-minute floor (1.1.6; was 15).
         monetization.noteSetCompleted(normally: true)
         let second = await monetization.presentIfEligibleAtSetExit()
-        XCTAssertEqual(second, .notEligible(.belowTimeThreshold(15 * 60)))
+        XCTAssertEqual(second, .notEligible(.belowTimeThreshold(10 * 60)))
     }
 
     @MainActor

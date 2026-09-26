@@ -200,8 +200,8 @@ struct SessionCompleteView: View {
         showPrimer = false
     }
 
-    /// The one 1.1 interstitial placement: after the session-complete state and
-    /// before returning to Home.
+    /// The set-exit interstitial placement: after the session-complete state and
+    /// before returning to Home (1.1.6 adds the halfway break in card mode).
     ///
     /// Phase 25: the exit is DECIDED here and PRESENTED by the shell. 1.1.2–1.1.5
     /// presented the interstitial from inside the card cover and then called

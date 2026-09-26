@@ -227,10 +227,17 @@ final class PurchaseManager: ObservableObject {
     @Published private(set) var isLoadingProducts = false
     @Published private(set) var hasAttemptedProductLoad = false
     @Published private(set) var productsLoadError: String?
+    /// 1.1.6: packs opened for 24 hours by a rewarded ad, product id → end.
+    /// Not a purchase and never an entitlement: it opens the pack's cards and
+    /// nothing else (no ownership label, no restore, no bundle credit).
+    @Published private(set) var rewardedPackUnlocks: [String: Date] = [:]
 
     var proExpiration: Date? { proEntitlement?.expirationDate }
     var proProductID: String? { proEntitlement?.productID }
 
+    static let rewardedUnlocksKey = "econ.rewarded.packUnlocks"
+    /// How long a rewarded pack unlock lasts.
+    static let rewardedUnlockDuration: TimeInterval = 24 * 60 * 60
     static let removeAdsMirrorKey = "iap.removeAds.purchased"
     static let proMirrorKey  = "iap.pro.active"
 
@@ -264,16 +271,50 @@ final class PurchaseManager: ObservableObject {
             || (isPackBundlePurchased && ProductID.packs.contains { $0.rawValue == productID })
     }
 
-    /// Access to a pack: owned outright ∨ the bundle ∨ Pro active (D19). A pack
-    /// bought outright (or via the bundle) stays owned after Pro lapses; Pro
-    /// access ends with it.
+    /// Access to a pack: owned outright ∨ the bundle ∨ Pro active (D19) ∨ an
+    /// unexpired rewarded unlock (1.1.6). A pack bought outright (or via the
+    /// bundle) stays owned after Pro lapses; Pro access ends with it.
     func hasAccess(packProductID: String) -> Bool {
+        hasPaidAccess(packProductID: packProductID)
+            || rewardedUnlockEnd(packProductID: packProductID) != nil
+    }
+
+    /// Access that was paid for: owned, the bundle, or Pro. Ownership labels,
+    /// Restore and the bundle offer read this, never a rewarded unlock.
+    func hasPaidAccess(packProductID: String) -> Bool {
         ownsPack(productID: packProductID) || isProActive
     }
 
-    /// Every pack is readable (bundle, all six bought, or Pro).
+    /// When a rewarded unlock of this pack ends, or nil if there is none now.
+    func rewardedUnlockEnd(packProductID: String, now: Date = Date()) -> Date? {
+        guard let end = rewardedPackUnlocks[packProductID], end > now else { return nil }
+        return end
+    }
+
+    /// Opens a pack for `rewardedUnlockDuration` after a rewarded ad was
+    /// watched to the end. Persisted so a relaunch keeps it until it ends.
+    func grantRewardedPackUnlock(packProductID: String, now: Date = Date()) {
+        rewardedPackUnlocks[packProductID] = now.addingTimeInterval(Self.rewardedUnlockDuration)
+        persistRewardedUnlocks(now: now)
+    }
+
+    private func persistRewardedUnlocks(now: Date) {
+        let live = rewardedPackUnlocks.filter { $0.value > now }
+        defaults.set(live.mapValues(\.timeIntervalSince1970), forKey: Self.rewardedUnlocksKey)
+    }
+
+    /// Stored unlocks, minus any that ended or that claim to last longer than
+    /// one unlock can (an edited plist opens a pack for a day at most).
+    static func loadRewardedUnlocks(from defaults: UserDefaults, now: Date = Date()) -> [String: Date] {
+        let raw = defaults.dictionary(forKey: rewardedUnlocksKey) as? [String: Double] ?? [:]
+        return raw.mapValues(Date.init(timeIntervalSince1970:)).filter {
+            $0.value > now && $0.value <= now.addingTimeInterval(rewardedUnlockDuration + 60)
+        }
+    }
+
+    /// Every pack is readable through a purchase (bundle, all six bought, or Pro).
     var allPacksReadable: Bool {
-        ProductID.packs.allSatisfy { hasAccess(packProductID: $0.rawValue) }
+        ProductID.packs.allSatisfy { hasPaidAccess(packProductID: $0.rawValue) }
     }
 
     /// The core curriculum: Unlock All ∨ Pro (D19).
@@ -317,6 +358,7 @@ final class PurchaseManager: ObservableObject {
         self.inertUnitTestHost = inertUnitTestHost
         mirroredAdsSuppression = defaults.bool(forKey: Self.removeAdsMirrorKey)
             || defaults.bool(forKey: Self.proMirrorKey)
+        rewardedPackUnlocks = Self.loadRewardedUnlocks(from: defaults)
         #if DEBUG
         if let scenario = debugStoreScenario {
             hasAttemptedProductLoad = true

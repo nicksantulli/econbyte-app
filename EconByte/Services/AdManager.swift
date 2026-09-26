@@ -141,20 +141,30 @@ final class AdManager: NSObject, EconInterstitialAdapting {
         loadedAt = nil
     }
 
-    func present() async -> Bool {
-        // Phase 25: only ever from a stable root. Presenting on a view
-        // controller that is itself about to be dismissed (the card cover, in
-        // 1.1.2–1.1.5) tears the ad down as it appears.
-        guard let ad = interstitial, let presenter = LiveAdPresentationEnvironment.stableRoot() else {
+    /// The placement on screen, for click and failure events (1.1.6).
+    private var presentedPlacement: EconAdPlacement = .dailySetExit
+
+    func present() async -> Bool { await present(for: .dailySetExit) }
+
+    func present(for placement: EconAdPlacement) async -> Bool {
+        // Phase 25: the set exit only ever presents from a stable root.
+        // Presenting on a view controller that is itself about to be dismissed
+        // (the card cover, in 1.1.2–1.1.5) tears the ad down as it appears.
+        // 1.1.6: the halfway break presents over the card session, which stays.
+        let presenter = placement == .setMidpoint
+            ? LiveAdPresentationEnvironment.stableTopmost()
+            : LiveAdPresentationEnvironment.stableRoot()
+        guard let ad = interstitial, let presenter else {
             return false
         }
+        presentedPlacement = placement
         do {
             try ad.canPresent(from: presenter)
         } catch {
             interstitial = nil
             loadedAt = nil
             onFailure?(.adPresentFailed, error)
-            EBEvents.adDismissed(placement: .dailySetExit, outcome: .failed)
+            EBEvents.adDismissed(placement: EBAdPlacement(placement), outcome: .failed)
             return false
         }
         interstitial = nil
@@ -175,7 +185,7 @@ extension AdManager: FullScreenContentDelegate {
     }
 
     func adDidRecordClick(_ ad: FullScreenPresentingAd) {
-        EBEvents.adClicked(placement: .dailySetExit)
+        EBEvents.adClicked(placement: EBAdPlacement(presentedPlacement))
     }
 
     func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
@@ -191,7 +201,103 @@ extension AdManager: FullScreenContentDelegate {
     }
 }
 
+// MARK: - Rewarded adapter (1.1.6)
+
+/// SDK plumbing for the rewarded pack trial. Every rule — who may be offered
+/// it, how often, what it unlocks — lives in `EconRewardedOffers`.
+@MainActor
+final class RewardedAdManager: NSObject, EconRewardedAdapting {
+    static let shared = RewardedAdManager()
+
+    var onLoadStateChanged: (() -> Void)?
+
+    private var rewarded: RewardedAd?
+    private var loadedAt: Date?
+    private var isLoading = false
+    private var earned = false
+    private var finish: CheckedContinuation<Bool, Never>?
+
+    var isAdLoaded: Bool {
+        guard rewarded != nil, let loadedAt else { return false }
+        return Date().timeIntervalSince(loadedAt) <= EconAdErrorClassifier.maximumInterstitialAge
+    }
+
+    func preload(policy: EconAdRequestPolicy) {
+        if rewarded != nil, !isAdLoaded { rewarded = nil; loadedAt = nil }
+        guard !isLoading, rewarded == nil, let unit = EconAdUnit.rewarded else { return }
+        isLoading = true
+        Task { @MainActor in
+            do {
+                let ad = try await RewardedAd.load(with: unit,
+                                                   request: EconAdRequestBuilder.makeRequest(policy: policy))
+                self.rewarded = ad
+                self.loadedAt = Date()
+            } catch {
+                NSLog("[Ads] rewarded load failed")
+            }
+            self.isLoading = false
+            self.onLoadStateChanged?()
+        }
+    }
+
+    func presentForReward() async -> Bool {
+        guard let ad = rewarded, isAdLoaded,
+              let presenter = LiveAdPresentationEnvironment.stableTopmost() else { return false }
+        rewarded = nil
+        loadedAt = nil
+        onLoadStateChanged?()
+        do {
+            try ad.canPresent(from: presenter)
+        } catch {
+            EBEvents.adDismissed(placement: .packTrial, outcome: .failed)
+            return false
+        }
+        earned = false
+        ad.fullScreenContentDelegate = self
+        return await withCheckedContinuation { continuation in
+            finish = continuation
+            ad.present(from: presenter) { [weak self] in
+                self?.earned = true
+            }
+        }
+    }
+
+    private func complete() {
+        let result = earned
+        earned = false
+        finish?.resume(returning: result)
+        finish = nil
+    }
+}
+
+extension RewardedAdManager: FullScreenContentDelegate {
+    func adDidRecordClick(_ ad: FullScreenPresentingAd) {
+        EBEvents.adClicked(placement: .packTrial)
+    }
+
+    func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
+        EBEvents.adDismissed(placement: .packTrial, outcome: earned ? .completed : .cancelled)
+        complete()
+    }
+
+    func ad(_ ad: FullScreenPresentingAd,
+            didFailToPresentFullScreenContentWithError error: Error) {
+        EBEvents.adDismissed(placement: .packTrial, outcome: .failed)
+        complete()
+    }
+}
+
 #else
+
+/// Simulator/CI fallback when the Google package is unavailable.
+@MainActor
+final class RewardedAdManager: NSObject, EconRewardedAdapting {
+    static let shared = RewardedAdManager()
+    var onLoadStateChanged: (() -> Void)?
+    var isAdLoaded: Bool { false }
+    func preload(policy: EconAdRequestPolicy) {}
+    func presentForReward() async -> Bool { false }
+}
 
 /// Simulator/CI fallback when the Google package is unavailable. Loads nothing,
 /// presents nothing — the policy layer is exercised the same way either side.
@@ -323,6 +429,33 @@ final class LiveAdPresentationEnvironment: EconAdPresentationEnvironment {
 
     var isReadyToPresentInterstitial: Bool { Self.stableRoot() != nil }
 
+    /// 1.1.6: the halfway break's environment — the top of the presentation
+    /// stack (the card session) must be settled, whatever is under it.
+    static let midSession = LiveMidSessionPresentationEnvironment()
+
+    /// The top of the key window's presentation stack, when nothing is being
+    /// presented or dismissed. The card session for the halfway break; the root
+    /// (or a sheet over it) for the rewarded offer. Never an alert.
+    static func stableTopmost() -> UIViewController? {
+        guard var top = stableKeyRoot() else { return nil }
+        while let next = top.presentedViewController { top = next }
+        guard top.transitionCoordinator == nil,
+              !top.isBeingDismissed, !top.isBeingPresented,
+              !(top is UIAlertController)
+        else { return nil }
+        return top
+    }
+
+    private static func stableKeyRoot() -> UIViewController? {
+        guard UIApplication.shared.applicationState == .active else { return nil }
+        return UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .filter({ $0.activationState == .foregroundActive })
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)?
+            .rootViewController
+    }
+
     static func stableRoot() -> UIViewController? {
         guard UIApplication.shared.applicationState == .active,
               let root = UIApplication.shared.connectedScenes
@@ -337,6 +470,11 @@ final class LiveAdPresentationEnvironment: EconAdPresentationEnvironment {
         else { return nil }
         return root
     }
+}
+
+@MainActor
+final class LiveMidSessionPresentationEnvironment: EconAdPresentationEnvironment {
+    var isReadyToPresentInterstitial: Bool { LiveAdPresentationEnvironment.stableTopmost() != nil }
 }
 
 // MARK: - Provider error classification (Phase 11)

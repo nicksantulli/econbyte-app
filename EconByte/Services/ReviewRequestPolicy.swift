@@ -256,6 +256,28 @@ public final class ReviewRequestCoordinator: ObservableObject {
         currentSessionCards = cardsViewed
     }
 
+    /// 1.1.6: finishing a Pro lesson is the same kind of good moment as
+    /// finishing a card set — it counts toward the lifetime total and, being a
+    /// whole lesson, always meets the session-size rule. Readers who only take
+    /// courses were never asked before.
+    public func noteLessonCompleted() {
+        noteSetCompleted(cardsViewed: ReviewRequestPolicy.thresholds.minimumCardsInSession)
+    }
+
+    /// 1.1.6: would finishing a set of `cardsInSet` cards right now be the
+    /// moment to ask for a rating? Card mode asks before its halfway ad break,
+    /// so an ad never spends the version's rating moment.
+    public func wouldAskAtNextCompletion(cardsInSet: Int) -> Bool {
+        var next = state
+        next.completedSetCount += 1
+        next.currentSessionCompletedSet = true
+        next.currentSessionCards = cardsInSet
+        return ReviewRequestPolicy.decide(state: next,
+                                          currentVersion: currentVersion,
+                                          now: now(),
+                                          calendar: calendar) == .eligible
+    }
+
     public func noteNegativeSessionEvent(_ event: EconNegativeSessionEvent) {
         negativeSessionEvents.insert(event)
     }

@@ -131,6 +131,17 @@ enum EBAdPlacement: String {
     case bannerCard = "card"
     /// Phase 11: Browse at rest (never while searching).
     case bannerBrowse = "browse"
+    /// 1.1.6: the halfway break inside a card set.
+    case setMidpoint = "set_midpoint"
+    /// 1.1.6: the rewarded "read this pack free for 24 hours" offer.
+    case packTrial = "pack_trial"
+
+    init(_ placement: EconAdPlacement) {
+        switch placement {
+        case .dailySetExit: self = .dailySetExit
+        case .setMidpoint: self = .setMidpoint
+        }
+    }
 }
 
 enum EBSuppression: String {
@@ -463,6 +474,14 @@ enum EBEvents {
         EconTelemetry.shared.capture(TelemetryEvent("diagnostics_consent_changed_v1", [
             "enabled": .bool(enabled),
             "entry_point": .string(entryPoint.rawValue),
+        ]))
+    }
+
+    /// 1.1.6: the reader watched a rewarded ad to the end and a pack opened
+    /// for 24 hours. The pack's family only — never a product id.
+    static func rewardedUnlockGranted(family: EBProductFamily) {
+        EconTelemetry.shared.capture(TelemetryEvent("rewarded_unlock_granted_v1", [
+            "product_family": .string(family.rawValue),
         ]))
     }
 

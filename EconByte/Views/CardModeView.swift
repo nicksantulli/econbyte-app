@@ -17,6 +17,8 @@ struct CardModeView: View {
     @State private var startedAt = Date()
     @State private var cardsAdvanced = 0
     @State private var didEndSession = false
+    /// 1.1.6: the halfway break is offered at most once per set.
+    @State private var didOfferMidpointBreak = false
 
     var body: some View {
         ZStack {
@@ -157,8 +159,6 @@ struct CardModeView: View {
         let card = cards[currentIndex]
         content.markSeen(card.id)
         streak.noteCardSeen()
-        // No ad here. Version 1.1's only interstitial placement is the return
-        // from a completed set to Home, never inside a card (design section 9.3).
         // RECONCILED (1.1.2): lineage A emitted `card_viewed` with the card id,
         // the topic id and an exact position. All three are PROHIBITED by the
         // shipped schema — two are content identifiers and the third has a
@@ -169,8 +169,21 @@ struct CardModeView: View {
         withAnimation(.easeOut(duration: 0.2)) { dragOffset = 0 }
         if currentIndex < cards.count - 1 {
             currentIndex += 1
+            offerMidpointBreakIfDue()
         } else {
             sessionDone = true
         }
+    }
+
+    /// 1.1.6: the halfway break. After Next moves past the middle card of a set
+    /// of six or more, between two cards — never over a card face, never in a
+    /// bookmarks review (saved reading). Every cap and blocker is decided by
+    /// `EconMonetization`; this only says "the reader is halfway".
+    private func offerMidpointBreakIfDue() {
+        guard mode != .bookmarks, !didOfferMidpointBreak,
+              currentIndex == cards.count / 2 else { return }
+        didOfferMidpointBreak = true
+        let deckSize = cards.count
+        Task { await growth.presentMidpointBreakIfEligible(deckSize: deckSize) }
     }
 }

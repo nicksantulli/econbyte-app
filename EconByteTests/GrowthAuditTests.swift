@@ -150,21 +150,21 @@ final class GrowthAuditTests: XCTestCase {
     /// hotfixes, so the 1.1.5 line runs from build 20. Build 20 was the first
     /// 1.1.5 TestFlight, 21 was Phase 24's Pro polish, and 22 (Phase 27) is the
     /// combined release build: Pro polish + the Phase 25 ad-delivery lane + the
-    /// AX/IC/EA region fix. The stamp must match in both places the project
-    /// declares it, and in the documentation mirror.
-    func testProjectIsStampedOneOneFiveBuildTwentyTwo() throws {
+    /// AX/IC/EA region fix — live as 1.1.5. 1.1.6 (ads + rating request) is
+    /// build 23. The stamp must match in both places the project declares it.
+    func testProjectIsStampedOneOneSixBuildTwentyThree() throws {
         let pbx = try String(contentsOf: repoRoot.appendingPathComponent("EconByte.xcodeproj/project.pbxproj"),
                              encoding: .utf8)
-        XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.5;").count - 1, 2)
-        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 22;").count - 1, 2)
-        for used in 13...21 {
+        XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.6;").count - 1, 2)
+        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 23;").count - 1, 2)
+        for used in 13...22 {
             XCTAssertFalse(pbx.contains("CURRENT_PROJECT_VERSION = \(used);"),
                            "build \(used) is live, submitted, in review or reserved for 1.1.4 hotfixes")
         }
 
         let yml = try String(contentsOf: repoRoot.appendingPathComponent("project.yml"), encoding: .utf8)
-        XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.5\""))
-        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"22\""))
+        XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.6\""))
+        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"23\""))
     }
 
     // MARK: - 4. Anchored banner
@@ -224,10 +224,10 @@ final class GrowthAuditTests: XCTestCase {
         #endif
     }
 
-    /// The interstitial's placement vocabulary is untouched — the banner is a
-    /// separate surface, measured under its own event.
-    func testTheInterstitialPlacementIsStillOnlyTheSetExit() {
-        XCTAssertEqual(EconAdPlacement.allCases, [.dailySetExit])
+    /// The interstitial placements are the set exit and (1.1.6) the halfway
+    /// break — the banner is a separate surface, measured under its own event.
+    func testTheInterstitialPlacementsAreTheSetExitAndTheHalfwayBreak() {
+        XCTAssertEqual(EconAdPlacement.allCases, [.dailySetExit, .setMidpoint])
         XCTAssertEqual(EBAdPlacement.bannerHome.rawValue, "home")
         XCTAssertEqual(EBAdPlacement.bannerCard.rawValue, "card")
         XCTAssertEqual(EBAdPlacement.dailySetExit.rawValue, "daily_set_exit")
@@ -236,7 +236,8 @@ final class GrowthAuditTests: XCTestCase {
     func testBannerImpressionIsDeclaredWithAClosedPlacementVocabulary() {
         XCTAssertEqual(TelemetrySchema.allowedProperties["banner_impression_v1"], ["placement"])
         // Phase 11 adds `browse` (the Browse-at-rest banner, `EconAdSurface.browse`).
-        XCTAssertEqual(TelemetrySchema.allowedValues["placement"], ["daily_set_exit", "home", "card", "browse"])
+        XCTAssertEqual(TelemetrySchema.allowedValues["placement"],
+                       ["daily_set_exit", "home", "card", "browse", "set_midpoint", "pack_trial"])
         XCTAssertEqual(TelemetryValidator.validate(TelemetryEvent("banner_impression_v1",
                                                                   ["placement": .string("home")])),
                        .accepted)
@@ -329,8 +330,8 @@ final class GrowthAuditTests: XCTestCase {
         XCTAssertTrue(source.contains("struct GoogleBannerView"))
         XCTAssertTrue(source.contains("currentOrientationAnchoredAdaptiveBanner"),
                       "the banner must be Google's anchored adaptive size, not a fixed 320x50")
-        XCTAssertEqual(source.components(separatedBy: "EconAdRequestBuilder.makeRequest(policy: policy)").count - 1, 3,
-                       "the interstitial load and both banner loads must build their request from the policy")
+        XCTAssertEqual(source.components(separatedBy: "EconAdRequestBuilder.makeRequest(policy: policy)").count - 1, 4,
+                       "the interstitial load, the rewarded load (1.1.6) and both banner loads must build their request from the policy")
         XCTAssertEqual(source.components(separatedBy: "request.register(networkExtras)").count - 1, 1,
                        "one builder registers the extras for every format")
     }

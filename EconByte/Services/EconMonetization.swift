@@ -267,6 +267,21 @@ public enum EconAdUnit {
     /// slot entirely, so a build can never request a placeholder unit.
     public static let releaseBanner = "ca-app-pub-9950526548980224/4084037009"
 
+    // Rewarded pack trial, added 2026-09-26 (1.1.6).
+    /// Google's public rewarded test unit.
+    public static let debugRewarded = "ca-app-pub-3940256099942544/1712485313"
+    /// Created in the AdMob console on 2026-09-26 ("EconByte Pack Trial
+    /// (rewarded)", reward 1 × unlock).
+    public static let releaseRewarded = "ca-app-pub-9950526548980224/7378501919"
+
+    public static var rewarded: String? {
+        #if DEBUG
+        return debugRewarded
+        #else
+        return releaseRewarded.isEmpty ? nil : releaseRewarded
+        #endif
+    }
+
     public static var banner: String? {
         #if DEBUG
         return debugBanner
@@ -278,10 +293,14 @@ public enum EconAdUnit {
 
 // MARK: - Placement vocabulary
 
-/// Version 1.1 has exactly one interstitial placement: the return from a
-/// completed set to Home (design section 9.3).
+/// Interstitial placements. 1.1–1.1.5 had exactly one: the return from a
+/// completed set to Home (design section 9.3). 1.1.6 (Owner, 2026-09-26: ads
+/// "in the middle of lessons") adds a halfway break inside a card set of
+/// `EconAdThresholds.minimumMidpointDeckSize` or more cards, shown between two
+/// cards after the reader taps Next — never over a card face.
 public enum EconAdPlacement: String, CaseIterable, Equatable {
     case dailySetExit = "daily_set_exit"
+    case setMidpoint = "set_midpoint"
 }
 
 /// Every surface in the 1.1.4 shell and whether an ad may appear on it
@@ -294,7 +313,8 @@ public enum EconAdPlacement: String, CaseIterable, Equatable {
 /// EconByte — article body (the Daily Brief), search, saved reading
 /// (bookmarks), quiz explanation (lessons/quizzes), purchase/restore (paywalls),
 /// privacy/consent/permission (Settings, first launch).
-/// Interstitial: only the set exit, after the completion screen.
+/// Interstitial: the set exit, after the completion screen, and (1.1.6) the
+/// halfway break between two cards of a topic or daily set.
 enum EconAdSurface: String, CaseIterable {
     case home
     case browse
@@ -324,9 +344,9 @@ enum EconAdSurface: String, CaseIterable {
         }
     }
 
-    /// Only the set exit (the dismissal of the completion screen) may show the
-    /// interstitial.
-    var allowsInterstitial: Bool { self == .setComplete }
+    /// The set exit (the dismissal of the completion screen) and, from 1.1.6,
+    /// card mode's halfway break. Never a bookmarks review (saved reading).
+    var allowsInterstitial: Bool { self == .setComplete || self == .cardMode }
 }
 
 /// Moments an ad may never interrupt.
@@ -347,6 +367,8 @@ public enum EconAdDecision: Equatable {
     /// Phase 11: the install's first foreground session carries no
     /// interstitial (portfolio cap `initialSessionInterstitials: 0`).
     case initialSession
+    /// 1.1.6: a halfway break needs a set of at least this many cards.
+    case deckTooShort(Int)
     case belowSetsSinceLastAd(Int)
     case belowTimeThreshold(TimeInterval)
     case sessionCapReached
@@ -443,14 +465,33 @@ public struct EconEntitlements: Equatable {
 /// installs drops more than 15% relative to entitled installs after 1.1.4,
 /// set `minimumCompletedSets` to 3 and `setsSinceLastAd` to 2 (the spec83
 /// pacing) before touching the banner.
+///
+/// 1.1.6 (Owner, 2026-09-26: "more interstitial ads … in the middle of
+/// lessons"). EconByte now declares a per-app override in
+/// `config/app-factory/monetization-policy.json` (`adCapOverrides`, inside the
+/// portfolio envelope of 4 / session, 2 / 10 min, 12 / 24 h):
+///
+///   * `minimumCompletedSets` 2 → 1. From the install's second foreground
+///     session, the first finished set may carry an ad.
+///   * `initialSessionInterstitials` 0 — UNCHANGED. A fresh install's first
+///     sitting stays ad-free (it is also where the ATT and notification prompts
+///     land).
+///   * `minimumInterval` 15 → 10 min (portfolio: 1 per 10 min).
+///   * `perSession` 1 → 2, `perDay` 2 → 4 (and 4 in any rolling 24 h).
+///   * NEW placement: the halfway break inside a set of
+///     `minimumMidpointDeckSize` or more cards. It shares every cap above, so
+///     a reader never sees the halfway break and the exit ad of one short set
+///     (they are closer together than `minimumInterval`).
 public struct EconAdThresholds: Equatable {
-    public var minimumCompletedSets = 2
+    public var minimumCompletedSets = 1
     public var initialSessionInterstitials = 0
     public var setsSinceLastAd = 1
-    public var minimumInterval: TimeInterval = 15 * 60
-    public var perSession = 1
-    public var perDay = 2
+    public var minimumInterval: TimeInterval = 10 * 60
+    public var perSession = 2
+    public var perDay = 4
     public var rollingWindow: TimeInterval = 24 * 60 * 60
+    /// The halfway break needs a real set: six cards or more (the daily set is 8).
+    public var minimumMidpointDeckSize = 6
     public init() {}
 }
 
@@ -496,13 +537,21 @@ public struct EconAdPolicy {
                        setCompletedNormally: Bool,
                        blockers: Set<EconAdBlocker>,
                        now: Date,
-                       dayKey: String) -> EconAdDecision {
+                       dayKey: String,
+                       deckSize: Int = 0) -> EconAdDecision {
         if entitlements.adsSuppressed { return .suppressedEntitled }
         guard region.permitsAdRequests else { return .suppressedRegion(region) }
         for blocker in EconAdBlocker.allCases where blockers.contains(blocker) {
             return .blocked(blocker)
         }
-        guard setCompletedNormally else { return .setNotCompletedNormally }
+        switch placement {
+        case .dailySetExit:
+            guard setCompletedNormally else { return .setNotCompletedNormally }
+        case .setMidpoint:
+            guard deckSize >= thresholds.minimumMidpointDeckSize else {
+                return .deckTooShort(thresholds.minimumMidpointDeckSize)
+            }
+        }
         guard state.completedSetsLifetime >= thresholds.minimumCompletedSets else {
             return .belowLifetimeSetThreshold(thresholds.minimumCompletedSets)
         }
@@ -510,8 +559,12 @@ public struct EconAdPolicy {
            state.shownThisSession >= thresholds.initialSessionInterstitials {
             return .initialSession
         }
-        guard state.setsSinceLastAd >= thresholds.setsSinceLastAd else {
-            return .belowSetsSinceLastAd(thresholds.setsSinceLastAd)
+        // The halfway break is inside a set, so "sets since the last ad" is the
+        // exit's rule only; the time, session and day caps below bind both.
+        if placement == .dailySetExit {
+            guard state.setsSinceLastAd >= thresholds.setsSinceLastAd else {
+                return .belowSetsSinceLastAd(thresholds.setsSinceLastAd)
+            }
         }
         if let last = state.lastShownAt,
            now.timeIntervalSince(last) < thresholds.minimumInterval {
@@ -540,6 +593,13 @@ public protocol EconInterstitialAdapting: AnyObject {
     func preload(policy: EconAdRequestPolicy)
     func discardLoadedAd()
     func present() async -> Bool
+    /// 1.1.6: presents for a given placement. The set exit presents from the
+    /// window's root; the halfway break from the card session on top of it.
+    func present(for placement: EconAdPlacement) async -> Bool
+}
+
+public extension EconInterstitialAdapting {
+    func present(for placement: EconAdPlacement) async -> Bool { await present() }
 }
 
 // MARK: - Presentation hand-off (Phase 25)
@@ -640,6 +700,10 @@ public final class EconMonetization: ObservableObject {
     /// The policy the most recent SDK start or preload carried.
     public private(set) var lastRequestedPolicy: EconAdRequestPolicy?
 
+    /// The placement of the interstitial most recently put on screen, so its
+    /// dismissal is reported against the right placement (1.1.6).
+    public private(set) var presentingPlacement: EconAdPlacement = .dailySetExit
+
     #if DEBUG
     /// DEBUG-only probe for the set-exit UI test: idle → armed → presented →
     /// dismissed (or a failure word). Never compiled into Release.
@@ -707,7 +771,7 @@ public final class EconMonetization: ObservableObject {
             #if DEBUG
             self.debugSetExitAdState = presentedCleanly ? "dismissed" : "failed-to-present"
             #endif
-            self.onAdDismissed?(.dailySetExit, presentedCleanly ? .success : .provider)
+            self.onAdDismissed?(self.presentingPlacement, presentedCleanly ? .success : .provider)
             // Re-preload with the request policy as it stands NOW (the ATT
             // answer can have changed since the last load). The adapter's own
             // follow-up preload is then a no-op while this one is loading.
@@ -963,7 +1027,55 @@ public final class EconMonetization: ObservableObject {
         }
         let decision = decisionAtSetExit()
         guard decision == .eligible else { return finishWithoutPresenting(.notEligible(decision)) }
-        return await presentLoadedInterstitial()
+        return await presentLoadedInterstitial(for: .dailySetExit)
+    }
+
+    // MARK: Halfway break (1.1.6)
+
+    public func decisionAtMidpoint(deckSize: Int) -> EconAdDecision {
+        let moment = now()
+        return policy.decide(placement: .setMidpoint,
+                             state: state,
+                             entitlements: entitlements,
+                             region: region(),
+                             setCompletedNormally: false,
+                             blockers: blockers,
+                             now: moment,
+                             dayKey: EconAdState.dayKey(for: moment, calendar: calendar),
+                             deckSize: deckSize)
+    }
+
+    /// The halfway break inside a card set, called by card mode right after the
+    /// reader taps Next past the middle card. The card session stays on screen
+    /// underneath (it is not being dismissed), so the ad is presented over it
+    /// once nothing else is presented on top and no transition is running.
+    /// Waits at most `presenterReadyTimeout`; failure and no-fill are silent and
+    /// consume no cap.
+    public func presentMidpointBreakIfEligible(
+        deckSize: Int,
+        environment: EconAdPresentationEnvironment
+    ) async -> EconAdOutcome {
+        let decision = decisionAtMidpoint(deckSize: deckSize)
+        guard decision == .eligible else { return .notEligible(decision) }
+        onAdEligible?(.setMidpoint, state.setsSinceLastAd)
+        var waited: TimeInterval = 0
+        while !environment.isReadyToPresentInterstitial {
+            guard waited < Self.presenterReadyTimeout else { return .notEligible(.presenterUnavailable) }
+            await presentationSleep(Self.presenterPollInterval)
+            waited += Self.presenterPollInterval
+        }
+        // Re-check: a purchase, paywall or prompt may have arrived meanwhile.
+        let recheck = decisionAtMidpoint(deckSize: deckSize)
+        guard recheck == .eligible else { return .notEligible(recheck) }
+        return await presentLoadedInterstitial(for: .setMidpoint)
+    }
+
+    /// A rewarded ad the reader chose to watch (1.1.6) counts as a full-screen
+    /// ad for spacing only: the next interstitial waits `minimumInterval`, but
+    /// no session or day cap is spent.
+    public func noteRewardedAdShown() {
+        state.lastShownAt = now()
+        persist()
     }
 
     /// Arms and presents in one call, for a caller that is already on a stable
@@ -983,7 +1095,7 @@ public final class EconMonetization: ObservableObject {
         return outcome
     }
 
-    private func presentLoadedInterstitial() async -> EconAdOutcome {
+    private func presentLoadedInterstitial(for placement: EconAdPlacement) async -> EconAdOutcome {
         guard adapter.isAdLoaded else {
             preloadIfPermitted()
             #if DEBUG
@@ -991,7 +1103,8 @@ public final class EconMonetization: ObservableObject {
             #endif
             return .noAdAvailable
         }
-        guard await adapter.present() else {
+        presentingPlacement = placement
+        guard await adapter.present(for: placement) else {
             preloadIfPermitted()
             #if DEBUG
             debugSetExitAdState = "present-failed"
@@ -1085,6 +1198,8 @@ final class EconGrowth: ObservableObject {
     let diagnostics: EconDiagnostics
     let diagnosticLog: EconDiagnosticLog
     let monetization: EconMonetization
+    /// 1.1.6: the rewarded "read this pack free for 24 hours" offer.
+    let rewarded: EconRewardedOffers
     let review: ReviewRequestCoordinator
     let notifications: NotificationCoordinator
 
@@ -1127,6 +1242,7 @@ final class EconGrowth: ObservableObject {
         self.monetization = EconMonetization(adapter: AdManager.shared,
                                              defaults: defaults,
                                              region: EconGrowth.regionSource())
+        self.rewarded = EconRewardedOffers(adapter: RewardedAdManager.shared, defaults: defaults)
         self.review = ReviewRequestCoordinator(defaults: defaults,
                                                currentVersion: environment.appVersion,
                                                requestReview: { EconGrowth.requestSystemReview() })
@@ -1153,8 +1269,8 @@ final class EconGrowth: ObservableObject {
         monetization.onAdEligible = { _, setsSinceLastAd in
             EBEvents.adEligibilityReached(depth: setsSinceLastAd)
         }
-        monetization.onAdDismissed = { _, resultClass in
-            EBEvents.adDismissed(placement: .dailySetExit,
+        monetization.onAdDismissed = { placement, resultClass in
+            EBEvents.adDismissed(placement: EBAdPlacement(placement),
                                  outcome: resultClass == .success ? .completed : .failed)
         }
         review.onEligible = {
@@ -1179,6 +1295,8 @@ final class EconGrowth: ObservableObject {
         // the next ad request without a relaunch.
         monetization.refreshRequestPolicyForForeground()
         monetization.startAdsIfPermitted()
+        // 1.1.6: have a rewarded ad ready before a locked pack is on screen.
+        rewarded.preloadIfPermitted(monetization: monetization)
         // Cold launches only: `app_opened_v1` carries the install-age and
         // launch-count buckets that `EBEvents.recordLaunch` maintains, and a
         // warm foreground is not a launch.
@@ -1193,6 +1311,24 @@ final class EconGrowth: ObservableObject {
         guard let outcome = await monetization.presentPendingSetExitBreak(environment: presenter) else { return }
         if outcome == .presented {
             // An ad disqualifies this session for a later rating request.
+            review.noteNegativeSessionEvent(.ad)
+        }
+    }
+
+    /// 1.1.6: the halfway break inside a card set, presented over the card
+    /// session (which stays on screen). Skipped when this set's completion is
+    /// about to be the moment to ask for an App Store rating: an ad in the
+    /// session would defer that ask, and the rating request wins.
+    func presentMidpointBreakIfEligible(deckSize: Int,
+                                        environment: EconAdPresentationEnvironment? = nil) async {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-econNoMidpointBreak") { return }
+        #endif
+        guard !review.wouldAskAtNextCompletion(cardsInSet: deckSize) else { return }
+        let presenter = environment ?? LiveAdPresentationEnvironment.midSession
+        let outcome = await monetization.presentMidpointBreakIfEligible(deckSize: deckSize,
+                                                                        environment: presenter)
+        if outcome == .presented {
             review.noteNegativeSessionEvent(.ad)
         }
     }
@@ -1282,9 +1418,9 @@ final class EconGrowth: ObservableObject {
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
         else { return }
         EBEvents.reviewRequestAttempted(launchCount: EBEvents.recordedLaunchCount())
-        if #available(iOS 16, *) {
-            SKStoreReviewController.requestReview(in: scene)
-        }
+        // Apple's standard in-app rating sheet (StoreKit 2, iOS 16+). Apple
+        // decides whether it actually appears (at most three times a year).
+        AppStore.requestReview(in: scene)
     }
 
     var consentPromptShown: Bool {
@@ -1311,6 +1447,7 @@ final class EconGrowth: ObservableObject {
     #if DEBUG
     static func resetPersistedState(in defaults: UserDefaults) {
         EconMonetization.resetPersistedState(in: defaults)
+        EconRewardedOffers.resetPersistedState(in: defaults)
         defaults.removeObject(forKey: EconTelemetry.Key.consent)
         defaults.removeObject(forKey: EconDiagnostics.consentDefaultsKey)
         defaults.removeObject(forKey: ConsentPromptPolicy.shownDefaultsKey)

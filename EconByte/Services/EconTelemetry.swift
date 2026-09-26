@@ -159,6 +159,8 @@ enum TelemetrySchema {
         // Daily Brief: whether the reader saw the free teaser or the whole
         // brief, and where the brief came from (bundled sample, network, cache).
         "brief_opened_v1": ["access_state", "brief_source"],
+        // 1.1.6: a rewarded ad was watched and a pack opened for 24 hours.
+        "rewarded_unlock_granted_v1": ["product_family"],
     ]
 
     static var allowedEventNames: Set<String> { Set(allowedProperties.keys) }
@@ -206,7 +208,10 @@ enum TelemetrySchema {
         // placement cannot appear without a schema change — this line IS that
         // change for the banner.
         // Phase 11 adds `browse` (the anchored banner under Browse at rest).
-        "placement": .enumerated(["daily_set_exit", "home", "card", "browse"]),
+        // 1.1.6 adds `set_midpoint` (the halfway break) and `pack_trial` (the
+        // rewarded pack offer).
+        "placement": .enumerated(["daily_set_exit", "home", "card", "browse",
+                                  "set_midpoint", "pack_trial"]),
         "access_state": .enumerated(["free", "unlocked", "locked"]),
 
         "install_age_bucket": .enumerated(Bucket.installAge),
