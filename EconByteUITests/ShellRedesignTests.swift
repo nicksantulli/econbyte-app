@@ -387,7 +387,7 @@ final class ShellRedesignTests: XCTestCase {
         capture("a2-news-how-its-made")
     }
 
-    // MARK: - Phase 11: purchase controls and banner layout
+    // MARK: - Phase 11: purchase controls; 1.1.7: no banner
 
     /// Orchestrator finding (Phase 10 screenshots): with no StoreKit price the
     /// Pro tiles showed "—", the button "Subscribe for —", the pack CTA
@@ -451,62 +451,33 @@ final class ShellRedesignTests: XCTestCase {
         capture("p11-03-settings-prices")
     }
 
-    /// Banner layout: above the tab bar on Home and Browse, gone while
-    /// searching, and above the home indicator (under the Next button) in a
-    /// card session. Uses Google's public test banner unit (DEBUG); if it does
-    /// not fill on this simulator the layout cannot be asserted and the test
-    /// says so instead of passing.
-    func testBannersSitAboveTheTabBarAndHomeIndicatorAndLeaveSearch() throws {
+    /// 1.1.7 (Owner, 2026-09-28): no banners. An ad-eligible reader (tracking
+    /// answered, SDK started, Google's test units in DEBUG) sees no ad strip on
+    /// Home, on Browse at rest, or under a card session, and Next sits on the
+    /// card screen with nothing below it. Replaces the 1.1.3–1.1.6
+    /// `testBannersSitAboveTheTabBarAndHomeIndicatorAndLeaveSearch`.
+    func testNoBannerOnHomeBrowseOrACardSession() {
         let app = XCUIApplication()
         app.launchArguments += ["-skipStudioIntro", "-EBSkipPermissionPrompts",
-                                "-econResetGrowthState", "-econTrackingAnswered"]
+                                "-econResetGrowthState", "-econTrackingAnswered",
+                                "-econNoMidpointBreak"]
         app.launch()
         let any = app.descendants(matching: .any)
         XCTAssertTrue(any["econWordmark"].waitForExistence(timeout: 20))
+        let banners = any.matching(NSPredicate(format: "identifier BEGINSWITH 'ad.banner.'"))
+        let adStrips = any.matching(NSPredicate(format: "label == 'Advertisement'"))
 
-        func waitForBanner(_ id: String, timeout: Int = 30) -> XCUIElement? {
-            let banner = any[id]
-            for _ in 0..<timeout {
-                // The slot's frame appears before the ad loads; wait for the
-                // loaded ad height the slot reports (DEBUG accessibility value).
-                let loaded = Double(banner.value as? String ?? "") ?? Double(banner.frame.height)
-                if banner.exists, banner.frame.height > 10, loaded > 10 { return banner }
-                sleep(1)
-            }
-            return nil
-        }
-
-        guard let home = waitForBanner("ad.banner.home", timeout: 45) else {
-            capture("p11-10-banner-home-nofill")
-            throw XCTSkip("Google's test banner did not fill on this simulator; banner layout not asserted")
-        }
-        /// The visible strip: the element's top plus the loaded ad height the
-        /// slot reports (DEBUG accessibility value). The element's own frame
-        /// runs on through the bottom safe area, so its maxY is not the ad.
-        func visibleMaxY(_ banner: XCUIElement) -> CGFloat {
-            let height = Double(banner.value as? String ?? "").map { CGFloat($0) } ?? banner.frame.height
-            return banner.frame.minY + height
-        }
-        let tabBar = app.tabBars.firstMatch
-        capture("p11-10-banner-home")
-        NSLog("[p11] home banner frame \(home.frame) value \(String(describing: home.value)) tab bar \(tabBar.frame)")
-        XCTAssertGreaterThanOrEqual(visibleMaxY(home) - home.frame.minY, 50, "an adaptive banner is at least 50 pt tall")
-        XCTAssertLessThanOrEqual(visibleMaxY(home), tabBar.frame.minY + 1, "Home banner sits above the tab bar")
+        // Long enough for Google's test banner to have filled in 1.1.6.
+        sleep(8)
+        capture("p117-01-home-no-banner")
+        XCTAssertEqual(banners.count, 0, "no banner slot on Home")
+        XCTAssertEqual(adStrips.count, 0, "no ad strip on Home")
 
         app.tabBars.buttons["Browse"].tap()
-        if let browse = waitForBanner("ad.banner.browse") {
-            capture("p11-11-banner-browse")
-            XCTAssertLessThanOrEqual(visibleMaxY(browse), tabBar.frame.minY + 1, "Browse banner sits above the tab bar")
-        } else {
-            XCTFail("the Browse banner did not fill although Home's did")
-        }
-        app.textFields["browseSearchField"].tap()
-        app.typeText("infl")
-        XCTAssertTrue(any["ad.banner.browse"].waitForNonExistence(timeout: 5),
-                      "no banner while searching (sensitive surface; keyboard would lift it over results)")
-        capture("p11-12-browse-search-no-banner")
-        app.buttons["browseSearchClearButton"].tap()
-        if app.keyboards.count > 0 { app.swipeDown() }
+        sleep(3)
+        capture("p117-02-browse-no-banner")
+        XCTAssertEqual(banners.count, 0, "no banner slot on Browse")
+        XCTAssertEqual(adStrips.count, 0, "no ad strip on Browse")
 
         let homeTab = app.tabBars.buttons["Home"]
         XCTAssertTrue(homeTab.waitForExistence(timeout: 10))
@@ -516,16 +487,14 @@ final class ShellRedesignTests: XCTestCase {
         XCTAssertTrue(grocery.waitForExistence(timeout: 10), "Home's grocery line starts today's set")
         grocery.tap()
         XCTAssertTrue(app.buttons["cardModeCloseButton"].waitForExistence(timeout: 10))
-        if let card = waitForBanner("ad.banner.card") {
-            let window = app.windows.firstMatch.frame
-            capture("p11-13-banner-card")
-            XCTAssertLessThanOrEqual(visibleMaxY(card), window.maxY - 20, "card banner clears the home indicator")
-            let next = app.buttons["Next"]
-            if next.exists {
-                XCTAssertLessThanOrEqual(next.frame.maxY, card.frame.minY + 1, "the banner never covers Next")
-            }
-        } else {
-            XCTFail("the card-session banner did not fill although Home's did")
+        sleep(3)
+        capture("p117-03-card-no-banner")
+        XCTAssertEqual(banners.count, 0, "no banner slot under a card session")
+        XCTAssertEqual(adStrips.count, 0, "no ad strip under a card session")
+        let next = app.buttons["Next"]
+        if next.exists {
+            XCTAssertLessThanOrEqual(next.frame.maxY, app.windows.firstMatch.frame.maxY - 20,
+                                     "Next clears the home indicator")
         }
     }
 

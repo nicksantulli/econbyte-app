@@ -291,8 +291,10 @@ final class GrowthFlowTests: XCTestCase {
         app.launch()
         let wordmark = app.descendants(matching: .any)["econWordmark"]
         XCTAssertTrue(wordmark.waitForExistence(timeout: 15), "Home should render on cold launch")
-        // Give the test unit a moment to fill before the exit.
-        _ = app.descendants(matching: .any)["ad.banner.banner_home"].waitForExistence(timeout: 10)
+        // Give the test unit a moment to fill before the exit. (Until 1.1.7
+        // this waited on a banner identifier that never matched, i.e. a plain
+        // 10 s wait; the banner is gone, the wait stays.)
+        sleep(10)
 
         completeASet(in: app)
         let probe = app.descendants(matching: .any)["debug.setExitAdState"]
@@ -408,7 +410,7 @@ final class GrowthFlowTests: XCTestCase {
                                 "-econSeedAdEligibleInstall", "-econTrackingAnswered"]
         app.launch()
         XCTAssertTrue(app.descendants(matching: .any)["econWordmark"].waitForExistence(timeout: 15))
-        _ = app.descendants(matching: .any)["ad.banner.banner_home"].waitForExistence(timeout: 10)
+        sleep(10) // let the test interstitial fill (see the set-exit test above)
 
         let cta = app.buttons.containing(
             NSPredicate(format: "label CONTAINS 'Start' OR label CONTAINS 'Review'")).firstMatch

@@ -6,7 +6,6 @@ struct BrowseTabView: View {
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var store: PurchaseManager
     @EnvironmentObject private var router: AppRouter
-    @EnvironmentObject private var growth: EconGrowth
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .body) private var resultIconWidth: CGFloat = EconSpace.xl
@@ -31,15 +30,6 @@ struct BrowseTabView: View {
             .padding(.horizontal, EconSpace.gutter)
             .padding(.top, EconSpace.s)
             .padding(.bottom, EconSpace.xxl)
-        }
-        // Phase 11: the anchored banner on Browse at rest, above the tab bar.
-        // Searching is a sensitive surface (portfolio `search_result`,
-        // `financial_or_policy_search`) and the keyboard would lift the strip
-        // over the results, so the slot is removed while the field is focused
-        // or holds a query.
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            AdBannerSlot(surface: (searchFocused || !trimmedQuery.isEmpty) ? .search : .browse,
-                         monetization: growth.monetization)
         }
     }
 

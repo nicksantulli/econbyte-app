@@ -7,10 +7,11 @@ import XCTest
 ///  1. (1.1.4) the first-open consent card is replaced by Apple's standard ATT
 ///     and notification prompts at first launch (`FirstLaunchPermissionsTests`);
 ///  2. the Release instrumentation key gate in the committed project file;
-///  3. the version stamp (1.1.3 / build 14 — the live max is build 13);
-///  4. the anchored banner — production unit, Google's test unit in Debug, and
-///     the same three gates the interstitial has (entitlement, DUD-224 region,
-///     the build-13 ATT ordering) before a banner is ever constructed.
+///  3. the version stamp (now 1.1.7 / build 24 — 1.1.6 build 23 is live);
+///  4. the ad request gates (entitlement, DUD-224 region, the build-13 ATT
+///     ordering) every ad format shares. Written for the anchored banner in
+///     1.1.3; the banner itself is gone in 1.1.7 (`AdRetune117Tests`), the
+///     gates stay and now cover the interstitial and the rewarded offer.
 ///
 /// The interstitial pacing audit and the review-rules-v2 policy are asserted
 /// in `GrowthSystemsTests` beside the rules they replace.
@@ -151,23 +152,24 @@ final class GrowthAuditTests: XCTestCase {
     /// 1.1.5 TestFlight, 21 was Phase 24's Pro polish, and 22 (Phase 27) is the
     /// combined release build: Pro polish + the Phase 25 ad-delivery lane + the
     /// AX/IC/EA region fix — live as 1.1.5. 1.1.6 (ads + rating request) is
-    /// build 23. The stamp must match in both places the project declares it.
-    func testProjectIsStampedOneOneSixBuildTwentyThree() throws {
+    /// build 23, live. 1.1.7 (banner removed, full-screen formats only) is
+    /// build 24. The stamp must match in both places the project declares it.
+    func testProjectIsStampedOneOneSevenBuildTwentyFour() throws {
         let pbx = try String(contentsOf: repoRoot.appendingPathComponent("EconByte.xcodeproj/project.pbxproj"),
                              encoding: .utf8)
-        XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.6;").count - 1, 2)
-        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 23;").count - 1, 2)
-        for used in 13...22 {
+        XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.7;").count - 1, 2)
+        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 24;").count - 1, 2)
+        for used in 13...23 {
             XCTAssertFalse(pbx.contains("CURRENT_PROJECT_VERSION = \(used);"),
                            "build \(used) is live, submitted, in review or reserved for 1.1.4 hotfixes")
         }
 
         let yml = try String(contentsOf: repoRoot.appendingPathComponent("project.yml"), encoding: .utf8)
-        XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.6\""))
-        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"23\""))
+        XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.7\""))
+        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"24\""))
     }
 
-    // MARK: - 4. Anchored banner
+    // MARK: - 4. Ad request gates (every format; the banner is gone in 1.1.7)
 
     @MainActor
     private final class NullAdapter: EconInterstitialAdapting {
@@ -210,52 +212,18 @@ final class GrowthAuditTests: XCTestCase {
                          tracking: FixedTracking(tracking))
     }
 
-    /// The Owner's production banner unit (AdMob console, 2026-09-14) in Release;
-    /// only Google's public test banner unit can ever be selected in Debug.
-    func testBannerUnitIdentifiersMatchTheOwnersConsoleAndGooglesTestUnit() {
-        XCTAssertEqual(EconAdUnit.releaseBanner, "ca-app-pub-9950526548980224/4084037009")
-        XCTAssertEqual(EconAdUnit.debugBanner, "ca-app-pub-3940256099942544/2435281174")
-        XCTAssertNotEqual(EconAdUnit.releaseBanner, EconAdUnit.release,
-                          "the banner is its own unit, not the interstitial's")
-        #if DEBUG
-        XCTAssertEqual(EconAdUnit.banner, EconAdUnit.debugBanner)
-        #else
-        XCTAssertEqual(EconAdUnit.banner, EconAdUnit.releaseBanner)
-        #endif
-    }
-
     /// The interstitial placements are the set exit and (1.1.6) the halfway
-    /// break — the banner is a separate surface, measured under its own event.
+    /// break; the telemetry placements add only the rewarded offer (1.1.7
+    /// removed the three banner slots — `AdRetune117Tests`).
     func testTheInterstitialPlacementsAreTheSetExitAndTheHalfwayBreak() {
         XCTAssertEqual(EconAdPlacement.allCases, [.dailySetExit, .setMidpoint])
-        XCTAssertEqual(EBAdPlacement.bannerHome.rawValue, "home")
-        XCTAssertEqual(EBAdPlacement.bannerCard.rawValue, "card")
         XCTAssertEqual(EBAdPlacement.dailySetExit.rawValue, "daily_set_exit")
+        XCTAssertEqual(EBAdPlacement.setMidpoint.rawValue, "set_midpoint")
+        XCTAssertEqual(EBAdPlacement.packTrial.rawValue, "pack_trial")
     }
 
-    func testBannerImpressionIsDeclaredWithAClosedPlacementVocabulary() {
-        XCTAssertEqual(TelemetrySchema.allowedProperties["banner_impression_v1"], ["placement"])
-        // Phase 11 adds `browse` (the Browse-at-rest banner, `EconAdSurface.browse`).
-        XCTAssertEqual(TelemetrySchema.allowedValues["placement"],
-                       ["daily_set_exit", "home", "card", "browse", "set_midpoint", "pack_trial"])
-        XCTAssertEqual(TelemetryValidator.validate(TelemetryEvent("banner_impression_v1",
-                                                                  ["placement": .string("home")])),
-                       .accepted)
-        XCTAssertEqual(TelemetryValidator.validate(TelemetryEvent("banner_impression_v1",
-                                                                  ["placement": .string("settings")])),
-                       .rejected(.disallowedValue(event: "banner_impression_v1",
-                                                  property: "placement", value: "settings")))
-        // No unit id, no size, no revenue can ride on it.
-        for intruder in ["ad_unit_id", "revenue", "height"] {
-            if case .accepted = TelemetryValidator.validate(TelemetryEvent("banner_impression_v1",
-                                                                            [intruder: .string("x")])) {
-                XCTFail("banner_impression_v1 accepted \(intruder)")
-            }
-        }
-    }
-
-    /// A Remove Ads owner never has a banner requested on their behalf.
-    func testEntitledReadersCannotRequestABanner() {
+    /// A Remove Ads owner never has an ad requested on their behalf.
+    func testEntitledReadersCannotRequestAnAd() {
         let monetization = makeMonetization()
         monetization.update(entitlements: EconEntitlements(removeAds: true))
         XCTAssertFalse(monetization.canRequestAds)
@@ -263,11 +231,11 @@ final class GrowthAuditTests: XCTestCase {
         XCTAssertFalse(monetization.didStartSDK)
     }
 
-    /// DUD-224: no banner in the EEA/UK/CH. Phase 25 (Owner 2026-09-15): an
+    /// DUD-224: no ads in the EEA/UK/CH. Phase 25 (Owner 2026-09-15): an
     /// unknown region is served, non-personalized.
-    func testAdRestrictedRegionsCannotRequestABanner() {
+    func testAdRestrictedRegionsCannotRequestAnAd() {
         let restricted = makeMonetization(region: .restricted)
-        XCTAssertFalse(restricted.canRequestAds, "EEA/UK/CH must not request a banner")
+        XCTAssertFalse(restricted.canRequestAds, "EEA/UK/CH must not request an ad")
         restricted.startAdsIfPermitted()
         XCTAssertFalse(restricted.didStartSDK)
 
@@ -278,31 +246,31 @@ final class GrowthAuditTests: XCTestCase {
         XCTAssertEqual(unknown.currentRequestPolicy.extras, ["npa": "1", "rdp": "1"])
     }
 
-    /// 5.1.2(i): before the tracking decision no ad may be requested — the
-    /// banner included. Once the prompt has been answered (any answer), the SDK
-    /// starts and the banner may be constructed.
-    func testNoBannerBeforeTheTrackingDecisionAndABannerAfterIt() async {
+    /// 5.1.2(i): before the tracking decision no ad may be requested. Once the
+    /// prompt has been answered (any answer), the SDK starts.
+    func testNoAdRequestBeforeTheTrackingDecisionAndRequestsAfterIt() async {
         let adapter = NullAdapter()
         let monetization = EconMonetization(adapter: adapter,
                                             defaults: defaults,
                                             now: { Date(timeIntervalSince1970: 1_789_000_000) },
                                             region: { .allowed },
                                             tracking: AnsweringTracking())
-        XCTAssertFalse(monetization.canRequestAds, "an undecided ATT status blocks the banner")
+        XCTAssertFalse(monetization.canRequestAds, "an undecided ATT status blocks every ad")
         monetization.startAdsIfPermitted()
         XCTAssertFalse(monetization.didStartSDK)
         XCTAssertEqual(adapter.startCount, 0)
 
         await monetization.resolveTrackingAuthorizationIfNeeded()
-        XCTAssertTrue(monetization.canRequestAds, "an answered prompt unblocks the banner")
-        XCTAssertTrue(monetization.didStartSDK, "the slot is gated on the SDK having started")
+        XCTAssertTrue(monetization.canRequestAds, "an answered prompt unblocks ads")
+        XCTAssertTrue(monetization.didStartSDK, "the rewarded offer is gated on the SDK having started")
         XCTAssertEqual(adapter.startCount, 1)
     }
 
-    /// A decided reader in an allowed region with no entitlement: the banner is
-    /// constructible, and its request policy is the same one the interstitial
-    /// uses — personalized after "Allow" (Owner 2026-09-15), otherwise not.
-    func testAnEligibleReaderGetsTheSameBannerRequestPolicyAsTheInterstitial() {
+    /// A decided reader in an allowed region with no entitlement: ads may be
+    /// requested, and the rewarded request uses the same policy the
+    /// interstitial uses — personalized after "Allow" (Owner 2026-09-15),
+    /// otherwise not.
+    func testAnEligibleReaderGetsTheSharedRequestPolicy() {
         let authorized = makeMonetization(tracking: .authorized)
         authorized.startAdsIfPermitted()
         XCTAssertTrue(authorized.didStartSDK)
@@ -321,17 +289,16 @@ final class GrowthAuditTests: XCTestCase {
                        "…but never personalized")
     }
 
-    /// The banner adapter registers the same extras as the interstitial adapter;
-    /// asserted on the source with comments stripped, like `testEveryAdRequestIsNonPersonalized`.
-    func testTheBannerAdapterRegistersTheNonPersonalizedExtras() throws {
+    /// Every adapter registers the same extras through one builder; asserted on
+    /// the source with comments stripped, like `testEveryAdRequestIsNonPersonalized`.
+    /// 1.1.7: two loads (interstitial, rewarded) — the two banner loads are gone.
+    func testEveryAdapterBuildsItsRequestFromThePolicy() throws {
         let source = InstrumentationPrivacyTests.strippingComments(
             try String(contentsOf: repoRoot.appendingPathComponent("EconByte/Services/AdManager.swift"),
                        encoding: .utf8))
-        XCTAssertTrue(source.contains("struct GoogleBannerView"))
-        XCTAssertTrue(source.contains("currentOrientationAnchoredAdaptiveBanner"),
-                      "the banner must be Google's anchored adaptive size, not a fixed 320x50")
-        XCTAssertEqual(source.components(separatedBy: "EconAdRequestBuilder.makeRequest(policy: policy)").count - 1, 4,
-                       "the interstitial load, the rewarded load (1.1.6) and both banner loads must build their request from the policy")
+        XCTAssertFalse(source.contains("GoogleBannerView"), "1.1.7: no banner adapter")
+        XCTAssertEqual(source.components(separatedBy: "EconAdRequestBuilder.makeRequest(policy: policy)").count - 1, 2,
+                       "the interstitial load and the rewarded load (1.1.6) must build their request from the policy")
         XCTAssertEqual(source.components(separatedBy: "request.register(networkExtras)").count - 1, 1,
                        "one builder registers the extras for every format")
     }

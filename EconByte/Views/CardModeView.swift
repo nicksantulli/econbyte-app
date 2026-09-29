@@ -116,14 +116,6 @@ struct CardModeView: View {
                         .padding(.horizontal, EconSpace.gutter)
                         .padding(.bottom, EconSpace.xxl)
                 }
-                // Anchored adaptive banner (1.1.3): under the card, never over
-                // it — reading, flipping and advancing are never interrupted.
-                // Same gating as Home (`EconMonetization.canRequestAds`).
-                // Phase 11: a bookmarks review is saved reading — no banner.
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    AdBannerSlot(surface: mode == .bookmarks ? .bookmarksReview : .cardMode,
-                                 monetization: growth.monetization)
-                }
             }
         }
         .onAppear {

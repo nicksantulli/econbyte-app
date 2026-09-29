@@ -259,13 +259,8 @@ public enum EconAdUnit {
         #endif
     }
 
-    // Anchored adaptive banner (Home + card session), added 2026-09-14 (1.1.3).
-    /// Google's public adaptive-banner test unit.
-    public static let debugBanner = "ca-app-pub-3940256099942544/2435281174"
-    /// The production banner unit, created in the AdMob console by the Owner on
-    /// 2026-09-14 (MANAGER-LOOP-2026-09-14 log). An empty value would hide the
-    /// slot entirely, so a build can never request a placeholder unit.
-    public static let releaseBanner = "ca-app-pub-9950526548980224/4084037009"
+    // 1.1.7: no banner unit. The anchored banner (1.1.3–1.1.6) is gone; its
+    // AdMob unit (…/4084037009) stays in the console, unreferenced.
 
     // Rewarded pack trial, added 2026-09-26 (1.1.6).
     /// Google's public rewarded test unit.
@@ -279,14 +274,6 @@ public enum EconAdUnit {
         return debugRewarded
         #else
         return releaseRewarded.isEmpty ? nil : releaseRewarded
-        #endif
-    }
-
-    public static var banner: String? {
-        #if DEBUG
-        return debugBanner
-        #else
-        return releaseBanner.isEmpty ? nil : releaseBanner
         #endif
     }
 }
@@ -305,16 +292,18 @@ public enum EconAdPlacement: String, CaseIterable, Equatable {
 
 /// Every surface in the 1.1.4 shell and whether an ad may appear on it
 /// (Phase 11 placement matrix; reasoning per row in
-/// `docs/audit/2026-09-14-ads-iap-audit.md` §2). Views ask this type — a
-/// surface that is not listed as a banner surface cannot construct a banner.
+/// `docs/audit/2026-09-14-ads-iap-audit.md` §2).
 ///
-/// Banners: list/feed surfaces a reader browses (Home, Browse at rest) and the
-/// strip under a card session. Never on the portfolio's sensitive surfaces for
-/// EconByte — article body (the Daily Brief), search, saved reading
-/// (bookmarks), quiz explanation (lessons/quizzes), purchase/restore (paywalls),
-/// privacy/consent/permission (Settings, first launch).
+/// Banners: NONE from 1.1.7 (Owner, 2026-09-28 — full-screen formats only).
+/// 1.1.3–1.1.6 carried an anchored banner on Home, Browse at rest and under a
+/// card session; it was removed with its unit and its telemetry.
 /// Interstitial: the set exit, after the completion screen, and (1.1.6) the
 /// halfway break between two cards of a topic or daily set.
+/// Rewarded (opt-in, `EconRewardedOffers`): a locked pack's offer card only.
+/// Never on the portfolio's sensitive surfaces for EconByte — article body
+/// (the Daily Brief), search, saved reading (bookmarks), quiz explanation
+/// (lessons/quizzes), purchase/restore (paywalls), privacy/consent/permission
+/// (Settings, first launch).
 enum EconAdSurface: String, CaseIterable {
     case home
     case browse
@@ -331,18 +320,6 @@ enum EconAdSurface: String, CaseIterable {
     case paywall
     case settings
     case firstLaunch
-
-    /// The banner slot this surface may carry, or nil for no banner.
-    var bannerPlacement: EBAdPlacement? {
-        switch self {
-        case .home: return .bannerHome
-        case .browse: return .bannerBrowse
-        case .cardMode: return .bannerCard
-        case .search, .newsBrief, .newsArchive, .proTab, .courseLesson, .quiz,
-             .bookmarks, .bookmarksReview, .setComplete, .paywall, .settings, .firstLaunch:
-            return nil
-        }
-    }
 
     /// The set exit (the dismissal of the completion screen) and, from 1.1.6,
     /// card mode's halfway break. Never a bookmarks review (saved reading).
@@ -441,8 +418,8 @@ public struct EconEntitlements: Equatable {
 /// Why not go further: EconByte has no D1/D7 retention series yet (PostHog
 /// ingestion started with 1.1.2, and ads-exposed vs entitled splits are Phase 7
 /// of this loop), so there is no evidence to spend. The steady revenue surface
-/// added in 1.1.3 is the anchored banner (`AdBannerSlot`), not more
-/// interstitials. Re-audit when Phase 7's dashboards exist.
+/// added in 1.1.3 was the anchored banner (`AdBannerSlot`, removed in 1.1.7),
+/// not more interstitials. Re-audit when Phase 7's dashboards exist.
 ///
 /// Phase 11 (2026-09-14) re-audit against the portfolio cap policy
 /// (`config/app-factory/monetization-policy.json` `adsPolicy.capPolicy`, which
@@ -464,7 +441,7 @@ public struct EconEntitlements: Equatable {
 /// Retention guardrail (Phase 7 dashboards): if D1 retention of ad-eligible
 /// installs drops more than 15% relative to entitled installs after 1.1.4,
 /// set `minimumCompletedSets` to 3 and `setsSinceLastAd` to 2 (the spec83
-/// pacing) before touching the banner.
+/// pacing).
 ///
 /// 1.1.6 (Owner, 2026-09-26: "more interstitial ads … in the middle of
 /// lessons"). EconByte now declares a per-app override in
@@ -482,6 +459,13 @@ public struct EconEntitlements: Equatable {
 ///     `minimumMidpointDeckSize` or more cards. It shares every cap above, so
 ///     a reader never sees the halfway break and the exit ad of one short set
 ///     (they are closer together than `minimumInterval`).
+///
+/// 1.1.7 (Owner, 2026-09-28: AdMob showed banner eCPM $0.70 over 45
+/// impressions vs interstitial $12.66 over 4): the banner is removed and
+/// full-screen formats carry the app. Every value below is UNCHANGED from
+/// 1.1.6 — dropping the banner is not a reason to loosen the interstitial;
+/// `AdRetune117Tests.testInterstitialThresholdsAreExactlyTheOnesShippedIn116`
+/// pins them.
 public struct EconAdThresholds: Equatable {
     public var minimumCompletedSets = 1
     public var initialSessionInterstitials = 0
@@ -656,7 +640,7 @@ public final class EconMonetization: ObservableObject {
 
     public private(set) var state = EconAdState()
     public var policy: EconAdPolicy
-    /// Published so the anchored banner slot can appear the moment the SDK is
+    /// Published so the rewarded offer can be requested the moment the SDK is
     /// allowed to start (after the ATT decision on a fresh install) without the
     /// hosting view having to be recomposed by something else.
     @Published public private(set) var didStartSDK = false
@@ -666,8 +650,8 @@ public final class EconMonetization: ObservableObject {
     public private(set) var didRequestTrackingPrompt: Bool
 
     /// Phase 11: held from app launch until the first-launch permission flow
-    /// has run (or been skipped), so no ad SDK start — and therefore no banner
-    /// or interstitial request — can land under Apple's ATT or notifications
+    /// has run (or been skipped), so no ad SDK start — and therefore no
+    /// interstitial or rewarded request — can land under Apple's ATT or notifications
     /// prompt, including for an upgrader whose ATT is already decided but whose
     /// notifications prompt is still owed.
     public private(set) var isHeldForLaunchPermissions = false
@@ -693,8 +677,8 @@ public final class EconMonetization: ObservableObject {
     nonisolated static let presenterPollInterval: TimeInterval = 0.05
 
     /// The live ATT status as last observed, re-read on every foreground
-    /// (`refreshRequestPolicyForForeground`). Published so a banner slot
-    /// rebuilds its request when the reader changes Tracking in iOS Settings.
+    /// (`refreshRequestPolicyForForeground`). Published so a view observing it
+    /// re-reads the request policy when the reader changes Tracking in iOS Settings.
     @Published public private(set) var observedTrackingStatus: EconTrackingStatus
 
     /// The policy the most recent SDK start or preload carried.
@@ -815,12 +799,12 @@ public final class EconMonetization: ObservableObject {
         return tracking.status.isDecided
     }
 
-    /// The request-side gate for the anchored banner (1.1.3): may this install
-    /// ask for ANY ad right now? Entitlement, region (DUD-224) and the ATT
-    /// ordering gate — the same three checks `startAdsIfPermitted` makes,
-    /// exposed so a view can decide whether to construct a banner at all. An
-    /// entitled reader, an EEA/UK reader, or a reader whose tracking decision
-    /// is still outstanding never has a banner requested on their behalf.
+    /// The request-side gate (1.1.3; the banner it was written for is gone in
+    /// 1.1.7, the rewarded offer uses it since 1.1.6): may this install ask for
+    /// ANY ad right now? Entitlement, region (DUD-224) and the ATT ordering
+    /// gate — the same three checks `startAdsIfPermitted` makes. An entitled
+    /// reader, an EEA/UK/CH reader, or a reader whose tracking decision is
+    /// still outstanding never has an ad requested on their behalf.
     public var canRequestAds: Bool {
         !entitlements.adsSuppressed && region().permitsAdRequests && adRequestsPermitted
             && !isHeldForLaunchPermissions
@@ -834,8 +818,8 @@ public final class EconMonetization: ObservableObject {
 
     #if DEBUG
     /// DEBUG-only (`-econTrackingAnswered`): lets a UI test that skips the
-    /// system prompts still reach a real (test-unit) banner, so banner layout
-    /// can be asserted. In-memory only; never persisted.
+    /// system prompts still reach real (test-unit) ads. In-memory only; never
+    /// persisted.
     private var debugTrackingAnswered = false
     public func debugMarkTrackingPromptRequested() {
         didRequestTrackingPrompt = true
@@ -846,8 +830,8 @@ public final class EconMonetization: ObservableObject {
     /// The live ATT status (through the injected seam).
     public var trackingStatus: EconTrackingStatus { tracking.status }
 
-    /// The request configuration a banner must use: the same non-personalized
-    /// extras, carrying the live tracking status.
+    /// The request configuration a rewarded request must use: the same
+    /// non-personalized extras, carrying the live tracking status.
     public var currentRequestPolicy: EconAdRequestPolicy { requestPolicy }
 
     /// Whether the ATT prompt is still owed: exactly while iOS has no answer.

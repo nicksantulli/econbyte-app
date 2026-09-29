@@ -3,8 +3,8 @@ import XCTest
 /// 1.1.5 card graphics, in the running app: every card in the two free topics
 /// (Inflation, Interest Rates — together they carry all eight graphic kinds),
 /// plus a second line chart (lm-002) and a second proportion (sd-010), read as
-/// a Pro subscriber with no banner; the Inflation deck as a free reader with the
-/// banner slot; and a large Dynamic Type pass. Attachments are the evidence
+/// a Pro subscriber (no ads); the Inflation deck as a free reader (ads on — no
+/// banner since 1.1.7, so the card screen is the same); and a large Dynamic Type pass. Attachments are the evidence
 /// screenshots. The assertion is that each card announces its graphic to
 /// VoiceOver, which the CardView hook adds to the card's label.
 final class CardGraphicsEvidenceTests: XCTestCase {
@@ -107,10 +107,10 @@ final class CardGraphicsEvidenceTests: XCTestCase {
         captureDeck(app, prefix: "p20-pro-supply-demand", count: 10, only: [1, 6, 10])
     }
 
-    func testFreeReaderWithBannerSlot() {
+    func testFreeReaderWithAdsOn() {
         let app = launch(pro: false, ads: true)
         openTopic("inflation", in: app)
-        captureDeck(app, prefix: "p20-free-banner-inflation", count: 12)
+        captureDeck(app, prefix: "p20-free-ads-inflation", count: 12)
     }
 
     /// iOS 26 ignores the content-size launch argument. For real large-text

@@ -121,15 +121,10 @@ enum TelemetrySchema {
         "ad_load_finished_v1": ["outcome"],
         "ad_impression_v1": ["ordinal"],
         "ad_suppressed_v1": ["suppression"],
-        // 1.1.3: the anchored banner on Home and in a card session. Which slot
-        // filled, nothing else — no unit id, no size, no revenue.
-        "banner_impression_v1": ["placement"],
-        // Phase 11 (2026-09-14): the banner's fill funnel and a click on any ad
-        // format. `banner_impression_v1` now fires on the SDK's recorded
-        // impression (every refresh), `banner_load_finished_v1` once per slot
-        // when the fill outcome changes, `ad_clicked_v1` on the SDK's recorded
-        // click. Placement and outcome only — no unit id, size or revenue.
-        "banner_load_finished_v1": ["placement", "outcome"],
+        // Phase 11 (2026-09-14): a click on any ad format, on the SDK's
+        // recorded click. Placement only — no unit id, size or revenue.
+        // 1.1.7 removed the banner and with it `banner_impression_v1` and
+        // `banner_load_finished_v1` (1.1.3–1.1.6); nothing can emit them now.
         "ad_clicked_v1": ["placement"],
         "streak_day_credited_v1": ["streak_bucket"],
         "notification_permission_result_v1": ["granted"],
@@ -203,15 +198,12 @@ enum TelemetrySchema {
         "course_family": .enumerated(["investing", "charts", "bonds"]),
         "brief_source": .enumerated(["bundled", "network", "cache"]),
         "suppression": .enumerated(["region_restricted", "ads_removed"]),
-        // The interstitial's one placement plus, from 1.1.3, the two anchored
-        // banner slots. Declared as a vocabulary rather than a token so a new
-        // placement cannot appear without a schema change — this line IS that
-        // change for the banner.
-        // Phase 11 adds `browse` (the anchored banner under Browse at rest).
-        // 1.1.6 adds `set_midpoint` (the halfway break) and `pack_trial` (the
-        // rewarded pack offer).
-        "placement": .enumerated(["daily_set_exit", "home", "card", "browse",
-                                  "set_midpoint", "pack_trial"]),
+        // Declared as a vocabulary rather than a token so a new placement
+        // cannot appear without a schema change. `daily_set_exit` is the
+        // original interstitial; 1.1.6 added `set_midpoint` (the halfway
+        // break) and `pack_trial` (the rewarded pack offer). 1.1.7 removed the
+        // banner slots `home`, `card` and `browse` (1.1.3–1.1.6).
+        "placement": .enumerated(["daily_set_exit", "set_midpoint", "pack_trial"]),
         "access_state": .enumerated(["free", "unlocked", "locked"]),
 
         "install_age_bucket": .enumerated(Bucket.installAge),

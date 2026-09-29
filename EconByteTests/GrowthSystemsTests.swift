@@ -612,7 +612,7 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(reborn.state.recentShownAt.count, 1)
     }
 
-    /// Phase 11: nothing starts the ad SDK — so no banner or interstitial can
+    /// Phase 11: nothing starts the ad SDK — so no interstitial or rewarded ad can
     /// be requested — while the first-launch prompts are still owed.
     @MainActor
     func testTheLaunchPermissionHoldBlocksTheAdSDKUntilReleased() {
@@ -624,7 +624,7 @@ final class GrowthSystemsTests: XCTestCase {
         monetization.noteForegroundSessionBegan()
         monetization.startAdsIfPermitted()
         XCTAssertEqual(adapter.startCount, 0, "held: no SDK start under a system prompt")
-        XCTAssertFalse(monetization.canRequestAds, "held: no banner may be constructed")
+        XCTAssertFalse(monetization.canRequestAds, "held: no ad may be requested")
 
         monetization.setLaunchPermissionsHold(false)
         XCTAssertTrue(monetization.canRequestAds)
@@ -633,19 +633,17 @@ final class GrowthSystemsTests: XCTestCase {
         XCTAssertEqual(adapter.preloadCount, 1)
     }
 
-    /// The placement matrix: banners only on Home, Browse at rest and under a
-    /// card session; the interstitial only at the set exit.
+    /// The placement matrix: the interstitial only at the set exit and (1.1.6)
+    /// card mode's halfway break. 1.1.7: no surface carries a banner at all —
+    /// `EconAdSurface` no longer has a banner placement to ask for
+    /// (`AdRetune117Tests`).
     func testThePlacementMatrix() {
-        let bannerSurfaces = EconAdSurface.allCases.filter { $0.bannerPlacement != nil }
-        XCTAssertEqual(Set(bannerSurfaces), [.home, .browse, .cardMode])
-        XCTAssertEqual(EconAdSurface.home.bannerPlacement, .bannerHome)
-        XCTAssertEqual(EconAdSurface.browse.bannerPlacement, .bannerBrowse)
-        XCTAssertEqual(EconAdSurface.cardMode.bannerPlacement, .bannerCard)
-        for never in [EconAdSurface.search, .newsBrief, .newsArchive, .proTab, .courseLesson, .quiz,
-                      .bookmarks, .bookmarksReview, .setComplete, .paywall, .settings, .firstLaunch] {
-            XCTAssertNil(never.bannerPlacement, "\(never) must never carry a banner")
-        }
         XCTAssertEqual(EconAdSurface.allCases.filter(\.allowsInterstitial), [.cardMode, .setComplete])
+        for never in [EconAdSurface.home, .browse, .search, .newsBrief, .newsArchive, .proTab,
+                      .courseLesson, .quiz, .bookmarks, .bookmarksReview, .paywall, .settings,
+                      .firstLaunch] {
+            XCTAssertFalse(never.allowsInterstitial, "\(never) must never carry an interstitial")
+        }
     }
 
     func testDeclaredCategoryBlocksCoverThePortfolioPolicy() {

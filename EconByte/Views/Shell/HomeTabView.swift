@@ -7,7 +7,6 @@ struct HomeTabView: View {
     @EnvironmentObject private var content: ContentStore
     @EnvironmentObject private var streak: StreakManager
     @EnvironmentObject private var store: PurchaseManager
-    @EnvironmentObject private var growth: EconGrowth
     @EnvironmentObject private var router: AppRouter
     @EnvironmentObject private var progress: CourseProgressStore
     @EnvironmentObject private var briefs: BriefStore
@@ -31,13 +30,6 @@ struct HomeTabView: View {
             .padding(.horizontal, EconSpace.gutter)
             .padding(.top, EconSpace.s)
             .padding(.bottom, EconSpace.xxl)
-        }
-        // Anchored adaptive banner (1.1.3), above the tab bar. Reserves no
-        // space until an ad has loaded, and is not constructed at all for a
-        // Remove Ads owner or Pro subscriber, an EEA/UK reader, or before the
-        // ATT decision (`EconMonetization.canRequestAds`).
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            AdBannerSlot(surface: .home, monetization: growth.monetization)
         }
     }
 

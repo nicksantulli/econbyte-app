@@ -120,17 +120,11 @@ enum EBBriefSource: String {
 
 /// Why an ad was not requested or not shown. Named `suppression` rather than
 /// `reason` so it cannot share a vocabulary with the session-end reason.
-/// Where an ad may appear. Lineage A defines exactly one placement
-/// (`EconAdPlacement.dailySetExit`); this mirrors it so a call site passes a
-/// case rather than a string.
-enum EBAdPlacement: String {
+/// Where an ad may appear. Mirrors `EconAdPlacement` plus the rewarded offer,
+/// so a call site passes a case rather than a string. 1.1.7 removed the three
+/// banner slots (`home`, `card`, `browse`) with the banner itself.
+enum EBAdPlacement: String, CaseIterable {
     case dailySetExit = "daily_set_exit"
-    /// The two anchored-banner slots added in 1.1.3. `banner_impression_v1`
-    /// carries which one; the interstitial keeps `daily_set_exit`.
-    case bannerHome = "home"
-    case bannerCard = "card"
-    /// Phase 11: Browse at rest (never while searching).
-    case bannerBrowse = "browse"
     /// 1.1.6: the halfway break inside a card set.
     case setMidpoint = "set_midpoint"
     /// 1.1.6: the rewarded "read this pack free for 24 hours" offer.
@@ -392,25 +386,7 @@ enum EBEvents {
         ]))
     }
 
-    /// The ad SDK recorded a banner impression (Phase 11: one per recorded
-    /// impression, including refreshes — was "first fill per slot", which
-    /// counted loads, not impressions).
-    static func bannerImpression(placement: EBAdPlacement) {
-        EconTelemetry.shared.capture(TelemetryEvent("banner_impression_v1", [
-            "placement": .string(placement.rawValue),
-        ]))
-    }
-
-    /// A banner slot's fill outcome: `filled`, `no_fill`, or `failed` (any other
-    /// load error). Emitted when a slot's outcome changes, not per refresh.
-    static func bannerLoadFinished(placement: EBAdPlacement, outcome: EBOutcome) {
-        EconTelemetry.shared.capture(TelemetryEvent("banner_load_finished_v1", [
-            "placement": .string(placement.rawValue),
-            "outcome": .string(outcome.rawValue),
-        ]))
-    }
-
-    /// The ad SDK recorded a click on a banner or the interstitial.
+    /// The ad SDK recorded a click on an interstitial or a rewarded ad.
     static func adClicked(placement: EBAdPlacement) {
         EconTelemetry.shared.capture(TelemetryEvent("ad_clicked_v1", [
             "placement": .string(placement.rawValue),

@@ -36,7 +36,7 @@ import GoogleMobileAds
 import FBAudienceNetwork
 #endif
 
-/// Builds every ad request — interstitial and banner — from the policy, so the
+/// Builds every ad request — interstitial and rewarded — from the policy, so the
 /// SDK-level personalization switch, the per-request extras and the mediation
 /// partners' tracking flags can never disagree.
 @MainActor
@@ -319,104 +319,14 @@ final class AdManager: NSObject, EconInterstitialAdapting {
 
 #endif
 
-// MARK: - Banner adapter (1.1.3)
+// MARK: - No banner adapter (1.1.7)
 //
-// Same rule as the interstitial adapter: this is SDK plumbing only. Whether a
-// banner may be on screen at all is decided by `AdBannerSlot` from the policy
-// layer (`EconMonetization.canRequestAds`: entitlement, DUD-224 region, and the
-// build-13 ATT ordering gate), so an entitled reader, an EEA/UK reader, or a
-// reader who has not yet answered ATT never constructs this view and the SDK is
-// never asked for a banner. Every request carries the same non-personalized
-// extras (`npa=1`, `rdp=1`) the interstitial carries.
-
-#if canImport(GoogleMobileAds)
-struct GoogleBannerView: UIViewRepresentable {
-    let adUnitID: String
-    let width: CGFloat
-    let policy: EconAdRequestPolicy
-    let placement: EBAdPlacement
-    /// Called with the ad's height once one has actually loaded, and with 0 on
-    /// failure — the slot reserves no space for an ad that is not there.
-    let onLoadedHeight: (CGFloat) -> Void
-
-    func makeCoordinator() -> Coordinator { Coordinator(placement: placement, onLoadedHeight: onLoadedHeight) }
-
-    func makeUIView(context: Context) -> BannerView {
-        let size = currentOrientationAnchoredAdaptiveBanner(width: max(width, 320))
-        let view = BannerView(adSize: size)
-        view.adUnitID = adUnitID
-        view.delegate = context.coordinator
-        context.coordinator.requestedPersonalized = policy.usesPersonalizedAds
-        view.load(EconAdRequestBuilder.makeRequest(policy: policy))
-        return view
-    }
-
-    func updateUIView(_ view: BannerView, context: Context) {
-        let size = currentOrientationAnchoredAdaptiveBanner(width: max(width, 320))
-        let resized = abs(view.adSize.size.width - size.size.width) > 1
-        // Phase 25: a Tracking change in iOS Settings flips the decision; the
-        // strip reloads with the new request instead of refreshing the old one.
-        let policyChanged = context.coordinator.requestedPersonalized != policy.usesPersonalizedAds
-        guard resized || policyChanged else { return }
-        if resized { view.adSize = size }
-        context.coordinator.requestedPersonalized = policy.usesPersonalizedAds
-        view.load(EconAdRequestBuilder.makeRequest(policy: policy))
-    }
-
-    @MainActor
-    final class Coordinator: NSObject, BannerViewDelegate {
-        let placement: EBAdPlacement
-        let onLoadedHeight: (CGFloat) -> Void
-        /// Whether the strip's current request was personalized.
-        var requestedPersonalized: Bool?
-        /// The slot's last reported fill outcome; `banner_load_finished_v1` is
-        /// emitted when it changes, not on every 60-second refresh.
-        private var lastOutcome: EBOutcome?
-
-        init(placement: EBAdPlacement, onLoadedHeight: @escaping (CGFloat) -> Void) {
-            self.placement = placement
-            self.onLoadedHeight = onLoadedHeight
-        }
-
-        private func report(_ outcome: EBOutcome) {
-            guard outcome != lastOutcome else { return }
-            lastOutcome = outcome
-            EBEvents.bannerLoadFinished(placement: placement, outcome: outcome)
-        }
-
-        func bannerViewDidReceiveAd(_ bannerView: BannerView) {
-            onLoadedHeight(bannerView.adSize.size.height)
-            report(.filled)
-        }
-
-        func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
-            // No-fill and load failures are silent to the reader by design; the
-            // SDK's error string is a third-party message and never leaves.
-            NSLog("[Ads] banner load failed")
-            onLoadedHeight(0)
-            report(EconAdErrorClassifier.outcome(for: error))
-        }
-
-        func bannerViewDidRecordImpression(_ bannerView: BannerView) {
-            EBEvents.bannerImpression(placement: placement)
-        }
-
-        func bannerViewDidRecordClick(_ bannerView: BannerView) {
-            EBEvents.adClicked(placement: placement)
-        }
-    }
-}
-#else
-/// Compiles the app without the SDK linked: no banner can ever load.
-struct GoogleBannerView: View {
-    let adUnitID: String
-    let width: CGFloat
-    let policy: EconAdRequestPolicy
-    let placement: EBAdPlacement
-    let onLoadedHeight: (CGFloat) -> Void
-    var body: some View { Color.clear.frame(height: 0) }
-}
-#endif
+// 1.1.3–1.1.6 carried an anchored adaptive banner (`GoogleBannerView`, mounted
+// by `AdBannerSlot` on Home, Browse and under a card session). 1.1.7 removes it
+// (Owner, 2026-09-28: banner eCPM $0.70 vs interstitial $12.66 in AdMob; the
+// portfolio policy for ad-supported apps is now rewarded + capped
+// interstitials at natural breaks, no banners). No banner view, unit or
+// request exists in the app; `AdRetune117Tests` keeps it that way.
 
 // MARK: - Presenter (Phase 25)
 
