@@ -254,26 +254,34 @@ unchanged. The exact ASC edits are in
 
 ---
 
-## Ads (1.1.3)
+## Ads (1.1.7 — full-screen formats only)
 
-Two surfaces, one policy layer (`EconByte/Services/EconMonetization.swift`):
+One policy layer (`EconByte/Services/EconMonetization.swift`), two formats. The
+anchored banner that ran on Home, Browse and under a card session from 1.1.3 to
+1.1.6 was **removed in 1.1.7** (Owner, 2026-09-28: AdMob showed banner eCPM
+$0.70 vs interstitial $12.66), with its view, unit, telemetry and UI test —
+`EconByteTests/AdRetune117Tests.swift` keeps it out.
 
-- **Interstitial** — one placement, the return from a completed set to Home.
-  Pacing audited 2026-09-14: first interstitial no earlier than the **second**
-  completed set; then every completed set is an eligible exit; at most **two
-  per foreground session**, **two per calendar day**, **fifteen minutes apart**.
-  The reasoning is in the `EconAdThresholds` doc comment.
-- **Anchored adaptive banner** (`EconByte/Views/AdBannerSlot.swift`) at the
-  bottom of Home and under the card in a card session. Reserves no space until
-  an ad has loaded. Production unit `ca-app-pub-9950526548980224/4084037009`
-  (AdMob console, 2026-09-14); Debug can only select Google's public test banner
-  unit. Measured as `banner_impression_v1` with a `placement` of `home`/`card`.
+- **Interstitial** — two placements: the return from a completed set to Home,
+  and (1.1.6) a halfway break between two cards of a 6+ card set (never over a
+  card face, never a bookmarks review). Rules, unchanged since 1.1.6: one
+  finished set first, **never in the install's first session**, **10 minutes
+  apart**, **2 per foreground session**, **4 per calendar day and in any rolling
+  24 hours**. The reasoning is in the `EconAdThresholds` doc comment.
+- **Rewarded (opt-in)** — "Watch an ad · read free for 24 hours" on a locked
+  pack's offer card (`RewardedPackOfferButton`, `EconRewardedOffers`). At most
+  **2 unlocks in any rolling 24 hours** (persisted); an unlock lasts 24 hours
+  and is never an entitlement (no owned label, restore or bundle credit). Unit
+  `ca-app-pub-9950526548980224/7378501919`; Debug can only select Google's
+  public test units.
 
-Both surfaces are gated identically before any request: no Remove Ads
-entitlement, region not in the EEA/UK (DUD-224, fail-closed on unknown), and the
-1.1.2 build 13 ATT ordering gate (`adRequestsPermitted`) — nothing, not even an
-SDK start, precedes the tracking decision. Every request is non-personalized
-(`npa=1`, `rdp=1`) whatever the reader answered.
+Both formats are gated identically before any request: no Remove Ads or Pro
+entitlement; region not in the EEA/UK/CH (DUD-224, revised 2026-09-15 — an
+unknown region IS served, non-personalized); the ATT ordering gate
+(`adRequestsPermitted`) — nothing, not even an SDK start, precedes the tracking
+decision; and the first-launch prompt hold. A request is personalized only after
+an ATT "Allow" in a region known to be outside the block list; every other
+request carries `npa=1` + `rdp=1`.
 
 ## Rating requests (review-rules-v2, 1.1.3)
 

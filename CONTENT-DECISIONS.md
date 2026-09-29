@@ -1041,3 +1041,29 @@ brief end and paywall).
 when there is no real brief on the device. "Daily Brief" wording stays, stated as "each U.S. federal business day".
 
 **Deferred to 1.1.5:** story-style (tap-through) lessons — see the Lane A2 report.
+
+
+## D26 — 1.1.7 ad retune: banner removed, full-screen formats only (Owner, 2026-09-28)
+
+**Evidence.** AdMob (Owner, 2026-09-28): banner eCPM **$0.70** over 45 impressions vs interstitial **$12.66** over 4
+(tiny sample, but an 18× gap and the banner's absolute revenue was cents a week). New portfolio policy for apps with
+ads: rewarded (opt-in) + interstitials at natural breaks (capped, never in the first session) are primary; banners
+are dropped.
+
+**Decided.** (1) The anchored banner is removed everywhere it ran (Home, Browse at rest, under a card session):
+`AdBannerSlot.swift` deleted, `GoogleBannerView` deleted, `EconAdUnit.banner`/`releaseBanner`/`debugBanner` deleted
+(the AdMob unit …/4084037009 stays in the console, unreferenced), `EconAdSurface.bannerPlacement` deleted, telemetry
+`banner_impression_v1`/`banner_load_finished_v1` and the `placement` values `home`/`card`/`browse` removed from the
+closed schema. Layouts simply lose the bottom inset — nothing replaces the strip. (2) Interstitial rules are
+**unchanged** from 1.1.6 (1 finished set first, none in the install's first session, 10 min apart, 2/session,
+4/day + rolling 24 h, halfway break in 6+ card sets) — pinned by `AdRetune117Tests`. (3) The rewarded pack trial is
+unchanged (≤2 grants in any rolling 24 h, 24 h unlock, never an entitlement). (4) Region rules unchanged (no ads in
+EEA/UK/CH; unknown region served `npa=1`+`rdp=1`; personalized only after ATT Allow). (5) **No second rewarded
+surface.** The candidate was a locked Pro course lesson; rejected for 1.1.7 because it would trade a lesson from the
+subscription (the app's main revenue, whose ongoing-value case the subscription review leans on) for one ad view, it
+needs a new per-lesson entitlement path and telemetry vocabulary, and it could not be exercised on a simulator in this
+lane. Revisit with Pro conversion data.
+
+**Policy.** Monorepo `config/app-factory/monetization-policy.json` and DudleyCore `MonetizationPolicyRegistry` drop
+EconByte's three banner placements and list them as `prohibitedPlacements` on branches `claude/econbyte-117-ad-policy`
+(both unmerged, stacked on the unmerged 1.1.6 policy branches).

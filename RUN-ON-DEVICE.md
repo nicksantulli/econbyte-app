@@ -56,7 +56,7 @@ Xcode 12+). Plug in the iPhone 17 Pro, pick it as the destination, **⌘R**.
    the trial line under the Subscribe button, Terms of Use + Privacy links, and
    Restore. Subscribe → the StoreKit test sheet → confirm.
 3. Home now shows "Active ✓"; every pack reads "Included with Pro ✓"; every core
-   topic opens; the banner and interstitial are gone; the Daily Brief and all
+   topic opens; interstitials and the rewarded offer are gone; the Daily Brief and all
    lessons open. Settings → EconByte Pro shows plan, period end, Manage link.
 4. To watch a lapse: Xcode → Debug → StoreKit → **Manage Transactions**, delete
    or expire the subscription (or turn on the config's time-rate acceleration).
@@ -117,31 +117,31 @@ through cards → tap a card to flip it for the sourced example.
 - Every card shows the disclaimer: "For educational purposes only — not
   financial or investment advice."
 
-**Ads** (design section 9.3, plus the 1.1.3 banner)
-- **No interstitial ever interrupts a card.** The one interstitial placement is
-  the return from a **completed set** to Home. The earliest one can appear is
-  the exit of your **second** completed set, because a fresh install must
-  complete two sets before any interstitial is eligible.
-- Interstitial caps (audited 2026-09-14): at most two per foreground session,
-  two per calendar day, fifteen minutes apart, and one completed set apart.
-- **Anchored banner (1.1.3):** a small adaptive banner sits at the bottom of
-  Home and under the card in a card session. It reserves no space until an ad
-  has loaded, so a no-fill is invisible rather than a blank strip.
-- DEBUG builds use Google's public **test** units (interstitial and banner), so
-  anything you see is labelled "Test Ad" and never touches the real account.
-- No fill or a load failure is silent — you just land back on Home.
-- **App Tracking Transparency (1.1.2 build 13):** the system tracking dialog
-  is asked **once per install**, from the exit of your **first completed set**
-  (tap Done or Browse More Topics), and never at launch. No ad — not even the
-  banner, not even an SDK start — is requested before you have answered. Every
-  answer moves the app forward; every ad request stays non-personalized
-  whatever you answer. See `CONTENT-DECISIONS.md` D2 addendum.
-- Buy **Remove Ads** and the ad SDK is never started at all — no interstitial,
-  no banner, no tracking dialog. Same for a device whose region is in the EEA/UK
-  (DUD-224).
-- A fresh Simulator run therefore shows **no banner until after your first
-  completed set** (the tracking decision comes first); from the next launch on,
-  the banner is on Home as soon as Google's test unit fills.
+**Ads** (1.1.7: full-screen formats only — **no banner anywhere**)
+- **No ad strip** on Home, Browse or under a card. 1.1.3–1.1.6 had an anchored
+  banner there; 1.1.7 removed it. If you see one, that is a bug.
+- **No interstitial ever covers a card face.** Interstitials appear at the exit
+  of a completed set (after the completion screen closes) and as a halfway
+  break between two cards of a 6+ card set.
+- Interstitial rules (unchanged from 1.1.6): never in the install's **first
+  session**; one finished set first; **10 minutes apart**; at most **2 per
+  session** and **4 per day** (and 4 in any rolling 24 hours).
+- **Rewarded:** on a locked pack's offer card, "Watch an ad · read free for 24
+  hours" appears once a test ad has loaded. Watch it to the end and the pack
+  opens for 24 hours ("Free until …"); close it early and nothing unlocks. At
+  most 2 a day.
+- DEBUG builds use Google's public **test** units (interstitial and rewarded),
+  so anything you see is labelled "Test Ad" and never touches the real account.
+- No fill or a load failure is silent — you just land back where you were.
+- **App Tracking Transparency:** Apple's tracking prompt appears at first
+  launch (1.1.4). No ad — not even an SDK start — is requested before you have
+  answered. Allow → ads may be personalized; any other answer → every request is
+  non-personalized.
+- Buy **Remove Ads** (or subscribe to Pro) and the ad SDK is never started — no
+  interstitial, no rewarded offer. Same for a device whose region is in the
+  EEA/UK/CH (DUD-224).
+- A fresh Simulator run shows **no interstitial in its first session**; finish a
+  set in the next launch to see one.
 
 **Consent, reminders, and rating**
 - **First launch (1.1.4):** as the Dudley studio intro fades, Apple's tracking
