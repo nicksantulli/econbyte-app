@@ -15,9 +15,8 @@ What the copy deliberately does not say: any count, cap or eCPM; anything about
 tracking or personalization (unchanged); anything about the rewarded offer
 (unchanged since 1.1.6).
 
-If any other localization carries What's New on 1.1.6 (check es-MX), use:
-
-> es-MX: Menos anuncios, mejor ubicados.
+1.1.6 carries one App Store localization (en-US, read from ASC 2026-09-28), so
+this is the only What's New to set.
 
 ## Build
 
