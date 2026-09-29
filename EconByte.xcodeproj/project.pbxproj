@@ -29,6 +29,8 @@
 		UT0000000000000000000011 /* InstrumentationPrivacyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */; };
 		UT00000000000000000000A1 /* TrackingAuthorizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */; };
 		UT00000000000000000000B1 /* GrowthAuditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000B0 /* GrowthAuditTests.swift */; };
+		UT00000000000000000116F1 /* AdsAndReviews116Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000116F0 /* AdsAndReviews116Tests.swift */; };
+		UT00000000000000000117F1 /* AdRetune117Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000117F0 /* AdRetune117Tests.swift */; };
 		UT00000000000000000000D1 /* FirstLaunchPermissionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000D0 /* FirstLaunchPermissionsTests.swift */; };
 		UT0000000000000000000021 /* EconTelemetryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT0000000000000000000020 /* EconTelemetryTests.swift */; };
 		UT00000000000000000000F1 /* StoreEntitlementsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UT00000000000000000000F0 /* StoreEntitlementsTests.swift */; };
@@ -46,6 +48,8 @@
 		UT0000000000000000000010 /* InstrumentationPrivacyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentationPrivacyTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000A0 /* TrackingAuthorizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingAuthorizationTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000B0 /* GrowthAuditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowthAuditTests.swift; sourceTree = "<group>"; };
+		UT00000000000000000116F0 /* AdsAndReviews116Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsAndReviews116Tests.swift; sourceTree = "<group>"; };
+		UT00000000000000000117F0 /* AdRetune117Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdRetune117Tests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000D0 /* FirstLaunchPermissionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLaunchPermissionsTests.swift; sourceTree = "<group>"; };
 		UT0000000000000000000020 /* EconTelemetryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EconTelemetryTests.swift; sourceTree = "<group>"; };
 		UT00000000000000000000F0 /* StoreEntitlementsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreEntitlementsTests.swift; sourceTree = "<group>"; };
@@ -175,6 +179,8 @@
 				UT00000000000000000000F0 /* StoreEntitlementsTests.swift */,
 				UT00000000000000000000F2 /* StoreKitSessionTests.swift */,
 				CG00000000000000000000A1 /* CardGraphicsTests.swift */,
+				UT00000000000000000116F0 /* AdsAndReviews116Tests.swift */,
+				UT00000000000000000117F0 /* AdRetune117Tests.swift */,
 			);
 			path = EconByteTests;
 			sourceTree = "<group>";
@@ -368,6 +374,8 @@
 				UT00000000000000000000F1 /* StoreEntitlementsTests.swift in Sources */,
 				UT00000000000000000000F3 /* StoreKitSessionTests.swift in Sources */,
 				CG00000000000000000000A2 /* CardGraphicsTests.swift in Sources */,
+				UT00000000000000000116F1 /* AdsAndReviews116Tests.swift in Sources */,
+				UT00000000000000000117F1 /* AdRetune117Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

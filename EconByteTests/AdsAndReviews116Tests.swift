@@ -161,7 +161,9 @@ final class AdsAndReviews116Tests: XCTestCase {
     @MainActor
     func testWatchingARewardedAdToTheEndOpensThePackForADay() async {
         let rewarded = Rewarded()
-        var clock = noon
+        // The real clock, not the fixed `noon`: `hasAccess` reads the unlock
+        // against `Date()`, so a fixed past date makes it expire by test day.
+        var clock = Date()
         let offers = EconRewardedOffers(adapter: rewarded, defaults: defaults, now: { clock })
         let monetization = monetization(Interstitials(), now: { clock })
         let store = PurchaseManager(defaults: defaults, observesStore: false)
@@ -195,6 +197,7 @@ final class AdsAndReviews116Tests: XCTestCase {
                                                           now: noon.addingTimeInterval(25 * 3600)).isEmpty)
     }
 
+    @MainActor
     func testAnEditedUnlockCannotLastLongerThanADay() {
         let now = noon
         defaults.set([pack: now.addingTimeInterval(30 * 24 * 3600).timeIntervalSince1970],
