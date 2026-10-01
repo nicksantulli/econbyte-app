@@ -153,20 +153,21 @@ final class GrowthAuditTests: XCTestCase {
     /// combined release build: Pro polish + the Phase 25 ad-delivery lane + the
     /// AX/IC/EA region fix — live as 1.1.5. 1.1.6 (ads + rating request) is
     /// build 23, live. 1.1.7 (banner removed, full-screen formats only) is
-    /// build 24. The stamp must match in both places the project declares it.
-    func testProjectIsStampedOneOneSevenBuildTwentyFour() throws {
+    /// build 24, live. 1.1.8 (analytics drain fix only) is build 25. The stamp
+    /// must match in both places the project declares it.
+    func testProjectIsStampedOneOneEightBuildTwentyFive() throws {
         let pbx = try String(contentsOf: repoRoot.appendingPathComponent("EconByte.xcodeproj/project.pbxproj"),
                              encoding: .utf8)
-        XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.7;").count - 1, 2)
-        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 24;").count - 1, 2)
-        for used in 13...23 {
+        XCTAssertEqual(pbx.components(separatedBy: "MARKETING_VERSION = 1.1.8;").count - 1, 2)
+        XCTAssertEqual(pbx.components(separatedBy: "CURRENT_PROJECT_VERSION = 25;").count - 1, 2)
+        for used in 13...24 {
             XCTAssertFalse(pbx.contains("CURRENT_PROJECT_VERSION = \(used);"),
                            "build \(used) is live, submitted, in review or reserved for 1.1.4 hotfixes")
         }
 
         let yml = try String(contentsOf: repoRoot.appendingPathComponent("project.yml"), encoding: .utf8)
-        XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.7\""))
-        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"24\""))
+        XCTAssertTrue(yml.contains("MARKETING_VERSION: \"1.1.8\""))
+        XCTAssertTrue(yml.contains("CURRENT_PROJECT_VERSION: \"25\""))
     }
 
     // MARK: - 4. Ad request gates (every format; the banner is gone in 1.1.7)
