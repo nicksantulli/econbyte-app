@@ -315,6 +315,40 @@ final class EconTelemetryTests: XCTestCase {
         XCTAssertEqual(queue.checkoutBatch(now: now).count, 1)
     }
 
+    /// Same defect as Table Talk's device check 2026-09-29: a flush sent only the
+    /// first 20 events, and the session-end and review events late in a long
+    /// session died with the process. One flush now empties the queue.
+    func testOneFlushSendsEveryQueuedEventNotJustTheFirstBatch() async {
+        let spy = SpyTelemetryTransport()
+        let telemetry = makeTelemetry(transport: spy)
+        telemetry.setAnalyticsConsent(true)
+
+        for _ in 0..<45 {
+            telemetry.capture(TelemetryEvent("app_opened_v1", ["app_version": .string("1.1.8 (25)")]))
+        }
+        telemetry.capture(TelemetryEvent("review_prompt_eligible_v1"))
+        await telemetry.flush()
+
+        XCTAssertEqual(spy.sentBatches.map(\.count), [20, 20, 6])
+        XCTAssertEqual(spy.sentEvents.last?.name, "review_prompt_eligible_v1")
+        XCTAssertEqual(telemetry.queuedEventCount, 0)
+    }
+
+    func testAFailedBatchStopsTheDrainAndKeepsTheRest() async {
+        let spy = SpyTelemetryTransport()
+        spy.sendSucceeds = false
+        let telemetry = makeTelemetry(transport: spy)
+        telemetry.setAnalyticsConsent(true)
+
+        for _ in 0..<25 {
+            telemetry.capture(TelemetryEvent("app_opened_v1", ["app_version": .string("1.1.8 (25)")]))
+        }
+        await telemetry.flush()
+
+        XCTAssertEqual(spy.sentBatches.count, 1, "offline: one attempt, not a spin")
+        XCTAssertEqual(telemetry.queuedEventCount, 25)
+    }
+
     func testAFailedSendReturnsTheBatchRatherThanDroppingIt() async {
         let spy = SpyTelemetryTransport()
         spy.sendSucceeds = false

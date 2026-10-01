@@ -529,7 +529,19 @@ protocol TelemetryTransporting: AnyObject {
 
     func start(apiKey: String, configuration: TelemetryConfiguration)
     func send(_ events: [TelemetryEvent]) async -> Bool
+    /// The same hand-off, carrying the time each event was captured. A batch
+    /// leaves at the next flush (background, a card set's end), so without this
+    /// every event in it would be stamped with the flush time, not when it
+    /// happened.
+    func send(stamped batch: [QueuedTelemetryEvent]) async -> Bool
     func stopAndClearLocalState()
+}
+
+extension TelemetryTransporting {
+    /// Transports with no notion of time (the no-op, test doubles) drop it.
+    func send(stamped batch: [QueuedTelemetryEvent]) async -> Bool {
+        await send(batch.map(\.event))
+    }
 }
 
 /// The transport used when no key exists. It exists so the policy layer above it
@@ -585,12 +597,17 @@ final class TelemetryQueue {
     /// Takes the next batch, or nothing at all when a batch is already in
     /// flight — the duplicate-flush guard.
     func checkoutBatch(now: Date) -> [TelemetryEvent] {
+        checkoutStampedBatch(now: now).map(\.event)
+    }
+
+    /// `checkoutBatch`, keeping each event's capture time.
+    func checkoutStampedBatch(now: Date) -> [QueuedTelemetryEvent] {
         guard inFlight.isEmpty else { return [] }
         expire(now: now)
         guard !pending.isEmpty else { return [] }
         inFlight = Array(pending.prefix(batchSize))
         pending.removeFirst(inFlight.count)
-        return inFlight.map(\.event)
+        return inFlight
     }
 
     func commitBatch() { inFlight.removeAll() }
@@ -761,14 +778,20 @@ final class EconTelemetry: ObservableObject {
         return validation
     }
 
+    /// Hands over everything queued, one batch at a time. Through 1.1.7 this sent
+    /// ONE batch of 20 per flush, so in any session with more than ~20 events
+    /// the tail stayed in memory and died with the process: the session-end and
+    /// review events that come late in a session were the ones lost (same
+    /// defect as Table Talk, device check 2026-09-29).
     func flush() async {
-        guard isAnalyticsEnabled else { return }
-        let batch = queue.checkoutBatch(now: now())
-        guard !batch.isEmpty else { return }
-        if await transport.send(batch) {
+        while isAnalyticsEnabled {
+            let batch = queue.checkoutStampedBatch(now: now())
+            guard !batch.isEmpty else { return }
+            guard await transport.send(stamped: batch) else {
+                queue.rollbackBatch()
+                return
+            }
             queue.commitBatch()
-        } else {
-            queue.rollbackBatch()
         }
     }
 }

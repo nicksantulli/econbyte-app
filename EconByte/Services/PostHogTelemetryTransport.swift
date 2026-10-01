@@ -212,11 +212,21 @@ final class PostHogTelemetryTransport: TelemetryTransporting {
     /// durable queue sits in front of this, so a pre-start call cannot lose data
     /// (it simply is not sent).
     func send(_ events: [TelemetryEvent]) async -> Bool {
+        await send(stamped: events.map { QueuedTelemetryEvent(event: $0, enqueuedAt: Date()) })
+    }
+
+    /// Each event keeps the time it was captured, not the time of the flush.
+    func send(stamped batch: [QueuedTelemetryEvent]) async -> Bool {
         guard isStarted else { return false }
         #if canImport(PostHog)
-        for event in events {
-            PostHogSDK.shared.capture(event.name, properties: Self.properties(from: event))
+        for item in batch {
+            PostHogSDK.shared.capture(item.event.name,
+                                      properties: Self.properties(from: item.event),
+                                      timestamp: item.enqueuedAt)
         }
+        #if DEBUG
+        NSLog("[EB][telemetry] handed to PostHog: \(batch.map(\.event.name).joined(separator: ", "))")
+        #endif
         PostHogSDK.shared.flush()
         #endif
         return true
